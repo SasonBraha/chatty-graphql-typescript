@@ -21,7 +21,7 @@ const ChatSchema = new mongoose_1.Schema({
         link: {
             type: String,
             trim: true,
-            default: '/images/default_chat.svg',
+            default: '/images/default_chat.svg'
         },
         isUploaded: {
             type: Boolean,
@@ -56,7 +56,7 @@ const ChatSchema = new mongoose_1.Schema({
     lastMessage: String
 }, { timestamps: true, collection: 'chatRooms' });
 ChatSchema.statics.doesntExist = async function (opts) {
-    return await this.where(opts).countDocuments() === 0;
+    return (await this.where(opts).countDocuments()) === 0;
 };
 const Chat = mongoose_1.model('Chat', ChatSchema);
 exports.default = Chat;

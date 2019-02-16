@@ -3,7 +3,6 @@ import { File, IFile } from '../File/File.model';
 
 export interface IMessage extends Document {
 	body: string;
-	image: string;
 	file: IFile;
 	createdBy: {
 		_id: string;

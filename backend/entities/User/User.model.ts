@@ -4,7 +4,7 @@ import ObjectId = Schema.Types.ObjectId;
 
 export interface IUser extends Document {
 	displayName: string;
-	emai: string;
+	email: string;
 	password: string;
 	slug: string;
 	avatar: string;

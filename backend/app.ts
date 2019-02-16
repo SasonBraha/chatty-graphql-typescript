@@ -1,40 +1,45 @@
+require('dotenv').config({ path: '../.env' });
 import { ApolloServer, gql } from 'apollo-server-express';
 import * as express from 'express';
 import * as helmet from 'helmet';
-import * as path from 'path';
 import * as cors from 'cors';
 import * as mongoose from 'mongoose';
-import * as socketioJwt from 'socketio-jwt';
-import * as graphqlHTTP from 'express-graphql';
+import * as morgan from 'morgan';
 
 const app = express();
 
 //------------------------------------//
+//  DB Config & Connection            //
+//------------------------------------//
+mongoose.set('useCreateIndex', true);
+mongoose
+	.connect(process.env.MONGO_URI, {
+		useNewUrlParser: true,
+		useFindAndModify: false
+	})
+	.catch(ex => {
+		throw new Error(ex);
+	});
+
+//------------------------------------//
 //  Middlewares                       //
 //------------------------------------//
+// Helmet Security Middleware
 app.use(helmet());
 
-// Construct a schema, using GraphQL schema language
-const typeDefs = gql`
-	type Query {
-		hello: String
-	}
-`;
+// Enable { CORS } Sharing And Dev Logging
+if (process.env.NODE_ENV !== 'production') {
+	app.use(cors());
+	app.use(morgan('dev'));
+}
 
-// Provide resolver functions for your schema fields
-const resolvers = {
-	Query: {
-		hello: () => 'Hello world!'
-	}
-};
-
-const server = new ApolloServer({ typeDefs, resolvers });
-server.applyMiddleware({ app });
+// const server = new ApolloServer({ typeDefs, resolvers });
+// server.applyMiddleware({ app });
 
 //------------------------------------//
 //  Initalize                         //
 //------------------------------------//
 const PORT = process.env.PORT;
-app.listen({ port: 4000 }, () =>
-	console.log(`🚀 Server ready at http://localhost:4000${server.graphqlPath}`)
+app.listen(PORT, () =>
+	console.log(`Server Started Successfully On Port ${PORT}`)
 );
