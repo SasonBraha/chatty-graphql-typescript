@@ -1,7 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const mongoose_1 = require("mongoose");
-const Message_model_1 = require("../Message/Message.model");
 const ChatSchema = new mongoose_1.Schema({
     name: {
         type: String,
@@ -44,10 +43,10 @@ const ChatSchema = new mongoose_1.Schema({
         type: [mongoose_1.Schema.Types.ObjectId],
         ref: 'User'
     },
-    messages: {
-        type: [Message_model_1.default],
-        select: false
-    },
+    // messages: {
+    // 	type: [Message],
+    // 	select: false
+    // },
     createdBy: {
         type: mongoose_1.Schema.Types.ObjectId,
         ref: 'User',

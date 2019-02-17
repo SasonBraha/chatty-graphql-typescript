@@ -5,6 +5,8 @@ import * as helmet from 'helmet';
 import * as cors from 'cors';
 import * as mongoose from 'mongoose';
 import * as morgan from 'morgan';
+import typeDefs from './typeDefs';
+import resolvers from './resolvers';
 
 const app = express();
 
@@ -33,8 +35,8 @@ if (process.env.NODE_ENV !== 'production') {
 	app.use(morgan('dev'));
 }
 
-// const server = new ApolloServer({ typeDefs, resolvers });
-// server.applyMiddleware({ app });
+const server = new ApolloServer({ typeDefs, resolvers });
+server.applyMiddleware({ app });
 
 //------------------------------------//
 //  Initalize                         //

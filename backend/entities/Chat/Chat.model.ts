@@ -61,10 +61,10 @@ const ChatSchema = new Schema(
 			type: [Schema.Types.ObjectId],
 			ref: 'User'
 		},
-		messages: {
-			type: [Message],
-			select: false
-		},
+		// messages: {
+		// 	type: [Message],
+		// 	select: false
+		// },
 		createdBy: {
 			type: Schema.Types.ObjectId,
 			ref: 'User',
