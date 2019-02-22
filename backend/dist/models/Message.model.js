@@ -1,7 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const mongoose_1 = require("mongoose");
-const File_model_1 = require("../../Models/File.model");
+const File_model_1 = require("./File.model");
 const MessageSchema = new mongoose_1.Schema({
     body: {
         type: String,

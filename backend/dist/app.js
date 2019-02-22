@@ -9,6 +9,7 @@ const mongoose = require("mongoose");
 const morgan = require("morgan");
 const typeDefs_1 = require("./typeDefs");
 const resolvers_1 = require("./resolvers");
+require("./Models/User.model");
 const app = express();
 //------------------------------------//
 //  DB Config & Connection            //
@@ -32,10 +33,14 @@ if (process.env.NODE_ENV !== 'production') {
     app.use(cors());
     app.use(morgan('dev'));
 }
-const server = new apollo_server_express_1.ApolloServer({ typeDefs: typeDefs_1.default, resolvers: resolvers_1.default });
+const server = new apollo_server_express_1.ApolloServer({
+    typeDefs: typeDefs_1.default,
+    resolvers: resolvers_1.default,
+    context: ({ req }) => ({ req })
+});
 server.applyMiddleware({ app });
 //------------------------------------//
 //  Initalize                         //
 //------------------------------------//
-const PORT = process.env.PORT;
+const { PORT } = process.env;
 app.listen(PORT, () => console.log(`Server Started Successfully On Port ${PORT}`));

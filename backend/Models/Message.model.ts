@@ -1,5 +1,5 @@
 import { Document, Schema, model } from 'mongoose';
-import { File, IFile } from '../File/File.model';
+import { File, IFile } from './File.model';
 
 export interface IMessage extends Document {
 	body: string;

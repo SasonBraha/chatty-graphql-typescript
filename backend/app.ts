@@ -7,6 +7,8 @@ import * as mongoose from 'mongoose';
 import * as morgan from 'morgan';
 import typeDefs from './typeDefs';
 import resolvers from './resolvers';
+import requireAuth from './auth/requireAuth';
+import './Models/User.model';
 
 const app = express();
 
@@ -35,13 +37,17 @@ if (process.env.NODE_ENV !== 'production') {
 	app.use(morgan('dev'));
 }
 
-const server = new ApolloServer({ typeDefs, resolvers });
+const server = new ApolloServer({
+	typeDefs,
+	resolvers,
+	context: ({ req }) => ({ req })
+});
 server.applyMiddleware({ app });
 
 //------------------------------------//
 //  Initalize                         //
 //------------------------------------//
-const PORT = process.env.PORT;
+const { PORT } = process.env;
 app.listen(PORT, () =>
 	console.log(`Server Started Successfully On Port ${PORT}`)
 );

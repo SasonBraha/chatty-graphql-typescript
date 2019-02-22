@@ -1,9 +1,10 @@
 import { Document, Schema, model } from 'mongoose';
-import { IUser } from '../User/User.model';
+import ObjectID = Schema.Types.ObjectId;
+import { IUser } from './User.model';
 
 interface INotification extends Document {
-	sender: IUser;
-	receiver: IUser;
+	sender: IUser | ObjectID;
+	receiver: IUser | ObjectID;
 	content: string;
 	isSeen: boolean;
 }

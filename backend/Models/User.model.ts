@@ -12,6 +12,9 @@ export interface IUser extends Document {
 	role: 'Admin' | 'Moderator' | 'User';
 	ipAddress: string;
 	lastActivity: string;
+	jwtId: string;
+}
+interface ISchmeaMethods extends IUser {
 	comparePassword(password: string): boolean;
 }
 
@@ -20,27 +23,17 @@ export const UserSchema = new Schema(
 		displayName: {
 			type: String,
 			required: true,
-			trim: true,
-			validate: {
-				validator: displayName => UserSchema.doesntExist({ displayName }),
-				message: () => 'שם המשתמש שבחרת תפוס, אנא בחר/י שם אחר'
-			}
+			trim: true
 		},
 		email: {
 			type: String,
 			required: true,
 			trim: true,
-			lowercase: true,
-			select: false,
-			validate: {
-				validator: email => UserSchema.doesntExist({ email }),
-				message: () => 'כתובת דואר האלקטרוני שהזנת כבר קיימת במערכת'
-			}
+			lowercase: true
 		},
 		password: {
 			type: String,
-			trim: true,
-			select: false
+			trim: true
 		},
 		slug: {
 			type: String,
@@ -84,8 +77,7 @@ export const UserSchema = new Schema(
 UserSchema.pre('save', async function(next) {
 	const user = this as IUser;
 	if (!user.isModified('password')) return next();
-	const salt = await bcrypt.genSalt(10);
-	const hash = await bcrypt.hash(user.password, salt);
+	const hash = await bcrypt.hash(user.password, 10);
 	user.password = hash;
 	next();
 });
@@ -100,9 +92,4 @@ UserSchema.methods.comparePassword = async function(candidatePassword) {
 	}
 };
 
-UserSchema.statics.doesntExist = async function(options) {
-	return (await this.where(options).countDocuments()) === 0;
-};
-
-UserSchema.index({ displayName: 'text' });
-export default model<IUser>('User', UserSchema);
+export default model<ISchmeaMethods>('User', UserSchema);

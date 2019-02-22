@@ -8,10 +8,10 @@ exports.default = apollo_server_express_1.gql `
 		slug: String!
 		isPrivate: Boolean!
 		storeMessages: Boolean!
-		# moderators: [User]
-		# allowedUsers: [User]
+		moderators: [User]
+		allowedUsers: [User]
 		# messages: [Message]
-		# createdBy: User
+		createdBy: User
 		lastMessage: String
 		# todo image
 	}
