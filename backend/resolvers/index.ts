@@ -1,6 +1,6 @@
 import * as uuid from 'uuid';
 import * as jwt from 'jsonwebtoken';
-import Chat, { IChat } from '../Models/Chat.model';
+import Chat, { IChat } from '../models/Chat.model';
 import User from '../Models/User.model';
 import { Schema } from 'mongoose';
 import ObjectID = Schema.Types.ObjectId;

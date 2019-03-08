@@ -2,7 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const uuid = require("uuid");
 const jwt = require("jsonwebtoken");
-const Chat_model_1 = require("../Models/Chat.model");
+const Chat_model_1 = require("../models/Chat.model");
 const User_model_1 = require("../Models/User.model");
 const resolvers = {
     Query: {

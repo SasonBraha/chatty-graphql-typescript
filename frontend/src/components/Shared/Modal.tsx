@@ -57,6 +57,7 @@ const StyledOverlay = styled.div`
 
 	&.entered {
 		opacity: 1;
+
 		${StyledContainer} {
 			transform: scale(1) translateY(0);
 			opacity: 1;
