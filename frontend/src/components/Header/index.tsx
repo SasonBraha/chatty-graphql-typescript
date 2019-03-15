@@ -1,12 +1,19 @@
 import React from 'react';
 import styled from 'styled-components/macro';
 import { Link } from 'react-router-dom';
-import Burger from './Burger';
+import { Burger, Dropdown } from '../Shared';
 
 const Header = () => (
 	<StyledHeader>
 		<Burger />
 		<StyledBrand to='/'>Chatty</StyledBrand>
+		<div className='headerOptions'>
+			{/* Private Messages - Chats */}
+			{/* Notifications */}
+			<Dropdown isOpen={true} resetDropdown={() => null}>
+				<div>Hello</div>
+			</Dropdown>
+		</div>
 	</StyledHeader>
 );
 
