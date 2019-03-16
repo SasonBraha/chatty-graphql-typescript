@@ -1,6 +1,7 @@
 import { Document, Schema, model } from 'mongoose';
 import ObjectID = Schema.Types.ObjectId;
-import Message, { IMessage } from './Message.model';
+import { IMessage } from './Message.model';
+import { IUser } from './User.model';
 
 export interface IChat extends Document {
 	name: string;
@@ -11,10 +12,10 @@ export interface IChat extends Document {
 	};
 	isPrivate: boolean;
 	storeMessages: boolean;
-	moderators: ObjectID[];
-	allowedUsers: ObjectID[];
-	messages: Array<IMessage>;
-	createdBy: ObjectID;
+	moderators: Array<ObjectID> | Array<IUser>;
+	allowedUsers: Array<ObjectID> | Array<IUser>;
+	messages: Array<ObjectID> | Array<IMessage>;
+	admin: ObjectID | IUser;
 	lastMessage: string;
 }
 
@@ -28,11 +29,7 @@ const ChatSchema = new Schema(
 		slug: {
 			type: String,
 			required: true,
-			trim: true,
-			validate: {
-				validator: async slug => await Chat.doesntExist({ slug }),
-				message: () => 'שם החדר שבחרת תפוס, אנא בחר/י שם אחר'
-			}
+			trim: true
 		},
 		image: {
 			link: {
@@ -61,23 +58,19 @@ const ChatSchema = new Schema(
 			type: [Schema.Types.ObjectId],
 			ref: 'User'
 		},
-		// messages: {
-		// 	type: [Message],
-		// 	select: false
-		// },
-		createdBy: {
+		messages: {
+			type: [Schema.Types.ObjectId],
+			ref: 'Message'
+		},
+		admin: {
 			type: Schema.Types.ObjectId,
 			ref: 'User',
 			required: true
 		},
 		lastMessage: String
 	},
-	{ timestamps: true, collection: 'chatRooms' }
+	{ timestamps: true, collection: 'rooms' }
 );
-
-ChatSchema.statics.doesntExist = async function(opts) {
-	return (await this.where(opts).countDocuments()) === 0;
-};
 
 const Chat = model<IChat>('Chat', ChatSchema);
 export default Chat;

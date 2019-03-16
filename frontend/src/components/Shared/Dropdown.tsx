@@ -14,29 +14,15 @@ interface IProps {
 }
 
 const Dropdown = (props: IProps) => {
-	const {
-		resetDropdown,
-		isOpen,
-		background,
-		color,
-		top,
-		left,
-		width,
-		children
-	} = props;
-
-	console.log(validCss(200));
+	const { isOpen } = props;
 
 	useEffect(() => {
 		isOpen
-			? document.body.addEventListener('click', resetDropdown)
-			: document.body.removeEventListener('click', resetDropdown);
+			? document.body.addEventListener('click', props.resetDropdown)
+			: document.body.removeEventListener('click', props.resetDropdown);
 	}, [isOpen]);
 
-	return (
-		//@ts-ignore
-		<StyledDropdown {...props}>{children}</StyledDropdown>
-	);
+	return <StyledDropdown {...props}>{props.children}</StyledDropdown>;
 };
 
 Dropdown.defaultProps = {

@@ -15,7 +15,7 @@ const resolvers = {
 		//------------------------------------//
 		//  Auth                              //
 		//------------------------------------//
-		//? Register Process
+		// Register Process
 		register: async (_, { displayName, email, password }, { req }) => {
 			try {
 				await User.create({
@@ -33,7 +33,7 @@ const resolvers = {
 			}
 		},
 
-		//? Login Process
+		// Login Process
 		login: async (_, { email, password }) => {
 			try {
 				// Check If User Exist
@@ -44,7 +44,7 @@ const resolvers = {
 				const isPasswordMatch = await user.comparePassword(password);
 				if (!isPasswordMatch) return null;
 
-				// Generate { Json Web Token }
+				// Generate JWT
 				const userData = {
 					displayName: user.displayName,
 					email: user.email,
@@ -64,7 +64,7 @@ const resolvers = {
 		//------------------------------------//
 		//  Chat                              //
 		//------------------------------------//
-		//? Create Chat Process
+		// Create Chat Process
 		createChat: async (root, args) => {
 			const newChatRoom = await Chat.create(args);
 			return newChatRoom;

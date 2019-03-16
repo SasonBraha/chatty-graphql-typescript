@@ -10,7 +10,7 @@ export interface IFile {
 }
 
 export const File = new Schema({
-	type: {
+	mimeType: {
 		type: String,
 		enum: ['jpg', 'jpeg', 'png', 'gif', 'webp', 'bmp'],
 		required: true

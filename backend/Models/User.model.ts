@@ -1,6 +1,7 @@
 import { Document, Schema, model } from 'mongoose';
 import * as bcrypt from 'bcryptjs';
 import ObjectId = Schema.Types.ObjectId;
+import { INotification } from './Notification.model';
 
 export interface IUser extends Document {
 	displayName: string;
@@ -8,12 +9,13 @@ export interface IUser extends Document {
 	password: string;
 	slug: string;
 	avatar: string;
-	notifications: ObjectId[];
+	notifications: Array<ObjectId> | Array<INotification>;
 	role: 'Admin' | 'Moderator' | 'User';
 	ipAddress: string;
 	lastActivity: string;
 	jwtId: string;
 }
+
 interface ISchmeaMethods extends IUser {
 	comparePassword(password: string): boolean;
 }

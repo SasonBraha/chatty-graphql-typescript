@@ -10,7 +10,7 @@ const Header = () => (
 		<div className='headerOptions'>
 			{/* Private Messages - Chats */}
 			{/* Notifications */}
-			<Dropdown isOpen={true} resetDropdown={() => null}>
+			<Dropdown isOpen={false} resetDropdown={() => null}>
 				<div>Hello</div>
 			</Dropdown>
 		</div>
@@ -25,6 +25,7 @@ const StyledHeader = styled.header`
 	align-items: center;
 	z-index: 5;
 	background: #1e242b;
+	box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
 `;
 
 const StyledBrand = styled(Link)`

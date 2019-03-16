@@ -2,11 +2,11 @@ import { Document, Schema, model } from 'mongoose';
 import ObjectID = Schema.Types.ObjectId;
 import { IUser } from './User.model';
 
-interface INotification extends Document {
+export interface INotification extends Document {
 	sender: IUser | ObjectID;
 	receiver: IUser | ObjectID;
 	content: string;
-	isSeen: boolean;
+	read: boolean;
 }
 
 const NotificationSchema = new Schema(
@@ -23,7 +23,7 @@ const NotificationSchema = new Schema(
 			type: String,
 			required: true
 		},
-		isSeen: {
+		read: {
 			type: Boolean,
 			default: false
 		}
@@ -34,8 +34,8 @@ const NotificationSchema = new Schema(
 // @ts-ignore
 NotificationSchema.post('find', (notifications: Array<INotification>) => {
 	notifications.forEach(notification => {
-		if (!notification.isSeen) {
-			notification.isSeen = true;
+		if (!notification.read) {
+			notification.read = true;
 			notification.save();
 		}
 	});

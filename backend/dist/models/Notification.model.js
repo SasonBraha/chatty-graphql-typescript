@@ -14,7 +14,7 @@ const NotificationSchema = new mongoose_1.Schema({
         type: String,
         required: true
     },
-    isSeen: {
+    read: {
         type: Boolean,
         default: false
     }
@@ -22,8 +22,8 @@ const NotificationSchema = new mongoose_1.Schema({
 // @ts-ignore
 NotificationSchema.post('find', (notifications) => {
     notifications.forEach(notification => {
-        if (!notification.isSeen) {
-            notification.isSeen = true;
+        if (!notification.read) {
+            notification.read = true;
             notification.save();
         }
     });

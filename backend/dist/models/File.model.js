@@ -2,7 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const mongoose_1 = require("mongoose");
 exports.File = new mongoose_1.Schema({
-    type: {
+    mimeType: {
         type: String,
         enum: ['jpg', 'jpeg', 'png', 'gif', 'webp', 'bmp'],
         required: true

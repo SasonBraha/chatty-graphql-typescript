@@ -10,11 +10,7 @@ const ChatSchema = new mongoose_1.Schema({
     slug: {
         type: String,
         required: true,
-        trim: true,
-        validate: {
-            validator: async (slug) => await Chat.doesntExist({ slug }),
-            message: () => 'שם החדר שבחרת תפוס, אנא בחר/י שם אחר'
-        }
+        trim: true
     },
     image: {
         link: {
@@ -43,19 +39,16 @@ const ChatSchema = new mongoose_1.Schema({
         type: [mongoose_1.Schema.Types.ObjectId],
         ref: 'User'
     },
-    // messages: {
-    // 	type: [Message],
-    // 	select: false
-    // },
-    createdBy: {
+    messages: {
+        type: [mongoose_1.Schema.Types.ObjectId],
+        ref: 'Message'
+    },
+    admin: {
         type: mongoose_1.Schema.Types.ObjectId,
         ref: 'User',
         required: true
     },
     lastMessage: String
-}, { timestamps: true, collection: 'chatRooms' });
-ChatSchema.statics.doesntExist = async function (opts) {
-    return (await this.where(opts).countDocuments()) === 0;
-};
+}, { timestamps: true, collection: 'rooms' });
 const Chat = mongoose_1.model('Chat', ChatSchema);
 exports.default = Chat;
