@@ -1,5 +1,19 @@
-import React from 'react';
+import styled from 'styled-components/macro';
 
-const Button = () => <div />;
+const StyledButton = styled.button`
+	border: none;
+	outline: none;
+	border-radius: 0.5rem;
+	transition: 0.3s;
+	cursor: pointer;
+	background: transparent;
+	padding: 1rem 2rem;
+	color: white;
+	font-size: 1.6rem;
 
-export default Button;
+	&:hover {
+		background: rgba(255, 255, 255, 0.3);
+	}
+`;
+
+export default StyledButton;

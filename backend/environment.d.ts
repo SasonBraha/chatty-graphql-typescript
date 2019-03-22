@@ -15,7 +15,7 @@ declare global {
 			GOOGLE_OAUTH_CLIENT_SECRET: string;
 			GOOGLE_RECAPTCHA_SECRET_KEY: string;
 			NODE_ENV: string;
-			PORT: number;
+			PORT: string;
 		}
 	}
 }
