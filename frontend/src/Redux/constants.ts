@@ -1,1 +1,1 @@
-export const LOL = 'LOL';
+export const SET_AUTH_MODAL = 'SET_AUTH_MODAL';

@@ -2,16 +2,24 @@ import React from 'react';
 import styled from 'styled-components/macro';
 import { Link } from 'react-router-dom';
 import { Burger, Dropdown, Button } from '../Shared';
+import { connect } from 'react-redux';
+import { setAuthModal } from '../../Redux/actions';
 
-const Header = () => (
+//@ts-ignore
+const Header = props => (
 	<StyledHeader>
 		<Burger />
 		<StyledBrand to='/'>Chatty</StyledBrand>
-		<AuthButton>הרשמה / התחברות</AuthButton>
+		<AuthButton onClick={() => props.setAuthModal(true)}>
+			הרשמה / התחברות
+		</AuthButton>
 	</StyledHeader>
 );
 
-export default Header;
+export default connect(
+	null,
+	{ setAuthModal }
+)(Header);
 
 const StyledHeader = styled.header`
 	display: flex;
