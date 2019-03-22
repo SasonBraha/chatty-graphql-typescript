@@ -1,1 +1,2 @@
 export const SET_AUTH_MODAL = 'SET_AUTH_MODAL';
+export const RESET_MODALS = 'RESET_MODALS';

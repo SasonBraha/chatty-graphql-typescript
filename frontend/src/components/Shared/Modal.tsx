@@ -1,15 +1,26 @@
-import React from 'react';
+import React, { useEffect, ReactNode } from 'react';
 import ReactDOM from 'react-dom';
 import styled from 'styled-components';
 import { Transition } from 'react-transition-group';
+import { connect } from 'react-redux';
+import { resetModals } from '../../redux/actions';
 
 interface IProps {
 	isOpen: boolean;
-	children?: JSX.Element[] | JSX.Element;
+	children?: ReactNode;
+	resetModals: typeof resetModals;
 }
 
-const Modal = (props: IProps) =>
-	ReactDOM.createPortal(
+const Modal = (props: IProps) => {
+	const { isOpen, resetModals, children } = props;
+
+	useEffect(() => {
+		isOpen
+			? document.body.addEventListener('click', resetModals)
+			: document.body.removeEventListener('click', resetModals);
+	}, [isOpen]);
+
+	return ReactDOM.createPortal(
 		<Transition
 			in={props.isOpen}
 			mountOnEnter
@@ -18,12 +29,13 @@ const Modal = (props: IProps) =>
 		>
 			{mountState => (
 				<StyledOverlay className={mountState}>
-					<StyledContainer>{props.children}</StyledContainer>
+					<StyledContainer>{children}</StyledContainer>
 				</StyledOverlay>
 			)}
 		</Transition>,
 		document.getElementById('modalMount') as HTMLElement
 	);
+};
 
 const StyledContainer = styled.div`
 	background: white;
@@ -65,4 +77,7 @@ const StyledOverlay = styled.div`
 	}
 `;
 
-export default Modal;
+export default connect(
+	null,
+	{ resetModals }
+)(Modal);

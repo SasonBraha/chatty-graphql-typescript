@@ -1,4 +1,4 @@
-import { SET_AUTH_MODAL } from './constants';
+import { SET_AUTH_MODAL, RESET_MODALS } from './constants';
 
 interface IAction {
 	type: string;
@@ -15,6 +15,12 @@ const initalState: IState = {
 
 export default (state = initalState, action: IAction): IState => {
 	switch (action.type) {
+		case RESET_MODALS:
+			return {
+				...state,
+				showAuthModal: false
+			};
+
 		case SET_AUTH_MODAL:
 			return {
 				...state,

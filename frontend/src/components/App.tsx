@@ -1,13 +1,18 @@
 import React, { Component } from 'react';
 import styled from 'styled-components/macro';
 import Header from './Header';
+import AuthModal from './Auth/AuthModal';
 
 class App extends Component {
 	render() {
 		return (
-			<StyledApp>
-				<Header />
-			</StyledApp>
+			<>
+				<StyledApp>
+					<Header />
+				</StyledApp>
+
+				<AuthModal />
+			</>
 		);
 	}
 }

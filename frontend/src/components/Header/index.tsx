@@ -3,7 +3,7 @@ import styled from 'styled-components/macro';
 import { Link } from 'react-router-dom';
 import { Burger, Dropdown, Button } from '../Shared';
 import { connect } from 'react-redux';
-import { setAuthModal } from '../../Redux/actions';
+import { setAuthModal } from '../../redux/actions';
 
 //@ts-ignore
 const Header = props => (

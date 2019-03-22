@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, ReactNode } from 'react';
 import styled, { css } from 'styled-components/macro';
 import { validCss } from '../../utils';
 
@@ -10,7 +10,7 @@ interface IProps {
 	top: number;
 	left: number;
 	width: number;
-	children?: JSX.Element[] | JSX.Element;
+	children?: ReactNode;
 }
 
 const Dropdown = (props: IProps) => {

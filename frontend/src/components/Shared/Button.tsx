@@ -12,7 +12,7 @@ const StyledButton = styled.button`
 	font-size: 1.6rem;
 
 	&:hover {
-		background: rgba(255, 255, 255, 0.3);
+		background: rgba(255, 255, 255, 0.15);
 	}
 `;
 
