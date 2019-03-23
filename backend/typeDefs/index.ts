@@ -18,7 +18,7 @@ const typeDefs = gql`
 		storeMessages: Boolean!
 		moderators: [User]
 		allowedUsers: [User]
-		createdBy: User
+		admin: User
 		lastMessage: String
 	}
 
@@ -29,8 +29,12 @@ const typeDefs = gql`
 
 	type Mutation {
 		#Auth
-		register(displayName: String!, email: String!, password: String!): Boolean
-		login(email: String!, password: String!): String
+		registerMutation(
+			displayName: String!
+			email: String!
+			password: String!
+		): Boolean
+		loginMutation(email: String!, password: String!): String
 
 		#Chat
 		createChat(

@@ -7,14 +7,6 @@ const Burger = () => (
 	</StyledWrapper>
 );
 
-const StyledWrapper = styled.div`
-	cursor: pointer;
-	display: flex;
-	align-items: center;
-	height: 100%;
-	margin-right: 1rem;
-`;
-
 const StyledBurger = styled.div`
 	position: relative;
 
@@ -32,7 +24,7 @@ const StyledBurger = styled.div`
 		content: '';
 		position: absolute;
 		left: 0;
-		transition: 0.2s;
+		transition: 0.3s;
 	}
 
 	&::before {
@@ -41,6 +33,24 @@ const StyledBurger = styled.div`
 
 	&::after {
 		top: 0.9rem;
+	}
+`;
+
+const StyledWrapper = styled.div`
+	cursor: pointer;
+	display: flex;
+	align-items: center;
+	height: 100%;
+	margin-right: 1rem;
+
+	&:hover ${StyledBurger} {
+		&::before {
+			left: 5px;
+		}
+
+		&::after {
+			left: -5px;
+		}
 	}
 `;
 

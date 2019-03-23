@@ -16,7 +16,7 @@ const resolvers = {
 		//  Auth                              //
 		//------------------------------------//
 		// Register Process
-		register: async (_, { displayName, email, password }, { req }) => {
+		registerMutation: async (_, { displayName, email, password }, { req }) => {
 			try {
 				await User.create({
 					displayName,
@@ -34,7 +34,8 @@ const resolvers = {
 		},
 
 		// Login Process
-		login: async (_, { email, password }) => {
+		loginMutation: async (_, { email, password }, { req }) => {
+			console.log(req.headers);
 			try {
 				// Check If User Exist
 				const user = await User.findOne({ email });
@@ -74,8 +75,8 @@ const resolvers = {
 	User: {},
 
 	Chat: {
-		createdBy: async (root: IChat, args) => {
-			const { createdBy: userId }: { createdBy: ObjectID } = root;
+		admin: async (root: IChat, args) => {
+			const { admin: userId } = root;
 			return await User.findById(userId);
 		}
 	}

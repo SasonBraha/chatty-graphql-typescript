@@ -40,7 +40,10 @@ if (process.env.NODE_ENV !== 'production') {
 const server = new ApolloServer({
 	typeDefs,
 	resolvers,
-	context: ({ req }) => ({ req })
+	context: ({ req }) => {
+		// const bearerToken = req.headers.authorization;
+		// console.log(bearerToken);
+	}
 });
 server.applyMiddleware({ app });
 
