@@ -1,4 +1,4 @@
-import React, { useEffect, ReactNode } from 'react';
+import React, { useEffect, useRef, ReactNode } from 'react';
 import ReactDOM from 'react-dom';
 import styled from 'styled-components';
 import { Transition } from 'react-transition-group';
@@ -14,11 +14,11 @@ interface IProps {
 const Modal = (props: IProps) => {
 	const { isOpen, resetModals, children } = props;
 
-	useEffect(() => {
-		isOpen
-			? document.body.addEventListener('click', resetModals)
-			: document.body.removeEventListener('click', resetModals);
-	}, [isOpen]);
+	// useEffect(() => {
+	// 	isOpen
+	// 		? document.body.addEventListener('click', resetModals)
+	// 		: document.body.removeEventListener('click', resetModals);
+	// }, [isOpen]);
 
 	return ReactDOM.createPortal(
 		<Transition

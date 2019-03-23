@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 import { Burger, Dropdown, Button } from '../Shared';
 import { connect } from 'react-redux';
 import { setAuthModal } from '../../redux/actions';
+import Ripple from 'react-ink';
 
 //@ts-ignore
 const Header = props => (
@@ -12,6 +13,7 @@ const Header = props => (
 		<StyledBrand to='/'>Chatty</StyledBrand>
 		<AuthButton onClick={() => props.setAuthModal(true)}>
 			הרשמה / התחברות
+			<Ripple />
 		</AuthButton>
 	</StyledHeader>
 );
