@@ -92,6 +92,7 @@ export default connect(
 				const {
 					data: { loginMutation: authToken }
 				} = loginData;
+
 				if (authToken) {
 					localStorage.setItem(process.env.REACT_APP_LS_AUTH_TOKEN, authToken);
 				}

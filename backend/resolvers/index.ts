@@ -4,6 +4,7 @@ import Chat, { IChat } from '../models/Chat.model';
 import User from '../Models/User.model';
 import { Schema } from 'mongoose';
 import ObjectID = Schema.Types.ObjectId;
+import generateJWT from '../auth/generateJWT';
 
 const resolvers = {
 	Query: {
@@ -16,7 +17,7 @@ const resolvers = {
 		//  Auth                              //
 		//------------------------------------//
 		// Register Process
-		registerMutation: async (_, { displayName, email, password }, { req }) => {
+		registerMutation: async (_, { displayName, email, password }, req) => {
 			try {
 				await User.create({
 					displayName,
@@ -34,8 +35,7 @@ const resolvers = {
 		},
 
 		// Login Process
-		loginMutation: async (_, { email, password }, { req }) => {
-			console.log(req.headers);
+		loginMutation: async (_, { email, password }, req) => {
 			try {
 				// Check If User Exist
 				const user = await User.findOne({ email });
@@ -45,18 +45,7 @@ const resolvers = {
 				const isPasswordMatch = await user.comparePassword(password);
 				if (!isPasswordMatch) return null;
 
-				// Generate JWT
-				const userData = {
-					displayName: user.displayName,
-					email: user.email,
-					avatar: user.avatar,
-					jwtId: user.jwtId
-				};
-				const authToken = await jwt.sign(userData, process.env.JWT_SECRET, {
-					expiresIn: '7d'
-				});
-
-				return authToken;
+				return generateJWT(user);
 			} catch (ex) {
 				return null;
 			}

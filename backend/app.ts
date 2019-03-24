@@ -9,6 +9,8 @@ import typeDefs from './typeDefs';
 import resolvers from './resolvers';
 import requireAuth from './auth/requireAuth';
 import './Models/User.model';
+import getUserData from './auth/getUserData';
+import { IUser } from './Models/User.model';
 
 const app = express();
 
@@ -40,9 +42,10 @@ if (process.env.NODE_ENV !== 'production') {
 const server = new ApolloServer({
 	typeDefs,
 	resolvers,
-	context: ({ req }) => {
-		// const bearerToken = req.headers.authorization;
-		// console.log(bearerToken);
+	context: async ({ req }) => {
+		const bearerToken: string = req.headers.authorization;
+		const user = await getUserData(bearerToken);
+		return { user };
 	}
 });
 server.applyMiddleware({ app });
