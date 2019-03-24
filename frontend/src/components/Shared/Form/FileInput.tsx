@@ -1,5 +1,5 @@
 import React from 'react';
-import styled from 'styled-components';
+import styled from 'styled-components/macro';
 import FormGroup from './FormGroup';
 
 //@ts-ignore
@@ -10,8 +10,7 @@ const FileInput = ({ input: { value: omitValue, ...input }, ...props }) => (
 				type='file'
 				{...input}
 				accept={props.accept}
-				//@ts-ignore
-				onChange={e => input.onChange(e.target.files[0])}
+				onChange={e => input.onChange(e.target.files![0])}
 			/>
 			{props.label}
 		</StyledLabel>

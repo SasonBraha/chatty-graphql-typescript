@@ -7,10 +7,9 @@ import * as mongoose from 'mongoose';
 import * as morgan from 'morgan';
 import typeDefs from './typeDefs';
 import resolvers from './resolvers';
-import requireAuth from './auth/requireAuth';
 import './Models/User.model';
 import getUserData from './auth/getUserData';
-import { IUser } from './Models/User.model';
+import logger from './logger';
 
 const app = express();
 
@@ -45,15 +44,16 @@ const server = new ApolloServer({
 	context: async ({ req }) => {
 		const bearerToken: string = req.headers.authorization;
 		const user = await getUserData(bearerToken);
-		return { user };
+		return { ...req, user };
 	}
 });
 server.applyMiddleware({ app });
 
+logger.log('error', 'lol');
 //------------------------------------//
 //  Initalize                         //
 //------------------------------------//
 const { PORT } = process.env;
 app.listen(PORT, () =>
-	console.log(`Server Started Successfully On Port ${PORT}`)
+	console.log(`Server Started Successfully On Port ${PORT} ✈️`)
 );

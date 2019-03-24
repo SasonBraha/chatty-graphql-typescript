@@ -8,7 +8,7 @@ const generateJWT = async user => {
 			process.env.JWT_SECRET,
 			{ expiresIn: '10d' }
 		);
-		return authToken;
+		return `Bearer ${authToken}`;
 	} catch (ex) {
 		console.log(ex);
 	}
