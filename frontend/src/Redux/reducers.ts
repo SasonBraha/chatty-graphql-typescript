@@ -1,4 +1,10 @@
-import { SET_AUTH_MODAL, RESET_MODALS } from './constants';
+import {
+	SET_AUTH_MODAL,
+	RESET_MODALS,
+	SET_NAV_STATE,
+	SET_CURRENT_USER
+} from './constants';
+import { IUser } from '../models/index';
 
 interface IAction {
 	type: string;
@@ -7,10 +13,14 @@ interface IAction {
 
 interface IState {
 	showAuthModal: boolean;
+	isNavOpen: boolean;
+	currentUser: IUser | null;
 }
 
 const initalState: IState = {
-	showAuthModal: false
+	showAuthModal: false,
+	isNavOpen: true,
+	currentUser: null
 };
 
 export default (state = initalState, action: IAction): IState => {
@@ -25,6 +35,18 @@ export default (state = initalState, action: IAction): IState => {
 			return {
 				...state,
 				showAuthModal: action.payload
+			};
+
+		case SET_NAV_STATE:
+			return {
+				...state,
+				isNavOpen: !state.isNavOpen
+			};
+
+		case SET_CURRENT_USER:
+			return {
+				...state,
+				currentUser: action.payload
 			};
 
 		default:

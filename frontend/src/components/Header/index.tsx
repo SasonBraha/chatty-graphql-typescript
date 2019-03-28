@@ -5,21 +5,34 @@ import { Burger, Dropdown, Button } from '../Shared';
 import { connect } from 'react-redux';
 import { setAuthModal } from '../../redux/actions';
 import Ripple from 'react-ink';
+import { IUser } from '../../models';
 
-//@ts-ignore
-const Header = props => (
+interface IProps {
+	setAuthModal: typeof setAuthModal;
+	currentUser: IUser | null;
+}
+
+const Header = ({ setAuthModal, currentUser }: IProps) => (
 	<StyledHeader>
 		<Burger />
 		<StyledBrand to='/'>Chatty</StyledBrand>
-		<AuthButton onClick={() => props.setAuthModal(true)}>
-			הרשמה / התחברות
-			<Ripple />
-		</AuthButton>
+
+		{currentUser ? (
+			<div />
+		) : (
+			<AuthButton onClick={() => setAuthModal(true)}>
+				הרשמה / התחברות
+				<Ripple />
+			</AuthButton>
+		)}
 	</StyledHeader>
 );
 
+const mapStateToProps = ({ currentUser }: { currentUser: IUser | null }) => ({
+	currentUser
+});
 export default connect(
-	null,
+	mapStateToProps,
 	{ setAuthModal }
 )(Header);
 
