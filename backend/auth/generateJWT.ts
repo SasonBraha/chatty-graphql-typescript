@@ -4,6 +4,7 @@ import { IUser } from '../models/User.model';
 const generateJWT = async (user: IUser) => {
 	try {
 		const {
+			_id,
 			displayName,
 			email,
 			avatar,
@@ -12,11 +13,11 @@ const generateJWT = async (user: IUser) => {
 			slug
 		} = user;
 		const authToken = await jwt.sign(
-			{ displayName, email, avatar, jwtHandshake, role, slug },
+			{ displayName, email, avatar, jwtHandshake, role, slug, _id },
 			process.env.JWT_SECRET,
 			{ expiresIn: '10d' }
 		);
-		return `Bearer ${authToken}`;
+		return `${authToken}`;
 	} catch (ex) {
 		console.log(ex);
 	}

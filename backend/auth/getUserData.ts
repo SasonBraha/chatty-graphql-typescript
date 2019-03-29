@@ -7,6 +7,7 @@ export default async (authToken: string) => {
 			authToken.split(' ')[1],
 			process.env.JWT_SECRET
 		);
+
 		return userData;
 	} catch (ex) {
 		console.log(ex);

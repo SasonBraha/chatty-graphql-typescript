@@ -5,6 +5,7 @@ import User from '../Models/User.model';
 import { Schema } from 'mongoose';
 import ObjectID = Schema.Types.ObjectId;
 import generateJWT from '../auth/generateJWT';
+import Message from '../models/Message.model';
 
 const resolvers = {
 	Query: {
@@ -55,9 +56,26 @@ const resolvers = {
 		//  Chat                              //
 		//------------------------------------//
 		// Create Chat Process
-		createChat: async (root, args) => {
-			const newChatRoom = await Chat.create(args);
+		createChat: async (root, args, req) => {
+			const newChatRoom = await Chat.create({
+				...args,
+				admin: req.user._id,
+				slug: `${args.name}@${uuid()}`
+			});
 			return newChatRoom;
+		},
+
+		//TODO - SAVE MESSAGE ID TO CHAT
+		async postMessage(root, args, req) {
+			const newMessage = await Message.create({
+				...args.message,
+				createdBy: {
+					_id: req.user._id,
+					displayName: req.user.displayName,
+					slug: req.user.slug
+				}
+			});
+			return newMessage;
 		}
 	},
 

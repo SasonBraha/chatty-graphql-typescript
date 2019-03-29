@@ -33,6 +33,12 @@ const typeDefs = gql`
 		createdBy: MessageCreatedBy
 	}
 
+	input MessageInput {
+		body: String!
+		file: Upload
+		chatId: String!
+	}
+
 	type Chat {
 		_id: ID!
 		name: String!
@@ -66,6 +72,8 @@ const typeDefs = gql`
 			isPrivate: Boolean!
 			storeMessages: Boolean!
 		): Chat!
+
+		postMessage(message: MessageInput): Message!
 	}
 `;
 
