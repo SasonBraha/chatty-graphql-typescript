@@ -25,7 +25,11 @@ const headerDropdownItmes = [
 	},
 	{
 		icon: 'icon-sign-out',
-		text: 'התנתק'
+		text: 'התנתק',
+		onClick: () => {
+			localStorage.removeItem(process.env.REACT_APP_LS_AUTH_TOKEN);
+			window.location.reload();
+		}
 	}
 ];
 
@@ -44,8 +48,8 @@ const Header = ({ setAuthModal, setNavState, currentUser }: IProps) => {
 						resetDropdown={() => setHeaderDropdown(false)}
 					>
 						<ul>
-							{headerDropdownItmes.map(({ icon, text }, i) => (
-								<ListItem key={i} icon={icon} withRipple>
+							{headerDropdownItmes.map(({ icon, text, onClick }, i) => (
+								<ListItem key={i} icon={icon} onClick={onClick} withRipple>
 									{text}
 								</ListItem>
 							))}

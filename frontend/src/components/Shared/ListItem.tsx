@@ -25,14 +25,15 @@ const ListItem = (props: IProps) => (
 			<Link className='ListItem' to={props.linkTo}>
 				{generateIcon(props.icon)}
 				{props.children}
+				{props.withRipple ? <Ripple /> : null}
 			</Link>
 		) : (
 			<div className='ListItem' onClick={props.onClick}>
 				{generateIcon(props.icon)}
 				{props.children}
+				{props.withRipple ? <Ripple /> : null}
 			</div>
 		)}
-		{props.withRipple ? <Ripple /> : null}
 	</StyledListItem>
 );
 
@@ -58,6 +59,7 @@ const StyledListItem = styled('li')<{ hoverBackground: string; color: string }>`
 		display: flex;
 		align-items: center;
 		padding: 0.9rem 1rem 0.9rem 0;
+		position: relative;
 
 		svg {
 			fill: currentColor;

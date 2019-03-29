@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, Component } from 'react';
 import styled from 'styled-components/macro';
 import Header from './Header';
 import AuthModal from './Auth/AuthModal';
@@ -12,28 +12,34 @@ interface IProps {
 	setCurrentUser: typeof setCurrentUser;
 }
 
-const App = (props: IProps) => {
-	useEffect(() => {
-		// Set Current User
+class App extends Component<IProps> {
+	constructor(props: IProps) {
+		super(props);
+		this.init();
+	}
+
+	private init() {
 		const accessToken = localStorage.getItem(
 			process.env.REACT_APP_LS_AUTH_TOKEN
 		);
 		if (accessToken) {
-			props.setCurrentUser(jwtDecode<IUser>(accessToken));
+			this.props.setCurrentUser(jwtDecode<IUser>(accessToken));
 		}
-	}, []);
+	}
 
-	return (
-		<>
-			<StyledApp>
-				<Header />
-				<Nav />
-			</StyledApp>
+	render() {
+		return (
+			<>
+				<StyledApp>
+					<Header />
+					<Nav />
+				</StyledApp>
 
-			<AuthModal />
-		</>
-	);
-};
+				<AuthModal />
+			</>
+		);
+	}
+}
 
 const StyledApp = styled.div`
 	display: grid;
