@@ -6,6 +6,7 @@ import jwtDecode from 'jwt-decode';
 import { connect } from 'react-redux';
 import { setCurrentUser } from '../redux/actions';
 import { IUser } from '../models';
+import Nav from './Nav';
 
 interface IProps {
 	setCurrentUser: typeof setCurrentUser;
@@ -26,6 +27,7 @@ const App = (props: IProps) => {
 		<>
 			<StyledApp>
 				<Header />
+				<Nav />
 			</StyledApp>
 
 			<AuthModal />
@@ -36,6 +38,7 @@ const App = (props: IProps) => {
 const StyledApp = styled.div`
 	display: grid;
 	grid-template-rows: 5.5rem 1fr;
+	height: 100vh;
 `;
 
 export default connect(

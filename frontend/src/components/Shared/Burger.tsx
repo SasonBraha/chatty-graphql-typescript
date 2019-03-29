@@ -1,8 +1,12 @@
 import React from 'react';
 import styled from 'styled-components/macro';
 
-const Burger = () => (
-	<StyledWrapper>
+interface IProps {
+	onClick: () => void;
+}
+
+const Burger = (props: IProps) => (
+	<StyledWrapper {...props}>
 		<StyledBurger />
 	</StyledWrapper>
 );

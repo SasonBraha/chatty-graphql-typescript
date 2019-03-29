@@ -11,19 +11,19 @@ interface IAction {
 	payload?: any;
 }
 
-interface IState {
+export interface IReducerState {
 	showAuthModal: boolean;
 	isNavOpen: boolean;
 	currentUser: IUser | null;
 }
 
-const initalState: IState = {
+const initalState: IReducerState = {
 	showAuthModal: false,
 	isNavOpen: true,
 	currentUser: null
 };
 
-export default (state = initalState, action: IAction): IState => {
+export default (state = initalState, action: IAction): IReducerState => {
 	switch (action.type) {
 		case RESET_MODALS:
 			return {

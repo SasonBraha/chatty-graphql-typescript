@@ -3,12 +3,14 @@ import styled from 'styled-components/macro';
 import { Link } from 'react-router-dom';
 import { Burger, Dropdown, Button, ListItem } from '../Shared';
 import { connect } from 'react-redux';
-import { setAuthModal } from '../../redux/actions';
+import { setAuthModal, setNavState } from '../../redux/actions';
 import Ripple from 'react-ink';
 import { IUser } from '../../models';
+import { IReducerState } from '../../redux/reducers';
 
 interface IProps {
 	setAuthModal: typeof setAuthModal;
+	setNavState: typeof setNavState;
 	currentUser: IUser | null;
 }
 
@@ -27,12 +29,12 @@ const headerDropdownItmes = [
 	}
 ];
 
-const Header = ({ setAuthModal, currentUser }: IProps) => {
+const Header = ({ setAuthModal, setNavState, currentUser }: IProps) => {
 	const [isHeaderDropdownOpen, setHeaderDropdown] = useState(false);
 
 	return (
 		<ScHeader>
-			<Burger />
+			<Burger onClick={setNavState} />
 			<ScBrand to='/'>Chatty</ScBrand>
 			{currentUser ? (
 				<ScProfileDropdown onClick={() => setHeaderDropdown(true)}>
@@ -51,21 +53,21 @@ const Header = ({ setAuthModal, currentUser }: IProps) => {
 					</Dropdown>
 				</ScProfileDropdown>
 			) : (
-				<ScAuthButton onClick={() => setAuthModal(true)}>
+				<ScAuthBtn onClick={() => setAuthModal(true)}>
 					הרשמה / התחברות
 					<Ripple />
-				</ScAuthButton>
+				</ScAuthBtn>
 			)}
 		</ScHeader>
 	);
 };
 
-const mapStateToProps = ({ currentUser }: { currentUser: IUser | null }) => ({
+const mapStateToProps = ({ currentUser }: IReducerState) => ({
 	currentUser
 });
 export default connect(
 	mapStateToProps,
-	{ setAuthModal }
+	{ setAuthModal, setNavState }
 )(Header);
 
 const ScHeader = styled.header`
@@ -73,8 +75,8 @@ const ScHeader = styled.header`
 	justify-content: space-between;
 	align-items: center;
 	z-index: 5;
-	background: #1e242b;
-	box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+	background: ${props => props.theme.navBackground};
+	box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
 	justify-items: center;
 	position: relative;
 `;
@@ -92,7 +94,7 @@ const ScBrand = styled(Link)`
 	transform: translate(-50%, -50%);
 `;
 
-const ScAuthButton = styled(Button)`
+const ScAuthBtn = styled(Button)`
 	margin-left: 3px;
 `;
 

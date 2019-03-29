@@ -7,6 +7,7 @@ interface IProps {
 	icon: string;
 	linkTo?: string;
 	hoverBackground: string;
+	color: string;
 	onClick?: () => void;
 	withRipple?: boolean;
 	children?: ReactNode;
@@ -19,7 +20,7 @@ const generateIcon = (icon: string) => (
 );
 
 const ListItem = (props: IProps) => (
-	<StyledListItem hoverBackground={props.hoverBackground}>
+	<StyledListItem hoverBackground={props.hoverBackground} color={props.color}>
 		{props.linkTo ? (
 			<Link className='ListItem' to={props.linkTo}>
 				{generateIcon(props.icon)}
@@ -36,13 +37,15 @@ const ListItem = (props: IProps) => (
 );
 
 ListItem.defaultProps = {
-	hoverBackground: 'dark'
+	hoverBackground: 'dark',
+	color: ''
 };
 
-const StyledListItem = styled('li')<{ hoverBackground: string }>`
+const StyledListItem = styled('li')<{ hoverBackground: string; color: string }>`
 	transition: 0.3s;
 	position: relative;
-	color: ${props => props.theme.gray10};
+	color: ${props => (props.color ? props.color : props.theme.gray10)};
+	cursor: pointer;
 
 	&:hover {
 		background: ${({ hoverBackground }) =>

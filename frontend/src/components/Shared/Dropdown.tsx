@@ -39,7 +39,6 @@ const StyledDropdown = styled('div')<IProps>`
 	top: ${({ top }) => validCss(top)};
 	left: ${({ left }) => validCss(left)};
 	width: ${({ width }) => validCss(width)};
-	box-shadow: 0 0.4rem 0.7rem var(--shadow);
 	position: absolute;
 	transition: all 0.15s, transform 0.2s;
 	transform-origin: left top;
@@ -49,6 +48,7 @@ const StyledDropdown = styled('div')<IProps>`
 	min-width: 20rem;
 	z-index: 9999;
 	overflow-y: auto;
+	${props => props.theme.boxShadow}
 
 	${({ isOpen }) =>
 		isOpen &&
