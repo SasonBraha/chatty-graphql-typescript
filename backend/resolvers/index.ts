@@ -67,7 +67,8 @@ const resolvers = {
 		admin: async (root: IChat, args) => {
 			const { admin: userId } = root;
 			return await User.findById(userId);
-		}
+		},
+		messages: async (root: IChat, args) => {}
 	}
 };
 

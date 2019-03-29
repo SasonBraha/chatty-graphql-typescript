@@ -10,6 +10,29 @@ const typeDefs = gql`
 		lastActivity: String!
 	}
 
+	type FileDimensions {
+		with: Int
+		height: Int
+	}
+
+	type File {
+		mimeType: String
+		link: String
+		dimensions: FileDimensions
+	}
+
+	type MessageCreatedBy {
+		_id: ID!
+		displayName: String!
+		slug: String!
+	}
+
+	type Message {
+		body: String!
+		file: File
+		createdBy: MessageCreatedBy
+	}
+
 	type Chat {
 		_id: ID!
 		name: String!
@@ -20,6 +43,7 @@ const typeDefs = gql`
 		allowedUsers: [User]
 		admin: User
 		lastMessage: String
+		messages: [Message]
 	}
 
 	type Query {

@@ -15,7 +15,7 @@ interface IProps {
 
 const TextInput = (props: IProps) => (
 	<FormGroup>
-		<StyledInput id={props.name} {...props} required autoComplete='off' />
+		<StyledInput id={props.name} {...props} required />
 		<StyledInputError>{props.error}</StyledInputError>
 		<StyledLabel htmlFor={props.name}>{props.label}</StyledLabel>
 		<StyledInputIcon>
