@@ -78,6 +78,7 @@ const LoginForm = (props: FormikProps<IFormValues>) => {
 		</Form>
 	);
 };
+
 export default compose(
 	graphql(REGISTER_MUTATION),
 	withFormik({
@@ -90,7 +91,6 @@ export default compose(
 			const registerData = await mutate({
 				variables: values
 			});
-			console.log(registerData);
 
 			const {
 				data: { registerMutation: isRegistered }

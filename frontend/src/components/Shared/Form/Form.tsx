@@ -1,6 +1,5 @@
 import React, { ReactNode } from 'react';
 import styled from 'styled-components/macro';
-import PropTypes from 'prop-types';
 
 interface IProps {
 	header: string;

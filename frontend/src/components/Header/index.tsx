@@ -1,7 +1,7 @@
-import React from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components/macro';
 import { Link } from 'react-router-dom';
-import { Burger, Dropdown, Button } from '../Shared';
+import { Burger, Dropdown, Button, ListItem } from '../Shared';
 import { connect } from 'react-redux';
 import { setAuthModal } from '../../redux/actions';
 import Ripple from 'react-ink';
@@ -12,21 +12,53 @@ interface IProps {
 	currentUser: IUser | null;
 }
 
-const Header = ({ setAuthModal, currentUser }: IProps) => (
-	<StyledHeader>
-		<Burger />
-		<StyledBrand to='/'>Chatty</StyledBrand>
+const headerDropdownItmes = [
+	{
+		icon: 'icon-user',
+		text: 'הפרופיל שלי'
+	},
+	{
+		icon: 'icon-cog',
+		text: 'הפרופיל שלי'
+	},
+	{
+		icon: 'icon-sign-out',
+		text: 'התנתק'
+	}
+];
 
-		{currentUser ? (
-			<div />
-		) : (
-			<AuthButton onClick={() => setAuthModal(true)}>
-				הרשמה / התחברות
-				<Ripple />
-			</AuthButton>
-		)}
-	</StyledHeader>
-);
+const Header = ({ setAuthModal, currentUser }: IProps) => {
+	const [isHeaderDropdownOpen, setHeaderDropdown] = useState(false);
+
+	return (
+		<ScHeader>
+			<Burger />
+			<ScBrand to='/'>Chatty</ScBrand>
+			{currentUser ? (
+				<ScProfileDropdown onClick={() => setHeaderDropdown(true)}>
+					<ScProfileImg src={currentUser.avatar} />
+					<Dropdown
+						isOpen={isHeaderDropdownOpen}
+						resetDropdown={() => setHeaderDropdown(false)}
+					>
+						<ul>
+							{headerDropdownItmes.map(({ icon, text }, i) => (
+								<ListItem key={i} icon={icon} withRipple>
+									{text}
+								</ListItem>
+							))}
+						</ul>
+					</Dropdown>
+				</ScProfileDropdown>
+			) : (
+				<ScAuthButton onClick={() => setAuthModal(true)}>
+					הרשמה / התחברות
+					<Ripple />
+				</ScAuthButton>
+			)}
+		</ScHeader>
+	);
+};
 
 const mapStateToProps = ({ currentUser }: { currentUser: IUser | null }) => ({
 	currentUser
@@ -36,7 +68,7 @@ export default connect(
 	{ setAuthModal }
 )(Header);
 
-const StyledHeader = styled.header`
+const ScHeader = styled.header`
 	display: flex;
 	justify-content: space-between;
 	align-items: center;
@@ -47,7 +79,7 @@ const StyledHeader = styled.header`
 	position: relative;
 `;
 
-const StyledBrand = styled(Link)`
+const ScBrand = styled(Link)`
 	font-weight: bold;
 	font-size: 2.2rem;
 	color: white;
@@ -60,6 +92,22 @@ const StyledBrand = styled(Link)`
 	transform: translate(-50%, -50%);
 `;
 
-const AuthButton = styled(Button)`
+const ScAuthButton = styled(Button)`
 	margin-left: 3px;
+`;
+
+const ScProfileDropdown = styled.div`
+	margin-left: 1.5rem;
+	margin-right: 1.3rem;
+	position: relative;
+	cursor: pointer;
+`;
+
+const ScProfileImg = styled.img`
+	width: 3rem;
+	height: 3rem;
+	border-radius: 50%;
+	vertical-align: middle;
+	position: relative;
+	pointer-events: none;
 `;
