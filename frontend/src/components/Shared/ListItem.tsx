@@ -15,7 +15,7 @@ interface IProps {
 
 const generateIcon = (icon: string) => (
 	<StyledListIcon>
-		<use xlinkHref={`./images/sprite.svg#${icon}`} />
+		<use xlinkHref={`/images/sprite.svg#${icon}`} />
 	</StyledListIcon>
 );
 

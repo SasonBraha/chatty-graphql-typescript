@@ -12,7 +12,7 @@ const Form = (props: IProps) => (
 	<StyledForm onSubmit={props.onSubmit} noValidate>
 		<StyledFormHeader>
 			<StyledFormHeaderIcon>
-				<use xlinkHref={`./images/sprite.svg#${props.icon}`} />
+				<use xlinkHref={`/images/sprite.svg#${props.icon}`} />
 			</StyledFormHeaderIcon>
 			{props.header}
 		</StyledFormHeader>

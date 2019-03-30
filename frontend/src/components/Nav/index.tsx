@@ -35,6 +35,7 @@ const ScNav = styled('nav')<{ isNavOpen: boolean }>`
 	transition: 0.5s cubic-bezier(0.6, 0.07, 0.07, 1.08);
 	z-index: 1;
 	position: fixed;
+	box-shadow: -0.2rem 0.3rem 0.4rem rgba(0, 0, 0, 0.2);
 
 	transform: translateX(
 		${({ isNavOpen, theme }) => (isNavOpen ? 0 : theme.navWidth)}

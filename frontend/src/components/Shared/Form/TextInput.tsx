@@ -19,7 +19,7 @@ const TextInput = (props: IProps) => (
 		<StyledInputError>{props.error}</StyledInputError>
 		<StyledLabel htmlFor={props.name}>{props.label}</StyledLabel>
 		<StyledInputIcon>
-			<use xlinkHref={`./images/sprite.svg#${props.icon}`} />
+			<use xlinkHref={`/images/sprite.svg#${props.icon}`} />
 		</StyledInputIcon>
 	</FormGroup>
 );

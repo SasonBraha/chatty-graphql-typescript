@@ -1,49 +1,22 @@
 import React from 'react';
 import styled from 'styled-components';
-import { Link } from 'react-router-dom';
+import { connect } from 'react-redux';
+import ActiveUser from '../../components/Chat/ActiveUser';
 import { IUser } from '../../models';
 
-interface IProps {
-	activeUser: IUser;
-}
+const ActiveUsers = () => <StyledActiveUsers />;
 
-const ActiveUser = ({ activeUser }: IProps) => (
-	<Link to={`/users/${activeUser.slug}`}>
-		<ScActiveUser>
-			<ScAvatar src={activeUser.avatar} />
-		</ScActiveUser>
-	</Link>
-);
-
-const ScActiveUser = styled.div`
+const StyledActiveUsers = styled.div`
+	padding: 0 2rem 0 2rem;
+	text-align: center;
+	height: 100%;
+	background: ${props => props.theme.activeUsersBackground};
 	padding: 0.5rem;
-	border-radius: 0.5rem;
-	display: flex;
-	align-items: center;
-	position: relative;
-
-	&:not(:first-of-type) {
-		margin-top: 0.5rem;
-	}
-
-	&:after {
-		content: '';
-		position: absolute;
-		display: block;
-		bottom: 0.3rem;
-		right: 0.3rem;
-		width: 0.75rem;
-		height: 0.75rem;
-		border-radius: 50%;
-		background: var(--success-color);
-	}
+	overflow-y: auto;
+	overflow-x: hidden;
+	transition: 0.25s;
+	color: white;
+	grid-column: 2 / 3;
 `;
 
-const ScAvatar = styled.img`
-	width: 3rem;
-	height: 3rem;
-	border-radius: 50%;
-	transform: translateY(0.2rem);
-`;
-
-export default ActiveUser;
+export default ActiveUsers;

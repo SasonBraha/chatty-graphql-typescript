@@ -12,5 +12,6 @@ declare module 'styled-components' {
 		boxShadow: string;
 
 		roomsListBackground: string;
+		activeUsersBackground: string;
 	}
 }
