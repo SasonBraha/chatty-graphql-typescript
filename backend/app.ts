@@ -48,8 +48,6 @@ const server = new ApolloServer({
 	}
 });
 server.applyMiddleware({ app });
-
-logger.log('error', 'lol');
 //------------------------------------//
 //  Initalize                         //
 //------------------------------------//

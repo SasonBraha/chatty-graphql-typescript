@@ -10,7 +10,10 @@ import Message from '../models/Message.model';
 const resolvers = {
 	Query: {
 		// Chat
-		chat: async (root, { slug }) => await Chat.findOne({ slug })
+		chat: async (root, { slug }) => await Chat.findOne({ slug }),
+		async roomsList(root, args, req) {
+			return await Chat.find();
+		}
 	},
 
 	Mutation: {
@@ -18,7 +21,7 @@ const resolvers = {
 		//  Auth                              //
 		//------------------------------------//
 		// Register Process
-		registerMutation: async (_, { displayName, email, password }, req) => {
+		async registerMutation(_, { displayName, email, password }, req) {
 			try {
 				await User.create({
 					displayName,
@@ -36,7 +39,7 @@ const resolvers = {
 		},
 
 		// Login Process
-		loginMutation: async (_, { email, password }, req) => {
+		async loginMutation(_, { email, password }, req) {
 			try {
 				// Check If User Exist
 				const user = await User.findOne({ email });
@@ -56,7 +59,7 @@ const resolvers = {
 		//  Chat                              //
 		//------------------------------------//
 		// Create Chat Process
-		createChat: async (root, args, req) => {
+		async createChat(root, args, req) {
 			const newChatRoom = await Chat.create({
 				...args,
 				admin: req.user._id,
@@ -65,8 +68,8 @@ const resolvers = {
 			return newChatRoom;
 		},
 
-		//TODO - SAVE MESSAGE ID TO CHAT
 		async postMessage(root, args, req) {
+			// Create New Message
 			const newMessage = await Message.create({
 				...args.message,
 				createdBy: {
@@ -75,6 +78,16 @@ const resolvers = {
 					slug: req.user.slug
 				}
 			});
+
+			// Save Message Id To Chat
+			await Chat.update(
+				{ _id: args.message.chatId },
+				{
+					$push: { messages: newMessage._id },
+					$set: { lastMessage: newMessage.body }
+				}
+			);
+
 			return newMessage;
 		}
 	},
@@ -82,11 +95,21 @@ const resolvers = {
 	User: {},
 
 	Chat: {
-		admin: async (root: IChat, args) => {
+		async admin(root: IChat, args) {
 			const { admin: userId } = root;
 			return await User.findById(userId);
 		},
-		messages: async (root: IChat, args) => {}
+
+		async messages(root: IChat, args) {
+			const populatedChat = await Chat.findById(root._id)
+				.populate({
+					path: 'messages',
+					model: 'Message'
+				})
+				.lean();
+
+			return populatedChat.messages;
+		}
 	}
 };
 

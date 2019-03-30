@@ -17,7 +17,7 @@ const typeDefs = gql`
 
 	type File {
 		mimeType: String
-		link: String
+		path: String
 		dimensions: FileDimensions
 	}
 
@@ -39,6 +39,11 @@ const typeDefs = gql`
 		chatId: String!
 	}
 
+	type ChatImage {
+		link: String
+		isUploaded: Boolean
+	}
+
 	type Chat {
 		_id: ID!
 		name: String!
@@ -50,11 +55,14 @@ const typeDefs = gql`
 		admin: User
 		lastMessage: String
 		messages: [Message]
+		image: ChatImage
 	}
 
 	type Query {
 		# Chat
 		chat(slug: String!): Chat
+
+		roomsList: [Chat]!
 	}
 
 	type Mutation {

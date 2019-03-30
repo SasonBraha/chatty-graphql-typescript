@@ -2,7 +2,7 @@ import { Schema } from 'mongoose';
 
 export interface IFile {
 	mimeType: string;
-	link: string;
+	path: string;
 	dimensions: {
 		width: number;
 		height: number;
@@ -15,7 +15,7 @@ export const File = new Schema({
 		enum: ['jpg', 'jpeg', 'png', 'gif', 'webp', 'bmp'],
 		required: true
 	},
-	link: {
+	path: {
 		type: String,
 		required: true
 	},

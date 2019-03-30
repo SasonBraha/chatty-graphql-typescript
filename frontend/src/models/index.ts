@@ -6,3 +6,14 @@ export interface IUser {
 	slug: string;
 	jwtHandshake: string;
 }
+
+export interface IChat {
+	name: string;
+	lastMessage: string;
+	slug: string;
+	_id: string;
+	image: {
+		link: string;
+		isUploaded: boolean;
+	};
+}

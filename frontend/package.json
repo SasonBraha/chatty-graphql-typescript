@@ -27,6 +27,7 @@
 		"typescript": "3.3.3333"
 	},
 	"devDependencies": {
+		"@types/graphql": "^14.2.0",
 		"@types/jest": "24.0.6",
 		"@types/jwt-decode": "^2.2.1",
 		"@types/node": "11.9.4",

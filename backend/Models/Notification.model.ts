@@ -6,7 +6,7 @@ export interface INotification extends Document {
 	sender: IUser | ObjectID;
 	receiver: IUser | ObjectID;
 	content: string;
-	read: boolean;
+	isRead: boolean;
 }
 
 const NotificationSchema = new Schema(
@@ -23,7 +23,7 @@ const NotificationSchema = new Schema(
 			type: String,
 			required: true
 		},
-		read: {
+		isRead: {
 			type: Boolean,
 			default: false
 		}
@@ -33,12 +33,12 @@ const NotificationSchema = new Schema(
 
 // @ts-ignore
 NotificationSchema.post('find', (notifications: Array<INotification>) => {
-	notifications.forEach(notification => {
-		if (!notification.read) {
-			notification.read = true;
+	for (let notification of notifications) {
+		if (!notification.isRead) {
+			notification.isRead = true;
 			notification.save();
 		}
-	});
+	}
 });
 
 // NotificationSchema.post('save', async (notification: INotification) => {

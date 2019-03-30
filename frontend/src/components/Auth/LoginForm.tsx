@@ -62,6 +62,7 @@ const LoginForm = (props: FormikProps<IFormValues>) => {
 		</Form>
 	);
 };
+
 export default compose(
 	graphql(LOGIN_MUTATION),
 	withFormik({

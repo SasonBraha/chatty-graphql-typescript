@@ -25,11 +25,6 @@ const MessageSchema = new Schema(
 			_id: String,
 			displayName: String,
 			slug: String
-		},
-		chatId: {
-			type: Schema.Types.ObjectId,
-			ref: 'Chat',
-			required: true
 		}
 	},
 	{ timestamps: true }

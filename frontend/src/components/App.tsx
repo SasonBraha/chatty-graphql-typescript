@@ -1,4 +1,4 @@
-import React, { useEffect, Component } from 'react';
+import React, { Component, lazy, Suspense } from 'react';
 import styled from 'styled-components/macro';
 import Header from './Header';
 import AuthModal from './Auth/AuthModal';
@@ -7,6 +7,10 @@ import { connect } from 'react-redux';
 import { setCurrentUser } from '../redux/actions';
 import { IUser } from '../models';
 import Nav from './Nav';
+import Container from './Container';
+import { Switch, Route, withRouter } from 'react-router-dom';
+
+const Chat = lazy(() => import('./Chat'));
 
 interface IProps {
 	setCurrentUser: typeof setCurrentUser;
@@ -32,7 +36,16 @@ class App extends Component<IProps> {
 			<>
 				<StyledApp>
 					<Header />
-					<Nav />
+					<ScContent>
+						<Nav />
+						<Container>
+							<Suspense fallback={<div>Loading...</div>}>
+								<Switch>
+									<Route exact path='/chat' render={() => <Chat />} />
+								</Switch>
+							</Suspense>
+						</Container>
+					</ScContent>
 				</StyledApp>
 
 				<AuthModal />
@@ -47,7 +60,14 @@ const StyledApp = styled.div`
 	height: 100vh;
 `;
 
-export default connect(
-	null,
-	{ setCurrentUser }
-)(App);
+const ScContent = styled.div`
+	display: flex;
+	height: 100%;
+`;
+
+export default withRouter(
+	connect(
+		null,
+		{ setCurrentUser }
+	)(App)
+);
