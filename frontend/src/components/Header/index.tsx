@@ -21,7 +21,7 @@ const headerDropdownItmes = [
 	},
 	{
 		icon: 'icon-cog',
-		text: 'הפרופיל שלי'
+		text: 'הגדרות'
 	},
 	{
 		icon: 'icon-sign-out',

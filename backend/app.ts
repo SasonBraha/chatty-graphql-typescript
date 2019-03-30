@@ -1,5 +1,5 @@
 require('dotenv').config({ path: '../.env' });
-import { ApolloServer, gql } from 'apollo-server-express';
+import { ApolloServer, gql, PubSub } from 'apollo-server-express';
 import * as express from 'express';
 import * as helmet from 'helmet';
 import * as cors from 'cors';
@@ -38,13 +38,14 @@ if (process.env.NODE_ENV !== 'production') {
 	app.use(morgan('dev'));
 }
 
+const pubsub = new PubSub();
 const server = new ApolloServer({
 	typeDefs,
 	resolvers,
-	context: async ({ req }) => {
+	context: async ({ req, res }) => {
 		const bearerToken: string = req.headers.authorization;
 		const user = await getUserData(bearerToken);
-		return { ...req, user };
+		return { req, res, pubsub, user };
 	}
 });
 server.applyMiddleware({ app });

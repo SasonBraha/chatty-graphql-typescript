@@ -41,7 +41,7 @@ class App extends Component<IProps> {
 						<Container>
 							<Suspense fallback={<div>Loading...</div>}>
 								<Switch>
-									<Route exact path='/chat' render={() => <Chat />} />
+									<Route path='/chat' render={props => <Chat {...props} />} />
 								</Switch>
 							</Suspense>
 						</Container>

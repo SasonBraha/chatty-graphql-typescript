@@ -1,12 +1,11 @@
 {
-  "compilerOptions": {
-    "target": "es2017",
-    "module": "commonjs",
-    "moduleResolution": "node",
-    "outDir": "dist",
-    "allowJs": true,
-  },
-  "include": [
-    "./**/*"
-  ],
+	"compilerOptions": {
+		"target": "es2017",
+		"module": "commonjs",
+		"moduleResolution": "node",
+		"outDir": "dist",
+		"allowJs": true,
+		"lib": ["esnext.asynciterable"]
+	},
+	"include": ["./**/*"]
 }
