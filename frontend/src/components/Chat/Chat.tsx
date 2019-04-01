@@ -3,13 +3,24 @@ import RoomsList from './RoomsList';
 import styled from 'styled-components/macro';
 import { RouteComponentProps } from 'react-router';
 import ActiveUsers from './ActiveUsers';
+import MessagesList from './MessagesList';
 
-class Chat extends Component<RouteComponentProps> {
+interface IProps extends RouteComponentProps {}
+
+class Chat extends Component<IProps> {
+	constructor(props: IProps) {
+		super(props);
+		this.init();
+	}
+
+	private init() {}
+
 	render() {
 		return (
 			<ScChat>
 				<RoomsList />
 				<ActiveUsers />
+				<MessagesList {...this.props} />
 			</ScChat>
 		);
 	}

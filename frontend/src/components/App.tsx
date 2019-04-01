@@ -36,12 +36,22 @@ class App extends Component<IProps> {
 			<>
 				<StyledApp>
 					<Header />
+
 					<ScContent>
 						<Nav />
 						<Container>
 							<Suspense fallback={<div>Loading...</div>}>
 								<Switch>
-									<Route path='/chat' render={props => <Chat {...props} />} />
+									<Route
+										exact
+										path='/chat'
+										render={props => <Chat {...props} />}
+									/>
+									<Route
+										exact
+										path='/chat/:chatId'
+										render={props => <Chat {...props} />}
+									/>
 								</Switch>
 							</Suspense>
 						</Container>
