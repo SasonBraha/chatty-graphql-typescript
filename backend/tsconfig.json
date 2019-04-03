@@ -5,7 +5,8 @@
 		"moduleResolution": "node",
 		"outDir": "dist",
 		"allowJs": true,
-		"lib": ["esnext.asynciterable"]
+		"lib": ["esnext.asynciterable"],
+		"experimentalDecorators": true
 	},
 	"include": ["./**/*"]
 }

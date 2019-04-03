@@ -23,7 +23,8 @@ const SendMessage = (props: FormikProps<IFormValues>) => {
 		handleChange,
 		handleBlur,
 		handleSubmit,
-		isSubmitting
+		isSubmitting,
+		setFieldValue
 	} = props;
 
 	return (
@@ -31,9 +32,8 @@ const SendMessage = (props: FormikProps<IFormValues>) => {
 			<ScAttachFile>
 				<input
 					type='file'
-					value={values.file}
 					name='file'
-					onChange={handleChange}
+					onChange={e => setFieldValue('file', e.target.files[0])}
 					onBlur={handleBlur}
 				/>
 				File
@@ -42,7 +42,7 @@ const SendMessage = (props: FormikProps<IFormValues>) => {
 			<input
 				type='text'
 				value={values.message}
-				name='file'
+				name='message'
 				onChange={handleChange}
 				onBlur={handleBlur}
 			/>
