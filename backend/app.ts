@@ -11,6 +11,7 @@ import resolvers from './resolvers';
 import getUserData from './auth/getUserData';
 //@ts-ignore
 import { buildSchema, formatArgumentValidationError } from 'type-graphql';
+import { ChatResolver } from './resolvers/resolvers';
 
 const main = async () => {
 	const app = express();
@@ -40,10 +41,13 @@ const main = async () => {
 		app.use(morgan('dev'));
 	}
 
+	const schema = await buildSchema({
+		resolvers: [ChatResolver]
+	});
+
 	const pubsub = new PubSub();
 	const server = new ApolloServer({
-		typeDefs,
-		resolvers,
+		schema,
 		context: async ({ req, res }) => {
 			const bearerToken: string = req.headers.authorization;
 			const user = await getUserData(bearerToken);
@@ -51,6 +55,7 @@ const main = async () => {
 		}
 	});
 	server.applyMiddleware({ app });
+
 	//------------------------------------//
 	//  Initalize                         //
 	//------------------------------------//

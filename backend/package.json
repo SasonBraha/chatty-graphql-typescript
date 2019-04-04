@@ -34,8 +34,6 @@
     "passport-jwt": "^4.0.0",
     "redis": "^2.8.0",
     "reflect-metadata": "^0.1.13",
-    "socket-io": "^1.0.0",
-    "socketio-jwt": "^4.5.0",
     "type-graphql": "^0.17.1",
     "uuid": "^3.3.2",
     "winston": "^3.2.1",
