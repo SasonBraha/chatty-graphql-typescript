@@ -1,7 +1,8 @@
 import { Document, Schema, model } from 'mongoose';
 import ObjectID = Schema.Types.ObjectId;
-import { IMessage } from './Message.model';
-import { IUser } from './User.model';
+import { IMessage, MessageEntity } from './Message.model';
+import { IUser, UserEntity } from './User.model';
+import { ObjectType, Field, ID } from 'type-graphql';
 
 export interface IChat extends Document {
 	name: string;
@@ -71,6 +72,36 @@ const ChatSchema = new Schema(
 	},
 	{ timestamps: true, collection: 'rooms' }
 );
+
+@ObjectType()
+export class ChatEntity {
+	@Field(() => ID)
+	_id: string;
+
+	@Field()
+	name: string;
+
+	@Field()
+	slug: string;
+
+	@Field()
+	isPrivate: boolean;
+
+	@Field()
+	storeMessages: boolean;
+
+	@Field(type => [UserEntity])
+	moderators: IUser[];
+
+	@Field(type => [UserEntity])
+	allowedUsers: IUser[];
+
+	@Field(type => [MessageEntity])
+	messages: IMessage;
+
+	@Field(type => UserEntity)
+	admin: IUser;
+}
 
 const Chat = model<IChat>('Chat', ChatSchema);
 export default Chat;

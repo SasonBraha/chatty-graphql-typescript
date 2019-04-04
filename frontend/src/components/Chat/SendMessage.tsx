@@ -33,6 +33,7 @@ const SendMessage = (props: FormikProps<IFormValues>) => {
 				<input
 					type='file'
 					name='file'
+					//@ts-ignore
 					onChange={e => setFieldValue('file', e.target.files[0])}
 					onBlur={handleBlur}
 				/>

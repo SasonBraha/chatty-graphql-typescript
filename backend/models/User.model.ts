@@ -2,6 +2,7 @@ import { Document, Schema, model } from 'mongoose';
 import * as bcrypt from 'bcryptjs';
 import ObjectId = Schema.Types.ObjectId;
 import { INotification } from './Notification.model';
+import { ObjectType, Field, ID } from 'type-graphql';
 
 export interface IUser extends Document {
 	displayName: string;
@@ -20,7 +21,7 @@ interface ISchmeaMethods extends IUser {
 	comparePassword(password: string): boolean;
 }
 
-export const UserSchema = new Schema(
+const UserSchema = new Schema(
 	{
 		displayName: {
 			type: String,
@@ -75,6 +76,30 @@ export const UserSchema = new Schema(
 	{ timestamps: true }
 );
 
+@ObjectType()
+export class UserEntity {
+	@Field(() => ID)
+	_id: string;
+
+	@Field()
+	displayName: string;
+
+	@Field()
+	email: string;
+
+	@Field()
+	slug: string;
+
+	@Field()
+	avatar: string;
+
+	@Field()
+	role: string;
+
+	@Field()
+	lastActivity: string;
+}
+
 // Hash Password Before Saving
 UserSchema.pre('save', async function(next) {
 	const user = this as IUser;
@@ -94,4 +119,5 @@ UserSchema.methods.comparePassword = async function(candidatePassword) {
 	}
 };
 
-export default model<ISchmeaMethods>('User', UserSchema);
+const User = model<ISchmeaMethods>('User', UserSchema);
+export default User;

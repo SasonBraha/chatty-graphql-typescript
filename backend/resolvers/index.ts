@@ -1,9 +1,7 @@
 import * as uuid from 'uuid';
 import * as jwt from 'jsonwebtoken';
 import Chat, { IChat } from '../models/Chat.model';
-import User from '../Models/User.model';
-import { Schema } from 'mongoose';
-import ObjectID = Schema.Types.ObjectId;
+import User from '../models/User.model';
 import generateJWT from '../auth/generateJWT';
 import Message from '../models/Message.model';
 
@@ -84,7 +82,7 @@ const resolvers = {
 				{ _id: args.message.chatId },
 				{
 					$push: { messages: newMessage._id },
-					$set: { lastMessage: newMessage.body }
+					$set: { lastMessage: newMessage.text }
 				}
 			);
 

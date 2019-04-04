@@ -8,11 +8,9 @@ import * as mongoose from 'mongoose';
 import * as morgan from 'morgan';
 import typeDefs from './typeDefs';
 import resolvers from './resolvers';
-import './Models/User.model';
 import getUserData from './auth/getUserData';
 //@ts-ignore
 import { buildSchema, formatArgumentValidationError } from 'type-graphql';
-import { RegisterResolver } from './entities/User/Register/Register';
 
 const main = async () => {
 	const app = express();
@@ -42,13 +40,10 @@ const main = async () => {
 		app.use(morgan('dev'));
 	}
 
-	const schema = await buildSchema({
-		resolvers: [RegisterResolver]
-	});
 	const pubsub = new PubSub();
 	const server = new ApolloServer({
-		schema,
-		formatError: formatArgumentValidationError,
+		typeDefs,
+		resolvers,
 		context: async ({ req, res }) => {
 			const bearerToken: string = req.headers.authorization;
 			const user = await getUserData(bearerToken);

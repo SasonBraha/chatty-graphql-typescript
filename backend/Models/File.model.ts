@@ -1,4 +1,5 @@
 import { Schema } from 'mongoose';
+import { ObjectType, Field, ID } from 'type-graphql';
 
 export interface IFile {
 	mimeType: string;
@@ -30,3 +31,12 @@ export const File = new Schema({
 		}
 	}
 });
+
+@ObjectType()
+export class FileEntity {
+	@Field(() => ID)
+	mimeType: string;
+
+	@Field()
+	path: string;
+}

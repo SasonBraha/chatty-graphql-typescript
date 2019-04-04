@@ -1,8 +1,10 @@
 import { Document, Schema, model } from 'mongoose';
 import { File, IFile } from './File.model';
+import { ObjectType, Field } from 'type-graphql';
+import { UserEntity, IUser } from './User.model';
 
 export interface IMessage extends Document {
-	body: string;
+	text: string;
 	file: IFile;
 	createdBy: {
 		_id: string;
@@ -13,7 +15,7 @@ export interface IMessage extends Document {
 
 const MessageSchema = new Schema(
 	{
-		body: {
+		text: {
 			type: String,
 			required: true,
 			trim: true
@@ -29,6 +31,18 @@ const MessageSchema = new Schema(
 	},
 	{ timestamps: true }
 );
+
+@ObjectType()
+export class MessageEntity {
+	@Field()
+	_id: string;
+
+	@Field()
+	text: string;
+
+	@Field(type => UserEntity)
+	createdBy: IUser;
+}
 
 const Message = model<IMessage>('Message', MessageSchema);
 export default Message;
