@@ -8,7 +8,8 @@ const defaultTheme: DefaultTheme = {
 	navWidth: '27rem',
 	boxShadow: 'box-shadow: 0 0.4rem 0.7rem rgba(0, 0, 0, .2);',
 	roomsListBackground: '#232A32',
-	activeUsersBackground: '#2E353D'
+	activeUsersBackground: '#2E353D',
+	ownMessageBackground: '#0079ea'
 };
 
 export { defaultTheme };

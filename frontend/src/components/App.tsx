@@ -49,7 +49,7 @@ class App extends Component<IProps> {
 									/>
 									<Route
 										exact
-										path='/chat/:chatId'
+										path='/chat/:chatSlug'
 										render={props => <Chat {...props} />}
 									/>
 								</Switch>

@@ -5,6 +5,7 @@ import { RouteComponentProps } from 'react-router';
 import ActiveUsers from './ActiveUsers';
 import MessagesList from './MessagesList';
 import SendMessage from './SendMessage';
+import { th } from 'date-fns/esm/locale';
 
 interface IProps extends RouteComponentProps {}
 
@@ -24,7 +25,7 @@ class Chat extends Component<IProps> {
 
 				<ScMessagesArea>
 					<MessagesList {...this.props} />
-					<SendMessage />
+					<SendMessage {...this.props} />
 				</ScMessagesArea>
 			</ScChat>
 		);

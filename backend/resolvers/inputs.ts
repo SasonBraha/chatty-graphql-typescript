@@ -21,7 +21,6 @@ export class RegisterInput {
 	displayName: string;
 
 	@Field()
-	@IsEmail()
 	email: string;
 
 	@Field()
@@ -30,7 +29,6 @@ export class RegisterInput {
 @InputType()
 export class LoginInput {
 	@Field()
-	@IsEmail()
 	email: string;
 
 	@Field()

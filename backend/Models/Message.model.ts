@@ -47,6 +47,9 @@ export class MessageEntity {
 
 	@Field(type => UserEntity)
 	createdBy: IUser;
+
+	@Field(type => Date)
+	createdAt: Date;
 }
 
 const Message = model<IMessage>('Message', MessageSchema);

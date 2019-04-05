@@ -15,6 +15,19 @@ export interface IChat {
 	image: IFile;
 }
 
+export interface IMessage {
+	_id: string;
+	text: string;
+	file: IFile;
+	createdBy: {
+		_id: string;
+		displayName: string;
+		slug: string;
+		avatar: string;
+	};
+	createdAt: Date;
+}
+
 export interface IFile {
 	mimeType?: string;
 	path: string;

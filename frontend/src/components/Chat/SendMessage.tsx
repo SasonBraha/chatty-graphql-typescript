@@ -4,19 +4,28 @@ import gql from 'graphql-tag';
 import { withFormik, FormikProps } from 'formik';
 import { compose, graphql } from 'react-apollo';
 import Icon from '../Shared/Icon';
+import { RouteComponentProps } from 'react-router';
 
 const SEND_MESSAGE_MUTATION = gql`
-	mutation($message: String!, $file: Upload, $chatId: String!) {
-		loginMutation(message: $message, file: $file, chatId: $chatId)
+	mutation($chatSlug: String!, $text: String!) {
+		postMessage(text: $text, chatSlug: $chatSlug) {
+			text
+		}
 	}
 `;
 
 interface IFormValues {
-	message: string;
+	text: string;
 	file: string;
 }
 
-const SendMessage = (props: FormikProps<IFormValues>) => {
+interface IMatchParams {
+	chatSlug?: string;
+}
+
+const SendMessage = (
+	props: FormikProps<IFormValues> & RouteComponentProps<IMatchParams>
+) => {
 	const {
 		values,
 		errors,
@@ -30,7 +39,7 @@ const SendMessage = (props: FormikProps<IFormValues>) => {
 
 	return (
 		<ScForm onSubmit={handleSubmit}>
-			<ScAttachLabel>
+			{/* <ScAttachLabel>
 				<input
 					type='file'
 					name='file'
@@ -38,13 +47,13 @@ const SendMessage = (props: FormikProps<IFormValues>) => {
 					onBlur={handleBlur}
 				/>
 				<ScAttachIcon icon='icon-paperclip' />
-			</ScAttachLabel>
+			</ScAttachLabel> */}
 
 			<ScMessageInput
 				autoComplete='off'
 				type='text'
-				value={values.message}
-				name='message'
+				value={values.text}
+				name='text'
 				onChange={handleChange}
 				onBlur={handleBlur}
 				placeholder='הכנס הודעה ולחץ Enter'
@@ -89,21 +98,21 @@ const ScMessageInput = styled.input`
 export default compose(
 	graphql(SEND_MESSAGE_MUTATION),
 	withFormik({
-		mapPropsToValues: () => ({ message: '', file: '' }),
-		handleSubmit(values) {
-			console.log(values);
+		mapPropsToValues: () => ({ text: '' }),
+		handleSubmit: async (
+			values,
+			//@ts-ignore
+			{ props: { mutate, match }, setSubmitting, resetForm }
+		) => {
+			const sendMessageData = await mutate({
+				variables: {
+					...values,
+					chatSlug: match.params.chatSlug
+				}
+			});
+			const {
+				data: { sendMessageMutation: authToken }
+			} = sendMessageData;
 		}
-		// handleSubmit: async (
-		// 	values,
-		// 	//@ts-ignore
-		// 	{ props: { mutate }, setSubmitting, resetForm }
-		// ) => {
-		// 	const sendMessageData = await mutate({
-		// 		variables: values
-		// 	});
-		// 	const {
-		// 		data: { sendMessageMutation: authToken }
-		// 	} = sendMessageData;
-		// }
 	})
 )(SendMessage);

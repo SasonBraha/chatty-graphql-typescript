@@ -64,8 +64,8 @@ class UserResolver {
 @Resolver(ChatEntity)
 export class ChatResolver {
 	@Query(returns => ChatEntity)
-	async chat(@Arg('chatId') chatId: string): Promise<IChat> {
-		return await Chat.findById(chatId);
+	async chat(@Arg('chatSlug') chatSlug: string): Promise<IChat> {
+		return await Chat.findOne({ slug: chatSlug });
 	}
 
 	@Query(returns => [ChatEntity])
@@ -96,7 +96,7 @@ export class ChatResolver {
 	@Mutation(returns => MessageEntity)
 	async postMessage(
 		@Arg('text') text: string,
-		@Arg('chatId') chatId: string,
+		@Arg('chatSlug') chatSlug: string,
 		@Ctx('user') user: IUser,
 		@PubSub() pubSub: PubSubEngine
 	): Promise<IMessage> {
@@ -119,7 +119,7 @@ export class ChatResolver {
 
 		// Save Message Id To Chat
 		await Chat.updateOne(
-			{ _id: chatId },
+			{ slug: chatSlug },
 			{
 				$push: { messages: newMessage._id },
 				$set: { lastMessage: newMessage.text }
@@ -134,7 +134,7 @@ export class ChatResolver {
 	})
 	newMessage(
 		@Root() messagePayload: IMessage,
-		@Arg('chatId') chatId: string
+		@Arg('chatSlug') chatSlug: string
 	): IMessage {
 		return messagePayload;
 	}

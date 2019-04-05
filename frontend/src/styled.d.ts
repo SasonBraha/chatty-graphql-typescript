@@ -14,5 +14,6 @@ declare module 'styled-components' {
 
 		roomsListBackground: string;
 		activeUsersBackground: string;
+		ownMessageBackground: string;
 	}
 }

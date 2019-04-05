@@ -11,6 +11,7 @@ import getUserData from './auth/getUserData';
 //@ts-ignore
 import { buildSchema, formatArgumentValidationError } from 'type-graphql';
 import { ChatResolver } from './resolvers/resolvers';
+import { GraphQLServiceContext } from 'apollo-server-plugin-base';
 
 const main = async () => {
 	const app = express();
@@ -47,11 +48,10 @@ const main = async () => {
 	const apolloServer = new ApolloServer({
 		schema,
 		context: async ({ req, res }) => {
-			if (req) {
-				const bearerToken: string = req.headers.authorization;
-				const user = await getUserData(bearerToken);
-				return { req, res, user };
-			}
+			if (!req || !res) return;
+			const bearerToken: string = req.headers.authorization;
+			const user = await getUserData(bearerToken);
+			return { req, res, user };
 		}
 	});
 	apolloServer.applyMiddleware({ app });
