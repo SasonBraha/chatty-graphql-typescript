@@ -21,8 +21,11 @@ class Chat extends Component<IProps> {
 			<ScChat>
 				<RoomsList />
 				<ActiveUsers />
-				<MessagesList {...this.props} />
-				<SendMessage />
+
+				<ScMessagesArea>
+					<MessagesList {...this.props} />
+					<SendMessage />
+				</ScMessagesArea>
 			</ScChat>
 		);
 	}
@@ -33,6 +36,11 @@ const ScChat = styled.div`
 	height: 100%;
 	grid-template-columns: 2fr 1fr 9fr;
 	grid-auto-flow: dense;
+`;
+
+const ScMessagesArea = styled.div`
+	display: flex;
+	flex-direction: column;
 `;
 
 export default Chat;

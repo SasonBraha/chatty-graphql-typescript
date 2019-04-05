@@ -9,12 +9,50 @@ import {
 } from 'type-graphql';
 import User, { UserEntity, IUser } from '../models/User.model';
 import Chat, { ChatEntity, IChat } from '../models/Chat.model';
-import { CreateChatInput } from './inputs';
+import { CreateChatInput, RegisterInput, LoginInput } from './inputs';
 import * as uuid from 'uuid';
 import Message, { MessageEntity, IMessage } from '../models/Message.model';
+import { Request } from 'express';
+import generateJWT from '../auth/generateJWT';
 
 @Resolver(UserEntity)
-class UserResolver {}
+class UserResolver {
+	@Mutation(returns => Boolean)
+	async register(
+		@Arg('data') { displayName, email, password }: RegisterInput,
+		@Ctx('req') req: Request
+	): Promise<boolean> {
+		try {
+			await User.create({
+				displayName,
+				email,
+				password,
+				slug: `${displayName}@${uuid()}`,
+				jwtId: uuid(),
+				ipAddress:
+					req.headers['x-forwarded-for'] || req.connection.remoteAddress
+			});
+			return true;
+		} catch (ex) {
+			return false;
+		}
+	}
+
+	@Mutation(returns => String, { nullable: true })
+	async login(@Arg('data') { email, password }: LoginInput): Promise<string> {
+		try {
+			const user = await User.findOne({ email });
+			if (!user) return null;
+
+			const isPasswordMatch = await user.comparePassword(password);
+			if (!isPasswordMatch) return null;
+
+			return generateJWT(user);
+		} catch (ex) {
+			return null;
+		}
+	}
+}
 
 @Resolver(ChatEntity)
 export class ChatResolver {
@@ -30,6 +68,10 @@ export class ChatResolver {
 	): Promise<IChat> {
 		const newChatRoom = await Chat.create({
 			name,
+			image: {
+				path: '/images/default_chat.svg',
+				isStored: false
+			},
 			isPrivate,
 			storeMessages,
 			admin: user._id,

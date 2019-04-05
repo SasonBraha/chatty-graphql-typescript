@@ -3,6 +3,7 @@ import styled from 'styled-components/macro';
 import gql from 'graphql-tag';
 import { withFormik, FormikProps } from 'formik';
 import { compose, graphql } from 'react-apollo';
+import Icon from '../Shared/Icon';
 
 const SEND_MESSAGE_MUTATION = gql`
 	mutation($message: String!, $file: Upload, $chatId: String!) {
@@ -28,35 +29,60 @@ const SendMessage = (props: FormikProps<IFormValues>) => {
 	} = props;
 
 	return (
-		<form onSubmit={handleSubmit}>
-			<ScAttachFile>
+		<ScForm onSubmit={handleSubmit}>
+			<ScAttachLabel>
 				<input
 					type='file'
 					name='file'
-					//@ts-ignore
-					onChange={e => setFieldValue('file', e.target.files[0])}
+					onChange={e => setFieldValue('file', e.target.files![0])}
 					onBlur={handleBlur}
 				/>
-				File
-			</ScAttachFile>
+				<ScAttachIcon icon='icon-paperclip' />
+			</ScAttachLabel>
 
-			<input
+			<ScMessageInput
+				autoComplete='off'
 				type='text'
 				value={values.message}
 				name='message'
 				onChange={handleChange}
 				onBlur={handleBlur}
 			/>
-
-			<button>Submit</button>
-		</form>
+		</ScForm>
 	);
 };
 
-const ScAttachFile = styled.label`
+const ScForm = styled.form`
+	flex: 0 0;
+	display: flex;
+	justify-content: space-between;
+	position: relative;
+`;
+
+const ScAttachLabel = styled.label`
 	input[type='file'] {
 		display: none;
 	}
+`;
+
+const ScAttachIcon = styled(Icon)`
+	width: 2.5rem;
+	height: 2.5rem;
+	position: absolute;
+	right: 0.7rem;
+	top: 1.1rem;
+`;
+
+const ScMessageInput = styled.input`
+	flex: 1;
+	padding: 1.4rem;
+	border: none;
+	outline: none;
+	background: linear-gradient(to left, #eee, white);
+	box-shadow: 0 0 0.5rem rgba(0, 0, 0, 0.1);
+	font-size: 1.6rem;
+	padding-right: 4rem;
+	text-overflow: ellipsis;
 `;
 
 export default compose(

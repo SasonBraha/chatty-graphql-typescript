@@ -1,5 +1,5 @@
 import { Document, Schema, model } from 'mongoose';
-import { File, IFile } from './File.model';
+import File, { IFile, FileEntity } from './File.model';
 import { ObjectType, Field } from 'type-graphql';
 import { UserEntity, IUser } from './User.model';
 
@@ -39,6 +39,9 @@ export class MessageEntity {
 
 	@Field()
 	text: string;
+
+	@Field({ nullable: true })
+	file: FileEntity;
 
 	@Field(type => UserEntity)
 	createdBy: IUser;

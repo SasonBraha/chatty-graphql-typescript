@@ -1,6 +1,7 @@
 import { Document, Schema, model } from 'mongoose';
 import ObjectID = Schema.Types.ObjectId;
-import { IUser } from './User.model';
+import { IUser, UserEntity } from './User.model';
+import { ObjectType, Field } from 'type-graphql';
 
 export interface INotification extends Document {
 	sender: IUser | ObjectID;
@@ -30,6 +31,21 @@ const NotificationSchema = new Schema(
 	},
 	{ timestamps: true }
 );
+
+@ObjectType()
+export class NotificationEntity {
+	@Field(() => UserEntity)
+	sender: IUser;
+
+	@Field(() => UserEntity)
+	receiver: IUser;
+
+	@Field()
+	content: string;
+
+	@Field()
+	isRead: boolean;
+}
 
 // @ts-ignore
 NotificationSchema.post('find', (notifications: Array<INotification>) => {

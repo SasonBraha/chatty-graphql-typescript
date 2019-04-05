@@ -9,10 +9,8 @@ import gql from 'graphql-tag';
 
 const REGISTER_MUTATION = gql`
 	mutation($displayName: String!, $email: String!, $password: String!) {
-		registerMutation(
-			displayName: $displayName
-			email: $email
-			password: $password
+		register(
+			data: { displayName: $displayName, email: $email, password: $password }
 		)
 	}
 `;

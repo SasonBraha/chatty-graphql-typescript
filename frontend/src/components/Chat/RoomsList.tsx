@@ -10,12 +10,12 @@ const ROOMS_LIST_QUERY = gql`
 		roomsList {
 			_id
 			name
+			image {
+				path
+				isStored
+			}
 			slug
 			lastMessage
-			image {
-				link
-				isUploaded
-			}
 		}
 	}
 `;

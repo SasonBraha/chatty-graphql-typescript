@@ -9,7 +9,7 @@ import gql from 'graphql-tag';
 
 const LOGIN_MUTATION = gql`
 	mutation($email: String!, $password: String!) {
-		loginMutation(email: $email, password: $password)
+		login(data: { email: $email, password: $password })
 	}
 `;
 
@@ -76,7 +76,7 @@ export default compose(
 				variables: values
 			});
 			const {
-				data: { loginMutation: authToken }
+				data: { login: authToken }
 			} = loginData;
 
 			if (authToken) {

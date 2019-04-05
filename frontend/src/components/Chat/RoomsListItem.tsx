@@ -6,9 +6,7 @@ import Ripple from 'react-ink';
 
 const RoomsListItem = ({ room }: { room: IChat }) => (
 	<ScRoomsListItem to={`/chat/${room.slug}`}>
-		<figure>
-			<ScImage src={room.image.link} />
-		</figure>
+		<ScImage src={room.image.path} alt={room.name} />
 
 		<ScRoomData>
 			<ScRoomName>{room.name}</ScRoomName>

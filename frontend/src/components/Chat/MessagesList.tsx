@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { RouteComponentProps } from 'react-router';
+import styled from 'styled-components/macro';
 
 interface IProps extends RouteComponentProps<{}> {}
 
@@ -14,8 +15,13 @@ class MessagesList extends Component<IProps> {
 	componentDidUpdate(prevProps: IProps) {}
 
 	render() {
-		return <div />;
+		return <ScMessagesList>hello</ScMessagesList>;
 	}
 }
+
+const ScMessagesList = styled.div`
+	flex: 1;
+	background: ${props => props.theme.gray30};
+`;
 
 export default MessagesList;

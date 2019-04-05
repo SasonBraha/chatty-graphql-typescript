@@ -1,5 +1,5 @@
 import { InputType, Field } from 'type-graphql';
-import { Length } from 'class-validator';
+import { Length, IsEmail } from 'class-validator';
 
 @InputType()
 export class CreateChatInput {
@@ -12,4 +12,27 @@ export class CreateChatInput {
 
 	@Field()
 	storeMessages: boolean;
+}
+
+@InputType()
+export class RegisterInput {
+	@Field()
+	@Length(3, 25)
+	displayName: string;
+
+	@Field()
+	@IsEmail()
+	email: string;
+
+	@Field()
+	password: string;
+}
+@InputType()
+export class LoginInput {
+	@Field()
+	@IsEmail()
+	email: string;
+
+	@Field()
+	password: string;
 }

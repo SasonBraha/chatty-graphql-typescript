@@ -6,8 +6,6 @@ import * as helmet from 'helmet';
 import * as cors from 'cors';
 import * as mongoose from 'mongoose';
 import * as morgan from 'morgan';
-import typeDefs from './typeDefs';
-import resolvers from './resolvers';
 import getUserData from './auth/getUserData';
 //@ts-ignore
 import { buildSchema, formatArgumentValidationError } from 'type-graphql';

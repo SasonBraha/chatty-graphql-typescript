@@ -3,14 +3,12 @@ import ObjectID = Schema.Types.ObjectId;
 import { IMessage, MessageEntity } from './Message.model';
 import { IUser, UserEntity } from './User.model';
 import { ObjectType, Field, ID } from 'type-graphql';
+import File, { IFile, FileEntity } from './File.model';
 
 export interface IChat extends Document {
 	name: string;
 	slug: string;
-	image: {
-		link: string;
-		isUploaded: boolean;
-	};
+	image: IFile;
 	isPrivate: boolean;
 	storeMessages: boolean;
 	moderators: Array<ObjectID> | Array<IUser>;
@@ -33,15 +31,7 @@ const ChatSchema = new Schema(
 			trim: true
 		},
 		image: {
-			link: {
-				type: String,
-				trim: true,
-				default: '/images/default_chat.svg'
-			},
-			isUploaded: {
-				type: Boolean,
-				default: false
-			}
+			type: File
 		},
 		isPrivate: {
 			type: Boolean,
@@ -85,6 +75,9 @@ export class ChatEntity {
 	slug: string;
 
 	@Field()
+	image: FileEntity;
+
+	@Field()
 	isPrivate: boolean;
 
 	@Field()
@@ -101,6 +94,9 @@ export class ChatEntity {
 
 	@Field(type => UserEntity)
 	admin: IUser;
+
+	@Field({ nullable: true })
+	lastMessage: string;
 }
 
 const Chat = model<IChat>('Chat', ChatSchema);

@@ -12,8 +12,15 @@ export interface IChat {
 	lastMessage: string;
 	slug: string;
 	_id: string;
-	image: {
-		link: string;
-		isUploaded: boolean;
+	image: IFile;
+}
+
+export interface IFile {
+	mimeType?: string;
+	path: string;
+	isStored: boolean;
+	dimensions: {
+		width?: number;
+		height?: number;
 	};
 }

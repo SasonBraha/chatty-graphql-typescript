@@ -5,6 +5,7 @@ declare module 'styled-components' {
 	export interface DefaultTheme {
 		gray10: string;
 		gray20: string;
+		gray30: string;
 
 		navWidth: string;
 		navBackground: string;
