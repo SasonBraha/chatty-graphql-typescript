@@ -10,6 +10,7 @@ export interface IMessage extends Document {
 		_id: string;
 		displayName: string;
 		slug: string;
+		avatar: string;
 	};
 }
 
@@ -26,7 +27,8 @@ const MessageSchema = new Schema(
 		createdBy: {
 			_id: String,
 			displayName: String,
-			slug: String
+			slug: String,
+			avatar: String
 		}
 	},
 	{ timestamps: true }

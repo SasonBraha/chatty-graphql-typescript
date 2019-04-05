@@ -1,6 +1,7 @@
 import * as jwt from 'jsonwebtoken';
 
 export default async (authToken: string) => {
+	if (!authToken) return null;
 	try {
 		if (!authToken.startsWith('Bearer')) return null;
 		const userData = await jwt.verify(

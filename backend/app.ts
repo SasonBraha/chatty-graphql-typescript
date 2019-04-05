@@ -1,6 +1,7 @@
 import 'reflect-metadata';
 require('dotenv').config({ path: '../.env' });
-import { ApolloServer, gql, PubSub } from 'apollo-server-express';
+import * as http from 'http';
+import { ApolloServer } from 'apollo-server-express';
 import * as express from 'express';
 import * as helmet from 'helmet';
 import * as cors from 'cors';
@@ -43,22 +44,25 @@ const main = async () => {
 		resolvers: [ChatResolver]
 	});
 
-	const pubsub = new PubSub();
-	const server = new ApolloServer({
+	const apolloServer = new ApolloServer({
 		schema,
 		context: async ({ req, res }) => {
-			const bearerToken: string = req.headers.authorization;
-			const user = await getUserData(bearerToken);
-			return { req, res, pubsub, user };
+			if (req) {
+				const bearerToken: string = req.headers.authorization;
+				const user = await getUserData(bearerToken);
+				return { req, res, user };
+			}
 		}
 	});
-	server.applyMiddleware({ app });
+	apolloServer.applyMiddleware({ app });
+	const httpServer = http.createServer(app);
+	apolloServer.installSubscriptionHandlers(httpServer);
 
 	//------------------------------------//
 	//  Initalize                         //
 	//------------------------------------//
 	const { PORT } = process.env;
-	app.listen(PORT, () =>
+	httpServer.listen(PORT, () =>
 		console.log(`Server Started Successfully On Port ${PORT} ✈️`)
 	);
 };

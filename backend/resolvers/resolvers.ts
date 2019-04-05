@@ -5,7 +5,10 @@ import {
 	Ctx,
 	Query,
 	FieldResolver,
-	Root
+	Root,
+	Subscription,
+	PubSub,
+	PubSubEngine
 } from 'type-graphql';
 import User, { UserEntity, IUser } from '../models/User.model';
 import Chat, { ChatEntity, IChat } from '../models/Chat.model';
@@ -14,6 +17,10 @@ import * as uuid from 'uuid';
 import Message, { MessageEntity, IMessage } from '../models/Message.model';
 import { Request } from 'express';
 import generateJWT from '../auth/generateJWT';
+
+enum SubscriptionTypesEnum {
+	NEW_MESSAGE = 'NEW_MESSAGE'
+}
 
 @Resolver(UserEntity)
 class UserResolver {
@@ -56,6 +63,11 @@ class UserResolver {
 
 @Resolver(ChatEntity)
 export class ChatResolver {
+	@Query(returns => ChatEntity)
+	async chat(@Arg('chatId') chatId: string): Promise<IChat> {
+		return await Chat.findById(chatId);
+	}
+
 	@Query(returns => [ChatEntity])
 	async roomsList(): Promise<IChat[]> {
 		return await Chat.find();
@@ -85,22 +97,28 @@ export class ChatResolver {
 	async postMessage(
 		@Arg('text') text: string,
 		@Arg('chatId') chatId: string,
-		@Ctx('user') user: IUser
+		@Ctx('user') user: IUser,
+		@PubSub() pubSub: PubSubEngine
 	): Promise<IMessage> {
-		const { _id, displayName, slug } = user;
-
-		// Create New Message
-		const newMessage = await Message.create({
+		const { _id, displayName, slug, avatar } = user;
+		const messageData = {
 			text,
 			createdBy: {
 				_id,
 				displayName,
-				slug
+				slug,
+				avatar
 			}
-		});
+		};
+
+		// Emit New Message
+		pubSub.publish(SubscriptionTypesEnum.NEW_MESSAGE, messageData);
+
+		// Create New Message
+		const newMessage = await Message.create(messageData);
 
 		// Save Message Id To Chat
-		await Chat.update(
+		await Chat.updateOne(
 			{ _id: chatId },
 			{
 				$push: { messages: newMessage._id },
@@ -109,6 +127,16 @@ export class ChatResolver {
 		);
 
 		return newMessage;
+	}
+
+	@Subscription(returns => MessageEntity, {
+		topics: SubscriptionTypesEnum.NEW_MESSAGE
+	})
+	newMessage(
+		@Root() messagePayload: IMessage,
+		@Arg('chatId') chatId: string
+	): IMessage {
+		return messagePayload;
 	}
 
 	@FieldResolver()

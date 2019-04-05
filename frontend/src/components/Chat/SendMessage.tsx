@@ -47,6 +47,7 @@ const SendMessage = (props: FormikProps<IFormValues>) => {
 				name='message'
 				onChange={handleChange}
 				onBlur={handleBlur}
+				placeholder='הכנס הודעה ולחץ Enter'
 			/>
 		</ScForm>
 	);
