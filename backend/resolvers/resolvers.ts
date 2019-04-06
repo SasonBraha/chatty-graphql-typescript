@@ -18,9 +18,11 @@ import Message, { MessageEntity, IMessage } from '../models/Message.model';
 import { Request } from 'express';
 import generateJWT from '../auth/generateJWT';
 import { ObjectID } from 'bson';
+import activeUsers from '../redis/services/ActiveUsers.service';
 
 enum SubscriptionTypesEnum {
-	NEW_MESSAGE = 'NEW_MESSAGE'
+	NEW_MESSAGE = 'NEW_MESSAGE',
+	USER_JOINED = 'USER_JOINED'
 }
 
 @Resolver(UserEntity)
@@ -65,8 +67,18 @@ class UserResolver {
 @Resolver(ChatEntity)
 export class ChatResolver {
 	@Query(returns => ChatEntity)
-	async chat(@Arg('chatSlug') chatSlug: string): Promise<IChat> {
-		return await Chat.findOne({ slug: chatSlug });
+	async chat(
+		@Arg('chatSlug') chatSlug: string,
+		@Arg('isJoining') isJoining: boolean,
+		@Ctx('user') user: IUser,
+		@PubSub() pubSub: PubSubEngine
+	): Promise<IChat> {
+		const chat = await Chat.findOne({ slug: chatSlug }).lean();
+		if (isJoining) {
+			const userList = await activeUsers.addUser(chatSlug, user);
+			pubSub.publish(SubscriptionTypesEnum.USER_JOINED, userList);
+		}
+		return chat;
 	}
 
 	@Query(returns => [MessageEntity], { nullable: true })
@@ -74,6 +86,7 @@ export class ChatResolver {
 		@Arg('beforeMessageId') beforeMessageId: string,
 		@Arg('chatSlug') chatSlug: string
 	): Promise<IMessage[]> {
+		// FIXME - Use pipelines
 		const oldMessages = await Chat.aggregate([
 			{ $match: { slug: chatSlug } },
 			{
@@ -171,6 +184,15 @@ export class ChatResolver {
 		@Ctx('ctx') ctx
 	): IMessage {
 		return messagePayload;
+	}
+
+	@Subscription(returns => [UserEntity], {
+		topics: SubscriptionTypesEnum.USER_JOINED,
+		defaultValue: null,
+		filter: ({ payload, args }) => payload.chatSlug === args.chatSlug
+	})
+	userJoined(@Root() activeUsers, @Arg('chatSlug') chatSlug: string): IUser[] {
+		return activeUsers.userList;
 	}
 
 	@FieldResolver()

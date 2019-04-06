@@ -30,7 +30,7 @@ class MessagesList extends Component<IProps, IState> {
 	private unsubscribe: any;
 	private listEnd: React.RefObject<any> = React.createRef();
 	private messagesList: React.RefObject<any> = React.createRef();
-	private shouldFetchTreshold: number = 250;
+	private shouldFetchThreshold: number = 250;
 	constructor(props: IProps) {
 		super(props);
 		this.init();
@@ -41,20 +41,6 @@ class MessagesList extends Component<IProps, IState> {
 
 	private init() {
 		this.unsubscribe = this.props.subscribeToNewMessages(this.props.chatSlug);
-	}
-
-	private extractRequiredData(prevProps: IProps, nextProps?: IProps) {
-		return {
-			oldMessagesLength: prevProps.data.chat.messages.length,
-			newMessagesLength: nextProps ? nextProps.data.chat.messages.length : null,
-			isMessagesUpdated: nextProps
-				? prevProps.data.chat.messages.length !==
-				  nextProps.data.chat.messages.length
-				: null,
-			isRoomChanged: nextProps
-				? prevProps.chatSlug !== nextProps.chatSlug
-				: null
-		};
 	}
 
 	getSnapshotBeforeUpdate(prevProps: IProps) {
@@ -109,7 +95,7 @@ class MessagesList extends Component<IProps, IState> {
 	private handleScroll = (e: React.UIEvent<HTMLDivElement>) => {
 		const { isFetching, isMoreMessagesToFetch } = this.props;
 		if (
-			e.currentTarget.scrollTop < this.shouldFetchTreshold &&
+			e.currentTarget.scrollTop < this.shouldFetchThreshold &&
 			!isFetching &&
 			isMoreMessagesToFetch &&
 			this.props.data.chat.messages.length
@@ -120,6 +106,20 @@ class MessagesList extends Component<IProps, IState> {
 			);
 		}
 	};
+
+	private extractRequiredData(prevProps: IProps, nextProps?: IProps) {
+		return {
+			oldMessagesLength: prevProps.data.chat.messages.length,
+			newMessagesLength: nextProps ? nextProps.data.chat.messages.length : null,
+			isMessagesUpdated: nextProps
+				? prevProps.data.chat.messages.length !==
+				  nextProps.data.chat.messages.length
+				: null,
+			isRoomChanged: nextProps
+				? prevProps.chatSlug !== nextProps.chatSlug
+				: null
+		};
+	}
 
 	render() {
 		const {
