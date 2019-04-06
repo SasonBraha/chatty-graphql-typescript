@@ -65,14 +65,12 @@ class App extends Component<IProps> {
 }
 
 const StyledApp = styled.div`
-	display: grid;
-	grid-template-rows: 5.5rem 1fr;
 	height: 100vh;
 `;
 
 const ScContent = styled.div`
 	display: flex;
-	height: 100%;
+	height: calc(100vh - ${props => props.theme.headerHeight});
 `;
 
 export default withRouter(

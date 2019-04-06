@@ -47,6 +47,9 @@ const main = async () => {
 
 	const apolloServer = new ApolloServer({
 		schema,
+		subscriptions: {
+			path: '/subscriptions'
+		},
 		context: async ({ req, res }) => {
 			if (!req || !res) return;
 			const bearerToken: string = req.headers.authorization;

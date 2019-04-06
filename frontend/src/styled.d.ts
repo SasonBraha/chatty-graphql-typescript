@@ -7,6 +7,7 @@ declare module 'styled-components' {
 		gray20: string;
 		gray30: string;
 
+		headerHeight: string;
 		navWidth: string;
 		navBackground: string;
 

@@ -112,7 +112,11 @@ export class ChatResolver {
 		};
 
 		// Emit New Message
-		pubSub.publish(SubscriptionTypesEnum.NEW_MESSAGE, messageData);
+		pubSub.publish(SubscriptionTypesEnum.NEW_MESSAGE, {
+			...messageData,
+			_id: uuid(),
+			createdAt: new Date()
+		});
 
 		// Create New Message
 		const newMessage = await Message.create(messageData);
@@ -130,7 +134,8 @@ export class ChatResolver {
 	}
 
 	@Subscription(returns => MessageEntity, {
-		topics: SubscriptionTypesEnum.NEW_MESSAGE
+		topics: SubscriptionTypesEnum.NEW_MESSAGE,
+		defaultValue: null
 	})
 	newMessage(
 		@Root() messagePayload: IMessage,

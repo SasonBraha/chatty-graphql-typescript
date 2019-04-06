@@ -34,14 +34,14 @@ class Chat extends Component<IProps> {
 
 const ScChat = styled.div`
 	display: grid;
-	height: 100%;
 	grid-template-columns: 2fr 1fr 9fr;
-	grid-auto-flow: dense;
+	height: 100%;
 `;
 
 const ScMessagesArea = styled.div`
 	display: flex;
 	flex-direction: column;
+	height: calc(100vh - ${props => props.theme.headerHeight});
 `;
 
 export default Chat;

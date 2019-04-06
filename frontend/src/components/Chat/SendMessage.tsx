@@ -39,7 +39,7 @@ const SendMessage = (
 
 	return (
 		<ScForm onSubmit={handleSubmit}>
-			{/* <ScAttachLabel>
+			<ScAttachLabel>
 				<input
 					type='file'
 					name='file'
@@ -47,7 +47,7 @@ const SendMessage = (
 					onBlur={handleBlur}
 				/>
 				<ScAttachIcon icon='icon-paperclip' />
-			</ScAttachLabel> */}
+			</ScAttachLabel>
 
 			<ScMessageInput
 				autoComplete='off'

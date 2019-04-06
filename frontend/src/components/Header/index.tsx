@@ -83,6 +83,7 @@ const ScHeader = styled.header`
 	box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
 	justify-items: center;
 	position: relative;
+	height: ${props => props.theme.headerHeight};
 `;
 
 const ScBrand = styled(Link)`
