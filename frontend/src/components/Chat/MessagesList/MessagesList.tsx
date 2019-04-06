@@ -8,34 +8,59 @@ import styled from 'styled-components/macro';
 interface IProps {
 	currentUser?: IUser | null;
 	loading: boolean;
+	chatSlug: string;
 	data: {
 		chat: {
 			messages: IMessage[];
 		};
 	};
-	subscribeToNewMessages: () => void;
+	subscribeToNewMessages: (chatSlug: string) => void;
 }
 
 interface IState {
 	messages: IMessage[];
+	unsubscribe: any;
 }
 
 class MessagesList extends Component<IProps, IState> {
+	private listEnd: React.RefObject<any>;
+	private unsubscribe: any;
 	constructor(props: IProps) {
 		super(props);
 		this.init();
 		this.state = {
-			messages: []
+			messages: [],
+			unsubscribe: null
 		};
+		this.listEnd = React.createRef();
 	}
 
 	private init() {
-		this.props.subscribeToNewMessages();
+		this.unsubscribe = this.props.subscribeToNewMessages(this.props.chatSlug);
 	}
 
-	componentDidUpdate(prevProps: IProps) {}
+	componentDidUpdate(prevProps: IProps) {
+		const { data: oldData } = prevProps;
+		const { data: newData } = this.props;
 
-	componentWillUnmount() {}
+		// Handle Room Change
+		if (prevProps.chatSlug !== this.props.chatSlug) {
+			this.unsubscribe();
+			this.unsubscribe = this.props.subscribeToNewMessages(this.props.chatSlug);
+		}
+
+		// Handle Message Added
+		const isNewMessage =
+			(!oldData.chat && newData.chat) ||
+			oldData.chat.messages.length !== newData.chat.messages.length;
+		if (isNewMessage) {
+			this.listEnd.current.scrollIntoView({ behavior: 'smooth' });
+		}
+	}
+
+	componentWillUnmount() {
+		this.unsubscribe();
+	}
 
 	render() {
 		const {
@@ -57,6 +82,7 @@ class MessagesList extends Component<IProps, IState> {
 						/>
 					))
 				)}
+				<div ref={this.listEnd} className='listEnd' />
 			</ScMessagesList>
 		);
 	}
@@ -68,7 +94,7 @@ const ScMessagesList = styled.div`
 	overflow-y: auto;
 	display: flex;
 	flex-direction: column;
-	padding: 1rem 1rem 2rem 1rem;
+	padding: 1rem;
 `;
 
 const mapStateToProps = ({ currentUser }: IReducerState) => ({ currentUser });

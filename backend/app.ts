@@ -50,11 +50,15 @@ const main = async () => {
 		subscriptions: {
 			path: '/subscriptions'
 		},
-		context: async ({ req, res }) => {
-			if (!req || !res) return;
-			const bearerToken: string = req.headers.authorization;
-			const user = await getUserData(bearerToken);
-			return { req, res, user };
+		//@ts-ignore
+		context: async ({ req, res, connection }) => {
+			if (connection) {
+				return { ctx: connection.context };
+			} else {
+				const bearerToken: string = req.headers.authorization;
+				const user = await getUserData(bearerToken);
+				return { req, res, user };
+			}
 		}
 	});
 	apolloServer.applyMiddleware({ app });

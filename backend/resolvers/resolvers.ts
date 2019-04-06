@@ -115,7 +115,8 @@ export class ChatResolver {
 		pubSub.publish(SubscriptionTypesEnum.NEW_MESSAGE, {
 			...messageData,
 			_id: uuid(),
-			createdAt: new Date()
+			createdAt: new Date(),
+			chatSlug
 		});
 
 		// Create New Message
@@ -135,11 +136,13 @@ export class ChatResolver {
 
 	@Subscription(returns => MessageEntity, {
 		topics: SubscriptionTypesEnum.NEW_MESSAGE,
-		defaultValue: null
+		defaultValue: null,
+		filter: ({ payload, args }) => payload.chatSlug === args.chatSlug
 	})
 	newMessage(
 		@Root() messagePayload: IMessage,
-		@Arg('chatSlug') chatSlug: string
+		@Arg('chatSlug') chatSlug: string,
+		@Ctx('ctx') ctx
 	): IMessage {
 		return messagePayload;
 	}

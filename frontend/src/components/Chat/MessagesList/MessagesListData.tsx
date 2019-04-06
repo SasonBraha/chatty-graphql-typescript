@@ -1,8 +1,9 @@
-import React, { Component } from 'react';
+import React from 'react';
 import { RouteComponentProps } from 'react-router';
 import gql from 'graphql-tag';
 import { Query } from 'react-apollo';
 import MessagesList from './MessagesList';
+
 const MESSAGES_LIST_QUERY = gql`
 	query($chatSlug: String!) {
 		chat(chatSlug: $chatSlug) {
@@ -60,7 +61,8 @@ const MessagesListData = (props: RouteComponentProps<IMatchParams>) => {
 			{({ subscribeToMore, ...result }) => (
 				<MessagesList
 					{...result}
-					subscribeToNewMessages={() =>
+					chatSlug={chatSlug}
+					subscribeToNewMessages={(chatSlug: string) =>
 						subscribeToMore({
 							document: NEW_MESSAGE_SUBSCRIPTION,
 							variables: { chatSlug },

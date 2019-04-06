@@ -80,18 +80,17 @@ const ScAttachIcon = styled(Icon)`
 	height: 2.5rem;
 	position: absolute;
 	right: 0.7rem;
-	top: 1.1rem;
+	top: 1.3rem;
 `;
 
 const ScMessageInput = styled.input`
 	flex: 1;
-	padding: 1.4rem;
 	border: none;
 	outline: none;
 	background: linear-gradient(to left, #eee, white);
 	box-shadow: 0 0 0.5rem rgba(0, 0, 0, 0.1);
 	font-size: 1.6rem;
-	padding-right: 4rem;
+	padding: 1.6rem 4rem 1.6rem 1.6rem;
 	text-overflow: ellipsis;
 `;
 
@@ -104,6 +103,7 @@ export default compose(
 			//@ts-ignore
 			{ props: { mutate, match }, setSubmitting, resetForm }
 		) => {
+			resetForm();
 			const sendMessageData = await mutate({
 				variables: {
 					...values,
