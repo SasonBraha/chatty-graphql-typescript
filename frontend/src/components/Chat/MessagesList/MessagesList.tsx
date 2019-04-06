@@ -18,63 +18,86 @@ interface IProps {
 	};
 	subscribeToNewMessages: (chatSlug: string) => void;
 	fetchOlderMessages: (chatSlug: string, beforeMessageId: string) => void;
+	setIsMoreMessagesToFetch: (value: boolean) => void;
 }
 
 interface IState {
 	messages: IMessage[];
-	isFetching: boolean;
 }
 
+@connect(({ currentUser }: IReducerState) => ({ currentUser }))
 class MessagesList extends Component<IProps, IState> {
-	private listEnd: React.RefObject<any>;
 	private unsubscribe: any;
+	private listEnd: React.RefObject<any> = React.createRef();
+	private messagesList: React.RefObject<any> = React.createRef();
+	private shouldFetchTreshold: number = 250;
 	constructor(props: IProps) {
 		super(props);
 		this.init();
 		this.state = {
-			messages: [],
-			isFetching: false
+			messages: []
 		};
-		this.listEnd = React.createRef();
 	}
 
 	private init() {
-		console.log(this.props);
 		this.unsubscribe = this.props.subscribeToNewMessages(this.props.chatSlug);
 	}
 
-	private handleScroll = (e: React.UIEvent<HTMLDivElement>) => {
-		const shouldFetchThreshold = 250;
-		const { isFetching, isMoreMessagesToFetch } = this.props;
-		if (
-			e.currentTarget.scrollTop < shouldFetchThreshold &&
-			!isFetching &&
-			isMoreMessagesToFetch
-		) {
-			this.props.fetchOlderMessages(
-				this.props.chatSlug,
-				this.props.data.chat.messages[0]._id
+	private extractRequiredData(prevProps: IProps, nextProps?: IProps) {
+		return {
+			oldMessagesLength: prevProps.data.chat.messages.length,
+			newMessagesLength: nextProps ? nextProps.data.chat.messages.length : null,
+			isMessagesUpdated: nextProps
+				? prevProps.data.chat.messages.length !==
+				  nextProps.data.chat.messages.length
+				: null,
+			isRoomChanged: nextProps
+				? prevProps.chatSlug !== nextProps.chatSlug
+				: null
+		};
+	}
+
+	getSnapshotBeforeUpdate(prevProps: IProps) {
+		const { oldMessagesLength, newMessagesLength } = this.extractRequiredData(
+			prevProps,
+			this.props
+		);
+		if (newMessagesLength! - oldMessagesLength !== 1) {
+			return (
+				this.messagesList.current.scrollHeight -
+				this.messagesList.current.scrollTop
 			);
 		}
-	};
+		return null;
+	}
 
-	componentDidUpdate(prevProps: IProps) {
-		const { data: oldData } = prevProps;
-		const { data: newData } = this.props;
+	shouldComponentUpdate(nextProps: IProps, nextState: IState): boolean {
+		const { isMessagesUpdated, isRoomChanged } = this.extractRequiredData(
+			this.props,
+			nextProps
+		);
+		return isMessagesUpdated! || isRoomChanged!;
+	}
+
+	componentDidUpdate(prevProps: IProps, prevState: IState, snapshot: number) {
+		const { isRoomChanged, isMessagesUpdated } = this.extractRequiredData(
+			prevProps,
+			this.props
+		);
 
 		// Handle Room Change
-		const isNewRoom = prevProps.chatSlug !== this.props.chatSlug;
-		if (isNewRoom) {
+		if (isRoomChanged) {
 			this.unsubscribe();
+			this.props.setIsMoreMessagesToFetch(true);
 			this.unsubscribe = this.props.subscribeToNewMessages(this.props.chatSlug);
 		}
 
 		// Handle Message Added
-		const isNewMessage =
-			(!oldData.chat && newData.chat) ||
-			oldData.chat.messages.length !== newData.chat.messages.length ||
-			isNewRoom;
-		if (isNewMessage) {
+		if (isMessagesUpdated) {
+			if (snapshot !== null) {
+				return (this.messagesList.current.scrollTop =
+					this.messagesList.current.scrollHeight - snapshot);
+			}
 			this.listEnd.current.scrollIntoView();
 		}
 	}
@@ -82,6 +105,21 @@ class MessagesList extends Component<IProps, IState> {
 	componentWillUnmount() {
 		this.unsubscribe();
 	}
+
+	private handleScroll = (e: React.UIEvent<HTMLDivElement>) => {
+		const { isFetching, isMoreMessagesToFetch } = this.props;
+		if (
+			e.currentTarget.scrollTop < this.shouldFetchTreshold &&
+			!isFetching &&
+			isMoreMessagesToFetch &&
+			this.props.data.chat.messages.length
+		) {
+			this.props.fetchOlderMessages(
+				this.props.chatSlug,
+				this.props.data.chat.messages[0]._id
+			);
+		}
+	};
 
 	render() {
 		const {
@@ -91,7 +129,7 @@ class MessagesList extends Component<IProps, IState> {
 		} = this.props;
 
 		return (
-			<ScMessagesList onScroll={this.handleScroll}>
+			<ScMessagesList ref={this.messagesList} onScroll={this.handleScroll}>
 				{loading ? (
 					<div>Loading</div>
 				) : (
@@ -118,8 +156,4 @@ const ScMessagesList = styled.div`
 	padding: 1rem;
 `;
 
-const mapStateToProps = ({ currentUser }: IReducerState) => ({ currentUser });
-export default connect(
-	mapStateToProps,
-	null
-)(MessagesList);
+export default MessagesList;

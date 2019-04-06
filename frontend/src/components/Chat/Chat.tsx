@@ -23,6 +23,8 @@ class Chat extends Component<IProps> {
 				<ActiveUsers />
 
 				<ScMessagesArea>
+					{/*
+// @ts-ignore */}
 					<MessagesList {...this.props} />
 					<SendMessage {...this.props} />
 				</ScMessagesArea>

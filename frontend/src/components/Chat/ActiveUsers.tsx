@@ -1,8 +1,5 @@
 import React from 'react';
 import styled from 'styled-components';
-import { connect } from 'react-redux';
-import ActiveUser from '../../components/Chat/ActiveUser';
-import { IUser } from '../../models';
 
 const ActiveUsers = () => <StyledActiveUsers />;
 

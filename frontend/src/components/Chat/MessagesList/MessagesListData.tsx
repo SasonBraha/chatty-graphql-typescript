@@ -4,25 +4,29 @@ import gql from 'graphql-tag';
 import { Query } from 'react-apollo';
 import MessagesList from './MessagesList';
 
+const MESSAGE_DATA_FRAGMENT = `
+	_id
+	text
+	createdBy {
+		displayName
+		avatar
+		slug
+	}
+	file {
+		path
+		dimensions {
+			height
+			width
+		}
+	}
+	createdAt
+`;
+
 const MESSAGES_LIST_QUERY = gql`
 	query($chatSlug: String!) {
 		chat(chatSlug: $chatSlug) {
 			messages {
-				_id
-				text
-				createdBy {
-					displayName
-					avatar
-					slug
-				}
-				file {
-					path
-					dimensions {
-						height
-						width
-					}
-				}
-				createdAt
+				${MESSAGE_DATA_FRAGMENT}
 			}
 		}
 	}
@@ -31,21 +35,7 @@ const MESSAGES_LIST_QUERY = gql`
 const NEW_MESSAGE_SUBSCRIPTION = gql`
 	subscription($chatSlug: String!) {
 		newMessage(chatSlug: $chatSlug) {
-			_id
-			text
-			createdBy {
-				displayName
-				avatar
-				slug
-			}
-			file {
-				path
-				dimensions {
-					height
-					width
-				}
-			}
-			createdAt
+			${MESSAGE_DATA_FRAGMENT}
 		}
 	}
 `;
@@ -53,27 +43,13 @@ const NEW_MESSAGE_SUBSCRIPTION = gql`
 const GET_OLDER_MESSAGES = gql`
 	query($chatSlug: String!, $beforeMessageId: String!) {
 		olderMessages(chatSlug: $chatSlug, beforeMessageId: $beforeMessageId) {
-			_id
-			text
-			createdBy {
-				displayName
-				avatar
-				slug
-			}
-			file {
-				path
-				dimensions {
-					height
-					width
-				}
-			}
-			createdAt
+			${MESSAGE_DATA_FRAGMENT}
 		}
 	}
 `;
 
 interface IMatchParams {
-	chatSlug?: string;
+	chatSlug: string;
 }
 
 const MessagesListData = (props: RouteComponentProps<IMatchParams>) => {
@@ -83,12 +59,19 @@ const MessagesListData = (props: RouteComponentProps<IMatchParams>) => {
 
 	return (
 		<Query query={MESSAGES_LIST_QUERY} variables={{ chatSlug }}>
-			{({ subscribeToMore, fetchMore, ...result }) => (
+			{({ subscribeToMore, fetchMore, data, loading, ...result }) => (
 				<MessagesList
 					{...result}
+					data={{
+						chat: {
+							messages: loading ? [] : data.chat.messages
+						}
+					}}
+					loading={loading}
 					chatSlug={chatSlug}
 					isFetching={isFetching}
 					isMoreMessagesToFetch={isMoreMessagesToFetch}
+					setIsMoreMessagesToFetch={setIsMoreMessagesToFetch}
 					fetchOlderMessages={(chatSlug: string, beforeMessageId: string) => {
 						setIsFetching(true);
 						fetchMore({
@@ -132,6 +115,14 @@ const MessagesListData = (props: RouteComponentProps<IMatchParams>) => {
 			)}
 		</Query>
 	);
+};
+
+MessagesListData.defaultProps = {
+	data: {
+		chat: {
+			messages: []
+		}
+	}
 };
 
 export default MessagesListData;
