@@ -4,8 +4,13 @@ import { Link } from 'react-router-dom';
 import { IChat } from '../../models';
 import Ripple from 'react-ink';
 
-const RoomsListItem = ({ room }: { room: IChat }) => (
-	<ScRoomsListItem to={`/chat/${room.slug}`}>
+interface IProps {
+	room: IChat;
+	selected: boolean;
+}
+
+const RoomsListItem = ({ room, selected }: IProps) => (
+	<ScRoomsListItem selected={selected} to={`/chat/${room.slug}`}>
 		<ScImage src={room.image.path} alt={room.name} />
 
 		<ScRoomData>
@@ -17,11 +22,19 @@ const RoomsListItem = ({ room }: { room: IChat }) => (
 	</ScRoomsListItem>
 );
 
-const ScRoomsListItem = styled(Link)`
+const ScRoomsListItem = styled(Link)<{ selected: boolean }>`
 	display: flex;
 	align-items: center;
 	padding: 10px;
 	position: relative;
+	transition: 0.3s;
+
+	${({ selected }) =>
+		selected &&
+		css`
+			border-right: 0.5rem solid ${props => props.theme.ownMessageBackground};
+			background: ${props => props.theme.activeUsersBackground};
+		`}
 `;
 
 const ScImage = styled.img`

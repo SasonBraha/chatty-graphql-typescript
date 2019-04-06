@@ -9,17 +9,20 @@ interface IProps {
 	currentUser?: IUser | null;
 	loading: boolean;
 	chatSlug: string;
+	isFetching: boolean;
+	isMoreMessagesToFetch: boolean;
 	data: {
 		chat: {
 			messages: IMessage[];
 		};
 	};
 	subscribeToNewMessages: (chatSlug: string) => void;
+	fetchOlderMessages: (chatSlug: string, beforeMessageId: string) => void;
 }
 
 interface IState {
 	messages: IMessage[];
-	unsubscribe: any;
+	isFetching: boolean;
 }
 
 class MessagesList extends Component<IProps, IState> {
@@ -30,21 +33,38 @@ class MessagesList extends Component<IProps, IState> {
 		this.init();
 		this.state = {
 			messages: [],
-			unsubscribe: null
+			isFetching: false
 		};
 		this.listEnd = React.createRef();
 	}
 
 	private init() {
+		console.log(this.props);
 		this.unsubscribe = this.props.subscribeToNewMessages(this.props.chatSlug);
 	}
+
+	private handleScroll = (e: React.UIEvent<HTMLDivElement>) => {
+		const shouldFetchThreshold = 250;
+		const { isFetching, isMoreMessagesToFetch } = this.props;
+		if (
+			e.currentTarget.scrollTop < shouldFetchThreshold &&
+			!isFetching &&
+			isMoreMessagesToFetch
+		) {
+			this.props.fetchOlderMessages(
+				this.props.chatSlug,
+				this.props.data.chat.messages[0]._id
+			);
+		}
+	};
 
 	componentDidUpdate(prevProps: IProps) {
 		const { data: oldData } = prevProps;
 		const { data: newData } = this.props;
 
 		// Handle Room Change
-		if (prevProps.chatSlug !== this.props.chatSlug) {
+		const isNewRoom = prevProps.chatSlug !== this.props.chatSlug;
+		if (isNewRoom) {
 			this.unsubscribe();
 			this.unsubscribe = this.props.subscribeToNewMessages(this.props.chatSlug);
 		}
@@ -52,9 +72,10 @@ class MessagesList extends Component<IProps, IState> {
 		// Handle Message Added
 		const isNewMessage =
 			(!oldData.chat && newData.chat) ||
-			oldData.chat.messages.length !== newData.chat.messages.length;
+			oldData.chat.messages.length !== newData.chat.messages.length ||
+			isNewRoom;
 		if (isNewMessage) {
-			this.listEnd.current.scrollIntoView({ behavior: 'smooth' });
+			this.listEnd.current.scrollIntoView();
 		}
 	}
 
@@ -70,7 +91,7 @@ class MessagesList extends Component<IProps, IState> {
 		} = this.props;
 
 		return (
-			<ScMessagesList>
+			<ScMessagesList onScroll={this.handleScroll}>
 				{loading ? (
 					<div>Loading</div>
 				) : (

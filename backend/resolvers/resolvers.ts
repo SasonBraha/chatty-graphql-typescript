@@ -17,6 +17,7 @@ import * as uuid from 'uuid';
 import Message, { MessageEntity, IMessage } from '../models/Message.model';
 import { Request } from 'express';
 import generateJWT from '../auth/generateJWT';
+import { ObjectID } from 'bson';
 
 enum SubscriptionTypesEnum {
 	NEW_MESSAGE = 'NEW_MESSAGE'
@@ -66,6 +67,31 @@ export class ChatResolver {
 	@Query(returns => ChatEntity)
 	async chat(@Arg('chatSlug') chatSlug: string): Promise<IChat> {
 		return await Chat.findOne({ slug: chatSlug });
+	}
+
+	@Query(returns => [MessageEntity], { nullable: true })
+	async olderMessages(
+		@Arg('beforeMessageId') beforeMessageId: string,
+		@Arg('chatSlug') chatSlug: string
+	): Promise<IMessage[]> {
+		const oldMessages = await Chat.aggregate([
+			{ $match: { slug: chatSlug } },
+			{
+				$lookup: {
+					from: 'messages',
+					localField: 'messages',
+					foreignField: '_id',
+					as: 'messages'
+				}
+			},
+			{ $unwind: '$messages' },
+			{ $match: { 'messages._id': { $lt: new ObjectID(beforeMessageId) } } },
+			{ $sort: { 'messages.createdAt': -1 } },
+			{ $limit: 20 },
+			{ $group: { _id: '$_id', messages: { $push: '$messages' } } }
+		]);
+
+		return oldMessages.length ? oldMessages[0].messages.reverse() : [];
 	}
 
 	@Query(returns => [ChatEntity])
@@ -154,7 +180,10 @@ export class ChatResolver {
 
 	@FieldResolver()
 	async messages(@Root() chat: IChat): Promise<IMessage[]> {
-		const populatedChat = await Chat.findById(chat._id)
+		const populatedChat = await Chat.findOne(
+			{ slug: chat.slug },
+			{ messages: { $slice: -20 } }
+		)
 			.populate({
 				path: 'messages',
 				model: 'Message'
