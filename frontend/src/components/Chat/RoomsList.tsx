@@ -4,7 +4,7 @@ import gql from 'graphql-tag';
 import { IChat } from '../../models';
 import RoomsListItem from './RoomsListItem';
 import styled from 'styled-components/macro';
-import { RouteComponentProps } from 'react-router';
+import { IChatProps } from './Chat';
 
 const ROOMS_LIST_QUERY = gql`
 	query {
@@ -21,11 +21,7 @@ const ROOMS_LIST_QUERY = gql`
 	}
 `;
 
-interface IMatchParams {
-	chatSlug?: string;
-}
-
-const RoomsList = (props: RouteComponentProps<IMatchParams>) => (
+const RoomsList = (props: IChatProps) => (
 	<Query query={ROOMS_LIST_QUERY}>
 		{({ loading, data }) => {
 			if (loading) return 'Loading...';

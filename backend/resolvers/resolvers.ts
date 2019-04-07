@@ -73,12 +73,14 @@ export class ChatResolver {
 		@Ctx('user') user: IUser,
 		@PubSub() pubSub: PubSubEngine
 	): Promise<IChat> {
-		const chat = await Chat.findOne({ slug: chatSlug }).lean();
 		if (isJoining) {
 			const userList = await activeUsers.addUser(chatSlug, user);
-			pubSub.publish(SubscriptionTypesEnum.USER_JOINED, userList);
+			pubSub.publish(SubscriptionTypesEnum.USER_JOINED, {
+				chatSlug,
+				userList
+			});
 		}
-		return chat;
+		return await Chat.findOne({ slug: chatSlug }).lean();
 	}
 
 	@Query(returns => [MessageEntity], { nullable: true })
@@ -191,7 +193,10 @@ export class ChatResolver {
 		defaultValue: null,
 		filter: ({ payload, args }) => payload.chatSlug === args.chatSlug
 	})
-	userJoined(@Root() activeUsers, @Arg('chatSlug') chatSlug: string): IUser[] {
+	userJoined(
+		@Root() activeUsers: { chatSlug: string; userList: IUser[] },
+		@Arg('chatSlug') chatSlug: string
+	): IUser[] {
 		return activeUsers.userList;
 	}
 

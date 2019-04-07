@@ -3,6 +3,7 @@ import { RouteComponentProps } from 'react-router';
 import gql from 'graphql-tag';
 import { Query } from 'react-apollo';
 import MessagesList from './MessagesList';
+import { IChatProps } from '../Chat';
 
 const MESSAGE_DATA_FRAGMENT = `
 	_id
@@ -48,11 +49,7 @@ const GET_OLDER_MESSAGES = gql`
 	}
 `;
 
-interface IMatchParams {
-	chatSlug: string;
-}
-
-const MessagesListData = (props: RouteComponentProps<IMatchParams>) => {
+const MessagesListData = (props: IChatProps) => {
 	const [isFetching, setIsFetching] = useState(false);
 	const [isMoreMessagesToFetch, setIsMoreMessagesToFetch] = useState(true);
 	const { chatSlug } = props.match.params;

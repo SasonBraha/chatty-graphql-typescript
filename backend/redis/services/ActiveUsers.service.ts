@@ -21,7 +21,7 @@ class ActiveUsersService {
 		);
 	}
 
-	public async addUser(chatSlug: string, userData: IUser) {
+	public async addUser(chatSlug: string, userData: IUser): Promise<IUser[]> {
 		const userList: IUser[] = await this.getUsers(chatSlug);
 		userList.push(userData);
 		await this.updateUserList(userList, chatSlug);

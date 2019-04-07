@@ -4,6 +4,7 @@ import Message from './Message';
 import { connect } from 'react-redux';
 import { IReducerState } from '../../../redux/reducers';
 import styled from 'styled-components/macro';
+import { IChatProps } from '../Chat';
 
 interface IProps {
 	currentUser?: IUser | null;
@@ -21,12 +22,8 @@ interface IProps {
 	setIsMoreMessagesToFetch: (value: boolean) => void;
 }
 
-interface IState {
-	messages: IMessage[];
-}
-
 @connect(({ currentUser }: IReducerState) => ({ currentUser }))
-class MessagesList extends Component<IProps, IState> {
+class MessagesList extends Component<IProps> {
 	private unsubscribe: any;
 	private listEnd: React.RefObject<any> = React.createRef();
 	private messagesList: React.RefObject<any> = React.createRef();
@@ -34,9 +31,6 @@ class MessagesList extends Component<IProps, IState> {
 	constructor(props: IProps) {
 		super(props);
 		this.init();
-		this.state = {
-			messages: []
-		};
 	}
 
 	private init() {
@@ -57,7 +51,7 @@ class MessagesList extends Component<IProps, IState> {
 		return null;
 	}
 
-	shouldComponentUpdate(nextProps: IProps, nextState: IState): boolean {
+	shouldComponentUpdate(nextProps: IProps): boolean {
 		const { isMessagesUpdated, isRoomChanged } = this.extractRequiredData(
 			this.props,
 			nextProps
@@ -65,20 +59,18 @@ class MessagesList extends Component<IProps, IState> {
 		return isMessagesUpdated! || isRoomChanged!;
 	}
 
-	componentDidUpdate(prevProps: IProps, prevState: IState, snapshot: number) {
+	componentDidUpdate(prevProps: IProps, _: any, snapshot: number) {
 		const { isRoomChanged, isMessagesUpdated } = this.extractRequiredData(
 			prevProps,
 			this.props
 		);
 
-		// Handle Room Change
 		if (isRoomChanged) {
 			this.unsubscribe();
 			this.props.setIsMoreMessagesToFetch(true);
 			this.unsubscribe = this.props.subscribeToNewMessages(this.props.chatSlug);
 		}
 
-		// Handle Message Added
 		if (isMessagesUpdated) {
 			if (snapshot !== null) {
 				return (this.messagesList.current.scrollTop =

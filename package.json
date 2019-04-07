@@ -1,25 +1,25 @@
 {
-  "name": "chatty-graphql-typescript",
-  "version": "1.0.0",
-  "description": "Rich Chat App",
-  "main": "index.js",
-  "scripts": {
-    "dev": "concurrently \"cd backend && tsc -w\" \"cd backend/dist && nodemon app.js\" \"cd frontend && npm start\"",
-    "dev:server": "concurrently \"cd backend && tsc -w\" \"cd backend/dist && nodemon app.js\"",
-    "dev:client": "cd frontend && npm start",
-    "deploy": "",
-    "deploy:server": "",
-    "deploy:client": ""
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/SasonBraha/chatty-graphql-typescript.git"
-  },
-  "author": "Sason Braha",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/SasonBraha/chatty-graphql-typescript/issues"
-  },
-  "homepage": "https://github.com/SasonBraha/chatty-graphql-typescript#readme",
-  "dependencies": {}
+	"name": "chatty-graphql-typescript",
+	"version": "1.0.0",
+	"description": "Rich Chat App",
+	"main": "index.js",
+	"scripts": {
+		"dev": "concurrently \"cd backend && tsc -w\" \"cd backend/dist && nodemon app.js\" \"cd frontend && npm start\"",
+		"dev:server": "concurrently \"cd backend && tsc -w\" \"cd backend/dist && nodemon app.js\"",
+		"dev:client": "cd frontend && npm start",
+		"deploy": "",
+		"deploy:server": "",
+		"deploy:client": ""
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/SasonBraha/chatty-graphql-typescript.git"
+	},
+	"author": "Sason Braha",
+	"license": "ISC",
+	"bugs": {
+		"url": "https://github.com/SasonBraha/chatty-graphql-typescript/issues"
+	},
+	"homepage": "https://github.com/SasonBraha/chatty-graphql-typescript#readme",
+	"dependencies": {}
 }

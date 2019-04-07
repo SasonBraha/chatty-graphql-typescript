@@ -2,14 +2,17 @@ import React, { Component } from 'react';
 import RoomsList from './RoomsList';
 import styled from 'styled-components/macro';
 import { RouteComponentProps } from 'react-router';
-import ActiveUsers from './ActiveUsers';
+import ActiveUsers from './ActiveUsers/ActiveUsers';
 import MessagesList from './MessagesList';
 import SendMessage from './SendMessage';
 
-interface IProps extends RouteComponentProps {}
+interface IMatchParams {
+	chatSlug: string;
+}
+export interface IChatProps extends RouteComponentProps<IMatchParams> {}
 
-class Chat extends Component<IProps> {
-	constructor(props: IProps) {
+class Chat extends Component<IChatProps> {
+	constructor(props: IChatProps) {
 		super(props);
 		this.init();
 	}
@@ -20,11 +23,9 @@ class Chat extends Component<IProps> {
 		return (
 			<ScChat>
 				<RoomsList {...this.props} />
-				<ActiveUsers />
+				<ActiveUsers {...this.props} />
 
 				<ScMessagesArea>
-					{/*
-// @ts-ignore */}
 					<MessagesList {...this.props} />
 					<SendMessage {...this.props} />
 				</ScMessagesArea>
@@ -35,7 +36,7 @@ class Chat extends Component<IProps> {
 
 const ScChat = styled.div`
 	display: grid;
-	grid-template-columns: 2fr 1fr 9fr;
+	grid-template-columns: 25rem 5rem 1fr;
 	height: 100%;
 `;
 
