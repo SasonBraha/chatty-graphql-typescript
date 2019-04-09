@@ -4,7 +4,6 @@ import Message from './Message';
 import { connect } from 'react-redux';
 import { IReducerState } from '../../../redux/reducers';
 import styled from 'styled-components/macro';
-import { IChatProps } from '../Chat';
 
 interface IProps {
 	currentUser?: IUser | null;

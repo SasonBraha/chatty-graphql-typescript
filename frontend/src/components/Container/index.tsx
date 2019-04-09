@@ -35,6 +35,7 @@ const StyledContainer = styled('main')<{
 	width: 100%;
 	transition: 0.5s cubic-bezier(0.6, 0.07, 0.07, 1.08);
 	will-change: width;
+	height: calc(100vh - ${props => props.theme.headerHeight});
 
 	${({ navOpen, shouldShrink }) =>
 		navOpen &&

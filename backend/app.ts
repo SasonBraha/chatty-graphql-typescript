@@ -53,7 +53,8 @@ const main = async () => {
 		//@ts-ignore
 		context: async ({ req, res, connection }) => {
 			if (connection) {
-				return { ctx: connection.context };
+				const user = await getUserData(connection.context.authToken);
+				return { user };
 			} else {
 				const bearerToken: string = req.headers.authorization;
 				const user = await getUserData(bearerToken);

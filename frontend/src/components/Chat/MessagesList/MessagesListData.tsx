@@ -25,7 +25,7 @@ const MESSAGE_DATA_FRAGMENT = `
 
 const MESSAGES_LIST_QUERY = gql`
 	query($chatSlug: String!) {
-		chat(chatSlug: $chatSlug, isJoining: true) {
+		chat(chatSlug: $chatSlug) {
 			messages {
 				${MESSAGE_DATA_FRAGMENT}
 			}

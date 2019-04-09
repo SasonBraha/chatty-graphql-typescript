@@ -1,4 +1,4 @@
-import { InputType, Field } from 'type-graphql';
+import { InputType, Field, ID, Int } from 'type-graphql';
 import { Length, IsEmail } from 'class-validator';
 
 @InputType()
@@ -26,6 +26,7 @@ export class RegisterInput {
 	@Field()
 	password: string;
 }
+
 @InputType()
 export class LoginInput {
 	@Field()
@@ -33,4 +34,34 @@ export class LoginInput {
 
 	@Field()
 	password: string;
+}
+
+@InputType()
+export class UserInput {
+	@Field()
+	displayName: string;
+
+	@Field()
+	email: string;
+
+	@Field()
+	avatar: string;
+
+	@Field()
+	jwtHandshake: string;
+
+	@Field()
+	role: string;
+
+	@Field()
+	slug: string;
+
+	@Field()
+	_id: string;
+
+	@Field(type => Int)
+	iat: number;
+
+	@Field(type => Int)
+	exp: number;
 }

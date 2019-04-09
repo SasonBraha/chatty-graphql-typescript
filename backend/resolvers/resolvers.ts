@@ -1,24 +1,24 @@
 import {
-	Resolver,
-	Mutation,
 	Arg,
 	Ctx,
-	Query,
 	FieldResolver,
-	Root,
-	Subscription,
+	Mutation,
 	PubSub,
-	PubSubEngine
+	PubSubEngine,
+	Query,
+	Resolver,
+	Root,
+	Subscription
 } from 'type-graphql';
-import User, { UserEntity, IUser } from '../models/User.model';
+import User, { IUser, UserEntity } from '../models/User.model';
 import Chat, { ChatEntity, IChat } from '../models/Chat.model';
-import { CreateChatInput, RegisterInput, LoginInput } from './inputs';
+import { CreateChatInput, LoginInput, RegisterInput } from './inputs';
 import * as uuid from 'uuid';
-import Message, { MessageEntity, IMessage } from '../models/Message.model';
+import Message, { IMessage, MessageEntity } from '../models/Message.model';
 import { Request } from 'express';
 import generateJWT from '../auth/generateJWT';
 import { ObjectID } from 'bson';
-import activeUsers from '../redis/services/ActiveUsers.service';
+import activeUsersService from '../redis/services/ActiveUsers.service';
 
 enum SubscriptionTypesEnum {
 	NEW_MESSAGE = 'NEW_MESSAGE',
@@ -69,17 +69,8 @@ export class ChatResolver {
 	@Query(returns => ChatEntity)
 	async chat(
 		@Arg('chatSlug') chatSlug: string,
-		@Arg('isJoining') isJoining: boolean,
-		@Ctx('user') user: IUser,
-		@PubSub() pubSub: PubSubEngine
+		@Ctx('user') user: IUser
 	): Promise<IChat> {
-		if (isJoining) {
-			const userList = await activeUsers.addUser(chatSlug, user);
-			pubSub.publish(SubscriptionTypesEnum.USER_JOINED, {
-				chatSlug,
-				userList
-			});
-		}
 		return await Chat.findOne({ slug: chatSlug }).lean();
 	}
 
@@ -175,6 +166,32 @@ export class ChatResolver {
 		return newMessage;
 	}
 
+	@Mutation(returns => Boolean, { nullable: true })
+	async addActiveUser(
+		@Arg('chatSlug') chatSlug: string,
+		@Ctx('user') user: IUser,
+		@PubSub() pubSub: PubSubEngine
+	): Promise<void> {
+		const userList = await activeUsersService.addUser(chatSlug, user);
+		pubSub.publish(SubscriptionTypesEnum.USER_JOINED, {
+			userList,
+			chatSlug
+		});
+	}
+
+	@Mutation(returns => Boolean, { nullable: true })
+	async removeActiveUser(
+		@Arg('chatSlug') chatSlug: string,
+		@Ctx('user') user: IUser,
+		@PubSub() pubSub: PubSubEngine
+	): Promise<void> {
+		const userList = await activeUsersService.removeUser(chatSlug, user);
+		pubSub.publish(SubscriptionTypesEnum.USER_JOINED, {
+			userList,
+			chatSlug
+		});
+	}
+
 	@Subscription(returns => MessageEntity, {
 		topics: SubscriptionTypesEnum.NEW_MESSAGE,
 		defaultValue: null,
@@ -190,14 +207,14 @@ export class ChatResolver {
 
 	@Subscription(returns => [UserEntity], {
 		topics: SubscriptionTypesEnum.USER_JOINED,
-		defaultValue: null,
+		defaultValue: [],
 		filter: ({ payload, args }) => payload.chatSlug === args.chatSlug
 	})
-	userJoined(
-		@Root() activeUsers: { chatSlug: string; userList: IUser[] },
+	activeUsers(
+		@Root() payloadData: { chatSlug: string; userList: IUser[] },
 		@Arg('chatSlug') chatSlug: string
 	): IUser[] {
-		return activeUsers.userList;
+		return payloadData.userList;
 	}
 
 	@FieldResolver()

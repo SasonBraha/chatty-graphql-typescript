@@ -1,14 +1,18 @@
-import React from 'react';
+import React, { Component } from 'react';
 import styled from 'styled-components';
 import gql from 'graphql-tag';
 import { IChatProps } from '../Chat';
 import Subscription from 'react-apollo/Subscriptions';
 import { IUser } from '../../../models';
 import { Link } from 'react-router-dom';
+import { withApollo } from 'react-apollo';
+import ApolloClient from 'apollo-client';
+import { connect } from 'react-redux';
+import { IReducerState } from '../../../redux/reducers';
 
 const ACTIVE_USERS_SUBSCRIPTION = gql`
 	subscription($chatSlug: String!) {
-		userJoined(chatSlug: $chatSlug) {
+		activeUsers(chatSlug: $chatSlug) {
 			displayName
 			avatar
 			slug
@@ -16,25 +20,93 @@ const ACTIVE_USERS_SUBSCRIPTION = gql`
 	}
 `;
 
-const ActiveUsers = (props: IChatProps) => (
-	<ScActiveUsers>
-		<Subscription
-			subscription={ACTIVE_USERS_SUBSCRIPTION}
-			variables={{ chatSlug: props.match.params.chatSlug }}
-		>
-			{({ data, loading }) =>
-				!loading &&
-				data.userJoined.map((user: IUser, i: number) => (
-					<Link to={`/users/${user.slug}`} key={i}>
-						<ScActiveUser>
-							<ScAvatar src={user.avatar} alt={user.displayName} />
-						</ScActiveUser>
-					</Link>
-				))
-			}
-		</Subscription>
-	</ScActiveUsers>
-);
+const ADD_ACTIVE_USER_MUTATION = gql`
+	mutation($chatSlug: String!) {
+		addActiveUser(chatSlug: $chatSlug)
+	}
+`;
+
+const REMOVE_ACTIVE_USER_MUTATION = gql`
+	mutation($chatSlug: String!) {
+		removeActiveUser(chatSlug: $chatSlug)
+	}
+`;
+
+interface IProps extends IChatProps {
+	client?: ApolloClient<any>;
+	currentUser: IUser | null;
+}
+
+@connect(({ currentUser }: IReducerState) => ({ currentUser }))
+class ActiveUsers extends Component<IProps> {
+	constructor(props: IProps) {
+		super(props);
+		this.init();
+	}
+
+	private init = () => {
+		// @ts-ignore
+		window.addEventListener('beforeunload', this.removeActiveUser);
+		this.addActiveUser();
+	};
+
+	componentDidUpdate(prevProps: Readonly<IProps>) {
+		if (prevProps.match.params.chatSlug !== this.props.match.params.chatSlug) {
+			this.removeActiveUser(prevProps.match.params.chatSlug);
+			this.addActiveUser();
+			console.log(this.props.client);
+		}
+	}
+
+	componentWillUnmount() {
+		//@ts-ignore
+		window.removeEventListener('beforeunload', this.removeActiveUser);
+		this.removeActiveUser();
+	}
+
+	private addActiveUser = () => {
+		this.props.client!.mutate({
+			variables: {
+				chatSlug: this.props.match.params.chatSlug
+			},
+			mutation: ADD_ACTIVE_USER_MUTATION
+		});
+	};
+
+	private removeActiveUser = (chatSlug?: string) => {
+		this.props.client!.mutate({
+			variables: {
+				chatSlug:
+					typeof chatSlug === 'string'
+						? chatSlug
+						: this.props.match.params.chatSlug
+			},
+			mutation: REMOVE_ACTIVE_USER_MUTATION
+		});
+	};
+
+	render() {
+		return (
+			<ScActiveUsers>
+				<Subscription
+					subscription={ACTIVE_USERS_SUBSCRIPTION}
+					variables={{ chatSlug: this.props.match.params.chatSlug }}
+				>
+					{({ data = { activeUsers: [] }, loading }) => {
+						console.log(data);
+						return data.activeUsers.map((user: IUser, i: number) => (
+							<Link to={`/users/${user.slug}`} key={i}>
+								<ScActiveUser>
+									<ScAvatar src={user.avatar} alt={user.displayName} />
+								</ScActiveUser>
+							</Link>
+						));
+					}}
+				</Subscription>
+			</ScActiveUsers>
+		);
+	}
+}
 
 const ScActiveUsers = styled.div`
 	padding: 0 2rem 0 2rem;
@@ -79,4 +151,5 @@ const ScAvatar = styled.img`
 	transform: translateY(0.2rem);
 `;
 
-export default ActiveUsers;
+// @ts-ignore
+export default withApollo(ActiveUsers);
