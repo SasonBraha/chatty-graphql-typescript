@@ -1,24 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="f5d32516-c57c-4efd-9a40-1e63148cbd4c" name="Default Changelist" comment="Active users implementation">
-      <change beforePath="$PROJECT_DIR$/.idea/chatty-graphql-typescript.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/chatty-graphql-typescript.iml" afterDir="false" />
+    <list default="true" id="f5d32516-c57c-4efd-9a40-1e63148cbd4c" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/frontend/src/apollo/mutationsOverSocket.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/frontend/src/apollo/utils.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/app.ts" beforeDir="false" afterPath="$PROJECT_DIR$/backend/app.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/backend/package-lock.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/backend/package.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/redis/services/ActiveUsers.service.ts" beforeDir="false" afterPath="$PROJECT_DIR$/backend/redis/services/ActiveUsers.service.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/resolvers/inputs.ts" beforeDir="false" afterPath="$PROJECT_DIR$/backend/resolvers/inputs.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/resolvers/resolvers.ts" beforeDir="false" afterPath="$PROJECT_DIR$/backend/resolvers/resolvers.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/.env.development" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/.env.development" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/.env.production" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/.env.production" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/frontend/src/apollo/client.ts" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/apollo/client.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/components/Chat/ActiveUsers/ActiveUsers.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/Chat/ActiveUsers/ActiveUsers.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/components/Chat/MessagesList/MessagesList.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/Chat/MessagesList/MessagesList.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/components/Chat/MessagesList/MessagesListData.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/Chat/MessagesList/MessagesListData.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/components/Container/index.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/Container/index.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/environment.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/environment.d.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/models/index.ts" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/models/index.ts" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/backend/node_modules/" />
     <ignored path="$PROJECT_DIR$/frontend/node_modules/" />
@@ -36,7 +23,7 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/frontend/src/components/Chat/ActiveUsers/ActiveUsers.tsx">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="513">
+            <state relative-caret-position="-2959">
               <caret line="19" column="3" lean-forward="true" selection-start-line="19" selection-start-column="3" selection-end-line="19" selection-end-column="3" />
               <folding>
                 <element signature="e#0#41#0" expanded="true" />
@@ -46,9 +33,39 @@
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/frontend/src/apollo/client.ts">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="540">
+              <caret line="56" column="27" lean-forward="true" selection-start-line="56" selection-start-column="27" selection-end-line="56" selection-end-column="27" />
+              <folding>
+                <element signature="e#0#45#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/frontend/src/apollo/utils.ts">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="81">
+              <caret line="3" lean-forward="true" selection-start-line="3" selection-end-line="3" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/frontend/src/apollo/mutationsOverSocket.ts">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="27">
+              <caret line="1" lean-forward="true" selection-start-line="1" selection-end-line="1" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/backend/redis/services/ActiveUsers.service.ts">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="470">
+            <state relative-caret-position="814">
               <caret line="32" selection-start-line="32" selection-end-line="32" selection-end-column="26" />
               <folding>
                 <element signature="e#0#49#0" expanded="true" />
@@ -60,8 +77,20 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/backend/resolvers/resolvers.ts">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="459">
-              <caret line="17" column="16" selection-start-line="17" selection-start-column="16" selection-end-line="17" selection-end-column="16" />
+            <state relative-caret-position="247">
+              <caret line="90" column="9" lean-forward="true" selection-start-line="90" selection-start-column="9" selection-end-line="90" selection-end-column="9" />
+              <folding>
+                <element signature="e#0#134#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/backend/app.ts">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="1782">
+              <caret line="75" column="2" lean-forward="true" selection-start-line="75" selection-start-column="2" selection-end-line="75" selection-end-column="2" />
             </state>
           </provider>
         </entry>
@@ -86,6 +115,7 @@
       <find>sourc</find>
       <find>user._id</find>
       <find>console.log</find>
+      <find>$LOOK</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -115,12 +145,15 @@
         <option value="$PROJECT_DIR$/frontend/src/environment.d.ts" />
         <option value="$PROJECT_DIR$/frontend/.env.development" />
         <option value="$PROJECT_DIR$/frontend/.env.production" />
-        <option value="$PROJECT_DIR$/frontend/src/apollo/client.ts" />
         <option value="$PROJECT_DIR$/backend/resolvers/inputs.ts" />
         <option value="$PROJECT_DIR$/frontend/src/components/Chat/MessagesList/MessagesListData.tsx" />
-        <option value="$PROJECT_DIR$/backend/app.ts" />
         <option value="$PROJECT_DIR$/backend/redis/services/ActiveUsers.service.ts" />
         <option value="$PROJECT_DIR$/frontend/src/components/Chat/ActiveUsers/ActiveUsers.tsx" />
+        <option value="$PROJECT_DIR$/backend/app.ts" />
+        <option value="$PROJECT_DIR$/frontend/src/apollo/socketMutations.ts" />
+        <option value="$PROJECT_DIR$/frontend/src/apollo/mutationsOverSocket.ts" />
+        <option value="$PROJECT_DIR$/frontend/src/apollo/utils.ts" />
+        <option value="$PROJECT_DIR$/frontend/src/apollo/client.ts" />
         <option value="$PROJECT_DIR$/backend/resolvers/resolvers.ts" />
       </list>
     </option>
@@ -168,6 +201,13 @@
               <item name="chatty-graphql-typescript" type="462c0819:PsiDirectoryNode" />
               <item name="frontend" type="462c0819:PsiDirectoryNode" />
               <item name="src" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="chatty-graphql-typescript" type="b2602c69:ProjectViewProjectNode" />
+              <item name="chatty-graphql-typescript" type="462c0819:PsiDirectoryNode" />
+              <item name="frontend" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="apollo" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
               <item name="chatty-graphql-typescript" type="b2602c69:ProjectViewProjectNode" />
@@ -266,7 +306,7 @@
       <workItem from="1554584447960" duration="29000" />
       <workItem from="1554657412738" duration="638000" />
       <workItem from="1554658071781" duration="6945000" />
-      <workItem from="1554746986500" duration="20526000" />
+      <workItem from="1554746986500" duration="26042000" />
     </task>
     <task id="LOCAL-00001" summary="Publish distinction">
       <created>1554550447481</created>
@@ -303,11 +343,18 @@
       <option name="project" value="LOCAL" />
       <updated>1554665281316</updated>
     </task>
-    <option name="localTasksCounter" value="6" />
+    <task id="LOCAL-00006" summary="Migrated http to socket">
+      <created>1554802747808</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1554802747809</updated>
+    </task>
+    <option name="localTasksCounter" value="7" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="57873000" />
+    <option name="totallyTimeSpent" value="63389000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -327,7 +374,7 @@
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" weight="0.32936078" />
-      <window_info anchor="bottom" id="Run" order="2" weight="0.32936078" />
+      <window_info active="true" anchor="bottom" id="Run" order="2" visible="true" weight="0.32936078" />
       <window_info anchor="bottom" id="Debug" order="3" weight="0.3997833" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
@@ -375,26 +422,10 @@
     <MESSAGE value="Fixed pagination when moving between rooms, fixed unnecessary render" />
     <MESSAGE value="Added active users service" />
     <MESSAGE value="Active users implementation" />
-    <option name="LAST_COMMIT_MESSAGE" value="Active users implementation" />
+    <MESSAGE value="Migrated http to socket" />
+    <option name="LAST_COMMIT_MESSAGE" value="Migrated http to socket" />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/backend/node_modules/type-graphql/dist/decorators/Subscription.d.ts">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="54">
-          <caret line="2" column="4" selection-start-line="2" selection-start-column="4" selection-end-line="2" selection-end-column="4" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/backend/models/Message.model.ts">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-421">
-          <caret line="14" column="1" lean-forward="true" selection-start-line="14" selection-start-column="1" selection-end-line="14" selection-end-column="1" />
-          <folding>
-            <element signature="e#0#51#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/backend/redis/index.ts">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="216">
@@ -584,16 +615,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/frontend/src/apollo/client.ts">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="405">
-          <caret line="15" selection-start-line="15" selection-end-line="15" />
-          <folding>
-            <element signature="e#0#45#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/backend/dist/app.js">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="299">
@@ -673,13 +694,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/backend/app.ts">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1101">
-          <caret line="56" column="24" lean-forward="true" selection-start-line="56" selection-start-column="24" selection-end-line="56" selection-end-column="24" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/frontend/.env.production">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="108">
@@ -718,7 +732,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/backend/redis/services/ActiveUsers.service.ts">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="470">
+        <state relative-caret-position="814">
           <caret line="32" selection-start-line="32" selection-end-line="32" selection-end-column="26" />
           <folding>
             <element signature="e#0#49#0" expanded="true" />
@@ -726,9 +740,16 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/backend/app.ts">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1782">
+          <caret line="75" column="2" lean-forward="true" selection-start-line="75" selection-start-column="2" selection-end-line="75" selection-end-column="2" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/frontend/src/components/Chat/ActiveUsers/ActiveUsers.tsx">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="513">
+        <state relative-caret-position="-2959">
           <caret line="19" column="3" lean-forward="true" selection-start-line="19" selection-start-column="3" selection-end-line="19" selection-end-column="3" />
           <folding>
             <element signature="e#0#41#0" expanded="true" />
@@ -736,10 +757,37 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/frontend/src/apollo/utils.ts">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="81">
+          <caret line="3" lean-forward="true" selection-start-line="3" selection-end-line="3" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/frontend/src/apollo/client.ts">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="540">
+          <caret line="56" column="27" lean-forward="true" selection-start-line="56" selection-start-column="27" selection-end-line="56" selection-end-column="27" />
+          <folding>
+            <element signature="e#0#45#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/frontend/src/apollo/mutationsOverSocket.ts">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="27">
+          <caret line="1" lean-forward="true" selection-start-line="1" selection-end-line="1" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/backend/resolvers/resolvers.ts">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="459">
-          <caret line="17" column="16" selection-start-line="17" selection-start-column="16" selection-end-line="17" selection-end-column="16" />
+        <state relative-caret-position="247">
+          <caret line="90" column="9" lean-forward="true" selection-start-line="90" selection-start-column="9" selection-end-line="90" selection-end-column="9" />
+          <folding>
+            <element signature="e#0#134#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
