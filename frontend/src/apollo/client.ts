@@ -1,5 +1,4 @@
 import { ApolloClient } from 'apollo-client';
-import { createHttpLink } from 'apollo-link-http';
 import { setContext } from 'apollo-link-context';
 import { InMemoryCache } from 'apollo-cache-inmemory';
 import { WebSocketLink } from 'apollo-link-ws';
@@ -7,6 +6,7 @@ import { split } from 'apollo-link';
 import { getMainDefinition } from 'apollo-utilities';
 import { getOperationName } from './utils';
 import mutationsOverSocket from './mutationsOverSocket';
+import { createUploadLink } from 'apollo-upload-client';
 
 interface IDefinintion {
 	kind: string;
@@ -27,7 +27,7 @@ const wsLink = () => {
 		}
 	});
 };
-const httpLink = createHttpLink({
+const httpLink = createUploadLink({
 	uri: process.env.REACT_APP_GRAPHQL_URI
 });
 

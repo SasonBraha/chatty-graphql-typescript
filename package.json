@@ -21,5 +21,7 @@
 		"url": "https://github.com/SasonBraha/chatty-graphql-typescript/issues"
 	},
 	"homepage": "https://github.com/SasonBraha/chatty-graphql-typescript#readme",
-	"dependencies": {}
+	"dependencies": {
+		"graphql": "^14.2.1"
+	}
 }

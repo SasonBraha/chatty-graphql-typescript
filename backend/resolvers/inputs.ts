@@ -7,11 +7,9 @@ export class CreateChatInput {
 	@Length(1, 20)
 	name: string;
 
-	@Field()
-	isPrivate: boolean;
+	@Field() isPrivate: boolean;
 
-	@Field()
-	storeMessages: boolean;
+	@Field() storeMessages: boolean;
 }
 
 @InputType()
@@ -20,48 +18,23 @@ export class RegisterInput {
 	@Length(3, 25)
 	displayName: string;
 
-	@Field()
-	email: string;
+	@Field() email: string;
 
-	@Field()
-	password: string;
+	@Field() password: string;
 }
 
 @InputType()
 export class LoginInput {
-	@Field()
-	email: string;
+	@Field() email: string;
 
-	@Field()
-	password: string;
+	@Field() password: string;
 }
 
 @InputType()
-export class UserInput {
-	@Field()
-	displayName: string;
+export class FileInput {
+	@Field() filename: string;
 
-	@Field()
-	email: string;
+	@Field() mimetype: string;
 
-	@Field()
-	avatar: string;
-
-	@Field()
-	jwtHandshake: string;
-
-	@Field()
-	role: string;
-
-	@Field()
-	slug: string;
-
-	@Field()
-	_id: string;
-
-	@Field(type => Int)
-	iat: number;
-
-	@Field(type => Int)
-	exp: number;
+	@Field() encoding: string;
 }

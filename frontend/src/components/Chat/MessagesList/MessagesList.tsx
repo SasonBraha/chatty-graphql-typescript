@@ -19,6 +19,7 @@ interface IProps {
 	subscribeToNewMessages: (chatSlug: string) => void;
 	fetchOlderMessages: (chatSlug: string, beforeMessageId: string) => void;
 	setIsMoreMessagesToFetch: (value: boolean) => void;
+	refetch: () => void;
 }
 
 @connect(({ currentUser }: IReducerState) => ({ currentUser }))
@@ -68,6 +69,7 @@ class MessagesList extends Component<IProps> {
 			this.unsubscribe();
 			this.props.setIsMoreMessagesToFetch(true);
 			this.unsubscribe = this.props.subscribeToNewMessages(this.props.chatSlug);
+			this.props.refetch();
 		}
 
 		if (isMessagesUpdated) {

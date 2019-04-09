@@ -8,10 +8,8 @@ import * as cors from 'cors';
 import * as mongoose from 'mongoose';
 import * as morgan from 'morgan';
 import getUserData from './auth/getUserData';
-//@ts-ignore
-import { buildSchema, formatArgumentValidationError } from 'type-graphql';
+import { buildSchema } from 'type-graphql';
 import { ChatResolver } from './resolvers/resolvers';
-import { GraphQLServiceContext } from 'apollo-server-plugin-base';
 
 const main = async () => {
 	const app = express();

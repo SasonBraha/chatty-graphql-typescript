@@ -12,7 +12,12 @@ import {
 } from 'type-graphql';
 import User, { IUser, UserEntity } from '../models/User.model';
 import Chat, { ChatEntity, IChat } from '../models/Chat.model';
-import { CreateChatInput, LoginInput, RegisterInput } from './inputs';
+import {
+	CreateChatInput,
+	FileInput,
+	LoginInput,
+	RegisterInput
+} from './inputs';
 import * as uuid from 'uuid';
 import Message, { IMessage, MessageEntity } from '../models/Message.model';
 import { Request } from 'express';
@@ -129,6 +134,7 @@ export class ChatResolver {
 	async postMessage(
 		@Arg('text') text: string,
 		@Arg('chatSlug') chatSlug: string,
+		@Arg('file', { nullable: true }) file: string,
 		@Ctx('user') user: IUser,
 		@PubSub() pubSub: PubSubEngine
 	): Promise<IMessage> {

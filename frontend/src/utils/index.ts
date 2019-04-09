@@ -1,3 +1,4 @@
 import validCss from './validCss';
+import getBase64 from './getBase64';
 
-export { validCss };
+export { validCss, getBase64 };

@@ -5,10 +5,11 @@ import { withFormik, FormikProps } from 'formik';
 import { compose, graphql } from 'react-apollo';
 import Icon from '../Shared/Icon';
 import { RouteComponentProps } from 'react-router';
+import { getBase64 } from '../../utils';
 
 const SEND_MESSAGE_MUTATION = gql`
-	mutation($chatSlug: String!, $text: String!) {
-		postMessage(text: $text, chatSlug: $chatSlug) {
+	mutation($chatSlug: String!, $text: String!, $file: String) {
+		postMessage(text: $text, chatSlug: $chatSlug, file: $file) {
 			text
 		}
 	}
@@ -97,22 +98,22 @@ const ScMessageInput = styled.input`
 export default compose(
 	graphql(SEND_MESSAGE_MUTATION),
 	withFormik({
-		mapPropsToValues: () => ({ text: '' }),
+		mapPropsToValues: () => ({ text: '', file: '' }),
 		handleSubmit: async (
 			values,
 			//@ts-ignore
-			{ props: { mutate, match }, setSubmitting, resetForm }
+			{ props: { mutate, match }, resetForm }
 		) => {
-			resetForm();
-			const sendMessageData = await mutate({
+			// @ts-ignore
+			console.log(await getBase64(values.file));
+			await mutate({
 				variables: {
 					...values,
-					chatSlug: match.params.chatSlug
+					chatSlug: match.params.chatSlug,
+					file: await getBase64((values.file as unknown) as File)
 				}
 			});
-			const {
-				data: { sendMessageMutation: authToken }
-			} = sendMessageData;
+			resetForm();
 		}
 	})
 )(SendMessage);

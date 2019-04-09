@@ -54,7 +54,6 @@ class ActiveUsers extends Component<IProps> {
 		if (prevProps.match.params.chatSlug !== this.props.match.params.chatSlug) {
 			this.removeActiveUser(prevProps.match.params.chatSlug);
 			this.addActiveUser();
-			console.log(this.props.client);
 		}
 	}
 
@@ -93,7 +92,6 @@ class ActiveUsers extends Component<IProps> {
 					variables={{ chatSlug: this.props.match.params.chatSlug }}
 				>
 					{({ data = { activeUsers: [] }, loading }) => {
-						console.log(data);
 						return data.activeUsers.map((user: IUser, i: number) => (
 							<Link to={`/users/${user.slug}`} key={i}>
 								<ScActiveUser>
@@ -111,7 +109,6 @@ class ActiveUsers extends Component<IProps> {
 const ScActiveUsers = styled.div`
 	padding: 0 2rem 0 2rem;
 	text-align: center;
-	height: 100%;
 	background: ${props => props.theme.activeUsersBackground};
 	padding: 0.5rem;
 	overflow-y: auto;

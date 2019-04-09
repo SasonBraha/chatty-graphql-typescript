@@ -44,6 +44,7 @@ const RoomsList = (props: IChatProps) => (
 const ScRoomsList = styled.div`
 	background: ${props => props.theme.roomsListBackground};
 	grid-column: 1 / 2;
+	overflow: auto;
 `;
 
 export default RoomsList;

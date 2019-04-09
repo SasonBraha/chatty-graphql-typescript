@@ -30,7 +30,6 @@ class ActiveUsersService {
 
 	public async removeUser(chatSlug: string, userData: IUser): Promise<IUser[]> {
 		const userList = await this.getUsers(chatSlug);
-		console.log(chatSlug);
 		const updatedUserList = userList.filter(user => user._id !== userData._id);
 		await this.updateUserList(updatedUserList, chatSlug);
 		return updatedUserList;
