@@ -14,26 +14,31 @@ interface IProps {
 	currentUser: IUser | null;
 }
 
-const headerDropdownItmes = [
-	{
-		icon: 'icon-user',
-		text: 'הפרופיל שלי'
-	},
-	{
-		icon: 'icon-cog',
-		text: 'הגדרות'
-	},
-	{
-		icon: 'icon-sign-out',
-		text: 'התנתק',
-		onClick: () => {
-			localStorage.removeItem(process.env.REACT_APP_LS_AUTH_TOKEN);
-			window.location.reload();
+const headerDropdownItmes = (props: IProps) => {
+	return [
+		{
+			icon: 'icon-user',
+			text: 'הפרופיל שלי',
+			to: `/user/${props.currentUser!.slug}`
+		},
+		{
+			icon: 'icon-cog',
+			text: 'הגדרות',
+			to: '/user/settings'
+		},
+		{
+			icon: 'icon-sign-out',
+			text: 'התנתק',
+			onClick: () => {
+				localStorage.removeItem(process.env.REACT_APP_LS_AUTH_TOKEN);
+				window.location.reload();
+			}
 		}
-	}
-];
+	];
+};
 
-const Header = ({ setAuthModal, setNavState, currentUser }: IProps) => {
+const Header = (props: IProps) => {
+	const { setAuthModal, setNavState, currentUser } = props;
 	const [isHeaderDropdownOpen, setHeaderDropdown] = useState(false);
 
 	return (
@@ -48,11 +53,19 @@ const Header = ({ setAuthModal, setNavState, currentUser }: IProps) => {
 						resetDropdown={() => setHeaderDropdown(false)}
 					>
 						<ul>
-							{headerDropdownItmes.map(({ icon, text, onClick }, i) => (
-								<ListItem key={i} icon={icon} onClick={onClick} withRipple>
-									{text}
-								</ListItem>
-							))}
+							{headerDropdownItmes(props).map(
+								({ icon, text, onClick, to }, i) => (
+									<ListItem
+										key={i}
+										icon={icon}
+										linkTo={to}
+										onClick={onClick}
+										withRipple
+									>
+										{text}
+									</ListItem>
+								)
+							)}
 						</ul>
 					</Dropdown>
 				</ScProfileDropdown>

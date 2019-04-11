@@ -93,7 +93,7 @@ class ActiveUsers extends Component<IProps> {
 				>
 					{({ data = { activeUsers: [] }, loading }) => {
 						return data.activeUsers.map((user: IUser, i: number) => (
-							<Link to={`/users/${user.slug}`} key={i}>
+							<Link to={`/user/${user.slug}`} key={i}>
 								<ScActiveUser>
 									<ScAvatar src={user.avatar} alt={user.displayName} />
 								</ScActiveUser>

@@ -9,7 +9,7 @@ import * as mongoose from 'mongoose';
 import * as morgan from 'morgan';
 import getUserData from './auth/getUserData';
 import { buildSchema } from 'type-graphql';
-import { ChatResolver } from './resolvers/resolvers';
+import { ChatResolver, UserResolver } from './resolvers';
 
 const main = async () => {
 	const app = express();
@@ -40,7 +40,7 @@ const main = async () => {
 	}
 
 	const schema = await buildSchema({
-		resolvers: [ChatResolver]
+		resolvers: [UserResolver, ChatResolver]
 	});
 
 	const apolloServer = new ApolloServer({

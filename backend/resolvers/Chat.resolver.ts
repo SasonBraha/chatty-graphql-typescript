@@ -4,73 +4,27 @@ import {
 	FieldResolver,
 	Mutation,
 	PubSub,
-	PubSubEngine,
 	Query,
 	Resolver,
 	Root,
-	Subscription
+	Subscription,
+	PubSubEngine
 } from 'type-graphql';
-import User, { IUser, UserEntity } from '../models/User.model';
 import Chat, { ChatEntity, IChat } from '../models/Chat.model';
-import {
-	CreateChatInput,
-	FileInput,
-	LoginInput,
-	RegisterInput
-} from './inputs';
-import * as uuid from 'uuid';
+import User, { IUser, UserEntity } from '../models/User.model';
 import Message, { IMessage, MessageEntity } from '../models/Message.model';
-import { Request } from 'express';
-import generateJWT from '../auth/generateJWT';
 import { ObjectID } from 'bson';
+import { CreateChatInput } from './inputs';
 import activeUsersService from '../redis/services/ActiveUsers.service';
+import * as uuid from 'uuid';
 
 enum SubscriptionTypesEnum {
 	NEW_MESSAGE = 'NEW_MESSAGE',
 	USER_JOINED = 'USER_JOINED'
 }
 
-@Resolver(UserEntity)
-class UserResolver {
-	@Mutation(returns => Boolean)
-	async register(
-		@Arg('data') { displayName, email, password }: RegisterInput,
-		@Ctx('req') req: Request
-	): Promise<boolean> {
-		try {
-			await User.create({
-				displayName,
-				email,
-				password,
-				slug: `${displayName}@${uuid()}`,
-				jwtId: uuid(),
-				ipAddress:
-					req.headers['x-forwarded-for'] || req.connection.remoteAddress
-			});
-			return true;
-		} catch (ex) {
-			return false;
-		}
-	}
-
-	@Mutation(returns => String, { nullable: true })
-	async login(@Arg('data') { email, password }: LoginInput): Promise<string> {
-		try {
-			const user = await User.findOne({ email });
-			if (!user) return null;
-
-			const isPasswordMatch = await user.comparePassword(password);
-			if (!isPasswordMatch) return null;
-
-			return generateJWT(user);
-		} catch (ex) {
-			return null;
-		}
-	}
-}
-
 @Resolver(ChatEntity)
-export class ChatResolver {
+export default class ChatResolver {
 	@Query(returns => ChatEntity)
 	async chat(
 		@Arg('chatSlug') chatSlug: string,
