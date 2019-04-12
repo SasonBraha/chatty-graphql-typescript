@@ -1,4 +1,4 @@
-import React, { Component, useState } from 'react';
+import React, { useState } from 'react';
 import RoomsList from './RoomsList';
 import styled from 'styled-components/macro';
 import { RouteComponentProps } from 'react-router';
@@ -40,6 +40,7 @@ const ScMessagesArea = styled.div`
 	flex-direction: column;
 	height: calc(100vh - ${props => props.theme.headerHeight});
 	position: relative;
+	overflow: hidden;
 `;
 
 export default Chat;

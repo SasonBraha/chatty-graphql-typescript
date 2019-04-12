@@ -1,5 +1,6 @@
 import { InputType, Field, ID, Int } from 'type-graphql';
 import { Length, IsEmail } from 'class-validator';
+import { Stream } from 'stream';
 
 @InputType()
 export class CreateChatInput {
@@ -30,11 +31,9 @@ export class LoginInput {
 	@Field() password: string;
 }
 
-@InputType()
-export class FileInput {
-	@Field() filename: string;
-
-	@Field() mimetype: string;
-
-	@Field() encoding: string;
+export interface IFileInput {
+	filename: string;
+	mimetype: string;
+	encoding: string;
+	createReadStream: () => Stream;
 }

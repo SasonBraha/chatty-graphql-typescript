@@ -40,6 +40,8 @@ const main = async () => {
 		app.use(morgan('dev'));
 	}
 
+	// Body Parser Middleware
+	app.use(bodyParser.urlencoded({ extended: true }));
 	app.use(bodyParser.json({ limit: '10mb' }));
 
 	//------------------------------------//

@@ -14,9 +14,11 @@ import Chat, { ChatEntity, IChat } from '../models/Chat.model';
 import User, { IUser, UserEntity } from '../models/User.model';
 import Message, { IMessage, MessageEntity } from '../models/Message.model';
 import { ObjectID } from 'bson';
-import { CreateChatInput } from './inputs';
+import { CreateChatInput, IFileInput } from './inputs';
 import activeUsersService from '../redis/services/ActiveUsers.service';
 import * as uuid from 'uuid';
+import { GraphQLUpload } from 'apollo-server-express';
+import { createBufferFromStream, uploadFile } from '../utils/files';
 
 enum SubscriptionTypesEnum {
 	NEW_MESSAGE = 'NEW_MESSAGE',
@@ -88,7 +90,6 @@ export default class ChatResolver {
 	async postMessage(
 		@Arg('text') text: string,
 		@Arg('chatSlug') chatSlug: string,
-		@Arg('file', { nullable: true }) file: string,
 		@Ctx('user') user: IUser,
 		@PubSub() pubSub: PubSubEngine
 	): Promise<IMessage> {
@@ -124,6 +125,15 @@ export default class ChatResolver {
 		);
 
 		return newMessage;
+	}
+
+	@Mutation(returns => String)
+	async uploadMessageFile(
+		@Arg('file', () => GraphQLUpload) file: IFileInput,
+		@Ctx('user') user: IUser
+	): Promise<string> {
+		console.log(await uploadFile(file));
+		return '';
 	}
 
 	@Mutation(returns => Boolean, { nullable: true })

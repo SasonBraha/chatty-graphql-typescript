@@ -16,7 +16,11 @@ const UploadPreview = (props: IProps) => {
 		>
 			{mountState => (
 				<ScUploadPreview className={mountState}>
-					<ScImage src={URL.createObjectURL(props.file)} alt='' />
+					<ScImage
+						src={URL.createObjectURL(props.file)}
+						alt={props.file!.name}
+						title={props.file!.name}
+					/>
 				</ScUploadPreview>
 			)}
 		</Transition>

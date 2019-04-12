@@ -5,13 +5,19 @@ import { withFormik, FormikProps } from 'formik';
 import { compose, graphql } from 'react-apollo';
 import Icon from '../Shared/Icon';
 import { RouteComponentProps } from 'react-router';
-import { getBase64 } from '../../utils';
+import { withApollo } from 'react-apollo';
 
 const SEND_MESSAGE_MUTATION = gql`
-	mutation($chatSlug: String!, $text: String!, $file: Upload) {
-		postMessage(text: $text, chatSlug: $chatSlug, file: $file) {
+	mutation($chatSlug: String!, $text: String!) {
+		postMessage(text: $text, chatSlug: $chatSlug) {
 			text
 		}
+	}
+`;
+
+const UPLOAD_FILE_MUTATION = gql`
+	mutation($file: Upload!) {
+		uploadMessageFile(file: $file)
 	}
 `;
 
@@ -50,11 +56,12 @@ const SendMessage = (props: IProps) => {
 					type='file'
 					name='file'
 					onChange={e => {
-						const file = e.target.files![0];
-						setFieldValue('file', file);
+						const file: File = e.target.files![0];
 						setFilePreview(file);
+						setFieldValue('file', file);
 					}}
 					onBlur={handleBlur}
+					accept='image/*, video/*'
 				/>
 				<ScAttachIcon icon='icon-paperclip' />
 			</ScAttachLabel>
@@ -81,6 +88,7 @@ const ScForm = styled.form`
 `;
 
 const ScAttachLabel = styled.label`
+	cursor: pointer;
 	input[type='file'] {
 		display: none;
 	}
@@ -106,22 +114,32 @@ const ScMessageInput = styled.input`
 `;
 
 export default compose(
-	graphql(SEND_MESSAGE_MUTATION),
+	graphql(SEND_MESSAGE_MUTATION, { name: 'sendMessage' }),
+	graphql(UPLOAD_FILE_MUTATION, { name: 'uploadFile' }),
 	withFormik({
 		mapPropsToValues: () => ({ text: '', file: '' }),
 		handleSubmit: async (
 			values,
 			//@ts-ignore
-			{ props: { mutate, match }, resetForm }
+			{ props: { sendMessage, uploadFile, match }, resetForm }
 		) => {
-			await mutate({
+			// Send Message
+			await sendMessage({
 				variables: {
 					...values,
-					chatSlug: match.params.chatSlug,
-					file: values.file
+					chatSlug: match.params.chatSlug
 				}
 			});
-			resetForm();
+			// resetForm();
+
+			// Upload File
+			if (values.file) {
+				uploadFile({
+					variables: {
+						file: values.file
+					}
+				});
+			}
 		}
 	})
 )(SendMessage);

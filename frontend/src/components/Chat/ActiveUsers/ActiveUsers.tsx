@@ -132,8 +132,8 @@ const ScActiveUser = styled.div`
 		content: '';
 		position: absolute;
 		display: block;
-		bottom: 0.3rem;
-		right: 0.3rem;
+		bottom: 0;
+		right: 0.1rem;
 		width: 0.75rem;
 		height: 0.75rem;
 		border-radius: 50%;
