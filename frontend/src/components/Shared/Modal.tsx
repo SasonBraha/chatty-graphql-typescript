@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, ReactNode } from 'react';
 import ReactDOM from 'react-dom';
 import styled from 'styled-components';
-import { Transition } from 'react-transition-group';
+import Transition from 'react-transition-group/Transition';
 import { connect } from 'react-redux';
 import { resetModals } from '../../redux/actions';
 

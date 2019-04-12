@@ -8,7 +8,7 @@ import { RouteComponentProps } from 'react-router';
 import { getBase64 } from '../../utils';
 
 const SEND_MESSAGE_MUTATION = gql`
-	mutation($chatSlug: String!, $text: String!, $file: String) {
+	mutation($chatSlug: String!, $text: String!, $file: Upload) {
 		postMessage(text: $text, chatSlug: $chatSlug, file: $file) {
 			text
 		}
@@ -24,9 +24,13 @@ interface IMatchParams {
 	chatSlug?: string;
 }
 
-const SendMessage = (
-	props: FormikProps<IFormValues> & RouteComponentProps<IMatchParams>
-) => {
+interface IProps
+	extends FormikProps<IFormValues>,
+		RouteComponentProps<IMatchParams> {
+	setFilePreview: (file: File) => void;
+}
+
+const SendMessage = (props: IProps) => {
 	const {
 		values,
 		errors,
@@ -35,7 +39,8 @@ const SendMessage = (
 		handleBlur,
 		handleSubmit,
 		isSubmitting,
-		setFieldValue
+		setFieldValue,
+		setFilePreview
 	} = props;
 
 	return (
@@ -44,7 +49,11 @@ const SendMessage = (
 				<input
 					type='file'
 					name='file'
-					onChange={e => setFieldValue('file', e.target.files![0])}
+					onChange={e => {
+						const file = e.target.files![0];
+						setFieldValue('file', file);
+						setFilePreview(file);
+					}}
 					onBlur={handleBlur}
 				/>
 				<ScAttachIcon icon='icon-paperclip' />
@@ -68,6 +77,7 @@ const ScForm = styled.form`
 	display: flex;
 	justify-content: space-between;
 	position: relative;
+	z-index: 2;
 `;
 
 const ScAttachLabel = styled.label`
@@ -104,13 +114,11 @@ export default compose(
 			//@ts-ignore
 			{ props: { mutate, match }, resetForm }
 		) => {
-			// @ts-ignore
-			console.log(await getBase64(values.file));
 			await mutate({
 				variables: {
 					...values,
 					chatSlug: match.params.chatSlug,
-					file: await getBase64((values.file as unknown) as File)
+					file: values.file
 				}
 			});
 			resetForm();

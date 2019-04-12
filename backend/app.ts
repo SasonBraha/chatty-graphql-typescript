@@ -10,12 +10,13 @@ import * as morgan from 'morgan';
 import getUserData from './auth/getUserData';
 import { buildSchema } from 'type-graphql';
 import { ChatResolver, UserResolver } from './resolvers';
+import * as bodyParser from 'body-parser';
 
 const main = async () => {
 	const app = express();
 
 	//------------------------------------//
-	//  DB Config & Connection            //
+	//  DB Config & Connection              //
 	//------------------------------------//
 	mongoose.set('useCreateIndex', true);
 	mongoose
@@ -28,7 +29,7 @@ const main = async () => {
 		});
 
 	//------------------------------------//
-	//  Middlewares                       //
+	//  Middlewares                         //
 	//------------------------------------//
 	// Helmet Security Middleware
 	app.use(helmet());
@@ -39,6 +40,11 @@ const main = async () => {
 		app.use(morgan('dev'));
 	}
 
+	app.use(bodyParser.json({ limit: '10mb' }));
+
+	//------------------------------------//
+	//  Apollo Setup                        //
+	//------------------------------------//
 	const schema = await buildSchema({
 		resolvers: [UserResolver, ChatResolver]
 	});
