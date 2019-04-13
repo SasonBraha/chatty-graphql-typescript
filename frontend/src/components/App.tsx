@@ -9,6 +9,7 @@ import { IUser } from '../models';
 import Nav from './Nav';
 import Container from './Container';
 import { Switch, Route, withRouter } from 'react-router-dom';
+import { GenericModal } from './Shared';
 
 const Chat = lazy(() => import('./Chat'));
 
@@ -59,6 +60,7 @@ class App extends Component<IProps> {
 				</StyledApp>
 
 				<AuthModal />
+				<GenericModal />
 			</>
 		);
 	}

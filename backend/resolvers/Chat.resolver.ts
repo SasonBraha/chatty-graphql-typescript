@@ -19,6 +19,7 @@ import activeUsersService from '../redis/services/ActiveUsers.service';
 import * as uuid from 'uuid';
 import { GraphQLUpload } from 'apollo-server-express';
 import { uploadFile } from '../utils/files';
+import { FileAddedOutput } from './outputs';
 
 enum SubscriptionTypesEnum {
 	NEW_MESSAGE = 'NEW_MESSAGE',
@@ -195,7 +196,6 @@ export default class ChatResolver {
 
 	@Subscription(returns => String, {
 		topics: SubscriptionTypesEnum.FILE_UPLOADED,
-		defaultValue: null,
 		filter: ({ payload, args }) => payload.chatSlug === args.chatSlug
 	})
 	fileUploaded(
@@ -203,10 +203,11 @@ export default class ChatResolver {
 		@Arg('chatSlug') chatSlug: string,
 		@Ctx('ctx') ctx
 	) {
-		return {
+		return JSON.stringify({
 			chatSlug,
-			messageId: fileData.messageId
-		};
+			messageId: fileData.messageId,
+			path: fileData.path
+		});
 	}
 
 	@Subscription(returns => [UserEntity], {

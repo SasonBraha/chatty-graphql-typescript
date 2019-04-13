@@ -79,6 +79,7 @@ const ScImage = styled.img`
 	max-width: 100%;
 	border-radius: 0.35rem;
 	border: 0.1rem solid ${props => props.theme.gray30};
+	margin-top: 0.3rem;
 `;
 
 const ScText = styled.div`

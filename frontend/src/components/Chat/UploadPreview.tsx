@@ -14,15 +14,17 @@ const UploadPreview = (props: IProps) => {
 			unmountOnExit
 			timeout={{ enter: 0, exit: 300 }}
 		>
-			{mountState => (
-				<ScUploadPreview className={mountState}>
-					<ScImage
-						src={URL.createObjectURL(props.file)}
-						alt={props.file!.name}
-						title={props.file!.name}
-					/>
-				</ScUploadPreview>
-			)}
+			{mountState =>
+				props.file ? (
+					<ScUploadPreview className={mountState}>
+						<ScImage
+							src={URL.createObjectURL(props.file)}
+							alt={props.file!.name}
+							title={props.file!.name}
+						/>
+					</ScUploadPreview>
+				) : null
+			}
 		</Transition>
 	);
 };

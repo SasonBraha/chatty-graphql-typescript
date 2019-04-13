@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, ReactNode } from 'react';
+import React, { useEffect, useRef, ReactNode, useState } from 'react';
 import ReactDOM from 'react-dom';
 import styled from 'styled-components';
 import Transition from 'react-transition-group/Transition';
@@ -14,12 +14,6 @@ interface IProps {
 const Modal = (props: IProps) => {
 	const { isOpen, resetModals, children } = props;
 
-	// useEffect(() => {
-	// 	isOpen
-	// 		? document.body.addEventListener('click', resetModals)
-	// 		: document.body.removeEventListener('click', resetModals);
-	// }, [isOpen]);
-
 	return ReactDOM.createPortal(
 		<Transition
 			in={props.isOpen}
@@ -28,7 +22,14 @@ const Modal = (props: IProps) => {
 			timeout={{ enter: 0, exit: 300 }}
 		>
 			{mountState => (
-				<StyledOverlay className={mountState}>
+				<StyledOverlay
+					onClick={(e: React.MouseEvent) => {
+						if (e.target === e.currentTarget) {
+							resetModals();
+						}
+					}}
+					className={mountState}
+				>
 					<StyledContainer>{children}</StyledContainer>
 				</StyledOverlay>
 			)}

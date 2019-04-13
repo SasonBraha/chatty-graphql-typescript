@@ -1,44 +1,63 @@
 import React from 'react';
 import styled from 'styled-components/macro';
-import FormGroup from './FormGroup';
+import { setGenericModal } from '../../../redux/actions';
+import { connect } from 'react-redux';
 
-//@ts-ignore
-const FileInput = ({ input: { value: omitValue, ...input }, ...props }) => (
-	<FormGroup>
-		<StyledLabel>
-			<StyledFileInput
-				type='file'
-				{...input}
-				accept={props.accept}
-				onChange={e => input.onChange(e.target.files![0])}
-			/>
-			{props.label}
-		</StyledLabel>
-	</FormGroup>
-);
+interface IProps {
+	maxFileSize?: number;
+	onChange: (file: File | null) => void;
+	onBlur?: any;
+	setGenericModal: typeof setGenericModal;
+}
 
-const StyledLabel = styled.label`
-	width: 100%;
-	padding: 0.7rem 0.2rem;
-	outline: none;
-	cursor: pointer;
-	font-size: 1.5rem;
-	transition: 0.3s;
-	background: white;
-	border: 0.1rem dashed var(--main-color);
-	color: var(--main-color);
-	display: block;
-	text-align: center;
-	border-radius: 0.3rem;
-	&:hover {
-		color: white;
-		background: var(--main-color);
-		border-color: white;
+const validateFile = (
+	props: IProps,
+	event: React.FormEvent<HTMLInputElement>,
+	file: File
+) => {
+	const resetFile = () => {
+		const fileInput = event.target as HTMLInputElement;
+		fileInput.value = '';
+		props.onChange(null);
+	};
+
+	if (!file) {
+		return resetFile();
 	}
-`;
+
+	if (props.maxFileSize) {
+		const maxFileSize = props.maxFileSize;
+		const fileSize = Math.floor(file.size / 1024);
+
+		if (fileSize > maxFileSize) {
+			resetFile();
+			const isLimitOver1MB = maxFileSize >= 1024;
+			return props.setGenericModal(
+				'error',
+				//prettier-ignore
+				`הקובץ שנבחר גדול מדי, הגודל המירבי הניתן להעלאה הינו ${isLimitOver1MB ? Math.ceil(maxFileSize / 1024) : maxFileSize}${isLimitOver1MB ? 'MB' : 'KB'}`
+			);
+		}
+
+		props.onChange(file);
+	}
+};
+
+const FileInput = (props: IProps) => {
+	return (
+		<StyledFileInput
+			type='file'
+			onChange={e => validateFile(props, e, e.target.files![0])}
+			onBlur={props.onBlur}
+		/>
+	);
+};
 
 const StyledFileInput = styled.input`
 	display: none;
 `;
 
-export default FileInput;
+export default connect(
+	null,
+	{ setGenericModal }
+)(FileInput);

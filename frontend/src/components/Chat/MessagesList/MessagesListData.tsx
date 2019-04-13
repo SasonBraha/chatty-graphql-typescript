@@ -1,10 +1,8 @@
 import React, { useState } from 'react';
-import { RouteComponentProps } from 'react-router';
 import gql from 'graphql-tag';
 import { Query } from 'react-apollo';
 import MessagesList from './MessagesList';
 import { IChatProps } from '../Chat';
-import { FILE } from 'dns';
 
 const MESSAGE_DATA_FRAGMENT = `
 	_id
@@ -120,7 +118,7 @@ const MessagesListData = (props: IChatProps) => {
 							document: FILE_UPLOADED_SUBSCRIPTION,
 							variables: { chatSlug },
 							updateQuery: (prev, { subscriptionData }) => {
-								console.log(subscriptionData);
+								const fileData = JSON.parse(subscriptionData.data.fileUploaded);
 							}
 						})
 					}

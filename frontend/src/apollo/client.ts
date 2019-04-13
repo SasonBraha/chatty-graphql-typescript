@@ -63,4 +63,9 @@ const client = new ApolloClient({
 	cache: new InMemoryCache()
 });
 
+if (process.env.NODE_ENV === 'development') {
+	//@ts-ignore
+	window.apolloClient = client;
+}
+
 export default client;

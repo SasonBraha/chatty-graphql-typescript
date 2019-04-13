@@ -6,6 +6,7 @@ import { compose, graphql } from 'react-apollo';
 import Icon from '../Shared/Icon';
 import { RouteComponentProps } from 'react-router';
 import { withApollo } from 'react-apollo';
+import { FileInput } from '../Shared/Form';
 
 const SEND_MESSAGE_MUTATION = gql`
 	mutation($chatSlug: String!, $text: String!) {
@@ -33,7 +34,7 @@ interface IMatchParams {
 interface IProps
 	extends FormikProps<IFormValues>,
 		RouteComponentProps<IMatchParams> {
-	setFilePreview: (file: File) => void;
+	setFilePreview: (file: File | null) => void;
 }
 
 const SendMessage = (props: IProps) => {
@@ -52,16 +53,13 @@ const SendMessage = (props: IProps) => {
 	return (
 		<ScForm onSubmit={handleSubmit}>
 			<ScAttachLabel>
-				<input
-					type='file'
-					name='file'
-					onChange={e => {
-						const file: File = e.target.files![0];
+				<FileInput
+					maxFileSize={5000}
+					onChange={(file: File | null) => {
 						setFilePreview(file);
 						setFieldValue('file', file);
 					}}
 					onBlur={handleBlur}
-					accept='image/*, video/*'
 				/>
 				<ScAttachIcon icon='icon-paperclip' />
 			</ScAttachLabel>
