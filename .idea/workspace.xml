@@ -1,23 +1,26 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="f5d32516-c57c-4efd-9a40-1e63148cbd4c" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/backend/utils/files/createBufferFromStream.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/utils/files/getFileDataFromBuffer.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/utils/files/index.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/utils/files/uploadFile.ts" afterDir="false" />
+    <list default="true" id="f5d32516-c57c-4efd-9a40-1e63148cbd4c" name="Default Changelist" comment="Upload file progress">
+      <change afterPath="$PROJECT_DIR$/backend/config/s3.config.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/utils/files/extractDataFromBuffer.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/utils/files/validateFileSize.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/app.ts" beforeDir="false" afterPath="$PROJECT_DIR$/backend/app.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/environment.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/backend/types/environment.d.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/backend/resolvers/Chat.resolver.ts" beforeDir="false" afterPath="$PROJECT_DIR$/backend/resolvers/Chat.resolver.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/resolvers/inputs.ts" beforeDir="false" afterPath="$PROJECT_DIR$/backend/resolvers/inputs.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/package-lock.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/package.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/Redux/reducers.ts" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/Redux/reducers.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/apollo/client.ts" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/apollo/client.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/components/Chat/ActiveUsers/ActiveUsers.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/Chat/ActiveUsers/ActiveUsers.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/components/Chat/Chat.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/Chat/Chat.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/utils/files/createBufferFromStream.ts" beforeDir="false" afterPath="$PROJECT_DIR$/backend/utils/files/createBufferFromStream.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/utils/files/getFileDataFromBuffer.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/utils/files/index.ts" beforeDir="false" afterPath="$PROJECT_DIR$/backend/utils/files/index.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/utils/files/uploadFile.ts" beforeDir="false" afterPath="$PROJECT_DIR$/backend/utils/files/uploadFile.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/.env.development" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/.env.development" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/.env.production" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/.env.production" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/components/Chat/MessagesList/Message.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/Chat/MessagesList/Message.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/components/Chat/MessagesList/MessagesList.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/Chat/MessagesList/MessagesList.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/components/Chat/MessagesList/MessagesListData.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/Chat/MessagesList/MessagesListData.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/frontend/src/components/Chat/SendMessage.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/Chat/SendMessage.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/components/Chat/UploadPreview.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/Chat/UploadPreview.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/environment.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/environment.d.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/models/index.ts" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/models/index.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/redux/reducers.ts" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/redux/reducers.ts" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/backend/node_modules/" />
     <ignored path="$PROJECT_DIR$/frontend/node_modules/" />
@@ -30,92 +33,16 @@
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
-  <component name="DockManager">
-    <window id="2">
-      <content type="file-editors">
-        <state>
-          <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-            <file pinned="false" current-in-tab="true">
-              <entry file="file://$PROJECT_DIR$/frontend/src/components/Shared/Modal.tsx">
-                <provider selected="true" editor-type-id="text-editor">
-                  <state relative-caret-position="594">
-                    <caret line="70" column="15" selection-start-line="70" selection-start-column="15" selection-end-line="70" selection-end-column="15" />
-                    <folding>
-                      <element signature="e#0#60#0" expanded="true" />
-                    </folding>
-                  </state>
-                </provider>
-              </entry>
-            </file>
-          </leaf>
-        </state>
-      </content>
-    </window>
-  </component>
   <component name="FavoritesManager">
     <favorites_list name="chatty-graphql-typescript" />
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/frontend/src/components/Chat/SendMessage.tsx">
+        <entry file="file://$PROJECT_DIR$/backend/utils/files/extractDataFromBuffer.ts">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="826">
-              <caret line="133" lean-forward="true" selection-start-line="133" selection-end-line="133" />
-              <folding>
-                <element signature="e#0#26#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/frontend/src/apollo/mutationsOverSocket.ts">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="27">
-              <caret line="1" selection-start-line="1" selection-end-line="1" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/frontend/src/apollo/client.ts">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="27">
-              <caret line="10" selection-start-line="10" selection-end-line="26" selection-end-column="7" />
-              <folding>
-                <element signature="e#0#45#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/backend/resolvers/Chat.resolver.ts">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="248">
-              <caret line="134" column="37" selection-start-line="134" selection-start-column="37" selection-end-line="134" selection-end-column="37" />
-              <folding>
-                <element signature="e#0#134#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/backend/utils/files/createBufferFromStream.ts">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-27">
-              <caret line="5" column="43" lean-forward="true" selection-start-line="5" selection-start-column="43" selection-end-line="5" selection-end-column="43" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/backend/utils/files/getFileDataFromBuffer.ts">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="475">
-              <caret line="25" column="2" lean-forward="true" selection-start-line="25" selection-start-column="2" selection-end-line="25" selection-end-column="2" />
+            <state relative-caret-position="-43">
+              <caret line="15" column="41" selection-start-line="15" selection-start-column="41" selection-end-line="15" selection-end-column="41" />
               <folding>
                 <element signature="e#0#38#0" expanded="true" />
               </folding>
@@ -124,34 +51,9 @@
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/backend/utils/files/uploadFile.ts">
+        <entry file="file://$PROJECT_DIR$/frontend/src/components/App.tsx">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="270">
-              <caret line="10" column="16" lean-forward="true" selection-start-line="10" selection-start-column="16" selection-end-line="10" selection-end-column="16" />
-              <folding>
-                <element signature="e#0#52#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/backend/utils/files/index.ts">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="135">
-              <caret line="5" lean-forward="true" selection-start-line="5" selection-end-line="5" />
-              <folding>
-                <element signature="e#0#62#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/backend/resolvers/inputs.ts">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="173">
-              <caret line="19" column="22" lean-forward="true" selection-start-line="19" selection-start-column="22" selection-end-line="19" selection-end-column="22" />
+            <state>
               <folding>
                 <element signature="e#0#57#0" expanded="true" />
               </folding>
@@ -160,13 +62,91 @@
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/frontend/src/components/Chat/UploadPreview.tsx">
+        <entry file="file://$PROJECT_DIR$/frontend/src/components/Chat/MessagesList/Message.tsx">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-16">
-              <caret line="44" column="28" lean-forward="true" selection-start-line="44" selection-start-column="28" selection-end-line="44" selection-end-column="28" />
+            <state relative-caret-position="216">
+              <caret line="8" column="18" lean-forward="true" selection-start-line="8" selection-start-column="18" selection-end-line="8" selection-end-column="18" />
               <folding>
-                <element signature="e#0#26#0" expanded="true" />
+                <element signature="e#0#40#0" expanded="true" />
               </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/frontend/src/components/Chat/MessagesList/MessagesList.tsx">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="271">
+              <caret line="90" column="61" lean-forward="true" selection-start-line="90" selection-start-column="61" selection-end-line="90" selection-end-column="61" />
+              <folding>
+                <element signature="e#0#41#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/frontend/src/components/Chat/MessagesList/MessagesListData.tsx">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="-1312">
+              <caret line="66" column="21" lean-forward="true" selection-start-line="66" selection-start-column="21" selection-end-line="66" selection-end-column="21" />
+              <folding>
+                <element signature="e#0#40#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/backend/resolvers/Chat.resolver.ts">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="-259">
+              <caret line="171" column="38" lean-forward="true" selection-start-line="171" selection-start-column="38" selection-end-line="171" selection-end-column="38" />
+              <folding>
+                <element signature="e#0#134#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/backend/resolvers/inputs.ts">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="-340">
+              <caret column="15" selection-start-column="15" selection-end-column="15" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/backend/resolvers/User.resolver.ts">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="702">
+              <caret line="31" column="8" selection-start-line="31" selection-start-column="8" selection-end-line="31" selection-end-column="8" />
+              <folding>
+                <element signature="e#0#60#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/backend/utils/files/uploadFile.ts">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="200">
+              <caret line="21" column="53" lean-forward="true" selection-start-line="21" selection-start-column="53" selection-end-line="21" selection-end-column="53" />
+              <folding>
+                <element signature="e#0#52#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/frontend/src/environment.d.ts">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="216">
+              <caret line="8" column="38" selection-start-line="8" selection-start-column="38" selection-end-line="8" selection-end-column="38" />
             </state>
           </provider>
         </entry>
@@ -192,6 +172,7 @@
       <find>user._id</find>
       <find>$LOOK</find>
       <find>console.log</find>
+      <find>console.log('data')</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -200,26 +181,14 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/frontend/src/components/Chat/RoomsListItem.tsx" />
-        <option value="$PROJECT_DIR$/frontend/node_modules/typescript/lib/lib.es2015.collection.d.ts" />
-        <option value="$PROJECT_DIR$/frontend/src/components/Hoc/setTitle.tsx" />
-        <option value="$PROJECT_DIR$/backend/models/Message.model.ts" />
-        <option value="$PROJECT_DIR$/backend/redis/index.ts" />
-        <option value="$PROJECT_DIR$/backend/dist/resolvers/resolvers.js" />
         <option value="$PROJECT_DIR$/frontend/tsconfig.json" />
         <option value="$PROJECT_DIR$/frontend/src/style/theme.ts" />
         <option value="$PROJECT_DIR$/frontend/src/styled.d.ts" />
         <option value="$PROJECT_DIR$/frontend/src/components/Chat/ActiveUsers.tsx" />
         <option value="$PROJECT_DIR$/frontend/src/components/Container/index.tsx" />
-        <option value="$PROJECT_DIR$/frontend/src/models/index.ts" />
         <option value="$PROJECT_DIR$/backend/models/User.model.ts" />
-        <option value="$PROJECT_DIR$/frontend/src/environment.d.ts" />
-        <option value="$PROJECT_DIR$/frontend/.env.development" />
-        <option value="$PROJECT_DIR$/frontend/.env.production" />
         <option value="$PROJECT_DIR$/frontend/src/apollo/socketMutations.ts" />
         <option value="$PROJECT_DIR$/frontend/src/apollo/utils.ts" />
-        <option value="$PROJECT_DIR$/frontend/src/components/Chat/MessagesList/MessagesListData.tsx" />
-        <option value="$PROJECT_DIR$/frontend/src/components/Chat/MessagesList/MessagesList.tsx" />
         <option value="$PROJECT_DIR$/frontend/src/utils/index.ts" />
         <option value="$PROJECT_DIR$/frontend/src/utils/getBase64.ts" />
         <option value="$PROJECT_DIR$/backend/redis/services/ActiveUsers.service.ts" />
@@ -239,16 +208,30 @@
         <option value="$PROJECT_DIR$/frontend/src/components/Chat/Chat.tsx" />
         <option value="$PROJECT_DIR$/backend/resolvers/index.ts" />
         <option value="$PROJECT_DIR$/backend/resolvers/inputs.ts" />
-        <option value="$PROJECT_DIR$/backend/app.ts" />
         <option value="$PROJECT_DIR$/backend/routes/uploadFile.ts" />
         <option value="$PROJECT_DIR$/frontend/src/apollo/client.ts" />
-        <option value="$PROJECT_DIR$/frontend/src/components/Chat/SendMessage.tsx" />
         <option value="$PROJECT_DIR$/backend/utils/uploadFile.ts" />
-        <option value="$PROJECT_DIR$/backend/utils/files/getFileDataFromBuffer.ts" />
-        <option value="$PROJECT_DIR$/backend/utils/files/index.ts" />
+        <option value="$PROJECT_DIR$/backend/environment.d.ts" />
+        <option value="$PROJECT_DIR$/backend/config/cloudinary.config.ts" />
+        <option value="$PROJECT_DIR$/backend/types/cloudinary.d.ts" />
+        <option value="$PROJECT_DIR$/backend/app.ts" />
+        <option value="$PROJECT_DIR$/backend/config/s3.config.ts" />
+        <option value="$PROJECT_DIR$/backend/types/environment.d.ts" />
+        <option value="$PROJECT_DIR$/backend/.env" />
         <option value="$PROJECT_DIR$/backend/utils/files/createBufferFromStream.ts" />
+        <option value="$PROJECT_DIR$/backend/utils/files/validateFileSize.ts" />
+        <option value="$PROJECT_DIR$/backend/utils/files/getFileDataFromBuffer.ts" />
+        <option value="$PROJECT_DIR$/frontend/src/components/Chat/SendMessage.tsx" />
+        <option value="$PROJECT_DIR$/backend/utils/files/index.ts" />
+        <option value="$PROJECT_DIR$/frontend/.env.production" />
+        <option value="$PROJECT_DIR$/frontend/.env.development" />
+        <option value="$PROJECT_DIR$/frontend/src/environment.d.ts" />
+        <option value="$PROJECT_DIR$/frontend/src/models/index.ts" />
+        <option value="$PROJECT_DIR$/frontend/src/components/Chat/MessagesList/Message.tsx" />
+        <option value="$PROJECT_DIR$/frontend/src/components/Chat/MessagesList/MessagesListData.tsx" />
         <option value="$PROJECT_DIR$/backend/utils/files/uploadFile.ts" />
         <option value="$PROJECT_DIR$/backend/resolvers/Chat.resolver.ts" />
+        <option value="$PROJECT_DIR$/frontend/src/components/Chat/MessagesList/MessagesList.tsx" />
       </list>
     </option>
   </component>
@@ -264,10 +247,10 @@
     <auto-save>true</auto-save>
   </component>
   <component name="ProjectFrameBounds" extendedState="6">
-    <option name="x" value="-7" />
-    <option name="y" value="269" />
-    <option name="width" value="974" />
-    <option name="height" value="771" />
+    <option name="x" value="173" />
+    <option name="y" value="115" />
+    <option name="width" value="1936" />
+    <option name="height" value="1055" />
   </component>
   <component name="ProjectLevelVcsManager">
     <ConfirmationsSetting value="2" id="Add" />
@@ -294,14 +277,7 @@
               <item name="chatty-graphql-typescript" type="b2602c69:ProjectViewProjectNode" />
               <item name="chatty-graphql-typescript" type="462c0819:PsiDirectoryNode" />
               <item name="backend" type="462c0819:PsiDirectoryNode" />
-              <item name="utils" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="chatty-graphql-typescript" type="b2602c69:ProjectViewProjectNode" />
-              <item name="chatty-graphql-typescript" type="462c0819:PsiDirectoryNode" />
-              <item name="backend" type="462c0819:PsiDirectoryNode" />
-              <item name="utils" type="462c0819:PsiDirectoryNode" />
-              <item name="files" type="462c0819:PsiDirectoryNode" />
+              <item name="resolvers" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
               <item name="chatty-graphql-typescript" type="b2602c69:ProjectViewProjectNode" />
@@ -313,6 +289,30 @@
               <item name="chatty-graphql-typescript" type="462c0819:PsiDirectoryNode" />
               <item name="frontend" type="462c0819:PsiDirectoryNode" />
               <item name="src" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="chatty-graphql-typescript" type="b2602c69:ProjectViewProjectNode" />
+              <item name="chatty-graphql-typescript" type="462c0819:PsiDirectoryNode" />
+              <item name="frontend" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="components" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="chatty-graphql-typescript" type="b2602c69:ProjectViewProjectNode" />
+              <item name="chatty-graphql-typescript" type="462c0819:PsiDirectoryNode" />
+              <item name="frontend" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="components" type="462c0819:PsiDirectoryNode" />
+              <item name="Chat" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="chatty-graphql-typescript" type="b2602c69:ProjectViewProjectNode" />
+              <item name="chatty-graphql-typescript" type="462c0819:PsiDirectoryNode" />
+              <item name="frontend" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="components" type="462c0819:PsiDirectoryNode" />
+              <item name="Chat" type="462c0819:PsiDirectoryNode" />
+              <item name="MessagesList" type="462c0819:PsiDirectoryNode" />
             </path>
           </expand>
           <select />
@@ -339,11 +339,13 @@
     <property name="nodejs_package_manager_path" value="npm" />
     <property name="prettierjs.PrettierConfiguration.Package" value="C:\Users\SasoN\AppData\Roaming\npm\node_modules\prettier" />
     <property name="restartRequiresConfirmation" value="false" />
-    <property name="settings.editor.selected.configurable" value="settings.javascript.linters.tslint" />
+    <property name="settings.editor.selected.configurable" value="template.copyright.formatting" />
     <property name="ts.external.directory.path" value="D:\Projects - Refactor\chatty-graphql-typescript\frontend\node_modules\typescript\lib" />
   </component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="D:\Projects - Refactor\chatty-graphql-typescript\backend\types" />
+      <recent name="D:\Projects - Refactor\chatty-graphql-typescript\backend" />
       <recent name="D:\Projects - Refactor\chatty-graphql-typescript\frontend\src\components\Chat\ActiveUsers" />
     </key>
   </component>
@@ -403,7 +405,7 @@
       <workItem from="1555047907205" duration="5877000" />
       <workItem from="1555054794942" duration="8202000" />
       <workItem from="1555087566842" duration="45000" />
-      <workItem from="1555087625345" duration="9140000" />
+      <workItem from="1555087625345" duration="34603000" />
     </task>
     <task id="LOCAL-00001" summary="Publish distinction">
       <created>1554550447481</created>
@@ -475,11 +477,18 @@
       <option name="project" value="LOCAL" />
       <updated>1555057755050</updated>
     </task>
-    <option name="localTasksCounter" value="11" />
+    <task id="LOCAL-00011" summary="Upload file progress">
+      <created>1555096975862</created>
+      <option name="number" value="00011" />
+      <option name="presentableId" value="LOCAL-00011" />
+      <option name="project" value="LOCAL" />
+      <updated>1555096975862</updated>
+    </task>
+    <option name="localTasksCounter" value="12" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="111958000" />
+    <option name="totallyTimeSpent" value="137421000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -494,12 +503,12 @@
     <frame x="-8" y="-8" width="1936" height="1056" extended-state="6" />
     <editor active="true" />
     <layout>
-      <window_info active="true" content_ui="combo" id="Project" order="0" sideWeight="0.49945828" visible="true" weight="0.16791044" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" sideWeight="0.49945828" visible="true" weight="0.24360341" />
       <window_info id="Favorites" order="1" sideWeight="0.5005417" side_tool="true" weight="0.16791044" />
       <window_info id="Structure" order="2" sideWeight="0.5005417" weight="0.16791044" />
       <window_info anchor="bottom" id="Message" order="0" />
-      <window_info anchor="bottom" id="Find" order="1" weight="0.32936078" />
-      <window_info anchor="bottom" id="Run" order="2" visible="true" weight="0.40411702" />
+      <window_info anchor="bottom" id="Find" order="1" sideWeight="0.49946696" weight="0.32827735" />
+      <window_info anchor="bottom" id="Run" order="2" sideWeight="0.49946696" weight="0.37053087" />
       <window_info anchor="bottom" id="Debug" order="3" weight="0.3997833" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
@@ -508,7 +517,7 @@
       <window_info anchor="bottom" id="Docker" order="8" show_stripe_button="false" />
       <window_info anchor="bottom" id="TypeScript" order="9" />
       <window_info anchor="bottom" id="Terminal" order="10" weight="0.80498374" />
-      <window_info anchor="bottom" id="Event Log" order="11" side_tool="true" weight="0.32936078" />
+      <window_info anchor="bottom" id="Event Log" order="11" sideWeight="0.50053304" side_tool="true" weight="0.3672806" />
       <window_info anchor="bottom" id="Messages" order="12" weight="0.32936078" />
       <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
@@ -552,103 +561,10 @@
     <MESSAGE value="Css changes, get base 64" />
     <MESSAGE value="Separate files" />
     <MESSAGE value="Upload preview" />
-    <option name="LAST_COMMIT_MESSAGE" value="Upload preview" />
+    <MESSAGE value="Upload file progress" />
+    <option name="LAST_COMMIT_MESSAGE" value="Upload file progress" />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/frontend/src/components/Chat/UserTyping.tsx">
-      <provider selected="true" editor-type-id="text-editor" />
-    </entry>
-    <entry file="file://$PROJECT_DIR$/frontend/package.json">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="999">
-          <caret line="37" column="33" lean-forward="true" selection-start-line="37" selection-start-column="33" selection-end-line="37" selection-end-column="33" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/frontend/src/utils/validCss.ts">
-      <provider selected="true" editor-type-id="text-editor" />
-    </entry>
-    <entry file="file://$PROJECT_DIR$/frontend/src/utils/index.ts">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="108">
-          <caret line="4" selection-start-line="4" selection-end-line="4" />
-          <folding>
-            <element signature="e#0#34#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/frontend/src/components/Container/index.tsx">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="540">
-          <caret line="20" column="6" selection-start-line="20" selection-start-column="6" selection-end-line="20" selection-end-column="6" />
-          <folding>
-            <element signature="e#0#62#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/backend/package-lock.json">
-      <provider selected="true" editor-type-id="text-editor" />
-    </entry>
-    <entry file="file://$PROJECT_DIR$/backend/node_modules/file-type/index.d.ts">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-2872" />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/frontend/src/utils/getBase64.ts">
-      <provider selected="true" editor-type-id="text-editor">
-        <state>
-          <caret selection-end-line="10" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/backend/redis/services/ActiveUsers.service.ts">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="470">
-          <caret line="31" column="51" selection-start-line="31" selection-start-column="51" selection-end-line="31" selection-end-column="51" />
-          <folding>
-            <element signature="e#0#49#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/backend/package.json">
-      <provider selected="true" editor-type-id="text-editor" />
-    </entry>
-    <entry file="file://$PROJECT_DIR$/frontend/src/components/Header/index.tsx">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="2160">
-          <caret line="80" lean-forward="true" selection-start-line="80" selection-end-line="80" />
-          <folding>
-            <element signature="e#0#40#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/backend/resolvers/resolvers.ts" />
-    <entry file="file://$PROJECT_DIR$/backend/.env">
-      <provider selected="true" editor-type-id="text-editor" />
-    </entry>
-    <entry file="file://$PROJECT_DIR$/backend/models/File.model.ts">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-853">
-          <folding>
-            <element signature="e#0#34#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/package-lock.json">
-      <provider selected="true" editor-type-id="text-editor" />
-    </entry>
-    <entry file="file://$PROJECT_DIR$/package.json">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="270">
-          <caret line="10" column="28" selection-start-line="10" selection-start-column="28" selection-end-line="10" selection-end-column="28" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/backend/permissions/index.ts">
       <provider selected="true" editor-type-id="text-editor" />
     </entry>
@@ -668,9 +584,6 @@
           </folding>
         </state>
       </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/backend/environment.d.ts">
-      <provider selected="true" editor-type-id="text-editor" />
     </entry>
     <entry file="file://$PROJECT_DIR$/frontend/src/components/Nav/index.tsx">
       <provider selected="true" editor-type-id="text-editor">
@@ -725,36 +638,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/backend/resolvers/User.resolver.ts">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="335">
-          <caret line="31" column="8" selection-start-line="31" selection-start-column="8" selection-end-line="31" selection-end-column="8" />
-          <folding>
-            <element signature="e#0#60#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/frontend/src/components/Chat/MessagesList/MessagesList.tsx">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="243">
-          <caret line="14" column="11" selection-start-line="14" selection-start-column="11" selection-end-line="14" selection-end-column="11" />
-          <folding>
-            <element signature="e#0#41#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/backend/resolvers/index.ts">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="54">
-          <caret line="2" column="2" selection-start-line="2" selection-start-column="2" selection-end-line="2" selection-end-column="2" />
-          <folding>
-            <element signature="e#0#43#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/frontend/node_modules/react-apollo/withApollo.d.ts">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="108">
@@ -766,16 +649,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="351">
           <caret line="14" column="20" selection-start-line="14" selection-start-column="20" selection-end-line="14" selection-end-column="20" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/frontend/src/components/Chat/MessagesList/MessagesListData.tsx">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1593">
-          <caret line="59" column="21" selection-start-line="59" selection-start-column="21" selection-end-line="59" selection-end-column="21" />
-          <folding>
-            <element signature="e#0#40#0" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -823,26 +696,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/backend/app.ts">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-340">
-          <caret line="45" lean-forward="true" selection-start-line="45" selection-end-line="45" />
-          <folding>
-            <element signature="e#74#103#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/frontend/src/apollo/client.ts">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="27">
-          <caret line="10" selection-start-line="10" selection-end-line="26" selection-end-column="7" />
-          <folding>
-            <element signature="e#0#45#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/backend/routes/uploadFile.ts">
       <provider selected="true" editor-type-id="text-editor" />
     </entry>
@@ -853,16 +706,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/backend/resolvers/inputs.ts">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="173">
-          <caret line="19" column="22" lean-forward="true" selection-start-line="19" selection-start-column="22" selection-end-line="19" selection-end-column="22" />
-          <folding>
-            <element signature="e#0#57#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/frontend/src/apollo/mutationsOverSocket.ts">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="27">
@@ -870,12 +713,12 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/frontend/src/components/Chat/SendMessage.tsx">
+    <entry file="file://$PROJECT_DIR$/frontend/src/apollo/client.ts">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="826">
-          <caret line="133" lean-forward="true" selection-start-line="133" selection-end-line="133" />
+        <state relative-caret-position="27">
+          <caret line="10" selection-start-line="10" selection-end-line="26" selection-end-column="7" />
           <folding>
-            <element signature="e#0#26#0" expanded="true" />
+            <element signature="e#0#45#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -890,20 +733,117 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/backend/utils/files/getFileDataFromBuffer.ts">
+    <entry file="file://$PROJECT_DIR$/backend/logger.ts">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="475">
-          <caret line="25" column="2" lean-forward="true" selection-start-line="25" selection-start-column="2" selection-end-line="25" selection-end-column="2" />
+        <state relative-caret-position="297">
+          <caret line="11" column="6" selection-start-line="11" selection-start-column="6" selection-end-line="11" selection-end-column="6" />
           <folding>
-            <element signature="e#0#38#0" expanded="true" />
+            <element signature="e#0#35#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/backend/resolvers/index.ts">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="54">
+          <caret line="2" selection-start-line="2" selection-end-line="2" />
+          <folding>
+            <element signature="e#0#43#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/backend/.gitignore">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/backend/tsconfig.json">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="297">
+          <caret line="11" column="24" selection-start-line="11" selection-start-column="24" selection-end-line="11" selection-end-column="24" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/backend/types/cloudinary.d.ts">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="189">
+          <caret line="7" column="23" lean-forward="true" selection-start-line="7" selection-start-column="23" selection-end-line="7" selection-end-column="23" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/backend/app.ts">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="325">
+          <caret line="18" column="44" lean-forward="true" selection-start-line="18" selection-start-column="44" selection-end-line="18" selection-end-column="44" />
+          <folding>
+            <element signature="e#74#103#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/backend/config/cloudinary.config.ts">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="189">
+          <caret line="7" lean-forward="true" selection-start-line="7" selection-end-line="7" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/backend/.env">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="108">
+          <caret line="4" column="25" selection-start-line="4" selection-start-column="25" selection-end-line="4" selection-end-column="25" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/backend/types/environment.d.ts">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="270">
+          <caret line="10" column="24" lean-forward="true" selection-start-line="10" selection-start-column="24" selection-end-line="10" selection-end-column="24" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/backend/models/File.model.ts">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="297">
+          <caret line="11" column="1" lean-forward="true" selection-start-line="11" selection-start-column="1" selection-end-line="11" selection-end-column="1" />
+          <folding>
+            <element signature="e#0#34#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/backend/config/s3.config.ts">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="270">
+          <caret line="10" lean-forward="true" selection-start-line="10" selection-end-line="10" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/frontend/src/components/Chat/SendMessage.tsx">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="3888">
+          <caret line="144" column="7" lean-forward="true" selection-start-line="144" selection-start-column="7" selection-end-line="144" selection-end-column="7" />
+          <folding>
+            <element signature="e#0#26#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/backend/models/Message.model.ts">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-162">
+          <folding>
+            <element signature="e#0#51#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/backend/utils/files/validateFileSize.ts">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
     <entry file="file://$PROJECT_DIR$/backend/utils/files/createBufferFromStream.ts">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-27">
-          <caret line="5" column="43" lean-forward="true" selection-start-line="5" selection-start-column="43" selection-end-line="5" selection-end-column="43" />
+        <state relative-caret-position="297">
+          <caret line="11" lean-forward="true" selection-start-line="11" selection-end-line="11" />
         </state>
       </provider>
     </entry>
@@ -917,25 +857,145 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/frontend/.env.production">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="54">
+          <caret line="2" selection-start-line="2" selection-end-line="2" selection-end-column="75" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/frontend/.env.development">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="54">
+          <caret line="2" column="75" selection-start-line="2" selection-start-column="75" selection-end-line="2" selection-end-column="75" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/frontend/src/models/index.ts">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="632">
+          <caret line="37" column="10" selection-start-line="37" selection-start-column="10" selection-end-line="37" selection-end-column="10" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/frontend/src/components/Chat/MessagesList/MessagesListData.tsx">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-1312">
+          <caret line="66" column="21" lean-forward="true" selection-start-line="66" selection-start-column="21" selection-end-line="66" selection-end-column="21" />
+          <folding>
+            <element signature="e#0#40#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/frontend/src/environment.d.ts">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="216">
+          <caret line="8" column="38" selection-start-line="8" selection-start-column="38" selection-end-line="8" selection-end-column="38" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/frontend/src/components/App.tsx">
+      <provider selected="true" editor-type-id="text-editor">
+        <state>
+          <folding>
+            <element signature="e#0#57#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/backend/utils/files/uploadFile.ts">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="270">
-          <caret line="10" column="16" lean-forward="true" selection-start-line="10" selection-start-column="16" selection-end-line="10" selection-end-column="16" />
+        <state relative-caret-position="200">
+          <caret line="21" column="53" lean-forward="true" selection-start-line="21" selection-start-column="53" selection-end-line="21" selection-end-column="53" />
           <folding>
             <element signature="e#0#52#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/frontend/src/components/Chat/MessagesList/Message.tsx">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="216">
+          <caret line="8" column="18" lean-forward="true" selection-start-line="8" selection-start-column="18" selection-end-line="8" selection-end-column="18" />
+          <folding>
+            <element signature="e#0#40#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/backend/utils/files/extractDataFromBuffer.ts">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-43">
+          <caret line="15" column="41" selection-start-line="15" selection-start-column="41" selection-end-line="15" selection-end-column="41" />
+          <folding>
+            <element signature="e#0#38#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/frontend/src/components/Chat/MessagesList/MessagesList.tsx">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="271">
+          <caret line="90" column="61" lean-forward="true" selection-start-line="90" selection-start-column="61" selection-end-line="90" selection-end-column="61" />
+          <folding>
+            <element signature="e#0#41#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/backend/resolvers/User.resolver.ts">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="702">
+          <caret line="31" column="8" selection-start-line="31" selection-start-column="8" selection-end-line="31" selection-end-column="8" />
+          <folding>
+            <element signature="e#0#60#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/backend/resolvers/inputs.ts">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-340">
+          <caret column="15" selection-start-column="15" selection-end-column="15" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/backend/resolvers/Chat.resolver.ts">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="248">
-          <caret line="134" column="37" selection-start-line="134" selection-start-column="37" selection-end-line="134" selection-end-column="37" />
+        <state relative-caret-position="-259">
+          <caret line="171" column="38" lean-forward="true" selection-start-line="171" selection-start-column="38" selection-end-line="171" selection-end-column="38" />
           <folding>
             <element signature="e#0#134#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
+  </component>
+  <component name="masterDetails">
+    <states>
+      <state key="Copyright.UI">
+        <settings>
+          <splitter-proportions>
+            <option name="proportions">
+              <list>
+                <option value="0.2" />
+              </list>
+            </option>
+          </splitter-proportions>
+        </settings>
+      </state>
+      <state key="ScopeChooserConfigurable.UI">
+        <settings>
+          <splitter-proportions>
+            <option name="proportions">
+              <list>
+                <option value="0.2" />
+              </list>
+            </option>
+          </splitter-proportions>
+        </settings>
+      </state>
+    </states>
   </component>
 </project>

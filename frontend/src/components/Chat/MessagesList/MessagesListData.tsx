@@ -4,6 +4,7 @@ import gql from 'graphql-tag';
 import { Query } from 'react-apollo';
 import MessagesList from './MessagesList';
 import { IChatProps } from '../Chat';
+import { FILE } from 'dns';
 
 const MESSAGE_DATA_FRAGMENT = `
 	_id
@@ -38,6 +39,12 @@ const NEW_MESSAGE_SUBSCRIPTION = gql`
 		newMessage(chatSlug: $chatSlug) {
 			${MESSAGE_DATA_FRAGMENT}
 		}
+	}
+`;
+
+const FILE_UPLOADED_SUBSCRIPTION = gql`
+	subscription($chatSlug: String!) {
+		fileUploaded(chatSlug: $chatSlug)
 	}
 `;
 
@@ -105,6 +112,15 @@ const MessagesListData = (props: IChatProps) => {
 										messages: [...prev.chat.messages, newMessage]
 									}
 								};
+							}
+						})
+					}
+					subscribeToFileUpload={(chatSlug: string) =>
+						subscribeToMore({
+							document: FILE_UPLOADED_SUBSCRIPTION,
+							variables: { chatSlug },
+							updateQuery: (prev, { subscriptionData }) => {
+								console.log(subscriptionData);
 							}
 						})
 					}

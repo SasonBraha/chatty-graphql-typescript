@@ -19,7 +19,7 @@ export interface IReducerState {
 
 const initalState: IReducerState = {
 	showAuthModal: false,
-	isNavOpen: true,
+	isNavOpen: window.innerWidth > 992,
 	currentUser: null
 };
 

@@ -34,7 +34,7 @@ export interface IFile {
 	path: string;
 	isStored: boolean;
 	dimensions: {
-		width?: number;
-		height?: number;
+		width: number;
+		height: number;
 	};
 }

@@ -1,16 +1,40 @@
 import { IFileInput } from '../../resolvers/inputs';
-import { createBufferFromStream, getFileDataFromBuffer } from './index';
+import { createBufferFromStream, extractDataFromBuffer } from './index';
+import { IFileData } from './extractDataFromBuffer';
+import * as uuid from 'uuid';
+import s3 from '../../config/s3.config';
+import { IFile } from '../../models/File.model';
 
-const uploadFile = async (file: IFileInput) => {
-	try {
-		//@ts-ignore
+const uploadFile = (
+	file: IFileInput,
+	reference: string,
+	maxFileSizeInKB: number = 5000
+): Promise<IFile> => {
+	return new Promise(async (resolve, reject) => {
 		const fileBuffer: Buffer = await createBufferFromStream(file);
-		const fileData = getFileDataFromBuffer(fileBuffer);
+		const {
+			fileExtension,
+			mimeType,
+			dimensions
+		}: IFileData = extractDataFromBuffer(fileBuffer, maxFileSizeInKB);
 
-		return fileData;
-	} catch (ex) {
-		throw new Error(ex);
-	}
+		const uploadData = {
+			Key: `${reference}/${uuid()}.${fileExtension}`,
+			Bucket: process.env.S3_BUCKET,
+			Body: fileBuffer,
+			ContentEncoding: 'base64',
+			ContentType: mimeType
+		};
+
+		const fileData: IFile = {
+			mimeType,
+			path: uploadData.Key,
+			isStored: true,
+			dimensions
+		};
+
+		s3.putObject(uploadData, err => (err ? reject(err) : resolve(fileData)));
+	});
 };
 
 export default uploadFile;

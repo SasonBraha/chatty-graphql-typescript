@@ -17,6 +17,7 @@ interface IProps {
 		};
 	};
 	subscribeToNewMessages: (chatSlug: string) => void;
+	subscribeToFileUpload: (chatSlug: string) => void;
 	fetchOlderMessages: (chatSlug: string, beforeMessageId: string) => void;
 	setIsMoreMessagesToFetch: (value: boolean) => void;
 	refetch: () => void;
@@ -24,7 +25,8 @@ interface IProps {
 
 @connect(({ currentUser }: IReducerState) => ({ currentUser }))
 class MessagesList extends Component<IProps> {
-	private unsubscribe: any;
+	private unsubscribeFromNewMessages: any;
+	private unsubscribeFromFileUploaded: any;
 	private listEnd: React.RefObject<any> = React.createRef();
 	private messagesList: React.RefObject<any> = React.createRef();
 	private shouldFetchThreshold: number = 250;
@@ -34,7 +36,12 @@ class MessagesList extends Component<IProps> {
 	}
 
 	private init() {
-		this.unsubscribe = this.props.subscribeToNewMessages(this.props.chatSlug);
+		this.unsubscribeFromNewMessages = this.props.subscribeToNewMessages(
+			this.props.chatSlug
+		);
+		this.unsubscribeFromFileUploaded = this.props.subscribeToFileUpload(
+			this.props.chatSlug
+		);
 	}
 
 	getSnapshotBeforeUpdate(prevProps: IProps) {
@@ -66,9 +73,15 @@ class MessagesList extends Component<IProps> {
 		);
 
 		if (isRoomChanged) {
-			this.unsubscribe();
+			this.unsubscribeFromNewMessages();
+			this.unsubscribeFromFileUploaded();
 			this.props.setIsMoreMessagesToFetch(true);
-			this.unsubscribe = this.props.subscribeToNewMessages(this.props.chatSlug);
+			this.unsubscribeFromNewMessages = this.props.subscribeToNewMessages(
+				this.props.chatSlug
+			);
+			this.unsubscribeFromFileUploaded = this.props.subscribeToFileUpload(
+				this.props.chatSlug
+			);
 			this.props.refetch();
 		}
 
@@ -82,7 +95,8 @@ class MessagesList extends Component<IProps> {
 	}
 
 	componentWillUnmount() {
-		this.unsubscribe();
+		this.unsubscribeFromNewMessages();
+		this.unsubscribeFromFileUploaded();
 	}
 
 	private handleScroll = (e: React.UIEvent<HTMLDivElement>) => {

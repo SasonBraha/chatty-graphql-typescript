@@ -10,14 +10,14 @@ import { withApollo } from 'react-apollo';
 const SEND_MESSAGE_MUTATION = gql`
 	mutation($chatSlug: String!, $text: String!) {
 		postMessage(text: $text, chatSlug: $chatSlug) {
-			text
+			_id
 		}
 	}
 `;
 
 const UPLOAD_FILE_MUTATION = gql`
-	mutation($file: Upload!) {
-		uploadMessageFile(file: $file)
+	mutation($file: Upload!, $chatSlug: String!, $messageId: String!) {
+		uploadMessageFile(file: $file, chatSlug: $chatSlug, messageId: $messageId)
 	}
 `;
 
@@ -124,19 +124,22 @@ export default compose(
 			{ props: { sendMessage, uploadFile, match }, resetForm }
 		) => {
 			// Send Message
-			await sendMessage({
+			const newMessage = await sendMessage({
 				variables: {
 					...values,
 					chatSlug: match.params.chatSlug
 				}
 			});
-			// resetForm();
+
+			resetForm();
 
 			// Upload File
 			if (values.file) {
 				uploadFile({
 					variables: {
-						file: values.file
+						file: values.file,
+						chatSlug: match.params.chatSlug,
+						messageId: newMessage.data.postMessage._id
 					}
 				});
 			}

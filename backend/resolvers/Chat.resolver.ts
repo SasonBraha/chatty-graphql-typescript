@@ -4,11 +4,11 @@ import {
 	FieldResolver,
 	Mutation,
 	PubSub,
+	PubSubEngine,
 	Query,
 	Resolver,
 	Root,
-	Subscription,
-	PubSubEngine
+	Subscription
 } from 'type-graphql';
 import Chat, { ChatEntity, IChat } from '../models/Chat.model';
 import User, { IUser, UserEntity } from '../models/User.model';
@@ -18,11 +18,12 @@ import { CreateChatInput, IFileInput } from './inputs';
 import activeUsersService from '../redis/services/ActiveUsers.service';
 import * as uuid from 'uuid';
 import { GraphQLUpload } from 'apollo-server-express';
-import { createBufferFromStream, uploadFile } from '../utils/files';
+import { uploadFile } from '../utils/files';
 
 enum SubscriptionTypesEnum {
 	NEW_MESSAGE = 'NEW_MESSAGE',
-	USER_JOINED = 'USER_JOINED'
+	USER_JOINED = 'USER_JOINED',
+	FILE_UPLOADED = 'FILE_UPLOADED'
 }
 
 @Resolver(ChatEntity)
@@ -93,8 +94,10 @@ export default class ChatResolver {
 		@Ctx('user') user: IUser,
 		@PubSub() pubSub: PubSubEngine
 	): Promise<IMessage> {
+		const preSaveId = new Message();
 		const { _id, displayName, slug, avatar } = user;
 		const messageData = {
+			_id: preSaveId._id,
 			text,
 			createdBy: {
 				_id,
@@ -107,7 +110,6 @@ export default class ChatResolver {
 		// Emit New Message
 		pubSub.publish(SubscriptionTypesEnum.NEW_MESSAGE, {
 			...messageData,
-			_id: uuid(),
 			createdAt: new Date(),
 			chatSlug
 		});
@@ -130,9 +132,25 @@ export default class ChatResolver {
 	@Mutation(returns => String)
 	async uploadMessageFile(
 		@Arg('file', () => GraphQLUpload) file: IFileInput,
-		@Ctx('user') user: IUser
+		@Arg('chatSlug') chatSlug: string,
+		@Arg('messageId') messageId: string,
+		@Ctx('user') user: IUser,
+		@PubSub() pubSub: PubSubEngine
 	): Promise<string> {
-		console.log(await uploadFile(file));
+		const fileData = await uploadFile(file, chatSlug);
+
+		pubSub.publish(SubscriptionTypesEnum.FILE_UPLOADED, {
+			chatSlug,
+			path: fileData.path,
+			messageId
+		});
+
+		await Message.updateOne(
+			{ _id: messageId },
+			{
+				$set: { file: fileData }
+			}
+		);
 		return '';
 	}
 
@@ -173,6 +191,22 @@ export default class ChatResolver {
 		@Ctx('ctx') ctx
 	): IMessage {
 		return messagePayload;
+	}
+
+	@Subscription(returns => String, {
+		topics: SubscriptionTypesEnum.FILE_UPLOADED,
+		defaultValue: null,
+		filter: ({ payload, args }) => payload.chatSlug === args.chatSlug
+	})
+	fileUploaded(
+		@Root() fileData: { path: string; chatSlug: string; messageId: string },
+		@Arg('chatSlug') chatSlug: string,
+		@Ctx('ctx') ctx
+	) {
+		return {
+			chatSlug,
+			messageId: fileData.messageId
+		};
 	}
 
 	@Subscription(returns => [UserEntity], {

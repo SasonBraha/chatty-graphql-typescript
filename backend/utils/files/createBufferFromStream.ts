@@ -1,13 +1,12 @@
 import { IFileInput } from '../../resolvers/inputs';
 
-const createBufferFromStream = async (file: IFileInput) => {
+const createBufferFromStream = async (file: IFileInput): Promise<Buffer> => {
 	return new Promise((resolve, reject) => {
 		const fileStream = file.createReadStream();
-		const bufferChunks: Array<Buffer> = [];
+		const bufferChunks: Uint8Array[] = [];
 		let completeBuffer = null;
 
 		fileStream.on('data', (bufferChunk: Buffer) => {
-			console.log('data');
 			bufferChunks.push(bufferChunk);
 		});
 
