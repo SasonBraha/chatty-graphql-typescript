@@ -12,6 +12,7 @@ const generateJWT = async (user: IUser) => {
 			role,
 			slug
 		} = user;
+
 		const authToken = await jwt.sign(
 			{ displayName, email, avatar, jwtHandshake, role, slug, _id },
 			process.env.JWT_SECRET,

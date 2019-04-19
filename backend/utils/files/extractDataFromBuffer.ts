@@ -11,8 +11,8 @@ export interface IFileData {
 }
 
 export default (file: Buffer, maxFileSizeInKB: number): IFileData => {
-	const allowedImageTypes: Array<string> = ['jpg', 'jpeg', 'png', 'gif'];
-	const allowedVideoTypes: Array<string> = ['mp4'];
+	const allowedImageTypes: string[] = ['jpg', 'jpeg', 'png', 'gif'];
+	const allowedVideoTypes: string[] = ['mp4'];
 	const allowedFileExtensions = [...allowedImageTypes, ...allowedVideoTypes];
 
 	// @ts-ignore

@@ -41,7 +41,9 @@ export default (state = initialState, action: IAction): IReducerState => {
 				...state,
 				showAuthModal: false,
 				genericModal: {
-					...initialState.genericModal
+					show: false,
+					text: state.genericModal.text,
+					type: state.genericModal.type
 				}
 			};
 

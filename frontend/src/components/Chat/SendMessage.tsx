@@ -1,11 +1,10 @@
 import React from 'react';
 import styled from 'styled-components/macro';
 import gql from 'graphql-tag';
-import { withFormik, FormikProps } from 'formik';
+import { FormikProps, withFormik } from 'formik';
 import { compose, graphql } from 'react-apollo';
 import Icon from '../Shared/Icon';
 import { RouteComponentProps } from 'react-router';
-import { withApollo } from 'react-apollo';
 import { FileInput } from '../Shared/Form';
 
 const SEND_MESSAGE_MUTATION = gql`

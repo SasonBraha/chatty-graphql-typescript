@@ -46,11 +46,7 @@ const ScUploadPreview = styled.div`
 	left: 0;
 	height: calc(100% - 54px);
 	width: 100%;
-	background: linear-gradient(
-		to left,
-		rgba(238, 238, 238, 0.9),
-		rgba(255, 255, 255, 0.9)
-	);
+	background: linear-gradient(to left, #eee, white);
 	z-index: 1;
 	display: flex;
 	justify-content: center;

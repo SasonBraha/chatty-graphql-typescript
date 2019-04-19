@@ -19,7 +19,7 @@ import activeUsersService from '../redis/services/ActiveUsers.service';
 import * as uuid from 'uuid';
 import { GraphQLUpload } from 'apollo-server-express';
 import { uploadFile } from '../utils/files';
-import { FileAddedOutput } from './outputs';
+import { translate } from '../utils';
 
 enum SubscriptionTypesEnum {
 	NEW_MESSAGE = 'NEW_MESSAGE',
@@ -73,7 +73,7 @@ export default class ChatResolver {
 		@Arg('data') { name, isPrivate, storeMessages }: CreateChatInput,
 		@Ctx('user') user: IUser
 	): Promise<IChat> {
-		const newChatRoom = await Chat.create({
+		return await Chat.create({
 			name,
 			image: {
 				path: '/images/default_chat.svg',
@@ -82,10 +82,8 @@ export default class ChatResolver {
 			isPrivate,
 			storeMessages,
 			admin: user._id,
-			slug: `${name}@${uuid()}`
+			slug: `${await translate(name)}@${uuid()}`
 		});
-
-		return newChatRoom;
 	}
 
 	@Mutation(returns => MessageEntity)
@@ -130,14 +128,14 @@ export default class ChatResolver {
 		return newMessage;
 	}
 
-	@Mutation(returns => String)
+	@Mutation(returns => Boolean)
 	async uploadMessageFile(
 		@Arg('file', () => GraphQLUpload) file: IFileInput,
 		@Arg('chatSlug') chatSlug: string,
 		@Arg('messageId') messageId: string,
 		@Ctx('user') user: IUser,
 		@PubSub() pubSub: PubSubEngine
-	): Promise<string> {
+	): Promise<boolean> {
 		const fileData = await uploadFile(file, chatSlug);
 
 		pubSub.publish(SubscriptionTypesEnum.FILE_UPLOADED, {
@@ -147,12 +145,16 @@ export default class ChatResolver {
 		});
 
 		await Message.updateOne(
-			{ _id: messageId },
+			{
+				_id: messageId,
+				'createdBy._id': user._id
+			},
 			{
 				$set: { file: fileData }
 			}
 		);
-		return '';
+
+		return true;
 	}
 
 	@Mutation(returns => Boolean, { nullable: true })

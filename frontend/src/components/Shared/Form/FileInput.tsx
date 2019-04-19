@@ -31,7 +31,7 @@ const validateFile = (
 
 		if (fileSize > maxFileSize) {
 			resetFile();
-			const isLimitOver1MB = maxFileSize >= 1024;
+			const isLimitOver1MB: boolean = maxFileSize >= 1024;
 			return props.setGenericModal(
 				'error',
 				//prettier-ignore
