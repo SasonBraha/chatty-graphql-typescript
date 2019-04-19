@@ -14,7 +14,7 @@ export interface IFile {
 const File = new Schema({
 	mimeType: {
 		type: String,
-		enum: ['jpg', 'jpeg', 'png', 'gif', 'webp', 'bmp']
+		enum: ['jpg', 'jpeg', 'png', 'gif', 'webp', 'bmp', 'mp4']
 	},
 	path: {
 		type: String,
