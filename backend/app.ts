@@ -11,6 +11,9 @@ import getUserData from './auth/getUserData';
 import { buildSchema } from 'type-graphql';
 import { ChatResolver, UserResolver } from './resolvers';
 import * as bodyParser from 'body-parser';
+import { GraphQLError } from 'graphql';
+import AuthenticationError from './utils/errors/AuthenticationError';
+import CustomError, { Errors } from './utils/errors';
 
 const main = async () => {
 	const app = express();
@@ -60,12 +63,14 @@ const main = async () => {
 		context: async ({ req, res, connection }) => {
 			if (connection) {
 				const user = await getUserData(connection.context.authToken);
-				return { user };
+				return { connection, user };
 			} else {
-				const bearerToken: string = req.headers.authorization;
-				const user = await getUserData(bearerToken);
+				const user = await getUserData(req.headers.authorization);
 				return { req, res, user };
 			}
+		},
+		formatError(ex: GraphQLError) {
+			return new CustomError(Errors.InternalServerError);
 		}
 	});
 	apolloServer.applyMiddleware({ app });
@@ -73,7 +78,7 @@ const main = async () => {
 	apolloServer.installSubscriptionHandlers(httpServer);
 
 	//------------------------------------//
-	//  Initalize                         //
+	//  Initialize                        //
 	//------------------------------------//
 	const { PORT } = process.env;
 	httpServer.listen(PORT, () =>

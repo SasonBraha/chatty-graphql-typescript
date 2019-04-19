@@ -20,6 +20,7 @@ import * as uuid from 'uuid';
 import { GraphQLUpload } from 'apollo-server-express';
 import { uploadFile } from '../utils/files';
 import { translate } from '../utils';
+import CustomError, { Errors } from '../utils/errors';
 
 enum SubscriptionTypesEnum {
 	NEW_MESSAGE = 'NEW_MESSAGE',
@@ -43,24 +44,26 @@ export default class ChatResolver {
 		@Arg('chatSlug') chatSlug: string
 	): Promise<IMessage[]> {
 		// FIXME - Use pipelines
-		const oldMessages = await Chat.aggregate([
-			{ $match: { slug: chatSlug } },
-			{
-				$lookup: {
-					from: 'messages',
-					localField: 'messages',
-					foreignField: '_id',
-					as: 'messages'
-				}
-			},
-			{ $unwind: '$messages' },
-			{ $match: { 'messages._id': { $lt: new ObjectID(beforeMessageId) } } },
-			{ $sort: { 'messages.createdAt': -1 } },
-			{ $limit: 20 },
-			{ $group: { _id: '$_id', messages: { $push: '$messages' } } }
-		]);
+		try {
+			const oldMessages = await Chat.aggregate([
+				{ $match: { slug: chatSlug } },
+				{
+					$lookup: {
+						from: 'messages',
+						localField: 'messages',
+						foreignField: '_id',
+						as: 'messages'
+					}
+				},
+				{ $unwind: '$messages' },
+				{ $match: { 'messages._id': { $lt: new ObjectID(beforeMessageId) } } },
+				{ $sort: { 'messages.createdAt': -1 } },
+				{ $limit: 20 },
+				{ $group: { _id: '$_id', messages: { $push: '$messages' } } }
+			]);
 
-		return oldMessages.length ? oldMessages[0].messages.reverse() : [];
+			return oldMessages.length ? oldMessages[0].messages.reverse() : [];
+		} catch (ex) {}
 	}
 
 	@Query(returns => [ChatEntity])

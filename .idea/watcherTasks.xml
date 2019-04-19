@@ -3,6 +3,9 @@
   <component name="ProjectTasksOptions">
     <enabled-global>
       <option value="Prettier" />
+      <option value="Prettier" />
+      <option value="Prettier" />
+      <option value="Prettier" />
     </enabled-global>
   </component>
 </project>

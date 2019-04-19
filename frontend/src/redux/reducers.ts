@@ -2,7 +2,8 @@ import {
 	SET_AUTH_MODAL,
 	RESET_MODALS,
 	SET_NAV_STATE,
-	SET_CURRENT_USER
+	SET_CURRENT_USER,
+	SET_GENERIC_MODAL
 } from './constants';
 import { IUser } from '../models/index';
 
@@ -13,22 +14,37 @@ interface IAction {
 
 export interface IReducerState {
 	showAuthModal: boolean;
+	genericModal: {
+		type: string | null;
+		show: boolean;
+		text: string | null;
+	};
 	isNavOpen: boolean;
 	currentUser: IUser | null;
 }
 
-const initalState: IReducerState = {
+const initialState: IReducerState = {
 	showAuthModal: false,
+	genericModal: {
+		type: null,
+		show: false,
+		text: null
+	},
 	isNavOpen: window.innerWidth > 992,
 	currentUser: null
 };
 
-export default (state = initalState, action: IAction): IReducerState => {
+export default (state = initialState, action: IAction): IReducerState => {
 	switch (action.type) {
 		case RESET_MODALS:
 			return {
 				...state,
-				showAuthModal: false
+				showAuthModal: false,
+				genericModal: {
+					show: false,
+					text: state.genericModal.text,
+					type: state.genericModal.type
+				}
 			};
 
 		case SET_AUTH_MODAL:
@@ -47,6 +63,16 @@ export default (state = initalState, action: IAction): IReducerState => {
 			return {
 				...state,
 				currentUser: action.payload
+			};
+
+		case SET_GENERIC_MODAL:
+			return {
+				...state,
+				genericModal: {
+					type: action.payload.type,
+					show: true,
+					text: action.payload.text
+				}
 			};
 
 		default:
