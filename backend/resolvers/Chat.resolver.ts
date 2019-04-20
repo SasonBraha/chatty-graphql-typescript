@@ -8,7 +8,8 @@ import {
 	Query,
 	Resolver,
 	Root,
-	Subscription
+	Subscription,
+	UseMiddleware
 } from 'type-graphql';
 import Chat, { ChatEntity, IChat } from '../models/Chat.model';
 import User, { IUser, UserEntity } from '../models/User.model';
@@ -21,6 +22,8 @@ import { GraphQLUpload } from 'apollo-server-express';
 import { uploadFile } from '../utils/files';
 import { translate } from '../utils';
 import { ErrorTypesEnum } from '../utils/errors';
+import { Authenticated, WithPermission } from '../middlewares';
+import { ChatPermissionTypesEnum } from '../permissions';
 
 enum SubscriptionTypesEnum {
 	NEW_MESSAGE = 'NEW_MESSAGE',
@@ -30,14 +33,26 @@ enum SubscriptionTypesEnum {
 
 @Resolver(ChatEntity)
 export default class ChatResolver {
+	@UseMiddleware(Authenticated)
+	@UseMiddleware(WithPermission(ChatPermissionTypesEnum.VIEW_CHAT))
 	@Query(returns => ChatEntity)
 	async chat(
 		@Arg('chatSlug') chatSlug: string,
 		@Ctx('user') user: IUser
 	): Promise<IChat> {
-		return await Chat.findOne({ slug: chatSlug }).lean();
+		const chat = await Chat.findOne({ slug: chatSlug }).lean();
+		if (!chat) {
+			throw new Error(ErrorTypesEnum.NOT_FOUND);
+		}
+
+		if (chat.isPrivate && !chat.allowedUsers.includes(user._id)) {
+			throw new Error(ErrorTypesEnum.FORBIDDEN);
+		}
+
+		return chat;
 	}
 
+	@UseMiddleware(Authenticated)
 	@Query(returns => [MessageEntity], { nullable: true })
 	async olderMessages(
 		@Arg('beforeMessageId') beforeMessageId: string,
@@ -68,11 +83,14 @@ export default class ChatResolver {
 		}
 	}
 
+	@UseMiddleware(Authenticated)
 	@Query(returns => [ChatEntity])
 	async roomsList(): Promise<IChat[]> {
 		return await Chat.find();
 	}
 
+	@UseMiddleware(Authenticated)
+	@UseMiddleware(WithPermission(ChatPermissionTypesEnum.CREATE_CHAT))
 	@Mutation(returns => ChatEntity)
 	async createChat(
 		@Arg('data') { name, isPrivate, storeMessages }: CreateChatInput,
@@ -91,6 +109,7 @@ export default class ChatResolver {
 		});
 	}
 
+	@UseMiddleware(Authenticated)
 	@Mutation(returns => MessageEntity)
 	async postMessage(
 		@Arg('text') text: string,
@@ -133,6 +152,7 @@ export default class ChatResolver {
 		return newMessage;
 	}
 
+	@UseMiddleware(Authenticated)
 	@Mutation(returns => Boolean)
 	async uploadMessageFile(
 		@Arg('file', () => GraphQLUpload) file: IFileInput,
@@ -162,6 +182,7 @@ export default class ChatResolver {
 		return true;
 	}
 
+	@UseMiddleware(Authenticated)
 	@Mutation(returns => Boolean, { nullable: true })
 	async addActiveUser(
 		@Arg('chatSlug') chatSlug: string,
@@ -175,6 +196,7 @@ export default class ChatResolver {
 		});
 	}
 
+	@UseMiddleware(Authenticated)
 	@Mutation(returns => Boolean, { nullable: true })
 	async removeActiveUser(
 		@Arg('chatSlug') chatSlug: string,
@@ -188,6 +210,7 @@ export default class ChatResolver {
 		});
 	}
 
+	@UseMiddleware(Authenticated)
 	@Subscription(returns => MessageEntity, {
 		topics: SubscriptionTypesEnum.NEW_MESSAGE,
 		defaultValue: null,

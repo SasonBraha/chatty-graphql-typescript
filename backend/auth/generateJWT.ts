@@ -1,5 +1,6 @@
 import * as jwt from 'jsonwebtoken';
 import { IUser } from '../models/User.model';
+import { ErrorTypesEnum } from '../utils/errors';
 
 const generateJWT = async (user: IUser) => {
 	try {
@@ -20,7 +21,7 @@ const generateJWT = async (user: IUser) => {
 		);
 		return `${authToken}`;
 	} catch (ex) {
-		console.log(ex);
+		throw new Error(ErrorTypesEnum.INTERNAL_SERVER_ERROR);
 	}
 };
 

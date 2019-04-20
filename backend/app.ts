@@ -15,12 +15,13 @@ import { GraphQLError } from 'graphql';
 import CustomError, { ErrorResponse, ErrorTypesEnum } from './utils/errors';
 import { logger } from './utils';
 import * as uuid from 'uuid';
+import './permissions';
 
 const main = async () => {
 	const app = express();
 
 	//------------------------------------//
-	//  DB Config & Connection              //
+	//  DB Config & Connection            //
 	//------------------------------------//
 	mongoose.set('useCreateIndex', true);
 	mongoose
@@ -41,11 +42,7 @@ const main = async () => {
 	// Enable { CORS } Sharing And Dev Logging
 	if (process.env.NODE_ENV === 'development') {
 		app.use(cors());
-		app.use(
-			morgan(
-				':remote-addr - :remote-user [:date[clf]] ":method :url HTTP/:http-version" :status :res[content-length]'
-			)
-		);
+		app.use(morgan('dev'));
 	}
 
 	// Body Parser Middleware
@@ -53,7 +50,7 @@ const main = async () => {
 	app.use(bodyParser.json({ limit: '10mb' }));
 
 	//------------------------------------//
-	//  Apollo Setup                        //
+	//  Apollo Setup                      //
 	//------------------------------------//
 	const schema = await buildSchema({
 		resolvers: [UserResolver, ChatResolver]

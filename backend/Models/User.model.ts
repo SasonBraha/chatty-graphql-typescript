@@ -12,6 +12,7 @@ export interface IUser extends Document {
 	avatar: string;
 	notifications: Array<ObjectId> | Array<INotification>;
 	role: 'Admin' | 'Moderator' | 'User';
+	permissions: string[];
 	ipAddress: string;
 	lastActivity: string;
 	jwtId: string;
@@ -36,7 +37,8 @@ const UserSchema = new Schema(
 		},
 		password: {
 			type: String,
-			trim: true
+			trim: true,
+			select: false
 		},
 		slug: {
 			type: String,
@@ -59,6 +61,7 @@ const UserSchema = new Schema(
 			enum: ['Admin', 'Moderator', 'User'],
 			default: 'User'
 		},
+		permissions: [String],
 		ipAddress: {
 			type: String,
 			required: true,
