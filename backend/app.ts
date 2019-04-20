@@ -1,5 +1,5 @@
-import 'reflect-metadata';
 require('dotenv').config({ path: '../.env' });
+import 'reflect-metadata';
 import * as http from 'http';
 import { ApolloServer } from 'apollo-server-express';
 import * as express from 'express';
@@ -12,8 +12,9 @@ import { buildSchema } from 'type-graphql';
 import { ChatResolver, UserResolver } from './resolvers';
 import * as bodyParser from 'body-parser';
 import { GraphQLError } from 'graphql';
-import AuthenticationError from './utils/errors/AuthenticationError';
-import CustomError, { Errors } from './utils/errors';
+import CustomError, { ErrorResponse, ErrorTypesEnum } from './utils/errors';
+import { logger } from './utils';
+import * as uuid from 'uuid';
 
 const main = async () => {
 	const app = express();
@@ -32,7 +33,7 @@ const main = async () => {
 		});
 
 	//------------------------------------//
-	//  Middlewares                         //
+	//  Middlewares                       //
 	//------------------------------------//
 	// Helmet Security Middleware
 	app.use(helmet());
@@ -40,7 +41,11 @@ const main = async () => {
 	// Enable { CORS } Sharing And Dev Logging
 	if (process.env.NODE_ENV === 'development') {
 		app.use(cors());
-		app.use(morgan('dev'));
+		app.use(
+			morgan(
+				':remote-addr - :remote-user [:date[clf]] ":method :url HTTP/:http-version" :status :res[content-length]'
+			)
+		);
 	}
 
 	// Body Parser Middleware
@@ -69,8 +74,24 @@ const main = async () => {
 				return { req, res, user };
 			}
 		},
-		formatError(ex: GraphQLError) {
-			return new CustomError(Errors.InternalServerError);
+		formatError(ex: GraphQLError): any {
+			const errorMessage = ex.originalError.message;
+			const errorId = uuid();
+
+			if (
+				errorMessage === ErrorTypesEnum.INTERNAL_SERVER_ERROR ||
+				!ErrorResponse[errorMessage]
+			) {
+				ex.extensions.id = errorId;
+				logger.error(ex);
+			}
+
+			return new CustomError(
+				ErrorResponse[errorMessage]
+					? ErrorResponse[errorMessage]
+					: ErrorResponse.InternalServerError,
+				errorId
+			);
 		}
 	});
 	apolloServer.applyMiddleware({ app });

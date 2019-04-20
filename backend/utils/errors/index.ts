@@ -1,4 +1,17 @@
-export const Errors = {
+export enum ErrorTypesEnum {
+	BAD_REQUEST = 'BadRequest',
+	UNAUTHORIZED = 'Unauthorized',
+	FORBIDDEN = 'Forbidden',
+	NOT_FOUND = 'NotFound',
+	INTERNAL_SERVER_ERROR = 'InternalServerError'
+}
+
+export interface IErrorResponse {
+	status: number;
+	message: string;
+}
+
+export const ErrorResponse = {
 	BadRequest: {
 		status: 400,
 		message: 'הבקשה אינה תקנית'
@@ -22,7 +35,9 @@ export const Errors = {
 };
 
 export default class CustomError extends Error {
-	public response: { status: number; message: string; detail: string };
+	public status: number;
+	public message: string;
+	public detail: string;
 
 	constructor(
 		error: { status: number; message: string },
@@ -30,10 +45,8 @@ export default class CustomError extends Error {
 		...args
 	) {
 		super(...args);
-		this.response = {
-			status: error.status,
-			message: error.message,
-			detail: detail
-		};
+		this.status = error.status;
+		this.message = error.message;
+		this.detail = detail;
 	}
 }

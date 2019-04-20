@@ -20,7 +20,7 @@ import * as uuid from 'uuid';
 import { GraphQLUpload } from 'apollo-server-express';
 import { uploadFile } from '../utils/files';
 import { translate } from '../utils';
-import CustomError, { Errors } from '../utils/errors';
+import { ErrorTypesEnum } from '../utils/errors';
 
 enum SubscriptionTypesEnum {
 	NEW_MESSAGE = 'NEW_MESSAGE',
@@ -63,7 +63,9 @@ export default class ChatResolver {
 			]);
 
 			return oldMessages.length ? oldMessages[0].messages.reverse() : [];
-		} catch (ex) {}
+		} catch (ex) {
+			throw new Error(ErrorTypesEnum.INTERNAL_SERVER_ERROR);
+		}
 	}
 
 	@Query(returns => [ChatEntity])
