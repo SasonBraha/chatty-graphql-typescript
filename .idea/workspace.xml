@@ -1,16 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="f5d32516-c57c-4efd-9a40-1e63148cbd4c" name="Default Changelist" comment="Logger and error handaling">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/app.ts" beforeDir="false" afterPath="$PROJECT_DIR$/backend/app.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/resolvers/Chat.resolver.ts" beforeDir="false" afterPath="$PROJECT_DIR$/backend/resolvers/Chat.resolver.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/utils/errors/AuthenticationError.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/utils/errors/BaseError.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/utils/errors/InternalError.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/utils/errors/PermissionError.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/utils/errors/index.ts" beforeDir="false" afterPath="$PROJECT_DIR$/backend/utils/errors/index.ts" afterDir="false" />
-    </list>
+    <list default="true" id="f5d32516-c57c-4efd-9a40-1e63148cbd4c" name="Default Changelist" comment="" />
     <ignored path="$PROJECT_DIR$/backend/node_modules/" />
     <ignored path="$PROJECT_DIR$/frontend/node_modules/" />
     <ignored path="$PROJECT_DIR$/.tmp/" />
@@ -30,8 +21,8 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/backend/app.ts">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="355">
-              <caret line="84" column="35" lean-forward="true" selection-start-line="84" selection-start-column="35" selection-end-line="84" selection-end-column="35" />
+            <state relative-caret-position="407">
+              <caret line="86" column="7" lean-forward="true" selection-start-line="86" selection-start-column="7" selection-end-line="86" selection-end-column="7" />
               <folding>
                 <element signature="e#0#26#0" expanded="true" />
               </folding>
@@ -190,7 +181,7 @@
     <other-services-enabled>true</other-services-enabled>
     <auto-save>true</auto-save>
   </component>
-  <component name="ProjectFrameBounds" extendedState="6">
+  <component name="ProjectFrameBounds" extendedState="7">
     <option name="x" value="165" />
     <option name="y" value="-17" />
     <option name="width" value="1936" />
@@ -269,7 +260,7 @@
     <property name="prettierjs.PrettierConfiguration.Package" value="C:\Users\SasoN\AppData\Roaming\npm\node_modules\prettier" />
     <property name="restartRequiresConfirmation" value="false" />
     <property name="run.code.analysis.last.selected.profile" value="pProject Default" />
-    <property name="settings.editor.selected.configurable" value="application.passwordSafe" />
+    <property name="settings.editor.selected.configurable" value="project.scopes" />
     <property name="ts.external.directory.path" value="D:\Projects\chatty-graphql-typescript\frontend\node_modules\typescript\lib" />
   </component>
   <component name="RecentsManager">
@@ -349,7 +340,7 @@
       <workItem from="1555695586652" duration="845000" />
       <workItem from="1555696467714" duration="7082000" />
       <workItem from="1555713226510" duration="886000" />
-      <workItem from="1555744485815" duration="6039000" />
+      <workItem from="1555744485815" duration="6341000" />
     </task>
     <task id="LOCAL-00001" summary="Publish distinction">
       <created>1554550447481</created>
@@ -463,11 +454,18 @@
       <option name="project" value="LOCAL" />
       <updated>1555702999231</updated>
     </task>
-    <option name="localTasksCounter" value="17" />
+    <task id="LOCAL-00017" summary="Working error handaling">
+      <created>1555756913063</created>
+      <option name="number" value="00017" />
+      <option name="presentableId" value="LOCAL-00017" />
+      <option name="project" value="LOCAL" />
+      <updated>1555756913063</updated>
+    </task>
+    <option name="localTasksCounter" value="18" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="182438000" />
+    <option name="totallyTimeSpent" value="182740000" />
   </component>
   <component name="TodoView" selected-index="3">
     <todo-panel id="selected-file">
@@ -479,7 +477,8 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="-8" y="-8" width="1936" height="1056" extended-state="6" />
+    <frame x="-8" y="-8" width="1936" height="1056" extended-state="7" />
+    <editor active="true" />
     <layout>
       <window_info content_ui="combo" id="Project" order="0" sideWeight="0.49757674" visible="true" weight="0.24341412" />
       <window_info id="Favorites" order="1" sideWeight="0.5005417" side_tool="true" weight="0.16791044" />
@@ -546,7 +545,8 @@
     <MESSAGE value="Max file size, generic modal" />
     <MESSAGE value="Google translate" />
     <MESSAGE value="Logger and error handaling" />
-    <option name="LAST_COMMIT_MESSAGE" value="Logger and error handaling" />
+    <MESSAGE value="Working error handaling" />
+    <option name="LAST_COMMIT_MESSAGE" value="Working error handaling" />
   </component>
   <component name="editorHistoryManager">
     <entry file="file://$PROJECT_DIR$/frontend/src/serviceWorker.ts">
@@ -875,8 +875,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/backend/app.ts">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="355">
-          <caret line="84" column="35" lean-forward="true" selection-start-line="84" selection-start-column="35" selection-end-line="84" selection-end-column="35" />
+        <state relative-caret-position="407">
+          <caret line="86" column="7" lean-forward="true" selection-start-line="86" selection-start-column="7" selection-end-line="86" selection-end-column="7" />
           <folding>
             <element signature="e#0#26#0" expanded="true" />
           </folding>
