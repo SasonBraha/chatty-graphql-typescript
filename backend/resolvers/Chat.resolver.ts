@@ -86,8 +86,16 @@ export default class ChatResolver {
 
 	@UseMiddleware(Authenticated)
 	@Query(returns => [ChatEntity])
-	async roomsList(): Promise<IChat[]> {
-		return await Chat.find();
+	async roomsList(@Ctx('user') user: IUser): Promise<IChat[]> {
+		return await Chat.find({
+			$or: [
+				{ isPrivate: false },
+				{
+					isPrivate: true,
+					allowedUsers: user._id
+				}
+			]
+		});
 	}
 
 	@UseMiddleware(Authenticated)

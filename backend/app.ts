@@ -82,7 +82,6 @@ const main = async () => {
 				ex.extensions.id = errorId;
 				logger.error(ex);
 			}
-
 			return new CustomError(
 				ErrorResponse[errorMessage]
 					? ErrorResponse[errorMessage]
