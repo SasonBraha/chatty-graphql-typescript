@@ -47,8 +47,11 @@ class ActiveUsers extends Component<IProps> {
 	private init = () => {
 		// @ts-ignore
 		window.addEventListener('beforeunload', this.removeActiveUser);
-		this.addActiveUser();
 	};
+
+	componentDidMount() {
+		this.addActiveUser();
+	}
 
 	componentDidUpdate(prevProps: Readonly<IProps>) {
 		if (prevProps.match.params.chatSlug !== this.props.match.params.chatSlug) {

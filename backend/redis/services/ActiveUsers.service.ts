@@ -1,5 +1,6 @@
 import redis, { RedisCategoriesEnum } from '../';
 import { IUser } from '../../models/User.model';
+import { ConnectionNotificationSet } from 'aws-sdk/clients/ec2';
 
 class ActiveUsersService {
 	private async getUsers(chatSlug: string): Promise<IUser[]> {
@@ -23,14 +24,19 @@ class ActiveUsersService {
 
 	public async addUser(chatSlug: string, userData: IUser): Promise<IUser[]> {
 		const userList: IUser[] = await this.getUsers(chatSlug);
-		userList.push(userData);
+		userList.push({
+			_id: userData._id,
+			slug: userData.slug,
+			avatar: userData.avatar,
+			displayName: userData.displayName
+		} as IUser);
 		await this.updateUserList(userList, chatSlug);
 		return userList;
 	}
 
 	public async removeUser(chatSlug: string, userData: IUser): Promise<IUser[]> {
 		const userList = await this.getUsers(chatSlug);
-		const updatedUserList = userList.filter(user => user._id !== userData._id);
+		const updatedUserList = userList.filter(user => user._id != userData._id);
 		await this.updateUserList(updatedUserList, chatSlug);
 		return updatedUserList;
 	}

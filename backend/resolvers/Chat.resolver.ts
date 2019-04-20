@@ -24,6 +24,7 @@ import { translate } from '../utils';
 import { ErrorTypesEnum } from '../utils/errors';
 import { Authenticated, WithPermission } from '../middlewares';
 import { ChatPermissionTypesEnum } from '../permissions';
+import withPermission from '../middlewares/WithPermission';
 
 enum SubscriptionTypesEnum {
 	NEW_MESSAGE = 'NEW_MESSAGE',
@@ -110,6 +111,7 @@ export default class ChatResolver {
 	}
 
 	@UseMiddleware(Authenticated)
+	@UseMiddleware(withPermission(ChatPermissionTypesEnum.POST_MESSAGE))
 	@Mutation(returns => MessageEntity)
 	async postMessage(
 		@Arg('text') text: string,
