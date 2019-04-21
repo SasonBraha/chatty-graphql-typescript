@@ -89,7 +89,7 @@ const MessagesListData = (props: IChatProps) => {
 									chat: {
 										__typename: prev.chat.__typename,
 										messages: [
-											...fetchMoreResult.olderMessages,
+											...fetchMoreResult.olderMessages.reverse(),
 											...prev.chat.messages
 										]
 									}

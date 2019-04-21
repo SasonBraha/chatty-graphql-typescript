@@ -41,13 +41,19 @@ export default class ChatResolver {
 		@Arg('chatSlug') chatSlug: string,
 		@Ctx('user') user: IUser
 	): Promise<IChat> {
-		const chat = await Chat.findOne({ slug: chatSlug }).lean();
+		const chat = await Chat.findOne({
+			$or: [
+				{ slug: chatSlug, isPrivate: false },
+				{
+					slug: chatSlug,
+					isPrivate: true,
+					allowedUsers: user._id
+				}
+			]
+		}).lean();
+
 		if (!chat) {
 			throw new Error(ErrorTypesEnum.NOT_FOUND);
-		}
-
-		if (chat.isPrivate && !chat.allowedUsers.includes(user._id)) {
-			throw new Error(ErrorTypesEnum.FORBIDDEN);
 		}
 
 		return chat;
@@ -57,12 +63,24 @@ export default class ChatResolver {
 	@Query(returns => [MessageEntity], { nullable: true })
 	async olderMessages(
 		@Arg('beforeMessageId') beforeMessageId: string,
-		@Arg('chatSlug') chatSlug: string
+		@Arg('chatSlug') chatSlug: string,
+		@Ctx('user') user: IUser
 	): Promise<IMessage[]> {
 		// FIXME - Use pipelines
 		try {
 			const oldMessages = await Chat.aggregate([
-				{ $match: { slug: chatSlug } },
+				{
+					$match: {
+						$or: [
+							{ slug: chatSlug, isPrivate: false },
+							{
+								slug: chatSlug,
+								isPrivate: true,
+								allowedUsers: user._id
+							}
+						]
+					}
+				},
 				{
 					$lookup: {
 						from: 'messages',
@@ -78,7 +96,7 @@ export default class ChatResolver {
 				{ $group: { _id: '$_id', messages: { $push: '$messages' } } }
 			]);
 
-			return oldMessages.length ? oldMessages[0].messages.reverse() : [];
+			return oldMessages.length ? oldMessages[0].messages : [];
 		} catch (ex) {
 			throw new Error(ErrorTypesEnum.INTERNAL_SERVER_ERROR);
 		}
@@ -152,7 +170,16 @@ export default class ChatResolver {
 
 		// Save Message Id To Chat
 		await Chat.updateOne(
-			{ slug: chatSlug },
+			{
+				$or: [
+					{ slug: chatSlug, isPrivate: false },
+					{
+						slug: chatSlug,
+						isPrivate: true,
+						allowedUsers: user._id
+					}
+				]
+			},
 			{
 				$push: { messages: newMessage._id },
 				$set: { lastMessage: newMessage.text }
