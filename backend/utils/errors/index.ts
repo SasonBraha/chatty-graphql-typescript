@@ -38,15 +38,18 @@ export default class CustomError extends Error {
 	public status: number;
 	public message: string;
 	public detail: string;
+	public formValidation;
 
 	constructor(
 		error: { status: number; message: string },
 		detail: string = undefined,
+		formValidation?: string,
 		...args
 	) {
 		super(...args);
 		this.status = error.status;
 		this.message = error.message;
 		this.detail = detail;
+		this.formValidation = formValidation;
 	}
 }

@@ -13,7 +13,7 @@ import { ChatResolver, UserResolver } from './resolvers';
 import * as bodyParser from 'body-parser';
 import { GraphQLError } from 'graphql';
 import CustomError, { ErrorResponse, ErrorTypesEnum } from './utils/errors';
-import { logger } from './utils';
+import { isJson, logger } from './utils';
 import * as uuid from 'uuid';
 import './permissions';
 
@@ -75,6 +75,17 @@ const main = async () => {
 			const errorMessage = ex.originalError.message;
 			const errorId = uuid();
 
+			if (isJson(errorMessage)) {
+				const parsedError = JSON.parse(errorMessage);
+				if (parsedError.type === ErrorTypesEnum.BAD_REQUEST) {
+					return new CustomError(
+						ErrorResponse.BadRequest,
+						errorId,
+						parsedError.errors
+					);
+				}
+			}
+
 			if (
 				errorMessage === ErrorTypesEnum.INTERNAL_SERVER_ERROR ||
 				!ErrorResponse[errorMessage]
@@ -82,6 +93,7 @@ const main = async () => {
 				ex.extensions.id = errorId;
 				logger.error(ex);
 			}
+
 			return new CustomError(
 				ErrorResponse[errorMessage]
 					? ErrorResponse[errorMessage]

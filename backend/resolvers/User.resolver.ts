@@ -4,6 +4,10 @@ import { LoginInput, RegisterInput } from './inputs';
 import { Request } from 'express';
 import generateJWT from '../auth/generateJWT';
 import * as uuid from 'uuid';
+import {
+	throwValidationError,
+	validateRegistrationInput
+} from '../utils/validation';
 
 @Resolver(UserEntity)
 export default class UserResolver {
@@ -12,20 +16,25 @@ export default class UserResolver {
 		@Arg('data') { displayName, email, password }: RegisterInput,
 		@Ctx('req') req: Request
 	): Promise<boolean> {
-		try {
-			await User.create({
-				displayName,
-				email,
-				password,
-				slug: `${displayName}@${uuid()}`,
-				jwtId: uuid(),
-				ipAddress:
-					req.headers['x-forwarded-for'] || req.connection.remoteAddress
-			});
-			return true;
-		} catch (ex) {
-			return false;
+		const { isValid, errors } = validateRegistrationInput({
+			displayName,
+			email,
+			password
+		});
+
+		if (!isValid) {
+			throwValidationError(errors);
 		}
+
+		await User.create({
+			displayName,
+			email,
+			password,
+			slug: `${displayName}@${uuid()}`,
+			jwtId: uuid(),
+			ipAddress: req.headers['x-forwarded-for'] || req.connection.remoteAddress
+		});
+		return true;
 	}
 
 	@Mutation(returns => String, { nullable: true })

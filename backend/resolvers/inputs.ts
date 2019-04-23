@@ -1,12 +1,9 @@
-import { InputType, Field, ID, Int } from 'type-graphql';
-import { Length, IsEmail } from 'class-validator';
+import { Field, InputType } from 'type-graphql';
 import { Stream } from 'stream';
 
 @InputType()
 export class CreateChatInput {
-	@Field()
-	@Length(1, 20)
-	name: string;
+	@Field() name: string;
 
 	@Field() isPrivate: boolean;
 
@@ -15,9 +12,7 @@ export class CreateChatInput {
 
 @InputType()
 export class RegisterInput {
-	@Field()
-	@Length(3, 25)
-	displayName: string;
+	@Field() displayName: string;
 
 	@Field() email: string;
 

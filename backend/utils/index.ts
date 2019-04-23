@@ -1,4 +1,5 @@
 import translate from './translate';
 import logger from './logger';
+import isJson from './isJson';
 
-export { translate, logger };
+export { translate, logger, isJson };
