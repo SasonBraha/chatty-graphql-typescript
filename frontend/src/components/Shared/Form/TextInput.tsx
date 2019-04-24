@@ -5,13 +5,14 @@ import FormGroup from './FormGroup';
 interface IProps {
 	name: string;
 	value: string;
-	error: string;
+	error: string | undefined;
 	type?: string;
 	label: string;
 	icon?: string;
 	onChange: (event: React.FormEvent<HTMLInputElement>) => void;
 	onBlur: (event: React.FormEvent<HTMLInputElement>) => void;
 }
+
 
 const TextInput = (props: IProps) => (
 	<FormGroup>
@@ -24,7 +25,7 @@ const TextInput = (props: IProps) => (
 	</FormGroup>
 );
 
-const StyledInput = styled('input')<{ error: string }>`
+const StyledInput = styled('input')<{ error: string | undefined }>`
 	border: none;
 	background: white;
 	border-bottom: 0.2rem solid #d4d4d4;
@@ -39,11 +40,12 @@ const StyledInput = styled('input')<{ error: string }>`
 
 	&:focus,
 	&:valid {
-		border-color: var(--main-color);
+		border-color: ${(props) => props.theme.errorColor};
 
 		& ~ label,
-		& ~ i {
-			color: var(--main-color);
+		& ~ svg {
+			color: ${(props) => props.theme.errorColor};
+			fill: ${(props) => props.theme.errorColor};
 		}
 
 		& ~ label {
@@ -54,11 +56,12 @@ const StyledInput = styled('input')<{ error: string }>`
 	${({ error }) =>
 		error &&
 		css`
-			border-color: var(--danger-color);
+			border-color: ${(props) => props.theme.errorColor};
 
 			& ~ label,
-			& ~ i {
-				color: var(--danger-color);
+			& ~ svg {
+				color: ${(props) => props.theme.errorColor};
+				fill: ${(props) => props.theme.errorColor};
 			}
 		`}
 `;
@@ -84,9 +87,9 @@ const StyledInputIcon = styled.svg`
 `;
 
 const StyledInputError = styled.div`
-	color: var(--danger-color);
+	color: ${(props) => props.theme.errorColor};
 	font-size: 1.25rem;
-	text-align: left;
+	text-align: right;
 `;
 
 export default TextInput;

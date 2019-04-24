@@ -6,12 +6,16 @@ export enum ErrorTypesEnum {
 	INTERNAL_SERVER_ERROR = 'InternalServerError'
 }
 
-export interface IErrorResponse {
+export interface IErrorContext {
 	status: number;
 	message: string;
 }
 
-export const ErrorResponse = {
+interface IError {
+	[key: string]: IErrorContext;
+}
+
+export const ErrorResponse: IError = {
 	BadRequest: {
 		status: 400,
 		message: 'הבקשה אינה תקנית'

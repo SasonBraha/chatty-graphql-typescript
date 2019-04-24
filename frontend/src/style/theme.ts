@@ -11,7 +11,8 @@ const defaultTheme: DefaultTheme = {
 	roomsListBackground: '#232A32',
 	activeUsersBackground: '#2E353D',
 	ownMessageBackground: '#0079ea',
-	success: '#28A745'
+	success: '#28A745',
+	errorColor: '#DC3545'
 };
 
 export { defaultTheme };

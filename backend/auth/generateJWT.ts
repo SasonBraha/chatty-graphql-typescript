@@ -19,7 +19,7 @@ const generateJWT = async (user: IUser) => {
 			process.env.JWT_SECRET,
 			{ expiresIn: '10d' }
 		);
-		return `${authToken}`;
+		return authToken;
 	} catch (ex) {
 		throw new Error(ErrorTypesEnum.INTERNAL_SERVER_ERROR);
 	}

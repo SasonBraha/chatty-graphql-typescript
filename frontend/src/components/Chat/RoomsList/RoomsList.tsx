@@ -1,10 +1,11 @@
 import React from 'react';
 import { Query } from 'react-apollo';
 import gql from 'graphql-tag';
-import { IChat } from '../../models';
+import { IChat } from '../../../models';
 import RoomsListItem from './RoomsListItem';
 import styled from 'styled-components/macro';
-import { IChatProps } from './Chat';
+import { IChatProps } from '../Chat';
+import RoomsListLoader from './RoomsListLoader';
 
 const ROOMS_LIST_QUERY = gql`
 	query {
@@ -35,6 +36,7 @@ const RoomsList = (props: IChatProps) => (
 							key={room.slug}
 						/>
 					))}
+					<RoomsListLoader />
 				</ScRoomsList>
 			);
 		}}

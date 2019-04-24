@@ -4,6 +4,7 @@ import Message from './Message';
 import { connect } from 'react-redux';
 import { IReducerState } from '../../../redux/reducers';
 import styled from 'styled-components/macro';
+import { CircleLoader, LineLoader } from '../../Shared/Loaders';
 
 interface IProps {
 	currentUser?: IUser | null;
@@ -149,6 +150,8 @@ class MessagesList extends Component<IProps> {
 					))
 				)}
 				<div ref={this.listEnd} className='listEnd' />
+				<CircleLoader />
+				<LineLoader />
 			</ScMessagesList>
 		);
 	}

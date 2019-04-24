@@ -1,7 +1,6 @@
 import React from 'react';
-import { Modal, Button } from '../Shared';
-import { connect } from 'react-redux';
-import { withFormik, FormikProps } from 'formik';
+import { Button } from '../Shared';
+import { FormikProps, withFormik } from 'formik';
 import { compose, graphql } from 'react-apollo';
 import { Form, FormGroup, TextInput } from '../Shared/Form';
 import Ripple from 'react-ink';
@@ -37,7 +36,7 @@ const LoginForm = (props: FormikProps<IFormValues>) => {
 				<TextInput
 					name='displayName'
 					value={values.displayName}
-					error=''
+					error={errors.displayName}
 					label='שם משתמש'
 					onChange={handleChange}
 					onBlur={handleBlur}
@@ -49,7 +48,7 @@ const LoginForm = (props: FormikProps<IFormValues>) => {
 				<TextInput
 					name='email'
 					value={values.email}
-					error=''
+					error={errors.email}
 					label='דואר אלקטרוני'
 					onChange={handleChange}
 					onBlur={handleBlur}
@@ -60,8 +59,9 @@ const LoginForm = (props: FormikProps<IFormValues>) => {
 			<FormGroup>
 				<TextInput
 					name='password'
+					type='password'
 					value={values.password}
-					error=''
+					error={errors.password}
 					label='סיסמה'
 					onChange={handleChange}
 					onBlur={handleBlur}
@@ -84,18 +84,24 @@ export default compose(
 		handleSubmit: async (
 			values,
 			//@ts-ignore
-			{ props: { mutate }, setSubmitting, resetForm }
+			{ props: { mutate }, setSubmitting, resetForm, setErrors }
 		) => {
-			const registerData = await mutate({
-				variables: values
-			});
+			try {
+				const registerData = await mutate({
+					variables: values
+				});
+				const {
+					data: { registerMutation: isRegistered }
+				} = registerData;
 
-			const {
-				data: { registerMutation: isRegistered }
-			} = registerData;
-
-			if (isRegistered) {
-				console.log('Success! Registered successfully');
+				if (isRegistered) {
+					console.log('Success! Registered successfully');
+				}
+			} catch (ex) {
+				const { message, status, formValidation } = ex.graphQLErrors[0];
+				if (formValidation) {
+					setErrors(formValidation);
+				}
 			}
 		}
 	})

@@ -1,11 +1,12 @@
 import React from 'react';
-import { Modal, Button } from '../Shared';
+import { Button } from '../Shared';
 import { connect } from 'react-redux';
-import { withFormik, FormikProps } from 'formik';
+import { FormikProps, withFormik } from 'formik';
 import { compose, graphql } from 'react-apollo';
 import { Form, FormGroup, TextInput } from '../Shared/Form';
 import Ripple from 'react-ink';
 import gql from 'graphql-tag';
+import { setGenericModal } from '../../redux/actions';
 
 const LOGIN_MUTATION = gql`
 	mutation($email: String!, $password: String!) {
@@ -65,23 +66,31 @@ const LoginForm = (props: FormikProps<IFormValues>) => {
 
 export default compose(
 	graphql(LOGIN_MUTATION),
+	connect(null,  { setGenericModal }),
 	withFormik({
 		mapPropsToValues: () => ({ email: '', password: '' }),
 		handleSubmit: async (
 			values,
 			//@ts-ignore
-			{ props: { mutate }, setSubmitting, resetForm }
+			{ props: { mutate, setGenericModal }, setSubmitting, resetForm }
 		) => {
-			const loginData = await mutate({
-				variables: values
-			});
-			const {
-				data: { login: authToken }
-			} = loginData;
+			try {
+				const loginData = await mutate({
+					variables: values
+				});
+				const {
+					data: { login: authToken },
+				} = loginData;
 
-			if (authToken) {
-				localStorage.setItem(process.env.REACT_APP_LS_AUTH_TOKEN, authToken);
+				if (authToken) {
+					localStorage.setItem(process.env.REACT_APP_LS_AUTH_TOKEN, authToken);
+					window.location.reload();
+				}
+			} catch (ex) {
+				const { message, status, formValidation } = ex.graphQLErrors[0];
+
 			}
 		}
-	})
+	}),
+
 )(LoginForm);

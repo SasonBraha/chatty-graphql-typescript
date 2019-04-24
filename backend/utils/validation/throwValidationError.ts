@@ -4,7 +4,7 @@ class IErrors {
 	[key: string]: string;
 }
 
-const throwValidationError = (errors: IErrors[]) => {
+const throwValidationError = (errors: IErrors[]): void => {
 	throw new Error(
 		JSON.stringify({
 			type: ErrorTypesEnum.BAD_REQUEST,

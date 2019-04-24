@@ -37,8 +37,7 @@ const UserSchema = new Schema(
 		},
 		password: {
 			type: String,
-			trim: true,
-			select: false
+			trim: true
 		},
 		slug: {
 			type: String,

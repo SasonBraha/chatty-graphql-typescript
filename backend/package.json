@@ -15,7 +15,6 @@
 		"bcryptjs": "^2.4.3",
 		"body-parser": "^1.18.3",
 		"buffer-image-size": "^0.6.4",
-		"class-validator": "^0.9.1",
 		"compression": "^1.7.3",
 		"cors": "^2.8.5",
 		"dotenv": "^6.2.0",

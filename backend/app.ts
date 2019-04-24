@@ -1,3 +1,5 @@
+import { Object } from 'aws-sdk/clients/s3';
+
 require('dotenv').config({ path: '../.env' });
 import 'reflect-metadata';
 import * as http from 'http';
@@ -53,7 +55,8 @@ const main = async () => {
 	//  Apollo Setup                      //
 	//------------------------------------//
 	const schema = await buildSchema({
-		resolvers: [UserResolver, ChatResolver]
+		resolvers: [UserResolver, ChatResolver],
+		validate: false
 	});
 
 	const apolloServer = new ApolloServer({
@@ -81,7 +84,10 @@ const main = async () => {
 					return new CustomError(
 						ErrorResponse.BadRequest,
 						errorId,
-						parsedError.errors
+						parsedError.errors.reduce((acc, currentError) => {
+							Object.assign(acc, currentError);
+							return acc;
+						}, {})
 					);
 				}
 			}

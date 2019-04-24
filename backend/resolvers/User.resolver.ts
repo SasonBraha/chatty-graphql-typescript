@@ -8,6 +8,7 @@ import {
 	throwValidationError,
 	validateRegistrationInput
 } from '../utils/validation';
+import { ErrorTypesEnum } from '../utils/errors';
 
 @Resolver(UserEntity)
 export default class UserResolver {
@@ -39,16 +40,12 @@ export default class UserResolver {
 
 	@Mutation(returns => String, { nullable: true })
 	async login(@Arg('data') { email, password }: LoginInput): Promise<string> {
-		try {
-			const user = await User.findOne({ email });
-			if (!user) return null;
+		const user = await User.findOne({ email });
+		if (!user) throw new Error(ErrorTypesEnum.BAD_REQUEST);
 
-			const isPasswordMatch = await user.comparePassword(password);
-			if (!isPasswordMatch) return null;
+		const isPasswordMatch = await user.comparePassword(password);
+		if (!isPasswordMatch) throw new Error(ErrorTypesEnum.BAD_REQUEST);
 
-			return generateJWT(user);
-		} catch (ex) {
-			return null;
-		}
+		return generateJWT(user);
 	}
 }
