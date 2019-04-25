@@ -5,9 +5,11 @@ export interface IFile {
 	mimeType?: string;
 	path: string;
 	isStored: boolean;
+	__typename?: 'FileEntity';
 	dimensions: {
 		width?: number;
 		height?: number;
+		__typename?: 'FileDimensions';
 	};
 }
 
