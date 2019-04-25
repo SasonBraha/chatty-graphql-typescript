@@ -13,6 +13,7 @@ interface IProps {
 	chatSlug: string;
 	isFetching: boolean;
 	isMoreMessagesToFetch: boolean;
+	shouldComponentUpdateIndicator: number;
 	data: {
 		chat: {
 			messages: IMessage[];
@@ -68,7 +69,9 @@ class MessagesList extends Component<IProps> {
 		return (
 			isMessagesUpdated! ||
 			isRoomChanged! ||
-			this.props.isMoreMessagesToFetch !== nextProps.isMoreMessagesToFetch
+			this.props.isMoreMessagesToFetch !== nextProps.isMoreMessagesToFetch ||
+			this.props.shouldComponentUpdateIndicator !==
+				nextProps.shouldComponentUpdateIndicator
 		);
 	}
 

@@ -1,6 +1,6 @@
 import { Document, Schema, model } from 'mongoose';
 import File, { IFile, FileEntity } from './File.model';
-import { ObjectType, Field } from 'type-graphql';
+import { ObjectType, Field, ID } from 'type-graphql';
 import { UserEntity, IUser } from './User.model';
 
 export interface IMessage extends Document {
@@ -36,7 +36,7 @@ const MessageSchema = new Schema(
 
 @ObjectType()
 export class MessageEntity {
-	@Field()
+	@Field(type => ID)
 	_id: string;
 
 	@Field()

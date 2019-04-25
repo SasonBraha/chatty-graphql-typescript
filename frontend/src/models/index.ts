@@ -30,6 +30,7 @@ export interface IMessage {
 }
 
 export interface IFile {
+	__typename: string;
 	mimeType?: string;
 	path: string;
 	isStored: boolean;

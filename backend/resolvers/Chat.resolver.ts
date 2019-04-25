@@ -2,6 +2,7 @@ import {
 	Arg,
 	Ctx,
 	FieldResolver,
+	ID,
 	Mutation,
 	PubSub,
 	PubSubEngine,
@@ -25,6 +26,7 @@ import { ErrorTypesEnum } from '../utils/errors';
 import { Authenticated, WithPermission } from '../middlewares';
 import { ChatPermissionTypesEnum } from '../permissions';
 import withPermission from '../middlewares/WithPermission';
+import { IFile } from '../models/File.model';
 
 enum SubscriptionTypesEnum {
 	NEW_MESSAGE = 'NEW_MESSAGE',
@@ -62,7 +64,7 @@ export default class ChatResolver {
 	@UseMiddleware(Authenticated)
 	@Query(returns => [MessageEntity], { nullable: true })
 	async olderMessages(
-		@Arg('beforeMessageId') beforeMessageId: string,
+		@Arg('beforeMessageId', () => ID) beforeMessageId: string,
 		@Arg('chatSlug') chatSlug: string,
 		@Ctx('user') user: IUser
 	): Promise<IMessage[]> {
@@ -202,8 +204,8 @@ export default class ChatResolver {
 
 		pubSub.publish(SubscriptionTypesEnum.FILE_UPLOADED, {
 			chatSlug,
-			path: fileData.path,
-			messageId
+			messageId,
+			file: fileData
 		});
 
 		await Message.updateOne(
@@ -266,14 +268,17 @@ export default class ChatResolver {
 		filter: ({ payload, args }) => payload.chatSlug === args.chatSlug
 	})
 	fileUploaded(
-		@Root() fileData: { path: string; chatSlug: string; messageId: string },
+		@Root() fileData: { chatSlug: string; messageId: string; file: IFile },
 		@Arg('chatSlug') chatSlug: string,
 		@Ctx('ctx') ctx
 	) {
+		fileData.file.__typename = 'FileEntity';
+		fileData.file.dimensions.__typename = 'FileDimensions';
+
 		return JSON.stringify({
 			chatSlug,
 			messageId: fileData.messageId,
-			path: fileData.path
+			file: fileData.file
 		});
 	}
 

@@ -7,6 +7,7 @@ import { setAuthModal, setNavState } from '../../redux/actions';
 import Ripple from 'react-ink';
 import { IUser } from '../../models';
 import { IReducerState } from '../../redux/reducers';
+import Icon from '../Shared/Icon';
 
 interface IProps {
 	setAuthModal: typeof setAuthModal;
@@ -31,13 +32,13 @@ const headerDropdownItmes = (props: IProps) => {
 			text: 'התנתק',
 			onClick: () => {
 				localStorage.removeItem(process.env.REACT_APP_LS_AUTH_TOKEN);
-				window.location.reload();
+				window.location.href = '/';
 			}
 		}
 	];
 };
 
-const Header = (props: IProps) => {
+const Header: React.FC<IProps> = props => {
 	const { setAuthModal, setNavState, currentUser } = props;
 	const [isHeaderDropdownOpen, setHeaderDropdown] = useState(false);
 
@@ -45,30 +46,34 @@ const Header = (props: IProps) => {
 		<ScHeader>
 			<Burger onClick={setNavState} />
 			<ScBrand to='/'>Chatty</ScBrand>
+
 			{currentUser ? (
-				<ScProfileDropdown onClick={() => setHeaderDropdown(true)}>
-					<ScProfileImg src={currentUser.avatar} />
-					<Dropdown
-						isOpen={isHeaderDropdownOpen}
-						resetDropdown={() => setHeaderDropdown(false)}
-					>
-						<ul>
-							{headerDropdownItmes(props).map(
-								({ icon, text, onClick, to }, i) => (
-									<ListItem
-										key={i}
-										icon={icon}
-										linkTo={to}
-										onClick={onClick}
-										withRipple
-									>
-										{text}
-									</ListItem>
-								)
-							)}
-						</ul>
-					</Dropdown>
-				</ScProfileDropdown>
+				<ScHeaderMenu>
+					{/*<Icon icon='icon-notifications' />*/}
+					<ScProfileDropdown onClick={() => setHeaderDropdown(true)}>
+						<ScProfileImg src={currentUser.avatar} />
+						<Dropdown
+							isOpen={isHeaderDropdownOpen}
+							resetDropdown={() => setHeaderDropdown(false)}
+						>
+							<ul>
+								{headerDropdownItmes(props).map(
+									({ icon, text, onClick, to }, i) => (
+										<ListItem
+											key={i}
+											icon={icon}
+											linkTo={to}
+											onClick={onClick}
+											withRipple
+										>
+											{text}
+										</ListItem>
+									)
+								)}
+							</ul>
+						</Dropdown>
+					</ScProfileDropdown>
+				</ScHeaderMenu>
 			) : (
 				<ScAuthBtn onClick={() => setAuthModal(true)}>
 					הרשמה / התחברות
@@ -114,6 +119,10 @@ const ScBrand = styled(Link)`
 
 const ScAuthBtn = styled(Button)`
 	margin-left: 3px;
+`;
+
+const ScHeaderMenu = styled.div`
+	display: flex;
 `;
 
 const ScProfileDropdown = styled.div`

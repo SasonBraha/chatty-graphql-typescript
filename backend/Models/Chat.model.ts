@@ -65,13 +65,13 @@ const ChatSchema = new Schema(
 
 @ObjectType()
 export class ChatEntity {
-	@Field(() => ID)
+	@Field(type => ID)
 	_id: string;
 
 	@Field()
 	name: string;
 
-	@Field()
+	@Field(() => ID)
 	slug: string;
 
 	@Field()

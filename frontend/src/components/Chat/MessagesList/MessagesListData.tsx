@@ -3,6 +3,7 @@ import gql from 'graphql-tag';
 import { Query } from 'react-apollo';
 import MessagesList from './MessagesList';
 import { IChatProps } from '../Chat';
+import { IFile, IMessage } from '../../../models';
 
 const MESSAGE_DATA_FRAGMENT = `
 	_id
@@ -47,16 +48,26 @@ const FILE_UPLOADED_SUBSCRIPTION = gql`
 `;
 
 const GET_OLDER_MESSAGES = gql`
-	query($chatSlug: String!, $beforeMessageId: String!) {
+	query($chatSlug: String!, $beforeMessageId: ID!) {
 		olderMessages(chatSlug: $chatSlug, beforeMessageId: $beforeMessageId) {
 			${MESSAGE_DATA_FRAGMENT}
 		}
 	}
 `;
 
+interface IFileUploadedResponse {
+	messageId: string;
+	chatSlug: string;
+	file: IFile;
+}
+
 const MessagesListData = (props: IChatProps) => {
 	const [isFetching, setIsFetching] = useState(false);
 	const [isMoreMessagesToFetch, setIsMoreMessagesToFetch] = useState(true);
+	const [
+		shouldComponentUpdateIndicator,
+		setShouldComponentUpdateIndicator
+	] = useState(Math.random() * Date.now());
 	const { chatSlug } = props.match.params;
 
 	return (
@@ -74,6 +85,7 @@ const MessagesListData = (props: IChatProps) => {
 					isFetching={isFetching}
 					isMoreMessagesToFetch={isMoreMessagesToFetch}
 					setIsMoreMessagesToFetch={setIsMoreMessagesToFetch}
+					shouldComponentUpdateIndicator={shouldComponentUpdateIndicator}
 					fetchOlderMessages={(chatSlug: string, beforeMessageId: string) => {
 						setIsFetching(true);
 						fetchMore({
@@ -106,7 +118,7 @@ const MessagesListData = (props: IChatProps) => {
 								const newMessage = subscriptionData.data.newMessage;
 								return {
 									chat: {
-										__typename: prev.chat.__typename,
+										...prev.chat,
 										messages: [...prev.chat.messages, newMessage]
 									}
 								};
@@ -118,7 +130,32 @@ const MessagesListData = (props: IChatProps) => {
 							document: FILE_UPLOADED_SUBSCRIPTION,
 							variables: { chatSlug },
 							updateQuery: (prev, { subscriptionData }) => {
-								const fileData = JSON.parse(subscriptionData.data.fileUploaded);
+								try {
+									const fileData: IFileUploadedResponse = JSON.parse(
+										subscriptionData.data.fileUploaded
+									);
+									const messageIdx =
+										prev.chat.messages.length -
+										1 -
+										prev.chat.messages
+											.slice()
+											.reverse()
+											.findIndex(
+												(message: IMessage) => message._id === fileData.messageId
+											);
+
+									const updatedMessages = prev.chat.messages.slice();
+									updatedMessages[messageIdx].file = fileData.file;
+
+									return {
+										chat: {
+											...prev.chat,
+											messages: [...updatedMessages]
+										}
+									};
+								} finally {
+									setShouldComponentUpdateIndicator(Math.random() * Date.now());
+								}
 							}
 						})
 					}

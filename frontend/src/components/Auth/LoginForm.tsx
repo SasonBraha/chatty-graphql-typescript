@@ -66,7 +66,10 @@ const LoginForm = (props: FormikProps<IFormValues>) => {
 
 export default compose(
 	graphql(LOGIN_MUTATION),
-	connect(null,  { setGenericModal }),
+	connect(
+		null,
+		{ setGenericModal }
+	),
 	withFormik({
 		mapPropsToValues: () => ({ email: '', password: '' }),
 		handleSubmit: async (
@@ -79,7 +82,7 @@ export default compose(
 					variables: values
 				});
 				const {
-					data: { login: authToken },
+					data: { login: authToken }
 				} = loginData;
 
 				if (authToken) {
@@ -88,9 +91,7 @@ export default compose(
 				}
 			} catch (ex) {
 				const { message, status, formValidation } = ex.graphQLErrors[0];
-
 			}
 		}
-	}),
-
+	})
 )(LoginForm);
