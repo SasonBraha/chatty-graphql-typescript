@@ -25,18 +25,19 @@ const ROOMS_LIST_QUERY = gql`
 const RoomsList = (props: IChatProps) => (
 	<Query query={ROOMS_LIST_QUERY}>
 		{({ loading, data }) => {
-			if (loading) return 'Loading...';
-
 			return (
 				<ScRoomsList>
-					{data.roomsList.map((room: IChat) => (
-						<RoomsListItem
-							selected={room.slug === props.match.params.chatSlug}
-							room={room}
-							key={room.slug}
-						/>
-					))}
-					<RoomsListLoader />
+					{loading
+						? Array.from({ length: 20 }).map((_, i) => (
+								<RoomsListLoader key={i} />
+						  ))
+						: data.roomsList.map((room: IChat) => (
+								<RoomsListItem
+									selected={room.slug === props.match.params.chatSlug}
+									room={room}
+									key={room.slug}
+								/>
+						  ))}
 				</ScRoomsList>
 			);
 		}}

@@ -38,7 +38,6 @@ const Message = (props: IProps) => {
 
 const ScMessage = styled('div')<{ isMine: boolean }>`
 	padding: 0.5rem 1rem;
-	align-self: flex-start;
 	border-radius: 0.5rem;
 	align-self: flex-end;
 	min-width: 25rem;

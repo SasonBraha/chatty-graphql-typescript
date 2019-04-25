@@ -14,7 +14,7 @@ const LoadingShimmerEffect = keyframes`
 
 const ScLoadingShimmer = styled.div`
 	animation: 1s ${LoadingShimmerEffect} forwards infinite linear;
-	background: linear-gradient(to right, #f6f6f6 8%, #d1d1d1 18%, #f6f6f6 33%);
+	background: linear-gradient(to right, #f6f6f6 8%, #9b9a9a 18%, #f6f6f6 33%);
 	background-size: 800px 104px;
 	flex-shrink: 0;
 `;

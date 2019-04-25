@@ -4,7 +4,8 @@ import Message from './Message';
 import { connect } from 'react-redux';
 import { IReducerState } from '../../../redux/reducers';
 import styled from 'styled-components/macro';
-import { CircleLoader, LineLoader } from '../../Shared/Loaders';
+import MessagesListLoader from './MessagesListLoader';
+import { Spinner } from '../../Shared';
 
 interface IProps {
 	currentUser?: IUser | null;
@@ -64,7 +65,11 @@ class MessagesList extends Component<IProps> {
 			this.props,
 			nextProps
 		);
-		return isMessagesUpdated! || isRoomChanged!;
+		return (
+			isMessagesUpdated! ||
+			isRoomChanged! ||
+			this.props.isMoreMessagesToFetch !== nextProps.isMoreMessagesToFetch
+		);
 	}
 
 	componentDidUpdate(prevProps: IProps, _: any, snapshot: number) {
@@ -133,25 +138,30 @@ class MessagesList extends Component<IProps> {
 		const {
 			currentUser,
 			loading,
+			isMoreMessagesToFetch,
 			data: { chat }
 		} = this.props;
 
 		return (
 			<ScMessagesList ref={this.messagesList} onScroll={this.handleScroll}>
-				{loading ? (
-					<div>Loading</div>
-				) : (
-					chat.messages.map(message => (
-						<Message
-							message={message}
-							key={message._id}
-							isMine={currentUser!.slug === message.createdBy.slug}
-						/>
-					))
-				)}
+				<Spinner
+					size={35}
+					spinnerColor='#0079ea'
+					spinnerWidth={3}
+					visible={isMoreMessagesToFetch && !loading}
+				/>
+				{loading
+					? Array.from({ length: 20 }).map((_, i) => (
+							<MessagesListLoader key={i} />
+					  ))
+					: chat.messages.map(message => (
+							<Message
+								message={message}
+								key={message._id}
+								isMine={currentUser!.slug === message.createdBy.slug}
+							/>
+					  ))}
 				<div ref={this.listEnd} className='listEnd' />
-				<CircleLoader />
-				<LineLoader />
 			</ScMessagesList>
 		);
 	}
@@ -164,6 +174,10 @@ const ScMessagesList = styled.div`
 	display: flex;
 	flex-direction: column;
 	padding: 1rem;
+
+	.chatty__spinner {
+		margin: 0.5rem auto 1rem auto;
+	}
 `;
 
 export default MessagesList;
