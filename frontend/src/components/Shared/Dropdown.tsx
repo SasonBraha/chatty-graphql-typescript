@@ -18,8 +18,8 @@ const Dropdown = (props: IProps) => {
 
 	useEffect(() => {
 		isOpen
-			? document.body.addEventListener('click', props.resetDropdown)
-			: document.body.removeEventListener('click', props.resetDropdown);
+			? document.body.addEventListener('mousedown', props.resetDropdown)
+			: document.body.removeEventListener('mousedown', props.resetDropdown);
 	}, [isOpen]);
 
 	return <StyledDropdown {...props}>{props.children}</StyledDropdown>;
@@ -40,7 +40,7 @@ const StyledDropdown = styled('div')<IProps>`
 	left: ${({ left }) => validCss(left)};
 	width: ${({ width }) => validCss(width)};
 	position: absolute;
-	transition: all 0.15s, transform 0.2s;
+	transition: all 0.15s, transform 0.17s, left 0s, top 0s;
 	transform-origin: left top;
 	visibility: hidden;
 	opacity: 0;
@@ -48,6 +48,7 @@ const StyledDropdown = styled('div')<IProps>`
 	min-width: 20rem;
 	z-index: 9999;
 	overflow-y: auto;
+	border-radius: 0.3rem;
 	${props => props.theme.boxShadow}
 
 	${({ isOpen }) =>

@@ -13,7 +13,11 @@ import {
 	UseMiddleware
 } from 'type-graphql';
 import Chat, { ChatEntity, IChat } from '../models/Chat.model';
-import User, { IUser, UserEntity } from '../models/User.model';
+import User, {
+	IUser,
+	IUserSchemaMethods,
+	UserEntity
+} from '../models/User.model';
 import Message, { IMessage, MessageEntity } from '../models/Message.model';
 import { ObjectID } from 'bson';
 import { CreateChatInput, IFileInput } from './inputs';
@@ -24,20 +28,24 @@ import { uploadFile } from '../utils/files';
 import { translate } from '../utils';
 import { ErrorTypesEnum } from '../utils/errors';
 import { Authenticated, WithPermission } from '../middlewares';
-import { ChatPermissionTypesEnum } from '../permissions';
+import {
+	ChatPermissionTypesEnum,
+	UserPermissionTypesEnum
+} from '../permissions';
 import withPermission from '../middlewares/WithPermission';
 import { IFile } from '../models/File.model';
 
 enum SubscriptionTypesEnum {
 	NEW_MESSAGE = 'NEW_MESSAGE',
 	USER_JOINED = 'USER_JOINED',
-	FILE_UPLOADED = 'FILE_UPLOADED'
+	FILE_UPLOADED = 'FILE_UPLOADED',
+	MESSAGE_DELETED = 'MESSAGE_DELETED'
 }
 
 @Resolver(ChatEntity)
 export default class ChatResolver {
 	@UseMiddleware(Authenticated)
-	@UseMiddleware(WithPermission(ChatPermissionTypesEnum.VIEW_CHAT))
+	@UseMiddleware(WithPermission([ChatPermissionTypesEnum.VIEW_CHAT]))
 	@Query(returns => ChatEntity)
 	async chat(
 		@Arg('chatSlug') chatSlug: string,
@@ -119,7 +127,7 @@ export default class ChatResolver {
 	}
 
 	@UseMiddleware(Authenticated)
-	@UseMiddleware(WithPermission(ChatPermissionTypesEnum.CREATE_CHAT))
+	@UseMiddleware(WithPermission([ChatPermissionTypesEnum.CREATE_CHAT]))
 	@Mutation(returns => ChatEntity)
 	async createChat(
 		@Arg('data') { name, isPrivate, storeMessages }: CreateChatInput,
@@ -139,7 +147,7 @@ export default class ChatResolver {
 	}
 
 	@UseMiddleware(Authenticated)
-	@UseMiddleware(withPermission(ChatPermissionTypesEnum.POST_MESSAGE))
+	@UseMiddleware(withPermission([ChatPermissionTypesEnum.POST_MESSAGE]))
 	@Mutation(returns => MessageEntity)
 	async postMessage(
 		@Arg('text') text: string,
@@ -152,6 +160,7 @@ export default class ChatResolver {
 		const messageData = {
 			_id: preSaveId._id,
 			text,
+			chatSlug,
 			createdBy: {
 				_id,
 				displayName,
@@ -189,6 +198,49 @@ export default class ChatResolver {
 		);
 
 		return newMessage;
+	}
+
+	@UseMiddleware(Authenticated)
+	@UseMiddleware(
+		withPermission([
+			ChatPermissionTypesEnum.DELETE_OWN_MESSAGE,
+			ChatPermissionTypesEnum.DELETE_MESSAGE
+		])
+	)
+	@Mutation(returns => Boolean)
+	async deleteMessage(
+		@Arg('messageId', type => ID) messageId: string,
+		@Ctx('user') user: IUserSchemaMethods,
+		@PubSub() pubSub: PubSubEngine
+	): Promise<boolean> {
+		if (!ObjectID.isValid(messageId)) {
+			throw new Error(ErrorTypesEnum.BAD_REQUEST);
+		}
+
+		const messageToDelete = await Message.findById(messageId);
+		if (messageToDelete) {
+			if (
+				user.hasPermission([ChatPermissionTypesEnum.DELETE_MESSAGE]) ||
+				messageToDelete.createdBy._id === user._id.toString()
+			) {
+				pubSub.publish(SubscriptionTypesEnum.MESSAGE_DELETED, {
+					messageId,
+					chatSlug: messageToDelete.chatSlug
+				});
+
+				await Chat.updateOne(
+					{ slug: messageToDelete.chatSlug },
+					{
+						$pull: { messages: messageToDelete._id }
+					}
+				);
+				await messageToDelete.remove();
+			}
+		} else {
+			throw new Error(ErrorTypesEnum.NOT_FOUND);
+		}
+
+		return true;
 	}
 
 	@UseMiddleware(Authenticated)
@@ -261,6 +313,18 @@ export default class ChatResolver {
 		@Ctx('ctx') ctx
 	): IMessage {
 		return messagePayload;
+	}
+
+	@UseMiddleware(Authenticated)
+	@Subscription(returns => String, {
+		topics: SubscriptionTypesEnum.MESSAGE_DELETED,
+		filter: ({ payload, args }) => payload.chatSlug === args.chatSlug
+	})
+	messageDeleted(
+		@Root() messageDeletedPayload: { chatSlug: string; messageId: string },
+		@Arg('chatSlug') chatSlug: string
+	): string {
+		return messageDeletedPayload.messageId;
 	}
 
 	@Subscription(returns => String, {

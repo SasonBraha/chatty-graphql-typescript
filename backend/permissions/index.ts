@@ -7,6 +7,8 @@ export enum ChatPermissionTypesEnum {
 	CREATE_CHAT = 'CREATE_CHAT',
 	VIEW_CHAT = 'VIEW_CHAT',
 	POST_MESSAGE = 'POST_MESSAGE',
+	DELETE_MESSAGE = 'DELETE_MESSAGE',
+	DELETE_OWN_MESSAGE = 'DELETE_OWN_MESSAGE',
 	EDIT_CHAT = 'EDIT_CHAT',
 	DELETE_CHAT = 'DELETE_CHAT',
 	EDIT_MESSAGE = 'EDIT_MESSAGE',
@@ -16,7 +18,8 @@ export enum ChatPermissionTypesEnum {
 const userPermissions = [
 	ChatPermissionTypesEnum.CREATE_CHAT,
 	ChatPermissionTypesEnum.VIEW_CHAT,
-	ChatPermissionTypesEnum.POST_MESSAGE
+	ChatPermissionTypesEnum.POST_MESSAGE,
+	ChatPermissionTypesEnum.DELETE_OWN_MESSAGE
 ];
 
 const moderatorPermissions = [
@@ -30,7 +33,8 @@ const moderatorPermissions = [
 const adminPermissions = [
 	...moderatorPermissions,
 	UserPermissionTypesEnum.DELETE_USER,
-	UserPermissionTypesEnum.EDIT_USER
+	UserPermissionTypesEnum.EDIT_USER,
+	ChatPermissionTypesEnum.DELETE_MESSAGE
 ];
 
 const rolePermissions = {

@@ -85,6 +85,7 @@ class ActiveUsers extends Component<IProps> {
 			},
 			mutation: REMOVE_ACTIVE_USER_MUTATION
 		});
+		return null;
 	};
 
 	render() {

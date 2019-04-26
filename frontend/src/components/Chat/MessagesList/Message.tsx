@@ -1,11 +1,18 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { IMessage } from '../../../models';
 import styled, { css } from 'styled-components';
 import formatRelative from 'date-fns/formatRelative';
 import he from 'date-fns/locale/he';
+import { connect } from 'react-redux';
+import { setMessageContextMenu } from '../../../redux/actions';
 
 interface IProps {
 	message: IMessage;
+	isMine: boolean;
+	setMessageContextMenu: typeof setMessageContextMenu;
+}
+
+interface IStyledProps {
 	isMine: boolean;
 }
 
@@ -21,9 +28,26 @@ const renderFile = (message: IMessage) => {
 	}
 };
 
-const Message = (props: IProps) => {
+const handleContextMenu = (e: React.MouseEvent, props: IProps) => {
+	if (props.isMine) {
+		e.preventDefault();
+		props.setMessageContextMenu({
+			isOpen: true,
+			message: props.message,
+			position: {
+				y: e.pageY - 52,
+				x: e.pageX
+			}
+		});
+	}
+};
+
+const Message: React.FC<IProps> = props => {
 	return (
-		<ScMessage isMine={props.isMine}>
+		<ScMessage
+			isMine={props.isMine}
+			onContextMenu={(e: React.MouseEvent) => handleContextMenu(e, props)}
+		>
 			<ScMetaData>{props.message.createdBy.displayName}</ScMetaData>
 			{renderFile(props.message)}
 			<ScText>{props.message.text}</ScText>
@@ -36,13 +60,12 @@ const Message = (props: IProps) => {
 	);
 };
 
-const ScMessage = styled('div')<{ isMine: boolean }>`
+const ScMessage = styled('div')<IStyledProps>`
 	padding: 0.5rem 1rem;
 	border-radius: 0.5rem;
 	align-self: flex-end;
 	min-width: 25rem;
 	max-width: 50rem;
-	max-height: 40rem;
 	box-shadow: 0 0 0.5rem rgba(0, 0, 0, 0.2);
 	background: white;
 	color: black;
@@ -50,7 +73,11 @@ const ScMessage = styled('div')<{ isMine: boolean }>`
 	position: relative;
 
 	&:not(:first-of-type) {
-		margin-top: 0.9rem;
+		margin-top: 1.3rem;
+	}
+
+	&:last-of-type {
+		margin-bottom: 1rem;
 	}
 
 	${({ isMine }) =>
@@ -85,4 +112,7 @@ const ScText = styled.div`
 	padding: 0.5rem 0;
 `;
 
-export default Message;
+export default connect(
+	null,
+	{ setMessageContextMenu }
+)(Message);

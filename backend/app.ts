@@ -1,5 +1,3 @@
-import { Object } from 'aws-sdk/clients/s3';
-
 require('dotenv').config({ path: '../.env' });
 import 'reflect-metadata';
 import * as http from 'http';

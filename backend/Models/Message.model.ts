@@ -6,6 +6,7 @@ import { UserEntity, IUser } from './User.model';
 export interface IMessage extends Document {
 	text: string;
 	file: IFile;
+	chatSlug: string;
 	createdBy: {
 		_id: string;
 		displayName: string;
@@ -20,6 +21,10 @@ const MessageSchema = new Schema(
 			type: String,
 			required: true,
 			trim: true
+		},
+		chatSlug: {
+			type: String,
+			required: true
 		},
 		file: {
 			type: File

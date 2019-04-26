@@ -3,6 +3,7 @@ import * as bcrypt from 'bcryptjs';
 import ObjectId = Schema.Types.ObjectId;
 import { INotification } from './Notification.model';
 import { ObjectType, Field, ID } from 'type-graphql';
+import rolePermissions from '../permissions';
 
 export interface IUser extends Document {
 	displayName: string;
@@ -18,8 +19,9 @@ export interface IUser extends Document {
 	jwtId: string;
 }
 
-interface ISchmeaMethods extends IUser {
+export interface IUserSchemaMethods extends IUser {
 	comparePassword(password: string): boolean;
+	hasPermission(permissions: string[]): boolean;
 }
 
 const UserSchema = new Schema(
@@ -121,5 +123,15 @@ UserSchema.methods.comparePassword = async function(candidatePassword) {
 	}
 };
 
-const User = model<ISchmeaMethods>('User', UserSchema);
+// Has Permission
+UserSchema.methods.hasPermission = function(targetPermissions: string[]) {
+	const user = this as IUser;
+	//prettier-ignore
+	return (
+		rolePermissions[user.role].some(permission => targetPermissions.includes(permission)) ||
+		user.permissions.some(permission => targetPermissions.includes(permission))
+	);
+};
+
+const User = model<IUserSchemaMethods>('User', UserSchema);
 export default User;

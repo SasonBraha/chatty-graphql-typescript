@@ -3,9 +3,11 @@ import {
 	RESET_MODALS,
 	SET_NAV_STATE,
 	SET_CURRENT_USER,
-	SET_GENERIC_MODAL
+	SET_GENERIC_MODAL,
+	SET_MESSAGE_CONTEXT_MENU
 } from './constants';
 import { IUser } from '../models';
+import { IMessageContextMenu } from './interfaces';
 
 export const setAuthModal = (bool: boolean) => ({
 	type: SET_AUTH_MODAL,
@@ -27,3 +29,8 @@ export const setGenericModal = (type: 'success' | 'error', text: string) => ({
 });
 
 export const resetModals = () => ({ type: RESET_MODALS });
+
+export const setMessageContextMenu = (ctx: IMessageContextMenu) => ({
+	type: SET_MESSAGE_CONTEXT_MENU,
+	payload: ctx
+});

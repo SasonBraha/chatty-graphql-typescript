@@ -28,7 +28,7 @@ const RoomsList = (props: IChatProps) => (
 			return (
 				<ScRoomsList>
 					{loading
-						? Array.from({ length: 20 }).map((_, i) => (
+						? Array.from({ length: 15 }).map((_, i) => (
 								<RoomsListLoader key={i} />
 						  ))
 						: data.roomsList.map((room: IChat) => (
@@ -47,7 +47,11 @@ const RoomsList = (props: IChatProps) => (
 const ScRoomsList = styled.div`
 	background: ${props => props.theme.roomsListBackground};
 	grid-column: 1 / 2;
-	overflow: auto;
+	overflow: hidden;
+
+	&:hover {
+		overflow-y: auto;
+	}
 `;
 
 export default RoomsList;

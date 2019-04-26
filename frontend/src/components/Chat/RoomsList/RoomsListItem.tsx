@@ -46,6 +46,7 @@ const ScImage = styled.img`
 const ScRoomData = styled.div`
 	margin-right: 10px;
 	transform: translateY(-0.35rem);
+	max-width: 80%;
 `;
 
 const ScRoomName = styled.div`

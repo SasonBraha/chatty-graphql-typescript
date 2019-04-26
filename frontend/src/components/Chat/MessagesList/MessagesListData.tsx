@@ -47,6 +47,12 @@ const FILE_UPLOADED_SUBSCRIPTION = gql`
 	}
 `;
 
+const MESSAGE_DELETED_SUBSCRIPTION = gql`
+	subscription($chatSlug: String!) {
+		messageDeleted(chatSlug: $chatSlug)
+	}
+`;
+
 const GET_OLDER_MESSAGES = gql`
 	query($chatSlug: String!, $beforeMessageId: ID!) {
 		olderMessages(chatSlug: $chatSlug, beforeMessageId: $beforeMessageId) {
@@ -141,7 +147,8 @@ const MessagesListData = (props: IChatProps) => {
 											.slice()
 											.reverse()
 											.findIndex(
-												(message: IMessage) => message._id === fileData.messageId
+												(message: IMessage) =>
+													message._id === fileData.messageId
 											);
 
 									const updatedMessages = prev.chat.messages.slice();
@@ -150,13 +157,20 @@ const MessagesListData = (props: IChatProps) => {
 									return {
 										chat: {
 											...prev.chat,
-											messages: [...updatedMessages]
+											messages: updatedMessages
 										}
 									};
 								} finally {
 									setShouldComponentUpdateIndicator(Math.random() * Date.now());
 								}
 							}
+						})
+					}
+					subscribeToMessageDeleted={(chatSlug: string) =>
+						subscribeToMore({
+							document: MESSAGE_DELETED_SUBSCRIPTION,
+							variables: { chatSlug },
+							updateQuery: (prev, { subscriptionData }) => {}
 						})
 					}
 				/>

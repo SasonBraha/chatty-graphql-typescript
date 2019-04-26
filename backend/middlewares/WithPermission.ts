@@ -7,11 +7,15 @@ import { ErrorTypesEnum } from '../utils/errors';
 import { IContext } from '../types/interfaces';
 
 const withPermission = (
-	targetPermission: ChatPermissionTypesEnum | UserPermissionTypesEnum
+	targetPermissions: ChatPermissionTypesEnum[] | UserPermissionTypesEnum[]
 ): MiddlewareFn<IContext> => async ({ context: { user } }, next) => {
 	if (
-		rolePermissions[user.role].includes(targetPermission as any) ||
-		user.permissions.includes(targetPermission)
+		rolePermissions[user.role].some(permission =>
+			targetPermissions.includes(permission as never)
+		) ||
+		user.permissions.some(permission =>
+			targetPermissions.includes(permission as never)
+		)
 	) {
 		return next();
 	} else {

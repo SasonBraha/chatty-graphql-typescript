@@ -1,6 +1,5 @@
 import redis, { RedisCategoriesEnum } from '../';
 import { IUser } from '../../models/User.model';
-import { ConnectionNotificationSet } from 'aws-sdk/clients/ec2';
 
 class ActiveUsersService {
 	private async getUsers(chatSlug: string): Promise<IUser[]> {

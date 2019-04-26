@@ -5,4 +5,6 @@ export enum RedisCategoriesEnum {
 }
 
 const redis = new Redis(process.env.REDIS_URL);
+redis.flushall();
+
 export default redis;

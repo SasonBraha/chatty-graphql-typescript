@@ -3,9 +3,11 @@ import {
 	RESET_MODALS,
 	SET_NAV_STATE,
 	SET_CURRENT_USER,
-	SET_GENERIC_MODAL
+	SET_GENERIC_MODAL,
+	SET_MESSAGE_CONTEXT_MENU
 } from './constants';
-import { IUser } from '../models/index';
+import { IUser, IMessage } from '../models';
+import { IMessageContextMenu } from './interfaces';
 
 interface IAction {
 	type: string;
@@ -21,6 +23,7 @@ export interface IReducerState {
 	};
 	isNavOpen: boolean;
 	currentUser: IUser | null;
+	messageContextMenu: IMessageContextMenu;
 }
 
 const initialState: IReducerState = {
@@ -31,7 +34,15 @@ const initialState: IReducerState = {
 		text: null
 	},
 	isNavOpen: window.innerWidth > 992,
-	currentUser: null
+	currentUser: null,
+	messageContextMenu: {
+		isOpen: false,
+		message: null,
+		position: {
+			x: 0,
+			y: 0
+		}
+	}
 };
 
 export default (state = initialState, action: IAction): IReducerState => {
@@ -72,6 +83,15 @@ export default (state = initialState, action: IAction): IReducerState => {
 					type: action.payload.type,
 					show: true,
 					text: action.payload.text
+				}
+			};
+
+		case SET_MESSAGE_CONTEXT_MENU:
+			return {
+				...state,
+				messageContextMenu: {
+					...state.messageContextMenu,
+					...action.payload
 				}
 			};
 

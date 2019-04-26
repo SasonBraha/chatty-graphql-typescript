@@ -6,6 +6,9 @@ import { IReducerState } from '../../../redux/reducers';
 import styled from 'styled-components/macro';
 import MessagesListLoader from './MessagesListLoader';
 import { Spinner } from '../../Shared';
+import MessageContextMenu from './MessageContextMenu';
+import { setMessageContextMenu } from '../../../redux/actions';
+import { IMessageContextMenu } from '../../../redux/interfaces';
 
 interface IProps {
 	currentUser?: IUser | null;
@@ -21,18 +24,29 @@ interface IProps {
 	};
 	subscribeToNewMessages: (chatSlug: string) => void;
 	subscribeToFileUpload: (chatSlug: string) => void;
+	subscribeToMessageDeleted: (chatSlug: string) => void;
 	fetchOlderMessages: (chatSlug: string, beforeMessageId: string) => void;
 	setIsMoreMessagesToFetch: (value: boolean) => void;
+	messageContextMenu?: IMessageContextMenu;
+	setMessageContextMenu?: typeof setMessageContextMenu;
 	refetch: () => void;
 }
 
-@connect(({ currentUser }: IReducerState) => ({ currentUser }))
+const mapStateToProps = ({
+	currentUser,
+	messageContextMenu
+}: IReducerState) => ({ currentUser, messageContextMenu });
+@connect(
+	mapStateToProps,
+	{ setMessageContextMenu }
+)
 class MessagesList extends Component<IProps> {
 	private unsubscribeFromNewMessages: any;
 	private unsubscribeFromFileUploaded: any;
+	private unsubscribeFromMessageDeleted: any;
 	private listEnd: React.RefObject<any> = React.createRef();
 	private messagesList: React.RefObject<any> = React.createRef();
-	private shouldFetchThreshold: number = 250;
+	private shouldFetchThreshold: number = 750;
 	constructor(props: IProps) {
 		super(props);
 		this.init();
@@ -43,6 +57,9 @@ class MessagesList extends Component<IProps> {
 			this.props.chatSlug
 		);
 		this.unsubscribeFromFileUploaded = this.props.subscribeToFileUpload(
+			this.props.chatSlug
+		);
+		this.unsubscribeFromMessageDeleted = this.props.subscribeToMessageDeleted(
 			this.props.chatSlug
 		);
 	}
@@ -84,11 +101,15 @@ class MessagesList extends Component<IProps> {
 		if (isRoomChanged) {
 			this.unsubscribeFromNewMessages();
 			this.unsubscribeFromFileUploaded();
+			this.unsubscribeFromMessageDeleted();
 			this.props.setIsMoreMessagesToFetch(true);
 			this.unsubscribeFromNewMessages = this.props.subscribeToNewMessages(
 				this.props.chatSlug
 			);
 			this.unsubscribeFromFileUploaded = this.props.subscribeToFileUpload(
+				this.props.chatSlug
+			);
+			this.unsubscribeFromMessageDeleted = this.props.subscribeToMessageDeleted(
 				this.props.chatSlug
 			);
 			this.props.refetch();
@@ -106,6 +127,7 @@ class MessagesList extends Component<IProps> {
 	componentWillUnmount() {
 		this.unsubscribeFromNewMessages();
 		this.unsubscribeFromFileUploaded();
+		this.unsubscribeFromMessageDeleted();
 	}
 
 	private handleScroll = (e: React.UIEvent<HTMLDivElement>) => {
@@ -120,6 +142,10 @@ class MessagesList extends Component<IProps> {
 				this.props.chatSlug,
 				this.props.data.chat.messages[0]._id
 			);
+		}
+
+		if (this.props.messageContextMenu!.isOpen) {
+			this.props.setMessageContextMenu!({ isOpen: false });
 		}
 	};
 
@@ -165,6 +191,7 @@ class MessagesList extends Component<IProps> {
 							/>
 					  ))}
 				<div ref={this.listEnd} className='listEnd' />
+				<MessageContextMenu />
 			</ScMessagesList>
 		);
 	}

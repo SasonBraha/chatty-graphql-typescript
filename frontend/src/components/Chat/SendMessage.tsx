@@ -116,7 +116,7 @@ export default compose(
 	withFormik({
 		mapPropsToValues: () => ({ text: '', file: '' }),
 		handleSubmit: async (
-			values,
+			values: IFormValues,
 			//@ts-ignore
 			{ props: { sendMessage, uploadFile, match }, resetForm }
 		) => {
