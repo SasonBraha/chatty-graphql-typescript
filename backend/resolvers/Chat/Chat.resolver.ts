@@ -12,28 +12,30 @@ import {
 	Subscription,
 	UseMiddleware
 } from 'type-graphql';
-import Chat, { ChatEntity, IChat } from '../models/Chat.model';
+import Chat, { ChatEntity, IChat } from '../../models/Chat.model';
 import User, {
 	IUser,
 	IUserSchemaMethods,
 	UserEntity
-} from '../models/User.model';
-import Message, { IMessage, MessageEntity } from '../models/Message.model';
+} from '../../models/User.model';
+import Message, { IMessage, MessageEntity } from '../../models/Message.model';
 import { ObjectID } from 'bson';
-import { CreateChatInput, IFileInput } from './inputs';
-import activeUsersService from '../redis/services/ActiveUsers.service';
+import { CreateChatInput, IFileInput } from '../inputs';
+import activeUsersService from '../../redis/services/ActiveUsers.service';
 import * as uuid from 'uuid';
 import { GraphQLUpload } from 'apollo-server-express';
-import { uploadFile } from '../utils/files';
-import { translate } from '../utils';
-import { ErrorTypesEnum } from '../utils/errors';
-import { Authenticated, WithPermission } from '../middlewares';
+import { uploadFile } from '../../utils/files';
+import { translate } from '../../utils';
+import { ErrorTypesEnum } from '../../utils/errors';
+import { Authenticated, WithPermission } from '../../middlewares';
+import { ChatPermissionTypesEnum } from '../../permissions';
+import withPermission from '../../middlewares/WithPermission';
+import { IFile } from '../../models/File.model';
 import {
-	ChatPermissionTypesEnum,
-	UserPermissionTypesEnum
-} from '../permissions';
-import withPermission from '../middlewares/WithPermission';
-import { IFile } from '../models/File.model';
+	IMessageCreatedOutput,
+	IMessageDeletedOutput,
+	IMessageFileUploadedOutput
+} from './subscription.output';
 
 enum SubscriptionTypesEnum {
 	NEW_MESSAGE = 'NEW_MESSAGE',
@@ -161,6 +163,7 @@ export default class ChatResolver {
 			_id: preSaveId._id,
 			text,
 			chatSlug,
+			file: null,
 			createdBy: {
 				_id,
 				displayName,
@@ -171,8 +174,12 @@ export default class ChatResolver {
 
 		// Emit New Message
 		pubSub.publish(SubscriptionTypesEnum.NEW_MESSAGE, {
-			...messageData,
-			createdAt: new Date(),
+			message: {
+				...messageData,
+				createdAt: new Date(),
+				isClientDeleted: null
+			},
+			updateType: SubscriptionTypesEnum.NEW_MESSAGE,
 			chatSlug
 		});
 
@@ -216,7 +223,6 @@ export default class ChatResolver {
 		if (!ObjectID.isValid(messageId)) {
 			throw new Error(ErrorTypesEnum.BAD_REQUEST);
 		}
-
 		const messageToDelete = await Message.findById(messageId);
 		if (messageToDelete) {
 			if (
@@ -225,7 +231,8 @@ export default class ChatResolver {
 			) {
 				pubSub.publish(SubscriptionTypesEnum.MESSAGE_DELETED, {
 					messageId,
-					chatSlug: messageToDelete.chatSlug
+					chatSlug: messageToDelete.chatSlug,
+					updateType: SubscriptionTypesEnum.MESSAGE_DELETED
 				});
 
 				await Chat.updateOne(
@@ -234,6 +241,7 @@ export default class ChatResolver {
 						$pull: { messages: messageToDelete._id }
 					}
 				);
+
 				await messageToDelete.remove();
 			}
 		} else {
@@ -257,7 +265,8 @@ export default class ChatResolver {
 		pubSub.publish(SubscriptionTypesEnum.FILE_UPLOADED, {
 			chatSlug,
 			messageId,
-			file: fileData
+			file: fileData,
+			updateType: SubscriptionTypesEnum.FILE_UPLOADED
 		});
 
 		await Message.updateOne(
@@ -308,11 +317,11 @@ export default class ChatResolver {
 		filter: ({ payload, args }) => payload.chatSlug === args.chatSlug
 	})
 	newMessage(
-		@Root() messagePayload: IMessage,
+		@Root() messagePayload: { message: IMessage },
 		@Arg('chatSlug') chatSlug: string,
 		@Ctx('ctx') ctx
 	): IMessage {
-		return messagePayload;
+		return messagePayload.message;
 	}
 
 	@UseMiddleware(Authenticated)
@@ -336,9 +345,6 @@ export default class ChatResolver {
 		@Arg('chatSlug') chatSlug: string,
 		@Ctx('ctx') ctx
 	) {
-		fileData.file.__typename = 'FileEntity';
-		fileData.file.dimensions.__typename = 'FileDimensions';
-
 		return JSON.stringify({
 			chatSlug,
 			messageId: fileData.messageId,
@@ -356,6 +362,26 @@ export default class ChatResolver {
 		@Arg('chatSlug') chatSlug: string
 	): IUser[] {
 		return payloadData.userList;
+	}
+
+	@UseMiddleware(Authenticated)
+	@Subscription(returns => String, {
+		topics: [
+			SubscriptionTypesEnum.NEW_MESSAGE,
+			SubscriptionTypesEnum.FILE_UPLOADED,
+			SubscriptionTypesEnum.MESSAGE_DELETED
+		],
+		filter: ({ payload, args }) => payload.chatSlug === args.chatSlug
+	})
+	messagesUpdates(
+		@Root()
+		subscriptionPayload:
+			| IMessageCreatedOutput
+			| IMessageDeletedOutput
+			| IMessageFileUploadedOutput,
+		@Arg('chatSlug') chatSlug: string
+	): string {
+		return JSON.stringify(subscriptionPayload);
 	}
 
 	@FieldResolver()

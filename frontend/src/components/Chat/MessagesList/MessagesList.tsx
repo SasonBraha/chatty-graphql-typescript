@@ -22,9 +22,7 @@ interface IProps {
 			messages: IMessage[];
 		};
 	};
-	subscribeToNewMessages: (chatSlug: string) => void;
-	subscribeToFileUpload: (chatSlug: string) => void;
-	subscribeToMessageDeleted: (chatSlug: string) => void;
+	subscribeToUpdates: (chatSlug: string) => void;
 	fetchOlderMessages: (chatSlug: string, beforeMessageId: string) => void;
 	setIsMoreMessagesToFetch: (value: boolean) => void;
 	messageContextMenu?: IMessageContextMenu;
@@ -41,25 +39,16 @@ const mapStateToProps = ({
 	{ setMessageContextMenu }
 )
 class MessagesList extends Component<IProps> {
-	private unsubscribeFromNewMessages: any;
-	private unsubscribeFromFileUploaded: any;
-	private unsubscribeFromMessageDeleted: any;
+	private unsubscribeFromUpdates: any;
 	private listEnd: React.RefObject<any> = React.createRef();
 	private messagesList: React.RefObject<any> = React.createRef();
-	private shouldFetchThreshold: number = 750;
+	private shouldFetchThreshold: number = 250;
 	constructor(props: IProps) {
 		super(props);
-		this.init();
 	}
 
-	private init() {
-		this.unsubscribeFromNewMessages = this.props.subscribeToNewMessages(
-			this.props.chatSlug
-		);
-		this.unsubscribeFromFileUploaded = this.props.subscribeToFileUpload(
-			this.props.chatSlug
-		);
-		this.unsubscribeFromMessageDeleted = this.props.subscribeToMessageDeleted(
+	componentDidMount() {
+		this.unsubscribeFromUpdates = this.props.subscribeToUpdates(
 			this.props.chatSlug
 		);
 	}
@@ -99,17 +88,9 @@ class MessagesList extends Component<IProps> {
 		);
 
 		if (isRoomChanged) {
-			this.unsubscribeFromNewMessages();
-			this.unsubscribeFromFileUploaded();
-			this.unsubscribeFromMessageDeleted();
+			this.unsubscribeFromUpdates();
 			this.props.setIsMoreMessagesToFetch(true);
-			this.unsubscribeFromNewMessages = this.props.subscribeToNewMessages(
-				this.props.chatSlug
-			);
-			this.unsubscribeFromFileUploaded = this.props.subscribeToFileUpload(
-				this.props.chatSlug
-			);
-			this.unsubscribeFromMessageDeleted = this.props.subscribeToMessageDeleted(
+			this.unsubscribeFromUpdates = this.props.subscribeToUpdates(
 				this.props.chatSlug
 			);
 			this.props.refetch();
@@ -125,9 +106,7 @@ class MessagesList extends Component<IProps> {
 	}
 
 	componentWillUnmount() {
-		this.unsubscribeFromNewMessages();
-		this.unsubscribeFromFileUploaded();
-		this.unsubscribeFromMessageDeleted();
+		this.unsubscribeFromUpdates();
 	}
 
 	private handleScroll = (e: React.UIEvent<HTMLDivElement>) => {
@@ -136,7 +115,8 @@ class MessagesList extends Component<IProps> {
 			e.currentTarget.scrollTop < this.shouldFetchThreshold &&
 			!isFetching &&
 			isMoreMessagesToFetch &&
-			this.props.data.chat.messages.length
+			this.props.data.chat.messages.length &&
+			!this.props.loading
 		) {
 			this.props.fetchOlderMessages(
 				this.props.chatSlug,
@@ -170,7 +150,6 @@ class MessagesList extends Component<IProps> {
 			isMoreMessagesToFetch,
 			data: { chat }
 		} = this.props;
-
 		return (
 			<ScMessagesList ref={this.messagesList} onScroll={this.handleScroll}>
 				<Spinner

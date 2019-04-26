@@ -14,6 +14,7 @@ export interface IChat {
 	slug: string;
 	_id: string;
 	image: IFile;
+	messages: IMessage[];
 }
 
 export interface IMessage {
@@ -27,6 +28,7 @@ export interface IMessage {
 		avatar: string;
 	};
 	createdAt: Date;
+	isClientDeleted?: boolean;
 }
 
 export interface IFile {

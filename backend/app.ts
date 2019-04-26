@@ -75,6 +75,7 @@ const main = async () => {
 		formatError(ex: GraphQLError): any {
 			const errorMessage = ex.originalError.message;
 			const errorId = uuid();
+			console.log(ex);
 
 			if (isJson(errorMessage)) {
 				const parsedError = JSON.parse(errorMessage);

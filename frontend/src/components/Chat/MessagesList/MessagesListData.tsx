@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
 import gql from 'graphql-tag';
-import { Query } from 'react-apollo';
+import { Query, withApollo } from 'react-apollo';
 import MessagesList from './MessagesList';
 import { IChatProps } from '../Chat';
-import { IFile, IMessage } from '../../../models';
+import { IChat, IFile, IMessage } from '../../../models';
+import ApolloClient from 'apollo-client';
+import produce from 'immer';
 
 const MESSAGE_DATA_FRAGMENT = `
 	_id
@@ -20,6 +22,7 @@ const MESSAGE_DATA_FRAGMENT = `
 			width
 		}
 	}
+	isClientDeleted
 	createdAt
 `;
 
@@ -33,23 +36,9 @@ const MESSAGES_LIST_QUERY = gql`
 	}
 `;
 
-const NEW_MESSAGE_SUBSCRIPTION = gql`
+const MESSAGES_LIST_UPDATES = gql`
 	subscription($chatSlug: String!) {
-		newMessage(chatSlug: $chatSlug) {
-			${MESSAGE_DATA_FRAGMENT}
-		}
-	}
-`;
-
-const FILE_UPLOADED_SUBSCRIPTION = gql`
-	subscription($chatSlug: String!) {
-		fileUploaded(chatSlug: $chatSlug)
-	}
-`;
-
-const MESSAGE_DELETED_SUBSCRIPTION = gql`
-	subscription($chatSlug: String!) {
-		messageDeleted(chatSlug: $chatSlug)
+		messagesUpdates(chatSlug: $chatSlug)
 	}
 `;
 
@@ -61,13 +50,21 @@ const GET_OLDER_MESSAGES = gql`
 	}
 `;
 
-interface IFileUploadedResponse {
-	messageId: string;
-	chatSlug: string;
-	file: IFile;
+interface IPrev {
+	chat: IChat;
 }
 
-const MessagesListData = (props: IChatProps) => {
+enum SubscriptionTypesEnum {
+	NEW_MESSAGE = 'NEW_MESSAGE',
+	FILE_UPLOADED = 'FILE_UPLOADED',
+	MESSAGE_DELETED = 'MESSAGE_DELETED'
+}
+
+interface IProps extends IChatProps {
+	client: ApolloClient<any>;
+}
+
+const MessagesListData = (props: IProps) => {
 	const [isFetching, setIsFetching] = useState(false);
 	const [isMoreMessagesToFetch, setIsMoreMessagesToFetch] = useState(true);
 	const [
@@ -105,7 +102,7 @@ const MessagesListData = (props: IChatProps) => {
 								}
 								return {
 									chat: {
-										__typename: prev.chat.__typename,
+										...prev.chat,
 										messages: [
 											...fetchMoreResult.olderMessages.reverse(),
 											...prev.chat.messages
@@ -115,62 +112,59 @@ const MessagesListData = (props: IChatProps) => {
 							}
 						});
 					}}
-					subscribeToNewMessages={(chatSlug: string) =>
+					subscribeToUpdates={(chatSlug: string) =>
 						subscribeToMore({
-							document: NEW_MESSAGE_SUBSCRIPTION,
+							document: MESSAGES_LIST_UPDATES,
 							variables: { chatSlug },
 							updateQuery: (prev, { subscriptionData }) => {
-								if (!subscriptionData.data) return prev;
-								const newMessage = subscriptionData.data.newMessage;
-								return {
-									chat: {
-										...prev.chat,
-										messages: [...prev.chat.messages, newMessage]
-									}
-								};
-							}
-						})
-					}
-					subscribeToFileUpload={(chatSlug: string) =>
-						subscribeToMore({
-							document: FILE_UPLOADED_SUBSCRIPTION,
-							variables: { chatSlug },
-							updateQuery: (prev, { subscriptionData }) => {
-								try {
-									const fileData: IFileUploadedResponse = JSON.parse(
-										subscriptionData.data.fileUploaded
-									);
-									const messageIdx =
-										prev.chat.messages.length -
-										1 -
-										prev.chat.messages
-											.slice()
-											.reverse()
-											.findIndex(
-												(message: IMessage) =>
-													message._id === fileData.messageId
+								const updatedData = JSON.parse(
+									subscriptionData.data.messagesUpdates
+								);
+								const updateType = updatedData.updateType;
+								switch (updateType) {
+									case SubscriptionTypesEnum.NEW_MESSAGE:
+										return {
+											chat: {
+												...prev.chat,
+												messages: [...prev.chat.messages, updatedData.message]
+											}
+										};
+
+									case SubscriptionTypesEnum.FILE_UPLOADED:
+									case SubscriptionTypesEnum.MESSAGE_DELETED:
+										try {
+											const targetMessageIdx =
+												prev.chat.messages.length -
+												1 -
+												prev.chat.messages
+													.slice()
+													.reverse()
+													.findIndex(
+														(message: IMessage) =>
+															message._id === updatedData.messageId
+													);
+
+											if (updateType === SubscriptionTypesEnum.FILE_UPLOADED) {
+												return produce(prev, (draft: IPrev) => {
+													draft.chat.messages[targetMessageIdx].file =
+														updatedData.file;
+												});
+											} else if (
+												updateType === SubscriptionTypesEnum.MESSAGE_DELETED
+											) {
+												return produce(prev, (draft: IPrev) => {
+													draft.chat.messages[
+														targetMessageIdx
+													].isClientDeleted = true;
+												});
+											}
+										} finally {
+											setShouldComponentUpdateIndicator(
+												Math.random() * Date.now()
 											);
-
-									const updatedMessages = prev.chat.messages.slice();
-									updatedMessages[messageIdx].file = fileData.file;
-
-									return {
-										chat: {
-											...prev.chat,
-											messages: updatedMessages
 										}
-									};
-								} finally {
-									setShouldComponentUpdateIndicator(Math.random() * Date.now());
 								}
 							}
-						})
-					}
-					subscribeToMessageDeleted={(chatSlug: string) =>
-						subscribeToMore({
-							document: MESSAGE_DELETED_SUBSCRIPTION,
-							variables: { chatSlug },
-							updateQuery: (prev, { subscriptionData }) => {}
 						})
 					}
 				/>
@@ -187,4 +181,5 @@ MessagesListData.defaultProps = {
 	}
 };
 
-export default MessagesListData;
+// @ts-ignore
+export default withApollo(MessagesListData);

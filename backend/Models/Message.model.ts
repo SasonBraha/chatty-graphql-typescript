@@ -55,6 +55,8 @@ export class MessageEntity {
 
 	@Field(type => Date)
 	createdAt: Date;
+
+	@Field({ defaultValue: false }) isClientDeleted: boolean;
 }
 
 const Message = model<IMessage>('Message', MessageSchema);

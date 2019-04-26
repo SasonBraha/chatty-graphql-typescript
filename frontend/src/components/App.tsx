@@ -10,7 +10,6 @@ import Nav from './Nav';
 import Container from './Container';
 import { Switch, Route, withRouter } from 'react-router-dom';
 import { GenericModal } from './Shared';
-
 const Chat = lazy(() => import('./Chat'));
 
 interface IProps {
@@ -18,6 +17,7 @@ interface IProps {
 }
 
 class App extends Component<IProps> {
+	static whyDidYouRender = true;
 	constructor(props: IProps) {
 		super(props);
 		this.init();

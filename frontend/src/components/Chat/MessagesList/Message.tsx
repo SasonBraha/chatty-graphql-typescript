@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { IMessage } from '../../../models';
 import styled, { css } from 'styled-components';
 import formatRelative from 'date-fns/formatRelative';
@@ -48,14 +48,20 @@ const Message: React.FC<IProps> = props => {
 			isMine={props.isMine}
 			onContextMenu={(e: React.MouseEvent) => handleContextMenu(e, props)}
 		>
-			<ScMetaData>{props.message.createdBy.displayName}</ScMetaData>
-			{renderFile(props.message)}
-			<ScText>{props.message.text}</ScText>
-			<ScMetaData alignLeft={true}>
-				{formatRelative(props.message.createdAt, new Date(), {
-					locale: he
-				})}
-			</ScMetaData>
+			{props.message.isClientDeleted ? (
+				<ScText>הודעה זו נמחקה</ScText>
+			) : (
+				<>
+					<ScMetaData>{props.message.createdBy.displayName}</ScMetaData>
+					{renderFile(props.message)}
+					<ScText>{props.message.text}</ScText>
+					<ScMetaData alignLeft={true}>
+						{/*{formatRelative(props.message.createdAt, new Date(), {*/}
+						{/*	locale: he*/}
+						{/*})}*/}
+					</ScMetaData>
+				</>
+			)}
 		</ScMessage>
 	);
 };
