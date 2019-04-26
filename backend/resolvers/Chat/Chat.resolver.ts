@@ -324,34 +324,6 @@ export default class ChatResolver {
 		return messagePayload.message;
 	}
 
-	@UseMiddleware(Authenticated)
-	@Subscription(returns => String, {
-		topics: SubscriptionTypesEnum.MESSAGE_DELETED,
-		filter: ({ payload, args }) => payload.chatSlug === args.chatSlug
-	})
-	messageDeleted(
-		@Root() messageDeletedPayload: { chatSlug: string; messageId: string },
-		@Arg('chatSlug') chatSlug: string
-	): string {
-		return messageDeletedPayload.messageId;
-	}
-
-	@Subscription(returns => String, {
-		topics: SubscriptionTypesEnum.FILE_UPLOADED,
-		filter: ({ payload, args }) => payload.chatSlug === args.chatSlug
-	})
-	fileUploaded(
-		@Root() fileData: { chatSlug: string; messageId: string; file: IFile },
-		@Arg('chatSlug') chatSlug: string,
-		@Ctx('ctx') ctx
-	) {
-		return JSON.stringify({
-			chatSlug,
-			messageId: fileData.messageId,
-			file: fileData.file
-		});
-	}
-
 	@Subscription(returns => [UserEntity], {
 		topics: SubscriptionTypesEnum.USER_JOINED,
 		defaultValue: [],
