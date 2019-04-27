@@ -9,4 +9,5 @@ export interface IMessageContextMenu {
 		y: number;
 	};
 	setEditable?: (value: boolean) => void;
+	deleteMessage?: () => Promise<void>;
 }

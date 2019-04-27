@@ -6,14 +6,6 @@ import { setMessageContextMenu } from '../../../redux/actions';
 import { IMessageContextMenu } from '../../../redux/interfaces';
 import { withApollo } from 'react-apollo';
 import ApolloClient from 'apollo-client';
-import gql from 'graphql-tag';
-import { CrudEnum } from '../../../types/enums';
-
-const DELETE_MESSAGE_MUTATION = gql`
-	mutation($messageId: ID!, $crudType: String!) {
-		updateMessage(updatePayload: { messageId: $messageId, crudType: $crudType })
-	}
-`;
 
 interface IProps {
 	setMessageContextMenu: typeof setMessageContextMenu;
@@ -26,13 +18,7 @@ const contextMenuOptions = (props: IProps) => [
 		icon: 'icon-bin2',
 		text: 'מחק',
 		async onClick() {
-			await props.client!.mutate({
-				mutation: DELETE_MESSAGE_MUTATION,
-				variables: {
-					messageId: props.messageContextMenu.message!._id,
-					crudType: CrudEnum.DELETE
-				}
-			});
+			await props.messageContextMenu.deleteMessage!();
 		}
 	},
 	{

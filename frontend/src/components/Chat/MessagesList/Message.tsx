@@ -81,7 +81,8 @@ class Message extends Component<IProps, IState> {
 					y: e.pageY - 52,
 					x: e.pageX
 				},
-				setEditable: (value: boolean) => this.setState({ isEditable: value })
+				setEditable: (value: boolean) => this.setState({ isEditable: value }),
+				deleteMessage: this.deleteMessage
 			});
 		}
 	};
@@ -110,6 +111,16 @@ class Message extends Component<IProps, IState> {
 				/>
 			);
 		}
+	};
+
+	deleteMessage = async () => {
+		await this.props.client!.mutate({
+			mutation: DELETE_MESSAGE_MUTATION,
+			variables: {
+				messageId: this.props.message!._id,
+				crudType: CrudEnum.DELETE
+			}
+		});
 	};
 
 	render() {
