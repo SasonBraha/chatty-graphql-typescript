@@ -30,18 +30,20 @@ import { ErrorTypesEnum } from '../../utils/errors';
 import { Authenticated, WithPermission } from '../../middlewares';
 import { ChatPermissionTypesEnum } from '../../permissions';
 import withPermission from '../../middlewares/WithPermission';
-import { IFile } from '../../models/File.model';
 import {
 	IMessageCreatedOutput,
 	IMessageDeletedOutput,
 	IMessageFileUploadedOutput
-} from './subscription.output';
+} from './chat.resolver.output';
+import { UpdateMessageInput } from './chat.resolver.inputs';
+import { CrudEnum } from '../../types/enums';
 
 enum SubscriptionTypesEnum {
 	NEW_MESSAGE = 'NEW_MESSAGE',
 	USER_JOINED = 'USER_JOINED',
 	FILE_UPLOADED = 'FILE_UPLOADED',
-	MESSAGE_DELETED = 'MESSAGE_DELETED'
+	MESSAGE_DELETED = 'MESSAGE_DELETED',
+	MESSAGE_EDITED = 'MESSAGE_EDITED'
 }
 
 @Resolver(ChatEntity)
@@ -210,45 +212,66 @@ export default class ChatResolver {
 	@UseMiddleware(Authenticated)
 	@UseMiddleware(
 		withPermission([
+			ChatPermissionTypesEnum.EDIT_OWN_MESSAGE,
+			ChatPermissionTypesEnum.EDIT_MESSAGE,
 			ChatPermissionTypesEnum.DELETE_OWN_MESSAGE,
 			ChatPermissionTypesEnum.DELETE_MESSAGE
 		])
 	)
 	@Mutation(returns => Boolean)
-	async deleteMessage(
-		@Arg('messageId', type => ID) messageId: string,
+	async updateMessage(
+		@Arg('updatePayload') updatePayload: UpdateMessageInput,
 		@Ctx('user') user: IUserSchemaMethods,
 		@PubSub() pubSub: PubSubEngine
 	): Promise<boolean> {
-		if (!ObjectID.isValid(messageId)) {
-			throw new Error(ErrorTypesEnum.BAD_REQUEST);
-		}
-		const messageToDelete = await Message.findById(messageId);
-		if (messageToDelete) {
-			if (
-				user.hasPermission([ChatPermissionTypesEnum.DELETE_MESSAGE]) ||
-				messageToDelete.createdBy._id === user._id.toString()
-			) {
-				pubSub.publish(SubscriptionTypesEnum.MESSAGE_DELETED, {
-					messageId,
-					chatSlug: messageToDelete.chatSlug,
-					updateType: SubscriptionTypesEnum.MESSAGE_DELETED
-				});
+		const { messageId, crudType } = updatePayload;
+		const targetMessage = await Message.findOne({ _id: messageId });
 
-				await Chat.updateOne(
-					{ slug: messageToDelete.chatSlug },
-					{
-						$pull: { messages: messageToDelete._id }
+		if (targetMessage) {
+			const isUserCreatedTargetMessage =
+				targetMessage.createdBy._id === user._id.toString();
+			switch (crudType) {
+				case CrudEnum.DELETE:
+					if (
+						user.hasPermission([ChatPermissionTypesEnum.DELETE_MESSAGE]) ||
+						isUserCreatedTargetMessage
+					) {
+						await Chat.updateOne(
+							{ slug: targetMessage.chatSlug },
+							{
+								$pull: { messages: messageId }
+							}
+						);
+						await targetMessage.remove();
+
+						pubSub.publish(SubscriptionTypesEnum.MESSAGE_DELETED, {
+							messageId,
+							chatSlug: targetMessage.chatSlug,
+							updateType: SubscriptionTypesEnum.MESSAGE_DELETED
+						});
 					}
-				);
+					return true;
 
-				await messageToDelete.remove();
+				case CrudEnum.UPDATE:
+					if (
+						user.hasPermission([ChatPermissionTypesEnum.EDIT_MESSAGE]) ||
+						isUserCreatedTargetMessage
+					) {
+						targetMessage.text = updatePayload.messageText!;
+						await targetMessage.save();
+
+						pubSub.publish(SubscriptionTypesEnum.MESSAGE_EDITED, {
+							chatSlug: targetMessage.chatSlug,
+							updatedText: targetMessage.text,
+							updateType: SubscriptionTypesEnum.MESSAGE_EDITED,
+							messageId
+						});
+					}
+					return true;
 			}
 		} else {
 			throw new Error(ErrorTypesEnum.NOT_FOUND);
 		}
-
-		return true;
 	}
 
 	@UseMiddleware(Authenticated)
@@ -341,7 +364,8 @@ export default class ChatResolver {
 		topics: [
 			SubscriptionTypesEnum.NEW_MESSAGE,
 			SubscriptionTypesEnum.FILE_UPLOADED,
-			SubscriptionTypesEnum.MESSAGE_DELETED
+			SubscriptionTypesEnum.MESSAGE_DELETED,
+			SubscriptionTypesEnum.MESSAGE_EDITED
 		],
 		filter: ({ payload, args }) => payload.chatSlug === args.chatSlug
 	})

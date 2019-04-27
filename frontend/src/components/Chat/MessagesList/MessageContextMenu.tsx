@@ -7,10 +7,11 @@ import { IMessageContextMenu } from '../../../redux/interfaces';
 import { withApollo } from 'react-apollo';
 import ApolloClient from 'apollo-client';
 import gql from 'graphql-tag';
+import { CrudEnum } from '../../../types/enums';
 
 const DELETE_MESSAGE_MUTATION = gql`
-	mutation($messageId: ID!) {
-		deleteMessage(messageId: $messageId)
+	mutation($messageId: ID!, $crudType: String!) {
+		updateMessage(updatePayload: { messageId: $messageId, crudType: $crudType })
 	}
 `;
 
@@ -28,7 +29,8 @@ const contextMenuOptions = (props: IProps) => [
 			await props.client!.mutate({
 				mutation: DELETE_MESSAGE_MUTATION,
 				variables: {
-					messageId: props.messageContextMenu.message!._id
+					messageId: props.messageContextMenu.message!._id,
+					crudType: CrudEnum.DELETE
 				}
 			});
 		}
@@ -36,7 +38,10 @@ const contextMenuOptions = (props: IProps) => [
 	{
 		icon: 'icon-pencil',
 		text: 'ערוך',
-		onClick() {}
+		onClick() {
+			typeof props.messageContextMenu.setEditable === 'function' &&
+				props.messageContextMenu.setEditable(true);
+		}
 	}
 ];
 

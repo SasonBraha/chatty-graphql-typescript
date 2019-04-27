@@ -6,7 +6,6 @@ import { IChatProps } from '../Chat';
 import { IChat, IFile, IMessage } from '../../../models';
 import ApolloClient from 'apollo-client';
 import produce from 'immer';
-
 const MESSAGE_DATA_FRAGMENT = `
 	_id
 	text
@@ -50,14 +49,15 @@ const GET_OLDER_MESSAGES = gql`
 	}
 `;
 
-interface IPrev {
-	chat: IChat;
-}
-
 enum SubscriptionTypesEnum {
 	NEW_MESSAGE = 'NEW_MESSAGE',
 	FILE_UPLOADED = 'FILE_UPLOADED',
-	MESSAGE_DELETED = 'MESSAGE_DELETED'
+	MESSAGE_DELETED = 'MESSAGE_DELETED',
+	MESSAGE_EDITED = 'MESSAGE_EDITED'
+}
+
+interface IPrev {
+	chat: IChat;
 }
 
 interface IProps extends IChatProps {
@@ -67,10 +67,6 @@ interface IProps extends IChatProps {
 const MessagesListData = (props: IProps) => {
 	const [isFetching, setIsFetching] = useState(false);
 	const [isMoreMessagesToFetch, setIsMoreMessagesToFetch] = useState(true);
-	const [
-		shouldComponentUpdateIndicator,
-		setShouldComponentUpdateIndicator
-	] = useState(Math.random() * Date.now());
 	const { chatSlug } = props.match.params;
 
 	return (
@@ -89,7 +85,6 @@ const MessagesListData = (props: IProps) => {
 					isFetching={isFetching}
 					isMoreMessagesToFetch={isMoreMessagesToFetch}
 					setIsMoreMessagesToFetch={setIsMoreMessagesToFetch}
-					shouldComponentUpdateIndicator={shouldComponentUpdateIndicator}
 					fetchOlderMessages={(chatSlug: string, beforeMessageId: string) => {
 						setIsFetching(true);
 						fetchMore({
@@ -133,6 +128,7 @@ const MessagesListData = (props: IProps) => {
 
 									case SubscriptionTypesEnum.FILE_UPLOADED:
 									case SubscriptionTypesEnum.MESSAGE_DELETED:
+									case SubscriptionTypesEnum.MESSAGE_EDITED:
 										const targetMessageIdx =
 											prev.chat.messages.length -
 											1 -
@@ -156,6 +152,13 @@ const MessagesListData = (props: IProps) => {
 												draft.chat.messages[
 													targetMessageIdx
 												].isClientDeleted = true;
+											});
+										} else if (
+											updateType === SubscriptionTypesEnum.MESSAGE_EDITED
+										) {
+											return produce(prev, (draft: IPrev) => {
+												draft.chat.messages[targetMessageIdx].text =
+													updatedData.updatedText;
 											});
 										}
 								}

@@ -1,0 +1,105 @@
+# This file was generated based on ".graphqlconfig". Do not edit manually.
+
+schema {
+    query: Query
+    mutation: Mutation
+    subscription: Subscription
+}
+
+type ChatEntity {
+    _id: ID!
+    admin: UserEntity!
+    allowedUsers: [UserEntity!]!
+    image: FileEntity!
+    isPrivate: Boolean!
+    lastMessage: String
+    messages: [MessageEntity!]!
+    moderators: [UserEntity!]!
+    name: String!
+    slug: ID!
+    storeMessages: Boolean!
+}
+
+type FileDimensions {
+    height: Int
+    width: Int
+}
+
+type FileEntity {
+    dimensions: FileDimensions!
+    isStored: Boolean!
+    mimeType: String
+    path: String!
+}
+
+type MessageEntity {
+    _id: ID!
+    createdAt: DateTime!
+    createdBy: UserEntity!
+    file: FileEntity
+    isClientDeleted: Boolean
+    text: String!
+}
+
+type Mutation {
+    addActiveUser(chatSlug: String!): Boolean
+    createChat(data: CreateChatInput!): ChatEntity!
+    login(data: LoginInput!): String
+    postMessage(chatSlug: String!, text: String!): MessageEntity!
+    register(data: RegisterInput!): Boolean!
+    removeActiveUser(chatSlug: String!): Boolean
+    updateMessage(updatePayload: UpdateMessageInput!): Boolean!
+    uploadMessageFile(chatSlug: String!, file: Upload!, messageId: String!): Boolean!
+}
+
+type Query {
+    chat(chatSlug: String!): ChatEntity!
+    olderMessages(beforeMessageId: ID!, chatSlug: String!): [MessageEntity!]
+    roomsList: [ChatEntity!]!
+}
+
+type Subscription {
+    activeUsers(chatSlug: String!): [UserEntity!]
+    messagesUpdates(chatSlug: String!): String!
+    newMessage(chatSlug: String!): MessageEntity
+}
+
+type UserEntity {
+    _id: ID!
+    avatar: String!
+    displayName: String!
+    email: String!
+    lastActivity: String!
+    role: String!
+    slug: String!
+}
+
+input CreateChatInput {
+    isPrivate: Boolean!
+    name: String!
+    storeMessages: Boolean!
+}
+
+input LoginInput {
+    email: String!
+    password: String!
+}
+
+input RegisterInput {
+    displayName: String!
+    email: String!
+    password: String!
+}
+
+input UpdateMessageInput {
+    crudType: String!
+    messageId: ID!
+    messageText: String
+}
+
+
+"The javascript `Date` as string. Type represents date and time as the ISO Date string."
+scalar DateTime
+
+"The `Upload` scalar type represents a file upload."
+scalar Upload

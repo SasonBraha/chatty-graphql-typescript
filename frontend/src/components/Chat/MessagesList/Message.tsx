@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { Component } from 'react';
 import { IMessage } from '../../../models';
 import styled, { css } from 'styled-components';
 import formatRelative from 'date-fns/formatRelative';
@@ -6,11 +6,40 @@ import he from 'date-fns/locale/he';
 import { connect } from 'react-redux';
 import { setMessageContextMenu } from '../../../redux/actions';
 import { parseISO } from 'date-fns';
+import ContentEditable from 'react-contenteditable';
+import { withApollo } from 'react-apollo';
+import ApolloClient from 'apollo-client';
+import gql from 'graphql-tag';
+import { CrudEnum } from '../../../types/enums';
+
+const UPDATE_MESSAGE_MUTATION = gql`
+	mutation($messageId: ID!, $crudType: String!, $messageText: String) {
+		updateMessage(
+			updatePayload: {
+				messageId: $messageId
+				crudType: $crudType
+				messageText: $messageText
+			}
+		)
+	}
+`;
+
+const DELETE_MESSAGE_MUTATION = gql`
+	mutation($messageId: ID!, $crudType: String!) {
+		updateMessage(updatePayload: { messageId: $messageId, crudType: $crudType })
+	}
+`;
 
 interface IProps {
 	message: IMessage;
 	isMine: boolean;
 	setMessageContextMenu: typeof setMessageContextMenu;
+	client?: ApolloClient<any>;
+}
+
+interface IState {
+	messageBody: string;
+	isEditable: boolean;
 }
 
 interface IStyledProps {
@@ -18,60 +47,110 @@ interface IStyledProps {
 	isClientDeleted: boolean | null;
 }
 
-const renderFile = (message: IMessage) => {
-	const { file } = message;
-	if (file) {
+class Message extends Component<IProps, IState> {
+	private editableEl: React.RefObject<HTMLElement> = React.createRef();
+	constructor(props: IProps) {
+		super(props);
+		this.state = {
+			messageBody: this.props.message.text,
+			isEditable: false
+		};
+	}
+
+	componentDidUpdate(prevProps: IProps, prevState: IState) {
+		if (prevState.isEditable !== this.state.isEditable) {
+			this.editableEl.current!.focus();
+		}
+
+		if (prevProps.message.text !== this.props.message.text) {
+			this.setState({ messageBody: this.props.message.text });
+		}
+	}
+
+	handleContextMenu = (e: React.MouseEvent) => {
+		if (
+			this.props.isMine &&
+			!this.props.message.isClientDeleted &&
+			!this.state.isEditable
+		) {
+			e.preventDefault();
+			this.props.setMessageContextMenu({
+				isOpen: true,
+				message: this.props.message,
+				position: {
+					y: e.pageY - 52,
+					x: e.pageX
+				},
+				setEditable: (value: boolean) => this.setState({ isEditable: value })
+			});
+		}
+	};
+
+	handleEditableBlur = async () => {
+		this.setState({ isEditable: false });
+		if (this.props.message.text !== this.state.messageBody) {
+			await this.props.client!.mutate({
+				mutation: UPDATE_MESSAGE_MUTATION,
+				variables: {
+					messageId: this.props.message._id,
+					crudType: CrudEnum.UPDATE,
+					messageText: this.state.messageBody
+				}
+			});
+		}
+	};
+
+	renderFile = () => {
+		const { file } = this.props.message;
+		if (file) {
+			return (
+				<ScImage
+					src={`${process.env.REACT_APP_S3_BUCKET_URL}/${file.path}`}
+					id={this.props.message._id}
+				/>
+			);
+		}
+	};
+
+	render() {
+		const { message, isMine } = this.props;
 		return (
-			<ScImage
-				src={`${process.env.REACT_APP_S3_BUCKET_URL}/${file.path}`}
-				id={message._id}
-			/>
+			<ScMessage
+				isMine={isMine}
+				isClientDeleted={message.isClientDeleted}
+				onContextMenu={this.handleContextMenu}
+			>
+				{message.isClientDeleted ? (
+					<ScText>הודעה זו נמחקה</ScText>
+				) : (
+					<>
+						<ScMetaData>{message.createdBy.displayName}</ScMetaData>
+						{this.renderFile()}
+						<ScEditable
+							html={this.state.messageBody}
+							onChange={(e: any) =>
+								this.setState({ messageBody: e.target.value })
+							}
+							disabled={!this.state.isEditable}
+							innerRef={this.editableEl}
+							onBlur={this.handleEditableBlur}
+							isMine={isMine}
+						/>
+						<ScMetaData alignLeft={true}>
+							{formatRelative(
+								parseISO((message.createdAt as unknown) as string),
+								new Date(),
+								{
+									locale: he
+								}
+							)}
+						</ScMetaData>
+					</>
+				)}
+			</ScMessage>
 		);
 	}
-};
-
-const handleContextMenu = (e: React.MouseEvent, props: IProps) => {
-	if (props.isMine && !props.message.isClientDeleted) {
-		e.preventDefault();
-		props.setMessageContextMenu({
-			isOpen: true,
-			message: props.message,
-			position: {
-				y: e.pageY - 52,
-				x: e.pageX
-			}
-		});
-	}
-};
-
-const Message: React.FC<IProps> = props => {
-	return (
-		<ScMessage
-			isMine={props.isMine}
-			isClientDeleted={props.message.isClientDeleted}
-			onContextMenu={(e: React.MouseEvent) => handleContextMenu(e, props)}
-		>
-			{props.message.isClientDeleted ? (
-				<ScText>הודעה זו נמחקה</ScText>
-			) : (
-				<>
-					<ScMetaData>{props.message.createdBy.displayName}</ScMetaData>
-					{renderFile(props.message)}
-					<ScText>{props.message.text}</ScText>
-					<ScMetaData alignLeft={true}>
-						{formatRelative(
-							parseISO((props.message.createdAt as unknown) as string),
-							new Date(),
-							{
-								locale: he
-							}
-						)}
-					</ScMetaData>
-				</>
-			)}
-		</ScMessage>
-	);
-};
+}
 
 const ScMessage = styled('div')<IStyledProps>`
 	padding: 0.5rem 1rem;
@@ -130,9 +209,34 @@ const ScImage = styled.img`
 
 const ScText = styled.p`
 	padding: 0.5rem 0;
+
+	&[contenteditable='true'] {
+		background: red;
+	}
 `;
 
-export default connect(
-	null,
-	{ setMessageContextMenu }
-)(Message);
+const ScEditable = styled(ContentEditable)<{ isMine: boolean }>`
+	padding: 0.5rem 0;
+
+	&[contenteditable='true'] {
+		background: #0268c7;
+		padding: 0.7rem;
+		border-radius: 0.3rem;
+		margin: 0.3rem 0;
+		border: 1px dashed;
+
+		${({ isMine }) =>
+			!isMine &&
+			css`
+				background: #ececec;
+				border: 1px dashed #767676;
+			`}
+	}
+`;
+
+export default withApollo(
+	connect(
+		null,
+		{ setMessageContextMenu }
+	)(Message)
+);

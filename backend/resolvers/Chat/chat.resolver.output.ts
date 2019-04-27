@@ -16,3 +16,8 @@ export interface IMessageFileUploadedOutput {
 	file: IFile;
 	updateType: string;
 }
+
+export interface IMessageUpdated {
+	messageId: string;
+	updatedText?: string;
+}

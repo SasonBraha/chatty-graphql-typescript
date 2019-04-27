@@ -18,8 +18,8 @@ const Dropdown = (props: IProps) => {
 
 	useEffect(() => {
 		isOpen
-			? document.body.addEventListener('mousedown', props.resetDropdown)
-			: document.body.removeEventListener('mousedown', props.resetDropdown);
+			? document.body.addEventListener('click', props.resetDropdown)
+			: document.body.removeEventListener('click', props.resetDropdown);
 	}, [isOpen]);
 
 	return <StyledDropdown {...props}>{props.children}</StyledDropdown>;

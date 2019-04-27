@@ -1,4 +1,5 @@
 import { IMessage } from '../models';
+import React from 'react';
 
 export interface IMessageContextMenu {
 	isOpen: boolean;
@@ -7,4 +8,5 @@ export interface IMessageContextMenu {
 		x: number;
 		y: number;
 	};
+	setEditable?: (value: boolean) => void;
 }

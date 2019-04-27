@@ -16,7 +16,6 @@ interface IProps {
 	chatSlug: string;
 	isFetching: boolean;
 	isMoreMessagesToFetch: boolean;
-	shouldComponentUpdateIndicator: number;
 	data: {
 		chat: {
 			messages: IMessage[];
@@ -165,6 +164,7 @@ class MessagesList extends Component<IProps> {
 							<MessagesListLoader key={i} />
 					  ))
 					: chat.messages.map(message => (
+							// @ts-ignore
 							<Message
 								message={message}
 								key={message._id}
