@@ -5,6 +5,7 @@ import formatRelative from 'date-fns/formatRelative';
 import he from 'date-fns/locale/he';
 import { connect } from 'react-redux';
 import { setMessageContextMenu } from '../../../redux/actions';
+import { parseISO } from 'date-fns';
 
 interface IProps {
 	message: IMessage;
@@ -14,6 +15,7 @@ interface IProps {
 
 interface IStyledProps {
 	isMine: boolean;
+	isClientDeleted: boolean | null;
 }
 
 const renderFile = (message: IMessage) => {
@@ -29,7 +31,7 @@ const renderFile = (message: IMessage) => {
 };
 
 const handleContextMenu = (e: React.MouseEvent, props: IProps) => {
-	if (props.isMine) {
+	if (props.isMine && !props.message.isClientDeleted) {
 		e.preventDefault();
 		props.setMessageContextMenu({
 			isOpen: true,
@@ -46,6 +48,7 @@ const Message: React.FC<IProps> = props => {
 	return (
 		<ScMessage
 			isMine={props.isMine}
+			isClientDeleted={props.message.isClientDeleted}
 			onContextMenu={(e: React.MouseEvent) => handleContextMenu(e, props)}
 		>
 			{props.message.isClientDeleted ? (
@@ -56,9 +59,13 @@ const Message: React.FC<IProps> = props => {
 					{renderFile(props.message)}
 					<ScText>{props.message.text}</ScText>
 					<ScMetaData alignLeft={true}>
-						{/*{formatRelative(props.message.createdAt, new Date(), {*/}
-						{/*	locale: he*/}
-						{/*})}*/}
+						{formatRelative(
+							parseISO((props.message.createdAt as unknown) as string),
+							new Date(),
+							{
+								locale: he
+							}
+						)}
 					</ScMetaData>
 				</>
 			)}
@@ -93,6 +100,13 @@ const ScMessage = styled('div')<IStyledProps>`
 			background: ${props => props.theme.ownMessageBackground};
 			color: white;
 		`}
+
+	${({ isClientDeleted }) =>
+		isClientDeleted &&
+		css`
+			min-width: initial;
+			opacity: 0.6;
+		`}
 `;
 
 const ScMetaData = styled('small')<{ alignLeft?: boolean }>`
@@ -114,7 +128,7 @@ const ScImage = styled.img`
 	margin-top: 0.3rem;
 `;
 
-const ScText = styled.div`
+const ScText = styled.p`
 	padding: 0.5rem 0;
 `;
 

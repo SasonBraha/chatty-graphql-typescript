@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import gql from 'graphql-tag';
 import { Query, withApollo } from 'react-apollo';
 import MessagesList from './MessagesList';
@@ -78,6 +78,7 @@ const MessagesListData = (props: IProps) => {
 			{({ subscribeToMore, fetchMore, data, loading, ...result }) => (
 				<MessagesList
 					{...result}
+					updateQuery={result.updateQuery as any}
 					data={{
 						chat: {
 							messages: loading ? [] : data.chat.messages
@@ -132,36 +133,30 @@ const MessagesListData = (props: IProps) => {
 
 									case SubscriptionTypesEnum.FILE_UPLOADED:
 									case SubscriptionTypesEnum.MESSAGE_DELETED:
-										try {
-											const targetMessageIdx =
-												prev.chat.messages.length -
-												1 -
-												prev.chat.messages
-													.slice()
-													.reverse()
-													.findIndex(
-														(message: IMessage) =>
-															message._id === updatedData.messageId
-													);
+										const targetMessageIdx =
+											prev.chat.messages.length -
+											1 -
+											prev.chat.messages
+												.slice()
+												.reverse()
+												.findIndex(
+													(message: IMessage) =>
+														message._id === updatedData.messageId
+												);
 
-											if (updateType === SubscriptionTypesEnum.FILE_UPLOADED) {
-												return produce(prev, (draft: IPrev) => {
-													draft.chat.messages[targetMessageIdx].file =
-														updatedData.file;
-												});
-											} else if (
-												updateType === SubscriptionTypesEnum.MESSAGE_DELETED
-											) {
-												return produce(prev, (draft: IPrev) => {
-													draft.chat.messages[
-														targetMessageIdx
-													].isClientDeleted = true;
-												});
-											}
-										} finally {
-											setShouldComponentUpdateIndicator(
-												Math.random() * Date.now()
-											);
+										if (updateType === SubscriptionTypesEnum.FILE_UPLOADED) {
+											return produce(prev, (draft: IPrev) => {
+												draft.chat.messages[targetMessageIdx].file =
+													updatedData.file;
+											});
+										} else if (
+											updateType === SubscriptionTypesEnum.MESSAGE_DELETED
+										) {
+											return produce(prev, (draft: IPrev) => {
+												draft.chat.messages[
+													targetMessageIdx
+												].isClientDeleted = true;
+											});
 										}
 								}
 							}

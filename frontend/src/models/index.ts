@@ -28,7 +28,7 @@ export interface IMessage {
 		avatar: string;
 	};
 	createdAt: Date;
-	isClientDeleted?: boolean;
+	isClientDeleted: boolean | null;
 }
 
 export interface IFile {

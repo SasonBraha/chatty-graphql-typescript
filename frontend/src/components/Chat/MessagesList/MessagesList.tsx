@@ -26,6 +26,7 @@ interface IProps {
 	fetchOlderMessages: (chatSlug: string, beforeMessageId: string) => void;
 	setIsMoreMessagesToFetch: (value: boolean) => void;
 	messageContextMenu?: IMessageContextMenu;
+	updateQuery: () => void;
 	setMessageContextMenu?: typeof setMessageContextMenu;
 	refetch: () => void;
 }
@@ -72,12 +73,12 @@ class MessagesList extends Component<IProps> {
 			this.props,
 			nextProps
 		);
+
 		return (
 			isMessagesUpdated! ||
 			isRoomChanged! ||
 			this.props.isMoreMessagesToFetch !== nextProps.isMoreMessagesToFetch ||
-			this.props.shouldComponentUpdateIndicator !==
-				nextProps.shouldComponentUpdateIndicator
+			this.props.updateQuery !== nextProps.updateQuery
 		);
 	}
 
@@ -150,6 +151,7 @@ class MessagesList extends Component<IProps> {
 			isMoreMessagesToFetch,
 			data: { chat }
 		} = this.props;
+
 		return (
 			<ScMessagesList ref={this.messagesList} onScroll={this.handleScroll}>
 				<Spinner
