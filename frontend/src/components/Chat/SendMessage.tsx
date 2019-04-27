@@ -118,7 +118,7 @@ export default compose(
 		handleSubmit: async (
 			values: IFormValues,
 			//@ts-ignore
-			{ props: { sendMessage, uploadFile, match }, resetForm }
+			{ props: { sendMessage, uploadFile, match, setFilePreview }, resetForm }
 		) => {
 			// Send Message
 			const newMessage = await sendMessage({
@@ -129,6 +129,7 @@ export default compose(
 			});
 
 			resetForm();
+			setFilePreview(null);
 
 			// Upload File
 			if (values.file) {
