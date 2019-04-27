@@ -168,10 +168,6 @@ const ScMessage = styled('div')<IStyledProps>`
 		margin-top: 1.3rem;
 	}
 
-	&:last-of-type {
-		margin-bottom: 1rem;
-	}
-
 	${({ isMine }) =>
 		isMine &&
 		css`
@@ -224,6 +220,7 @@ const ScEditable = styled(ContentEditable)<{ isMine: boolean }>`
 		border-radius: 0.3rem;
 		margin: 0.3rem 0;
 		border: 1px dashed;
+		outline: none;
 
 		${({ isMine }) =>
 			!isMine &&

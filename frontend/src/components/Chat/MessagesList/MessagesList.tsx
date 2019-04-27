@@ -184,10 +184,14 @@ const ScMessagesList = styled.div`
 	overflow-y: auto;
 	display: flex;
 	flex-direction: column;
-	padding: 1rem;
+	padding: 1rem 1rem 0 1rem;
 
 	.chatty__spinner {
 		margin: 0.5rem auto 1rem auto;
+	}
+
+	.listEnd {
+		padding-bottom: 1rem;
 	}
 `;
 

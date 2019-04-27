@@ -1,1 +1,6 @@
-export default ['postMessage', 'addActiveUser', 'removeActiveUser'];
+export default [
+	'postMessage',
+	'addActiveUser',
+	'removeActiveUser',
+	'updateMessage'
+];
