@@ -37,6 +37,7 @@ import {
 } from './chat.resolver.output';
 import { UpdateMessageInput } from './chat.resolver.inputs';
 import { CrudEnum } from '../../types/enums';
+import { Promise } from 'mongoose';
 
 enum SubscriptionTypesEnum {
 	NEW_MESSAGE = 'NEW_MESSAGE',
@@ -185,10 +186,7 @@ export default class ChatResolver {
 			chatSlug
 		});
 
-		// Create New Message
 		const newMessage = await Message.create(messageData);
-
-		// Save Message Id To Chat
 		await Chat.updateOne(
 			{
 				$or: [
@@ -236,13 +234,15 @@ export default class ChatResolver {
 						user.hasPermission([ChatPermissionTypesEnum.DELETE_MESSAGE]) ||
 						isUserCreatedTargetMessage
 					) {
-						await Chat.updateOne(
-							{ slug: targetMessage.chatSlug },
-							{
-								$pull: { messages: messageId }
-							}
-						);
-						await targetMessage.remove();
+						await Promise.all([
+							Chat.updateOne(
+								{ slug: targetMessage.chatSlug },
+								{
+									$pull: { messages: messageId }
+								}
+							),
+							targetMessage.remove()
+						]);
 
 						pubSub.publish(SubscriptionTypesEnum.MESSAGE_DELETED, {
 							messageId,

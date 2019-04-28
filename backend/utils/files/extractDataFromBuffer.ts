@@ -2,7 +2,6 @@ import * as fileType from 'file-type';
 import * as sizeOf from 'buffer-image-size';
 
 export interface IFileData {
-	fileExtension: string;
 	mimeType: string;
 	dimensions: {
 		height: number;
@@ -20,10 +19,10 @@ export default (file: Buffer, maxFileSizeInKB: number): IFileData => {
 		Buffer.byteLength(file, 'utf8') / 1024
 	);
 	// @ts-ignore
-	const { ext: fileExtension, mime: mimeType } = fileType(file);
-	const { type, height, width } = sizeOf(file);
+	// const { ext: fileExtension, mime: mimeType } = fileType(file); // For other files other than images
+	const { type: mimeType, height, width } = sizeOf(file);
 
-	if (!allowedFileExtensions.includes(fileExtension)) {
+	if (!allowedFileExtensions.includes(mimeType)) {
 		throw new Error('הקובץ לא נתמך במערכת');
 	}
 
@@ -33,7 +32,6 @@ export default (file: Buffer, maxFileSizeInKB: number): IFileData => {
 	}
 
 	return {
-		fileExtension,
 		mimeType,
 		dimensions: {
 			height,
