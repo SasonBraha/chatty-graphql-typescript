@@ -4,13 +4,10 @@ import { connect } from 'react-redux';
 import { IReducerState } from '../../../redux/reducers';
 import { setMessageContextMenu } from '../../../redux/actions';
 import { IMessageContextMenu } from '../../../redux/interfaces';
-import { withApollo } from 'react-apollo';
-import ApolloClient from 'apollo-client';
 
 interface IProps {
 	setMessageContextMenu: typeof setMessageContextMenu;
 	messageContextMenu: IMessageContextMenu;
-	client?: ApolloClient<any>;
 }
 
 const contextMenuOptions = (props: IProps) => [
@@ -51,9 +48,7 @@ const MessageContextMenu: React.FC<IProps> = props => (
 const mapStateToProps = ({ messageContextMenu }: IReducerState) => ({
 	messageContextMenu
 });
-export default withApollo(
-	connect(
-		mapStateToProps,
-		{ setMessageContextMenu }
-	)(MessageContextMenu)
-);
+export default connect(
+	mapStateToProps,
+	{ setMessageContextMenu }
+)(MessageContextMenu);

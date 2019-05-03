@@ -6,6 +6,7 @@ import ListItem from './ListItem';
 import GenericModal from './GenericModal';
 import LoadingShimmer from './LoadingShimmer';
 import Spinner from './Spinner';
+import Editable from './Editable';
 
 export {
 	Burger,
@@ -15,5 +16,6 @@ export {
 	ListItem,
 	GenericModal,
 	LoadingShimmer,
-	Spinner
+	Spinner,
+	Editable
 };

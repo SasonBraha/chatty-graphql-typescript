@@ -6,6 +6,7 @@ import { IChatProps } from '../Chat';
 import { IChat, IFile, IMessage } from '../../../models';
 import ApolloClient from 'apollo-client';
 import produce from 'immer';
+
 const MESSAGE_DATA_FRAGMENT = `
 	_id
 	text
@@ -139,27 +140,25 @@ const MessagesListData = (props: IProps) => {
 													(message: IMessage) =>
 														message._id === updatedData.messageId
 												);
+										switch (updateType) {
+											case SubscriptionTypesEnum.FILE_UPLOADED:
+												return produce(prev, (draft: IPrev) => {
+													draft.chat.messages[targetMessageIdx].file =
+														updatedData.file;
+												});
 
-										if (updateType === SubscriptionTypesEnum.FILE_UPLOADED) {
-											return produce(prev, (draft: IPrev) => {
-												draft.chat.messages[targetMessageIdx].file =
-													updatedData.file;
-											});
-										} else if (
-											updateType === SubscriptionTypesEnum.MESSAGE_DELETED
-										) {
-											return produce(prev, (draft: IPrev) => {
-												draft.chat.messages[
-													targetMessageIdx
-												].isClientDeleted = true;
-											});
-										} else if (
-											updateType === SubscriptionTypesEnum.MESSAGE_EDITED
-										) {
-											return produce(prev, (draft: IPrev) => {
-												draft.chat.messages[targetMessageIdx].text =
-													updatedData.updatedText;
-											});
+											case SubscriptionTypesEnum.MESSAGE_DELETED:
+												return produce(prev, (draft: IPrev) => {
+													draft.chat.messages[
+														targetMessageIdx
+													].isClientDeleted = true;
+												});
+
+											case SubscriptionTypesEnum.MESSAGE_EDITED:
+												return produce(prev, (draft: IPrev) => {
+													draft.chat.messages[targetMessageIdx].text =
+														updatedData.updatedText;
+												});
 										}
 								}
 							}

@@ -6,11 +6,11 @@ import he from 'date-fns/locale/he';
 import { connect } from 'react-redux';
 import { setMessageContextMenu } from '../../../redux/actions';
 import { parseISO } from 'date-fns';
-import ContentEditable from 'react-contenteditable';
 import { withApollo } from 'react-apollo';
 import ApolloClient from 'apollo-client';
 import gql from 'graphql-tag';
 import { CrudEnum } from '../../../types/enums';
+import { Editable } from '../../Shared';
 
 const UPDATE_MESSAGE_MUTATION = gql`
 	mutation($messageId: ID!, $crudType: String!, $messageText: String) {
@@ -138,10 +138,14 @@ class Message extends Component<IProps, IState> {
 						<ScMetaData>{message.createdBy.displayName}</ScMetaData>
 						{this.renderFile()}
 						<ScEditable
-							html={this.state.messageBody}
 							onChange={(e: any) =>
 								this.setState({ messageBody: e.target.value })
 							}
+							onCancel={() =>
+								this.setState({ messageBody: message.text, isEditable: false })
+							}
+							html={this.state.messageBody}
+							submitOnEnter={true}
 							disabled={!this.state.isEditable}
 							innerRef={this.editableEl}
 							onBlur={this.handleEditableBlur}
@@ -222,7 +226,9 @@ const ScText = styled.p`
 	}
 `;
 
-const ScEditable = styled(ContentEditable)<{ isMine: boolean }>`
+const ScEditable = styled(({ isMine, ...rest }) => <Editable {...rest} />)<{
+	isMine: boolean;
+}>`
 	padding: 0.5rem 0;
 
 	&[contenteditable='true'] {
