@@ -14,6 +14,7 @@ export interface IUser extends Document {
 	notifications: Array<ObjectId> | Array<INotification>;
 	role: 'Admin' | 'Moderator' | 'User';
 	permissions: string[];
+	excludedPermissions: string[];
 	ipAddress: string;
 	lastActivity: string;
 	jwtId: string;
@@ -63,6 +64,7 @@ const UserSchema = new Schema(
 			default: 'User'
 		},
 		permissions: [String],
+		excludedPermissions: [String],
 		ipAddress: {
 			type: String,
 			required: true,

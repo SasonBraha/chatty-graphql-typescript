@@ -27,6 +27,7 @@ import { GraphQLUpload } from 'apollo-server-express';
 import { uploadFile } from '../../utils/files';
 import { translate } from '../../utils';
 import { ErrorTypesEnum } from '../../utils/errors';
+
 import { Authenticated, WithPermission } from '../../middlewares';
 import { ChatPermissionTypesEnum } from '../../permissions';
 import withPermission from '../../middlewares/WithPermission';
