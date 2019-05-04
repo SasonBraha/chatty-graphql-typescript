@@ -5,7 +5,7 @@ import AuthModal from './Auth/AuthModal';
 import jwtDecode from 'jwt-decode';
 import { connect } from 'react-redux';
 import { setCurrentUser } from '../redux/actions';
-import { IUser } from '../models';
+import { IUser } from '../types/interfaces';
 import Nav from './Nav';
 import Container from './Container';
 import { Switch, Route, withRouter } from 'react-router-dom';

@@ -3,7 +3,7 @@ import gql from 'graphql-tag';
 import { Query, withApollo } from 'react-apollo';
 import MessagesList from './MessagesList';
 import { IChatProps } from '../Chat';
-import { IChat, IFile, IMessage } from '../../../models';
+import { IChat, IFile, IMessage } from '../../../types/interfaces';
 import ApolloClient from 'apollo-client';
 import produce from 'immer';
 

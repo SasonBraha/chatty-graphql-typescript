@@ -42,13 +42,13 @@ type MessageEntity {
 }
 
 type Mutation {
-    addActiveUser(chatSlug: String!): Boolean
     createChat(data: CreateChatInput!): ChatEntity!
     login(data: LoginInput!): String
     postMessage(chatSlug: String!, text: String!): MessageEntity!
     register(data: RegisterInput!): Boolean!
-    removeActiveUser(chatSlug: String!): Boolean
+    updateActiveUsers(chatSlug: String!, crudType: String!): Boolean
     updateMessage(updatePayload: UpdateMessageInput!): Boolean!
+    updateTypingUsers(chatSlug: String!, crudType: String!): Boolean
     uploadMessageFile(chatSlug: String!, file: Upload!, messageId: String!): Boolean!
 }
 
@@ -59,9 +59,10 @@ type Query {
 }
 
 type Subscription {
-    activeUsers(chatSlug: String!): [UserEntity!]
     messagesUpdates(chatSlug: String!): String!
     newMessage(chatSlug: String!): MessageEntity
+    subscribeToActiveUsersUpdates(chatSlug: String!): [UserEntity!]
+    subscribeToTypingUsersUpdates(chatSlug: String!): [String!]
 }
 
 type UserEntity {

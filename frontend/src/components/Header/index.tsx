@@ -5,7 +5,7 @@ import { Burger, Dropdown, Button, ListItem } from '../Shared';
 import { connect } from 'react-redux';
 import { setAuthModal, setNavState } from '../../redux/actions';
 import Ripple from 'react-ink';
-import { IUser } from '../../models';
+import { IUser } from '../../types/interfaces';
 import { IReducerState } from '../../redux/reducers';
 import Icon from '../Shared/Icon';
 

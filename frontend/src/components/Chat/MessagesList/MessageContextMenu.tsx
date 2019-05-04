@@ -1,13 +1,10 @@
 import React from 'react';
 import { Dropdown, ListItem } from '../../Shared';
-import { connect } from 'react-redux';
-import { IReducerState } from '../../../redux/reducers';
-import { setMessageContextMenu } from '../../../redux/actions';
-import { IMessageContextMenu } from '../../../redux/interfaces';
+import { IMessageCtxMenu } from './MessagesList';
 
 interface IProps {
-	setMessageContextMenu: typeof setMessageContextMenu;
-	messageContextMenu: IMessageContextMenu;
+	ctx: IMessageCtxMenu;
+	closeMenu: () => void;
 }
 
 const contextMenuOptions = (props: IProps) => [
@@ -15,40 +12,37 @@ const contextMenuOptions = (props: IProps) => [
 		icon: 'icon-bin2',
 		text: 'מחק',
 		async onClick() {
-			await props.messageContextMenu.deleteMessage!();
+			await props.ctx.deleteMessage!();
 		}
 	},
 	{
 		icon: 'icon-pencil',
 		text: 'ערוך',
 		onClick() {
-			typeof props.messageContextMenu.setEditable === 'function' &&
-				props.messageContextMenu.setEditable(true);
+			typeof props.ctx.setEditable === 'function' &&
+				props.ctx.setEditable(true);
 		}
 	}
 ];
 
-const MessageContextMenu: React.FC<IProps> = props => (
-	<Dropdown
-		resetDropdown={() => props.setMessageContextMenu({ isOpen: false })}
-		isOpen={props.messageContextMenu.isOpen}
-		left={props.messageContextMenu.position!.x}
-		top={props.messageContextMenu.position!.y}
-	>
-		<ul>
-			{contextMenuOptions(props).map((option, i) => (
-				<ListItem {...option} key={i} withRipple>
-					{option.text}
-				</ListItem>
-			))}
-		</ul>
-	</Dropdown>
+const MessageContextMenu = React.forwardRef(
+	(props: IProps, ref: React.Ref<any>) => (
+		<Dropdown
+			resetDropdown={() => props.closeMenu()}
+			isOpen={props.ctx.isOpen}
+			left={props.ctx.position!.x}
+			top={props.ctx.position!.y}
+			ref={ref}
+		>
+			<ul>
+				{contextMenuOptions(props).map((option, i) => (
+					<ListItem {...option} key={i} withRipple>
+						{option.text}
+					</ListItem>
+				))}
+			</ul>
+		</Dropdown>
+	)
 );
 
-const mapStateToProps = ({ messageContextMenu }: IReducerState) => ({
-	messageContextMenu
-});
-export default connect(
-	mapStateToProps,
-	{ setMessageContextMenu }
-)(MessageContextMenu);
+export default MessageContextMenu;

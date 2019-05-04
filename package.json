@@ -4,8 +4,8 @@
 	"description": "Rich Chat App",
 	"main": "index.js",
 	"scripts": {
-		"dev": "concurrently \"cd backend && tsc -w\" \"cd backend/dist && nodemon app.js\" \"redis-commander\" \"cd frontend && npm start\"",
-		"dev:server": "concurrently \"cd backend && tsc -w\" \"cd backend/dist && nodemon app.js\" \"redis-commander\"",
+		"dev": "concurrently \"cd backend && tsnd --respawn --transpileOnly app.ts\" \"redis-commander\" \"cd frontend && npm start\"",
+		"dev:server": "concurrently \"cd backend && tsnd --respawn --transpileOnly app.ts\" \"redis-commander\"",
 		"dev:client": "cd frontend && npm start",
 		"deploy": "",
 		"deploy:server": "",

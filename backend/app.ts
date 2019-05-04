@@ -1,4 +1,4 @@
-require('dotenv').config({ path: '../.env' });
+require('dotenv').config({ path: './.env' });
 import 'reflect-metadata';
 import * as http from 'http';
 import { ApolloServer } from 'apollo-server-express';
@@ -117,6 +117,14 @@ const main = async () => {
 	httpServer.listen(PORT, () =>
 		console.log(`Server Started Successfully On Port ${PORT} ✈️`)
 	);
+
+	if (process.env.NODE_ENV === 'production') {
+		process
+			.on('unhandledRejection', (reason, promise) =>
+				logger.error(reason, promise)
+			)
+			.on('uncaughtException', ex => logger.error(ex));
+	}
 };
 
 main();

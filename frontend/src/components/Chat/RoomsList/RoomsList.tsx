@@ -1,7 +1,7 @@
 import React from 'react';
 import { Query } from 'react-apollo';
 import gql from 'graphql-tag';
-import { IChat } from '../../../models';
+import { IChat } from '../../../types/interfaces';
 import RoomsListItem from './RoomsListItem';
 import styled from 'styled-components/macro';
 import { IChatProps } from '../Chat';

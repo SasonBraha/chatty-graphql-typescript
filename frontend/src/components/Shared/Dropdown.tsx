@@ -1,4 +1,4 @@
-import React, { useEffect, ReactNode } from 'react';
+import React, { useEffect, ReactNode, Ref } from 'react';
 import styled, { css } from 'styled-components/macro';
 import { validCss } from '../../utils';
 
@@ -7,13 +7,13 @@ interface IProps {
 	isOpen: boolean;
 	background?: string;
 	color?: string;
-	top: number;
-	left: number;
-	width: number;
+	top?: number;
+	left?: number;
+	width?: number;
 	children?: ReactNode;
 }
 
-const Dropdown = (props: IProps) => {
+const Dropdown = React.forwardRef((props: IProps, ref: Ref<any>) => {
 	const { isOpen } = props;
 
 	useEffect(() => {
@@ -22,8 +22,12 @@ const Dropdown = (props: IProps) => {
 			: document.body.removeEventListener('click', props.resetDropdown);
 	}, [isOpen]);
 
-	return <StyledDropdown {...props}>{props.children}</StyledDropdown>;
-};
+	return (
+		<StyledDropdown ref={ref} {...props}>
+			{props.children}
+		</StyledDropdown>
+	);
+});
 
 Dropdown.defaultProps = {
 	color: 'black',
@@ -36,9 +40,9 @@ Dropdown.defaultProps = {
 const StyledDropdown = styled('div')<IProps>`
 	background: ${({ background }) => background};
 	color: ${({ color }) => color};
-	top: ${({ top }) => validCss(top)};
-	left: ${({ left }) => validCss(left)};
-	width: ${({ width }) => validCss(width)};
+	top: ${({ top }) => validCss(top!)};
+	left: ${({ left }) => validCss(left!)};
+	width: ${({ width }) => validCss(width!)};
 	position: absolute;
 	transition: all 0.15s, transform 0.17s, left 0s, top 0s;
 	transform-origin: left top;

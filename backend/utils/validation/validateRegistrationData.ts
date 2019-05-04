@@ -1,5 +1,5 @@
 import * as Joi from 'joi';
-import { RegisterInput } from '../../resolvers/inputs';
+import { RegisterInput } from '../../resolvers/User/user.resolver.inputs';
 
 interface IErrors {
 	[key: string]: string;

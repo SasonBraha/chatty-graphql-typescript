@@ -1,4 +1,4 @@
-import { IFileInput } from '../../resolvers/inputs';
+import { IFileInput } from '../../resolvers/User/user.resolver.inputs';
 
 const createBufferFromStream = async (file: IFileInput): Promise<Buffer> => {
 	return new Promise((resolve, reject) => {

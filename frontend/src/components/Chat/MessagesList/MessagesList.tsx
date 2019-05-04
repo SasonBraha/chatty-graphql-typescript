@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { IMessage, IUser } from '../../../models';
+import { IMessage, IUser } from '../../../types/interfaces';
 import Message from './Message';
 import { connect } from 'react-redux';
 import { IReducerState } from '../../../redux/reducers';
@@ -7,8 +7,9 @@ import styled from 'styled-components/macro';
 import MessagesListLoader from './MessagesListLoader';
 import { Spinner } from '../../Shared';
 import MessageContextMenu from './MessageContextMenu';
-import { setMessageContextMenu } from '../../../redux/actions';
-import { IMessageContextMenu } from '../../../redux/interfaces';
+import { withApollo } from 'react-apollo';
+import { ApolloClient } from 'apollo-client';
+import client from '../../../apollo/client';
 
 interface IProps {
 	currentUser?: IUser | null;
@@ -24,27 +25,45 @@ interface IProps {
 	subscribeToUpdates: (chatSlug: string) => void;
 	fetchOlderMessages: (chatSlug: string, beforeMessageId: string) => void;
 	setIsMoreMessagesToFetch: (value: boolean) => void;
-	messageContextMenu?: IMessageContextMenu;
 	updateQuery: () => void;
-	setMessageContextMenu?: typeof setMessageContextMenu;
 	refetch: () => void;
+	client: ApolloClient<any>;
 }
 
-const mapStateToProps = ({
-	currentUser,
-	messageContextMenu
-}: IReducerState) => ({ currentUser, messageContextMenu });
-@connect(
-	mapStateToProps,
-	{ setMessageContextMenu }
-)
-class MessagesList extends Component<IProps> {
+export interface IMessageCtxMenu {
+	isOpen: boolean;
+	message?: IMessage | null;
+	position?: {
+		x: number;
+		y: number;
+	};
+	setEditable?: (value: boolean) => void;
+	deleteMessage?: () => Promise<void>;
+}
+
+interface IState {
+	messageCtxMenu: IMessageCtxMenu;
+}
+
+@connect(({ currentUser }: IReducerState) => ({ currentUser }))
+class MessagesList extends Component<IProps, IState> {
 	private unsubscribeFromUpdates: any;
 	private listEnd: React.RefObject<any> = React.createRef();
 	private messagesList: React.RefObject<any> = React.createRef();
+	private messageCtxMenuRef: React.RefObject<HTMLElement> = React.createRef();
 	private shouldFetchThreshold: number = 250;
 	constructor(props: IProps) {
 		super(props);
+		this.state = {
+			messageCtxMenu: {
+				isOpen: false,
+				message: null,
+				position: {
+					x: 0,
+					y: 0
+				}
+			}
+		};
 	}
 
 	componentDidMount() {
@@ -67,7 +86,7 @@ class MessagesList extends Component<IProps> {
 		return null;
 	}
 
-	shouldComponentUpdate(nextProps: IProps): boolean {
+	shouldComponentUpdate(nextProps: IProps, nextState: IState): boolean {
 		const { isMessagesUpdated, isRoomChanged } = this.extractRequiredData(
 			this.props,
 			nextProps
@@ -77,7 +96,12 @@ class MessagesList extends Component<IProps> {
 			isMessagesUpdated! ||
 			isRoomChanged! ||
 			this.props.isMoreMessagesToFetch !== nextProps.isMoreMessagesToFetch ||
-			this.props.updateQuery !== nextProps.updateQuery
+			this.props.updateQuery !== nextProps.updateQuery ||
+			this.state.messageCtxMenu.isOpen !== nextState.messageCtxMenu.isOpen ||
+			this.state.messageCtxMenu.position!.x !==
+				nextState.messageCtxMenu.position!.x ||
+			this.state.messageCtxMenu.position!.y !==
+				nextState.messageCtxMenu.position!.y
 		);
 	}
 
@@ -109,6 +133,22 @@ class MessagesList extends Component<IProps> {
 		this.unsubscribeFromUpdates();
 	}
 
+	private onCtxTransitionEnd = () => {
+		const ctxRef = this.messageCtxMenuRef.current!;
+		ctxRef.removeEventListener('transitionend', this.onCtxTransitionEnd);
+		ctxRef.style.transition = 'all 0.15s,transform 0.17s,left 0s,top 0s';
+	};
+
+	private showMessageCtxMenu = (ctx: IMessageCtxMenu) => {
+		if (ctx.isOpen && this.state.messageCtxMenu.isOpen) {
+			const ctxRef = this.messageCtxMenuRef.current!;
+			ctxRef.addEventListener('transitionend', this.onCtxTransitionEnd);
+			ctxRef.style.transition = 'all 0.15s,transform 0.17s';
+		}
+
+		this.setState({ messageCtxMenu: ctx });
+	};
+
 	private handleScroll = (e: React.UIEvent<HTMLDivElement>) => {
 		const { isFetching, isMoreMessagesToFetch } = this.props;
 		if (
@@ -124,8 +164,10 @@ class MessagesList extends Component<IProps> {
 			);
 		}
 
-		if (this.props.messageContextMenu!.isOpen) {
-			this.props.setMessageContextMenu!({ isOpen: false });
+		if (this.state.messageCtxMenu.isOpen) {
+			this.setState({
+				messageCtxMenu: { ...this.state.messageCtxMenu, isOpen: false }
+			});
 		}
 	};
 
@@ -151,6 +193,7 @@ class MessagesList extends Component<IProps> {
 			data: { chat }
 		} = this.props;
 
+		// @ts-nocheck
 		return (
 			<ScMessagesList ref={this.messagesList} onScroll={this.handleScroll}>
 				<Spinner
@@ -169,10 +212,20 @@ class MessagesList extends Component<IProps> {
 								message={message}
 								key={message._id}
 								isMine={currentUser!.slug === message.createdBy.slug}
+								setMessageCtxMenu={this.showMessageCtxMenu}
+								client={client}
 							/>
 					  ))}
 				<div ref={this.listEnd} className='listEnd' />
-				<MessageContextMenu />
+				<MessageContextMenu
+					ctx={this.state.messageCtxMenu}
+					ref={this.messageCtxMenuRef}
+					closeMenu={() =>
+						this.setState({
+							messageCtxMenu: { ...this.state.messageCtxMenu, isOpen: false }
+						})
+					}
+				/>
 			</ScMessagesList>
 		);
 	}
@@ -195,4 +248,4 @@ const ScMessagesList = styled.div`
 	}
 `;
 
-export default MessagesList;
+export default withApollo(MessagesList);

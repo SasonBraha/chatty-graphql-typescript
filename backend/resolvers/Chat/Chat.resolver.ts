@@ -20,7 +20,7 @@ import User, {
 } from '../../models/User.model';
 import Message, { IMessage, MessageEntity } from '../../models/Message.model';
 import { ObjectID } from 'bson';
-import { CreateChatInput, IFileInput } from '../inputs';
+import { CreateChatInput, IFileInput } from './chat.resolver.inputs';
 import activeUsersService from '../../redis/services/ActiveUsers.service';
 import * as uuid from 'uuid';
 import { GraphQLUpload } from 'apollo-server-express';
@@ -42,10 +42,11 @@ import { Promise } from 'mongoose';
 
 enum SubscriptionTypesEnum {
 	NEW_MESSAGE = 'NEW_MESSAGE',
-	USER_JOINED = 'USER_JOINED',
 	FILE_UPLOADED = 'FILE_UPLOADED',
 	MESSAGE_DELETED = 'MESSAGE_DELETED',
-	MESSAGE_EDITED = 'MESSAGE_EDITED'
+	MESSAGE_EDITED = 'MESSAGE_EDITED',
+	UPDATE_TYPING_USERS = 'UPDATE_TYPING_USERS',
+	UPDATE_ACTIVE_USERS = 'UPDATE_ACTIVE_USERS'
 }
 
 @Resolver(ChatEntity)
@@ -308,29 +309,44 @@ export default class ChatResolver {
 
 	@UseMiddleware(Authenticated)
 	@Mutation(returns => Boolean, { nullable: true })
-	async addActiveUser(
+	async updateActiveUsers(
 		@Arg('chatSlug') chatSlug: string,
+		@Arg('crudType') crudType: string,
 		@Ctx('user') user: IUser,
 		@PubSub() pubSub: PubSubEngine
 	): Promise<void> {
-		const userList = await activeUsersService.addUser(chatSlug, user);
-		pubSub.publish(SubscriptionTypesEnum.USER_JOINED, {
+		let userList: IUser[] = null;
+
+		switch (crudType) {
+			case CrudEnum.UPDATE:
+				userList = await activeUsersService.addUser(chatSlug, user);
+				break;
+
+			case CrudEnum.DELETE:
+				userList = await activeUsersService.removeUser(chatSlug, user);
+				break;
+		}
+
+		pubSub.publish(SubscriptionTypesEnum.UPDATE_ACTIVE_USERS, {
 			userList,
-			chatSlug
+			chatSlug,
+			crudType
 		});
 	}
 
 	@UseMiddleware(Authenticated)
+	@UseMiddleware(withPermission([ChatPermissionTypesEnum.POST_MESSAGE]))
 	@Mutation(returns => Boolean, { nullable: true })
-	async removeActiveUser(
+	updateTypingUsers(
 		@Arg('chatSlug') chatSlug: string,
+		@Arg('crudType') crudType: string,
 		@Ctx('user') user: IUser,
 		@PubSub() pubSub: PubSubEngine
-	): Promise<void> {
-		const userList = await activeUsersService.removeUser(chatSlug, user);
-		pubSub.publish(SubscriptionTypesEnum.USER_JOINED, {
-			userList,
-			chatSlug
+	) {
+		pubSub.publish(SubscriptionTypesEnum.UPDATE_TYPING_USERS, {
+			chatSlug,
+			crudType,
+			displayName: user.displayName
 		});
 	}
 
@@ -348,19 +364,30 @@ export default class ChatResolver {
 		return messagePayload.message;
 	}
 
+	@UseMiddleware(Authenticated)
+	@UseMiddleware(withPermission([ChatPermissionTypesEnum.VIEW_CHAT]))
 	@Subscription(returns => [UserEntity], {
-		topics: SubscriptionTypesEnum.USER_JOINED,
+		topics: SubscriptionTypesEnum.UPDATE_ACTIVE_USERS,
 		defaultValue: [],
 		filter: ({ payload, args }) => payload.chatSlug === args.chatSlug
 	})
-	activeUsers(
-		@Root() payloadData: { chatSlug: string; userList: IUser[] },
+	subscribeToActiveUsersUpdates(
+		@Root()
+		payloadData: { chatSlug: string; userList: IUser[]; crudType: string },
 		@Arg('chatSlug') chatSlug: string
 	): IUser[] {
 		return payloadData.userList;
 	}
 
 	@UseMiddleware(Authenticated)
+	@UseMiddleware(
+		withPermission([
+			ChatPermissionTypesEnum.EDIT_OWN_MESSAGE,
+			ChatPermissionTypesEnum.EDIT_MESSAGE,
+			ChatPermissionTypesEnum.DELETE_OWN_MESSAGE,
+			ChatPermissionTypesEnum.DELETE_MESSAGE
+		])
+	)
 	@Subscription(returns => String, {
 		topics: [
 			SubscriptionTypesEnum.NEW_MESSAGE,
@@ -379,6 +406,19 @@ export default class ChatResolver {
 		@Arg('chatSlug') chatSlug: string
 	): string {
 		return JSON.stringify(subscriptionPayload);
+	}
+
+	@UseMiddleware(Authenticated)
+	@Subscription(returns => String, {
+		topics: SubscriptionTypesEnum.UPDATE_TYPING_USERS,
+		defaultValue: [],
+		filter: ({ payload, args }) => payload.chatSlug === args.chatSlug
+	})
+	subscribeToTypingUsersUpdates(
+		@Root() payloadData: { chatSlug: string; userList: IUser[] },
+		@Arg('chatSlug') chatSlug: string
+	): IUser[] {
+		return payloadData.userList;
 	}
 
 	@FieldResolver()

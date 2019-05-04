@@ -18,7 +18,7 @@ const ScRoomsListLoader = styled.div`
 	align-items: center;
 	padding: 1rem;
 	background: ${props => props.theme.activeUsersBackground};
-	margin-bottom: 0.5rem;
+	margin: 1rem;
 `;
 
 const ScRoomImage = styled(LoadingShimmer)`

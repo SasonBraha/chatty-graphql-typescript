@@ -1,16 +1,14 @@
 import React, { Component } from 'react';
-import { IMessage } from '../../../models';
+import { IMessage } from '../../../types/interfaces';
 import styled, { css } from 'styled-components';
 import formatRelative from 'date-fns/formatRelative';
 import he from 'date-fns/locale/he';
-import { connect } from 'react-redux';
-import { setMessageContextMenu } from '../../../redux/actions';
 import { parseISO } from 'date-fns';
-import { withApollo } from 'react-apollo';
 import ApolloClient from 'apollo-client';
 import gql from 'graphql-tag';
 import { CrudEnum } from '../../../types/enums';
 import { Editable } from '../../Shared';
+import { IMessageCtxMenu } from './MessagesList';
 
 const UPDATE_MESSAGE_MUTATION = gql`
 	mutation($messageId: ID!, $crudType: String!, $messageText: String) {
@@ -33,18 +31,13 @@ const DELETE_MESSAGE_MUTATION = gql`
 interface IProps {
 	message: IMessage;
 	isMine: boolean;
-	setMessageContextMenu: typeof setMessageContextMenu;
+	setMessageCtxMenu: (ctx: IMessageCtxMenu) => void;
 	client?: ApolloClient<any>;
 }
 
 interface IState {
 	messageBody: string;
 	isEditable: boolean;
-}
-
-interface IStyledProps {
-	isMine: boolean;
-	isClientDeleted: boolean | null;
 }
 
 class Message extends Component<IProps, IState> {
@@ -74,7 +67,7 @@ class Message extends Component<IProps, IState> {
 			!this.state.isEditable
 		) {
 			e.preventDefault();
-			this.props.setMessageContextMenu({
+			this.props.setMessageCtxMenu({
 				isOpen: true,
 				message: this.props.message,
 				position: {
@@ -167,7 +160,10 @@ class Message extends Component<IProps, IState> {
 	}
 }
 
-const ScMessage = styled('div')<IStyledProps>`
+const ScMessage = styled('div')<{
+	isMine: boolean;
+	isClientDeleted: boolean | null;
+}>`
 	padding: 0.5rem 1rem;
 	border-radius: 0.5rem;
 	align-self: flex-end;
@@ -248,9 +244,4 @@ const ScEditable = styled(({ isMine, ...rest }) => <Editable {...rest} />)<{
 	}
 `;
 
-export default withApollo(
-	connect(
-		null,
-		{ setMessageContextMenu }
-	)(Message)
-);
+export default Message;

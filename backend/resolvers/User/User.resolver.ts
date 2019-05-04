@@ -1,14 +1,14 @@
 import { Arg, Ctx, Mutation, Resolver } from 'type-graphql';
-import User, { UserEntity } from '../models/User.model';
-import { LoginInput, RegisterInput } from './inputs';
+import User, { UserEntity } from '../../models/User.model';
+import { LoginInput, RegisterInput } from './user.resolver.inputs';
 import { Request } from 'express';
-import generateJWT from '../auth/generateJWT';
+import generateJWT from '../../auth/generateJWT';
 import * as uuid from 'uuid';
 import {
 	throwValidationError,
 	validateRegistrationInput
-} from '../utils/validation';
-import { ErrorTypesEnum } from '../utils/errors';
+} from '../../utils/validation';
+import { ErrorTypesEnum } from '../../utils/errors';
 
 @Resolver(UserEntity)
 export default class UserResolver {

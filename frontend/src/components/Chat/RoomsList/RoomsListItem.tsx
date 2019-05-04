@@ -1,7 +1,7 @@
 import React from 'react';
 import styled, { css } from 'styled-components/macro';
 import { Link } from 'react-router-dom';
-import { IChat } from '../../../models';
+import { IChat } from '../../../types/interfaces';
 import Ripple from 'react-ink';
 
 interface IProps {

@@ -14,6 +14,7 @@ export interface IChatProps extends RouteComponentProps<IMatchParams> {}
 
 const Chat = (props: IChatProps) => {
 	const [filePreview, setFilePreview] = useState(null);
+	const [typingUsers, setTypingUsers] = useState([]);
 
 	return (
 		<ScChat>

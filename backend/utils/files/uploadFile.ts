@@ -1,4 +1,4 @@
-import { IFileInput } from '../../resolvers/inputs';
+import { IFileInput } from '../../resolvers/User/user.resolver.inputs';
 import { createBufferFromStream, extractDataFromBuffer } from './index';
 import { IFileData } from './extractDataFromBuffer';
 import * as uuid from 'uuid';
@@ -12,14 +12,13 @@ const uploadFile = (
 ): Promise<IFile> => {
 	return new Promise(async (resolve, reject) => {
 		const fileBuffer: Buffer = await createBufferFromStream(file);
-		const {
-			fileExtension,
-			mimeType,
-			dimensions
-		}: IFileData = extractDataFromBuffer(fileBuffer, maxFileSizeInKB);
+		const { mimeType, dimensions }: IFileData = extractDataFromBuffer(
+			fileBuffer,
+			maxFileSizeInKB
+		);
 
 		const uploadData = {
-			Key: `${reference}/${uuid()}.${fileExtension}`,
+			Key: `${reference}/${uuid()}.${mimeType}`,
 			Bucket: process.env.S3_BUCKET,
 			Body: fileBuffer,
 			ContentEncoding: 'base64',

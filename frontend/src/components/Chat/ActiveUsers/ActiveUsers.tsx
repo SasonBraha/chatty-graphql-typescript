@@ -3,16 +3,17 @@ import styled from 'styled-components';
 import gql from 'graphql-tag';
 import { IChatProps } from '../Chat';
 import Subscription from 'react-apollo/Subscriptions';
-import { IUser } from '../../../models';
+import { IUser } from '../../../types/interfaces';
 import { Link } from 'react-router-dom';
 import { withApollo } from 'react-apollo';
 import ApolloClient from 'apollo-client';
 import { connect } from 'react-redux';
 import { IReducerState } from '../../../redux/reducers';
+import { CrudEnum } from '../../../types/enums';
 
 const ACTIVE_USERS_SUBSCRIPTION = gql`
 	subscription($chatSlug: String!) {
-		activeUsers(chatSlug: $chatSlug) {
+		subscribeToActiveUsersUpdates(chatSlug: $chatSlug) {
 			displayName
 			avatar
 			slug
@@ -20,15 +21,9 @@ const ACTIVE_USERS_SUBSCRIPTION = gql`
 	}
 `;
 
-const ADD_ACTIVE_USER_MUTATION = gql`
-	mutation($chatSlug: String!) {
-		addActiveUser(chatSlug: $chatSlug)
-	}
-`;
-
-const REMOVE_ACTIVE_USER_MUTATION = gql`
-	mutation($chatSlug: String!) {
-		removeActiveUser(chatSlug: $chatSlug)
+const UPDATE_ACTIVE_USERS = gql`
+	mutation($chatSlug: String!, $crudType: String!) {
+		updateActiveUsers(chatSlug: $chatSlug, crudType: $crudType)
 	}
 `;
 
@@ -69,9 +64,10 @@ class ActiveUsers extends Component<IProps> {
 	private addActiveUser = () => {
 		this.props.client!.mutate({
 			variables: {
-				chatSlug: this.props.match.params.chatSlug
+				chatSlug: this.props.match.params.chatSlug,
+				crudType: CrudEnum.UPDATE
 			},
-			mutation: ADD_ACTIVE_USER_MUTATION
+			mutation: UPDATE_ACTIVE_USERS
 		});
 	};
 
@@ -81,9 +77,10 @@ class ActiveUsers extends Component<IProps> {
 				chatSlug:
 					typeof chatSlug === 'string'
 						? chatSlug
-						: this.props.match.params.chatSlug
+						: this.props.match.params.chatSlug,
+				crudType: CrudEnum.DELETE
 			},
-			mutation: REMOVE_ACTIVE_USER_MUTATION
+			mutation: UPDATE_ACTIVE_USERS
 		});
 		return null;
 	};
@@ -95,14 +92,16 @@ class ActiveUsers extends Component<IProps> {
 					subscription={ACTIVE_USERS_SUBSCRIPTION}
 					variables={{ chatSlug: this.props.match.params.chatSlug }}
 				>
-					{({ data = { activeUsers: [] }, loading }) => {
-						return data.activeUsers.map((user: IUser, i: number) => (
-							<Link to={`/user/${user.slug}`} key={i}>
-								<ScActiveUser>
-									<ScAvatar src={user.avatar} alt={user.displayName} />
-								</ScActiveUser>
-							</Link>
-						));
+					{({ data = { subscribeToActiveUsersUpdates: [] }, loading }) => {
+						return data.subscribeToActiveUsersUpdates.map(
+							(user: IUser, i: number) => (
+								<Link to={`/user/${user.slug}`} key={i}>
+									<ScActiveUser>
+										<ScAvatar src={user.avatar} alt={user.displayName} />
+									</ScActiveUser>
+								</Link>
+							)
+						);
 					}}
 				</Subscription>
 			</ScActiveUsers>
