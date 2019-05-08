@@ -14,7 +14,6 @@ interface IProps {
 	};
 }
 
-//prettier-ignore
 const renderTypingUsers = (typingUsers: ITypingUser[]) => {
 	const typingUsersLength: number = typingUsers.length;
 	switch (true) {
@@ -32,31 +31,22 @@ const renderTypingUsers = (typingUsers: ITypingUser[]) => {
 			);
 		}
 
-		case typingUsersLength === 3: {
-			const [firstUser, secondUser, thirdUser] = typingUsers;
+		case typingUsersLength > 2: {
+			const [firstUser, ...rest] = typingUsers;
 			return (
-				<span>{firstUser.displayName}, {secondUser.displayName} ו־{thirdUser.displayName} מקלידים...</span>
-			)
-		}
-
-		case typingUsersLength === 4: {
-			const [firstUser, secondUser, thirdUser] = typingUsers;
-			return (
-				<span>{firstUser.displayName}, {secondUser.displayName}, {thirdUser.displayName} ומשתמש נוסף מקלידים...</span>
-			)
-		}
-
-		case typingUsersLength > 4: {
-			const [firstUser, secondUser, thirdUser, ...rest] = typingUsers;
-			return (
-				<span dir="ltr">{firstUser.displayName}, {secondUser.displayName}, {thirdUser.displayName} ו־{rest.length} משתמשים נוספים מקלידים...</span>
-			)
+				<span>
+					{firstUser.displayName} ו־{rest.length} משתמשים נוספים מקלידים...
+				</span>
+			);
 		}
 	}
 };
 
 const UserTyping = (props: IProps) => {
-	const [typingUsers, setTypingUsers] = useState<ITypingUser[]>([]);
+	const [typingUsers, setTypingUsers] = useState<ITypingUser[]>([
+		{ displayName: 'מנחפ', slug: 'asdasd' },
+		{ displayName: 'asd', slug: 'asdasasdad' }
+	]);
 
 	useEffect(() => {
 		if (!props.loading) {
