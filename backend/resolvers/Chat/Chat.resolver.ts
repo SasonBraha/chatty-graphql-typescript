@@ -34,11 +34,11 @@ import withPermission from '../../middlewares/WithPermission';
 import {
 	IMessageCreatedOutput,
 	IMessageDeletedOutput,
-	IMessageFileUploadedOutput
+	IMessageFileUploadedOutput,
+	UserTypingOutput
 } from './chat.resolver.output';
 import { UpdateMessageInput } from './chat.resolver.inputs';
 import { CrudEnum } from '../../types/enums';
-import { Promise } from 'mongoose';
 
 enum SubscriptionTypesEnum {
 	NEW_MESSAGE = 'NEW_MESSAGE',
@@ -343,11 +343,16 @@ export default class ChatResolver {
 		@Ctx('user') user: IUser,
 		@PubSub() pubSub: PubSubEngine
 	) {
+		console.log('called', crudType);
 		pubSub.publish(SubscriptionTypesEnum.UPDATE_TYPING_USERS, {
 			chatSlug,
 			crudType,
-			displayName: user.displayName
+			user: {
+				displayName: user.displayName,
+				slug: user.slug
+			}
 		});
+		return true;
 	}
 
 	@UseMiddleware(Authenticated)
@@ -409,16 +414,16 @@ export default class ChatResolver {
 	}
 
 	@UseMiddleware(Authenticated)
-	@Subscription(returns => String, {
+	@Subscription(returns => UserTypingOutput, {
 		topics: SubscriptionTypesEnum.UPDATE_TYPING_USERS,
-		defaultValue: [],
+		defaultValue: null,
 		filter: ({ payload, args }) => payload.chatSlug === args.chatSlug
 	})
 	subscribeToTypingUsersUpdates(
-		@Root() payloadData: { chatSlug: string; userList: IUser[] },
+		@Root() payloadData: { chatSlug: string; user: IUser; crudType: string },
 		@Arg('chatSlug') chatSlug: string
-	): IUser[] {
-		return payloadData.userList;
+	) {
+		return payloadData;
 	}
 
 	@FieldResolver()

@@ -20,6 +20,11 @@ type ChatEntity {
     storeMessages: Boolean!
 }
 
+type FileAddedOutput {
+    chatSlug: String!
+    messageId: String!
+}
+
 type FileDimensions {
     height: Int
     width: Int
@@ -62,7 +67,7 @@ type Subscription {
     messagesUpdates(chatSlug: String!): String!
     newMessage(chatSlug: String!): MessageEntity
     subscribeToActiveUsersUpdates(chatSlug: String!): [UserEntity!]
-    subscribeToTypingUsersUpdates(chatSlug: String!): [String!]
+    subscribeToTypingUsersUpdates(chatSlug: String!): UserTypingOutput!
 }
 
 type UserEntity {
@@ -73,6 +78,12 @@ type UserEntity {
     lastActivity: String!
     role: String!
     slug: String!
+}
+
+type UserTypingOutput {
+    chatSlug: String!
+    crudType: String!
+    user: UserEntity!
 }
 
 input CreateChatInput {

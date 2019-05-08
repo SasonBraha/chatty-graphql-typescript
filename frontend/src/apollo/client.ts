@@ -65,7 +65,6 @@ const client = new ApolloClient({
 });
 
 if (process.env.NODE_ENV === 'development') {
-	//@ts-ignore
 	window.apolloClient = client;
 }
 

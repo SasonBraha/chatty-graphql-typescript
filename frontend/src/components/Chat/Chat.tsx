@@ -6,6 +6,7 @@ import ActiveUsers from './ActiveUsers/ActiveUsers';
 import MessagesList from './MessagesList';
 import SendMessage from './SendMessage';
 import UploadPreview from './UploadPreview';
+import UserTyping from './UserTyping';
 
 interface IMatchParams {
 	chatSlug: string;
@@ -14,7 +15,6 @@ export interface IChatProps extends RouteComponentProps<IMatchParams> {}
 
 const Chat = (props: IChatProps) => {
 	const [filePreview, setFilePreview] = useState(null);
-	const [typingUsers, setTypingUsers] = useState([]);
 
 	return (
 		<ScChat>
@@ -25,6 +25,7 @@ const Chat = (props: IChatProps) => {
 				<UploadPreview file={filePreview} />
 				<MessagesList {...props} />
 				<SendMessage {...props} setFilePreview={setFilePreview} />
+				<UserTyping {...props} />
 			</ScMessagesArea>
 		</ScChat>
 	);

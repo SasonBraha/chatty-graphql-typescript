@@ -1,11 +1,13 @@
-import React from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components/macro';
 import gql from 'graphql-tag';
 import { FormikProps, withFormik } from 'formik';
-import { compose, graphql } from 'react-apollo';
+import { compose, graphql, withApollo } from 'react-apollo';
 import Icon from '../Shared/Icon';
 import { RouteComponentProps } from 'react-router';
 import { FileInput } from '../Shared/Form';
+import ApolloClient from 'apollo-client';
+import { CrudEnum } from '../../types/enums';
 
 const SEND_MESSAGE_MUTATION = gql`
 	mutation($chatSlug: String!, $text: String!) {
@@ -18,6 +20,12 @@ const SEND_MESSAGE_MUTATION = gql`
 const UPLOAD_FILE_MUTATION = gql`
 	mutation($file: Upload!, $chatSlug: String!, $messageId: String!) {
 		uploadMessageFile(file: $file, chatSlug: $chatSlug, messageId: $messageId)
+	}
+`;
+
+const UPDATE_TYPING_USERS = gql`
+	mutation($chatSlug: String!, $crudType: String!) {
+		updateTypingUsers(chatSlug: $chatSlug, crudType: $crudType)
 	}
 `;
 
@@ -34,9 +42,42 @@ interface IProps
 	extends FormikProps<IFormValues>,
 		RouteComponentProps<IMatchParams> {
 	setFilePreview: (file: File | null) => void;
+	client: ApolloClient<any>;
 }
 
-const SendMessage = (props: IProps) => {
+let emitTypingTimeout: ReturnType<typeof setTimeout>;
+const updateTypingUsers = (
+	isTyping: boolean,
+	setIsTyping: React.Dispatch<React.SetStateAction<boolean>>,
+	props: IProps
+) => {
+	if (isTyping) {
+		clearTimeout(emitTypingTimeout);
+		emitTypingTimeout = setTimeout(() => {
+			props.client.mutate({
+				mutation: UPDATE_TYPING_USERS,
+				variables: {
+					chatSlug: props.match.params.chatSlug,
+					crudType: CrudEnum.DELETE
+				}
+			});
+			setIsTyping(false);
+		}, 650);
+	} else {
+		setIsTyping(true);
+		props.client.mutate({
+			mutation: UPDATE_TYPING_USERS,
+			variables: {
+				chatSlug: props.match.params.chatSlug,
+				crudType: CrudEnum.UPDATE
+			}
+		});
+		updateTypingUsers(true, setIsTyping, props);
+	}
+};
+
+const SendMessage: React.FC<IProps> = props => {
+	const [isTyping, setIsTyping] = useState(false);
 	const {
 		values,
 		errors,
@@ -68,7 +109,10 @@ const SendMessage = (props: IProps) => {
 				type='text'
 				value={values.text}
 				name='text'
-				onChange={handleChange}
+				onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+					handleChange(e);
+					updateTypingUsers(isTyping, setIsTyping, props);
+				}}
 				onBlur={handleBlur}
 				placeholder='הכנס הודעה ולחץ Enter'
 			/>
@@ -120,7 +164,6 @@ export default compose(
 			//@ts-ignore
 			{ props: { sendMessage, uploadFile, match, setFilePreview }, resetForm }
 		) => {
-			// Send Message
 			const newMessage = await sendMessage({
 				variables: {
 					...values,
@@ -131,7 +174,6 @@ export default compose(
 			resetForm();
 			setFilePreview(null);
 
-			// Upload File
 			if (values.file) {
 				uploadFile({
 					variables: {
@@ -143,4 +185,4 @@ export default compose(
 			}
 		}
 	})
-)(SendMessage);
+)(withApollo(SendMessage));
