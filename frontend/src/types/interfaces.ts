@@ -41,3 +41,8 @@ export interface IFile {
 		height: number;
 	};
 }
+
+export interface ITypingUser {
+	displayName: string;
+	slug: string;
+}

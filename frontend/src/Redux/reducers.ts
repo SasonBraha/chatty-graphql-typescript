@@ -1,12 +1,14 @@
 import {
-	SET_AUTH_MODAL,
 	RESET_MODALS,
-	SET_NAV_STATE,
+	SET_AUTH_MODAL,
+	SET_CHAT_SLUG,
 	SET_CURRENT_USER,
 	SET_GENERIC_MODAL,
-	SET_MESSAGE_CONTEXT_MENU
+	SET_NAV_STATE,
+	SET_TYPING_USERS
 } from './constants';
-import { IUser, IMessage } from '../types/interfaces';
+import { IUser } from '../types/interfaces';
+import { CrudEnum } from '../types/enums';
 
 interface IAction {
 	type: string;
@@ -22,6 +24,13 @@ export interface IReducerState {
 	};
 	isNavOpen: boolean;
 	currentUser: IUser | null;
+	chat: {
+		chatSlug: string;
+		typingUsers: Array<{
+			displayName: string;
+			slug: string;
+		}>;
+	};
 }
 
 const initialState: IReducerState = {
@@ -32,7 +41,11 @@ const initialState: IReducerState = {
 		text: null
 	},
 	isNavOpen: window.innerWidth > 992,
-	currentUser: null
+	currentUser: null,
+	chat: {
+		typingUsers: [],
+		chatSlug: ''
+	}
 };
 
 export default (state = initialState, action: IAction): IReducerState => {
@@ -73,6 +86,29 @@ export default (state = initialState, action: IAction): IReducerState => {
 					type: action.payload.type,
 					show: true,
 					text: action.payload.text
+				}
+			};
+
+		case SET_CHAT_SLUG:
+			return {
+				...state,
+				chat: {
+					...state.chat,
+					chatSlug: action.payload
+				}
+			};
+
+		case SET_TYPING_USERS:
+			return {
+				...state,
+				chat: {
+					...state.chat,
+					typingUsers:
+						action.payload.crudType === CrudEnum.UPDATE
+							? [...state.chat.typingUsers, action.payload.user]
+							: state.chat.typingUsers.filter(
+									({ slug }) => slug !== action.payload.user.slug
+							  )
 				}
 			};
 

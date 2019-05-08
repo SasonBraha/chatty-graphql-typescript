@@ -1,11 +1,13 @@
 import React from 'react';
 import { Query } from 'react-apollo';
 import gql from 'graphql-tag';
-import { IChat } from '../../../types/interfaces';
+import { IChat, ITypingUser } from '../../../types/interfaces';
 import RoomsListItem from './RoomsListItem';
 import styled from 'styled-components/macro';
 import { IChatProps } from '../Chat';
 import RoomsListLoader from './RoomsListLoader';
+import { IReducerState } from '../../../redux/reducers';
+import { connect } from 'react-redux';
 
 const ROOMS_LIST_QUERY = gql`
 	query {
@@ -22,7 +24,12 @@ const ROOMS_LIST_QUERY = gql`
 	}
 `;
 
-const RoomsList = (props: IChatProps) => (
+interface IProps {
+	chatSlug: string;
+	typingUsers: ITypingUser[];
+}
+
+const RoomsList = (props: IProps) => (
 	<Query query={ROOMS_LIST_QUERY}>
 		{({ loading, data }) => {
 			return (
@@ -33,9 +40,11 @@ const RoomsList = (props: IChatProps) => (
 						  ))
 						: data.roomsList.map((room: IChat) => (
 								<RoomsListItem
-									selected={room.slug === props.match.params.chatSlug}
+									selected={room.slug === props.chatSlug}
 									room={room}
 									key={room.slug}
+									chatSlug={props.chatSlug}
+									typingUsers={props.typingUsers}
 								/>
 						  ))}
 				</ScRoomsList>
@@ -54,4 +63,13 @@ const ScRoomsList = styled.div`
 	}
 `;
 
-export default RoomsList;
+const mapStateToProps = ({
+	chat: { typingUsers, chatSlug }
+}: IReducerState) => ({
+	typingUsers,
+	chatSlug
+});
+export default connect(
+	mapStateToProps,
+	null
+)(RoomsList);

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import RoomsList from './RoomsList';
 import styled from 'styled-components/macro';
 import { RouteComponentProps } from 'react-router';
@@ -6,15 +6,21 @@ import ActiveUsers from './ActiveUsers/ActiveUsers';
 import MessagesList from './MessagesList';
 import SendMessage from './SendMessage';
 import UploadPreview from './UploadPreview';
-import UserTyping from './UserTyping';
+import { connect } from 'react-redux';
+import { setChatSlug } from '../../redux/actions';
 
 interface IMatchParams {
 	chatSlug: string;
 }
-export interface IChatProps extends RouteComponentProps<IMatchParams> {}
+export interface IChatProps extends RouteComponentProps<IMatchParams> {
+	setChatSlug: typeof setChatSlug;
+}
 
 const Chat = (props: IChatProps) => {
 	const [filePreview, setFilePreview] = useState(null);
+	useEffect(() => {
+		props.setChatSlug(props.match.params.chatSlug);
+	}, [props.match.params.chatSlug]);
 
 	return (
 		<ScChat>
@@ -25,7 +31,6 @@ const Chat = (props: IChatProps) => {
 				<UploadPreview file={filePreview} />
 				<MessagesList {...props} />
 				<SendMessage {...props} setFilePreview={setFilePreview} />
-				<UserTyping {...props} />
 			</ScMessagesArea>
 		</ScChat>
 	);
@@ -45,4 +50,7 @@ const ScMessagesArea = styled.div`
 	overflow: hidden;
 `;
 
-export default Chat;
+export default connect(
+	null,
+	{ setChatSlug }
+)(Chat);

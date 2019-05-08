@@ -1,21 +1,27 @@
 import React from 'react';
 import styled, { css } from 'styled-components/macro';
 import { Link } from 'react-router-dom';
-import { IChat } from '../../../types/interfaces';
+import { IChat, ITypingUser } from '../../../types/interfaces';
 import Ripple from 'react-ink';
+import TypingUsers from '../TypingUsers';
 
 interface IProps {
 	room: IChat;
 	selected: boolean;
+	chatSlug: string;
+	typingUsers: ITypingUser[];
 }
 
-const RoomsListItem = ({ room, selected }: IProps) => (
+const RoomsListItem = ({ room, selected, chatSlug, typingUsers }: IProps) => (
 	<ScRoomsListItem selected={selected} to={`/chat/${room.slug}`}>
 		<ScImage src={room.image.path} alt={room.name} />
 
 		<ScRoomData>
 			<ScRoomName>{room.name}</ScRoomName>
-			<ScLastMessage>{room.lastMessage}</ScLastMessage>
+			<ScLastMessage typingUsers={typingUsers}>
+				{room.lastMessage}
+			</ScLastMessage>
+			<ScTypingUsers chatSlug={chatSlug} />
 		</ScRoomData>
 
 		<Ripple />
@@ -25,7 +31,7 @@ const RoomsListItem = ({ room, selected }: IProps) => (
 const ScRoomsListItem = styled(Link)<{ selected: boolean }>`
 	display: flex;
 	align-items: center;
-	padding: 10px;
+	padding: 1rem;
 	position: relative;
 	transition: 0.3s;
 
@@ -44,7 +50,7 @@ const ScImage = styled.img`
 `;
 
 const ScRoomData = styled.div`
-	margin-right: 10px;
+	margin-right: 1rem;
 	transform: translateY(-0.35rem);
 	max-width: 80%;
 `;
@@ -53,12 +59,26 @@ const ScRoomName = styled.div`
 	color: white;
 `;
 
-const ScLastMessage = styled.div`
+const ScLastMessage = styled('div')<{ typingUsers: ITypingUser[] }>`
 	font-size: 1.4rem;
 	overflow: hidden;
 	text-overflow: ellipsis;
 	white-space: nowrap;
 	color: ${props => props.theme.gray20};
+
+	${({ typingUsers }) =>
+		typingUsers.length &&
+		css`
+			display: none;
+		`}
+`;
+
+const ScTypingUsers = styled(TypingUsers)`
+	color: ${props => props.theme.gray20};
+	font-size: 1.4rem;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
 `;
 
 export default RoomsListItem;

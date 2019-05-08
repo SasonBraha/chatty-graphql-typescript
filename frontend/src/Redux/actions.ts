@@ -1,9 +1,11 @@
 import {
 	RESET_MODALS,
 	SET_AUTH_MODAL,
+	SET_CHAT_SLUG,
 	SET_CURRENT_USER,
 	SET_GENERIC_MODAL,
-	SET_NAV_STATE
+	SET_NAV_STATE,
+	SET_TYPING_USERS
 } from './constants';
 import { IUser } from '../types/interfaces';
 
@@ -24,6 +26,22 @@ export const setCurrentUser = (user: IUser) => ({
 export const setGenericModal = (type: 'success' | 'error', text: string) => ({
 	type: SET_GENERIC_MODAL,
 	payload: { type, text }
+});
+
+export const setChatSlug = (value: string) => ({
+	type: SET_CHAT_SLUG,
+	payload: value
+});
+
+export const setTypingUsers = (
+	user: { displayName: string; slug: string },
+	crudType: string
+) => ({
+	type: SET_TYPING_USERS,
+	payload: {
+		user,
+		crudType
+	}
 });
 
 export const resetModals = () => ({ type: RESET_MODALS });
