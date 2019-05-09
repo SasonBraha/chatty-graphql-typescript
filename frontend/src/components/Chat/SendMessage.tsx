@@ -62,7 +62,7 @@ const updateTypingUsers = (
 				}
 			});
 			setIsTyping(false);
-		}, 400);
+		}, 450);
 	} else {
 		setIsTyping(true);
 		props.client.mutate({

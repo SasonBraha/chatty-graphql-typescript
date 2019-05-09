@@ -67,7 +67,7 @@ type Subscription {
     messagesUpdates(chatSlug: String!): String!
     newMessage(chatSlug: String!): MessageEntity
     subscribeToActiveUsersUpdates(chatSlug: String!): [UserEntity!]
-    subscribeToTypingUsersUpdates(chatSlug: String!): UserTypingOutput!
+    subscribeToTypingUsersUpdates: UserTypingOutput
 }
 
 type UserEntity {

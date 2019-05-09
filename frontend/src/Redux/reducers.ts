@@ -7,8 +7,9 @@ import {
 	SET_NAV_STATE,
 	SET_TYPING_USERS
 } from './constants';
-import { IUser } from '../types/interfaces';
+import { ITypingUser, IUser } from '../types/interfaces';
 import { CrudEnum } from '../types/enums';
+import produce from 'immer';
 
 interface IAction {
 	type: string;
@@ -26,10 +27,9 @@ export interface IReducerState {
 	currentUser: IUser | null;
 	chat: {
 		chatSlug: string;
-		typingUsers: Array<{
-			displayName: string;
-			slug: string;
-		}>;
+		typingUsers: {
+			[key: string]: ITypingUser[];
+		};
 	};
 }
 
@@ -43,76 +43,62 @@ const initialState: IReducerState = {
 	isNavOpen: window.innerWidth > 992,
 	currentUser: null,
 	chat: {
-		typingUsers: [],
+		typingUsers: {},
 		chatSlug: ''
 	}
 };
 
-export default (state = initialState, action: IAction): IReducerState => {
-	switch (action.type) {
-		case RESET_MODALS:
-			return {
-				...state,
-				showAuthModal: false,
-				genericModal: {
+export default (state = initialState, action: IAction): IReducerState =>
+	produce(state, (draft: IReducerState) => {
+		switch (action.type) {
+			case RESET_MODALS:
+				draft.genericModal = {
 					show: false,
 					text: state.genericModal.text,
 					type: state.genericModal.type
-				}
-			};
+				};
+				break;
 
-		case SET_AUTH_MODAL:
-			return {
-				...state,
-				showAuthModal: action.payload
-			};
+			case SET_AUTH_MODAL:
+				draft.showAuthModal = action.payload;
+				break;
 
-		case SET_NAV_STATE:
-			return {
-				...state,
-				isNavOpen: !state.isNavOpen
-			};
+			case SET_NAV_STATE:
+				draft.isNavOpen = !state.isNavOpen;
+				break;
 
-		case SET_CURRENT_USER:
-			return {
-				...state,
-				currentUser: action.payload
-			};
+			case SET_CURRENT_USER:
+				draft.currentUser = action.payload;
+				break;
 
-		case SET_GENERIC_MODAL:
-			return {
-				...state,
-				genericModal: {
+			case SET_GENERIC_MODAL:
+				draft.genericModal = {
 					type: action.payload.type,
 					show: true,
 					text: action.payload.text
-				}
-			};
+				};
+				break;
 
-		case SET_CHAT_SLUG:
-			return {
-				...state,
-				chat: {
-					...state.chat,
-					chatSlug: action.payload
-				}
-			};
+			case SET_CHAT_SLUG:
+				draft.chat.chatSlug = action.payload;
+				break;
 
-		case SET_TYPING_USERS:
-			return {
-				...state,
-				chat: {
-					...state.chat,
-					typingUsers:
-						action.payload.crudType === CrudEnum.UPDATE
-							? [...state.chat.typingUsers, action.payload.user]
-							: state.chat.typingUsers.filter(
-									({ slug }) => slug !== action.payload.user.slug
-							  )
-				}
-			};
+			case SET_TYPING_USERS:
+				const chatSlug = action.payload.chatSlug;
 
-		default:
-			return state;
-	}
-};
+				if (!draft.chat.typingUsers[chatSlug]) {
+					draft.chat.typingUsers[chatSlug] = [];
+				}
+
+				draft.chat.typingUsers[chatSlug] =
+					action.payload.crudType === CrudEnum.UPDATE
+						? [...draft.chat.typingUsers[chatSlug], action.payload.user]
+						: draft.chat.typingUsers[chatSlug].filter(
+								({ slug }) => slug !== action.payload.user.slug
+						  );
+				break;
+
+			default:
+				return state;
+		}
+	});

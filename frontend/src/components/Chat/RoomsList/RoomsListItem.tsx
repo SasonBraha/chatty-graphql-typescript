@@ -1,7 +1,7 @@
 import React from 'react';
 import styled, { css } from 'styled-components/macro';
 import { Link } from 'react-router-dom';
-import { IChat, ITypingUser } from '../../../types/interfaces';
+import { IChat, ITypingUser, ITypingUsers } from '../../../types/interfaces';
 import Ripple from 'react-ink';
 import TypingUsers from '../TypingUsers';
 
@@ -18,7 +18,7 @@ const RoomsListItem = ({ room, selected, chatSlug, typingUsers }: IProps) => (
 
 		<ScRoomData>
 			<ScRoomName>{room.name}</ScRoomName>
-			<ScLastMessage typingUsers={typingUsers}>
+			<ScLastMessage shouldHide={!!typingUsers.length}>
 				{room.lastMessage}
 			</ScLastMessage>
 			<ScTypingUsers chatSlug={chatSlug} />
@@ -59,15 +59,15 @@ const ScRoomName = styled.div`
 	color: white;
 `;
 
-const ScLastMessage = styled('div')<{ typingUsers: ITypingUser[] }>`
+const ScLastMessage = styled('div')<{ shouldHide: boolean }>`
 	font-size: 1.4rem;
 	overflow: hidden;
 	text-overflow: ellipsis;
 	white-space: nowrap;
 	color: ${props => props.theme.gray20};
 
-	${({ typingUsers }) =>
-		typingUsers.length &&
+	${({ shouldHide }) =>
+		shouldHide &&
 		css`
 			display: none;
 		`}

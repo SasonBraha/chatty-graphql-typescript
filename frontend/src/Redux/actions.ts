@@ -35,12 +35,14 @@ export const setChatSlug = (value: string) => ({
 
 export const setTypingUsers = (
 	user: { displayName: string; slug: string },
-	crudType: string
+	crudType: string,
+	chatSlug: string
 ) => ({
 	type: SET_TYPING_USERS,
 	payload: {
 		user,
-		crudType
+		crudType,
+		chatSlug
 	}
 });
 

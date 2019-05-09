@@ -343,7 +343,6 @@ export default class ChatResolver {
 		@Ctx('user') user: IUser,
 		@PubSub() pubSub: PubSubEngine
 	) {
-		console.log('called', crudType);
 		pubSub.publish(SubscriptionTypesEnum.UPDATE_TYPING_USERS, {
 			chatSlug,
 			crudType,
@@ -413,15 +412,15 @@ export default class ChatResolver {
 		return JSON.stringify(subscriptionPayload);
 	}
 
+	//prettier-ignore
 	@UseMiddleware(Authenticated)
 	@Subscription(returns => UserTypingOutput, {
 		topics: SubscriptionTypesEnum.UPDATE_TYPING_USERS,
 		defaultValue: null,
-		filter: ({ payload, args }) => payload.chatSlug === args.chatSlug
+		filter: ({ payload, context }) => payload.user.slug !== context.user.slug
 	})
 	subscribeToTypingUsersUpdates(
 		@Root() payloadData: { chatSlug: string; user: IUser; crudType: string },
-		@Arg('chatSlug') chatSlug: string
 	) {
 		return payloadData;
 	}

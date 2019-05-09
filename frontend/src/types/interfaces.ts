@@ -46,3 +46,7 @@ export interface ITypingUser {
 	displayName: string;
 	slug: string;
 }
+
+export interface ITypingUsers {
+	[key: string]: ITypingUser[];
+}

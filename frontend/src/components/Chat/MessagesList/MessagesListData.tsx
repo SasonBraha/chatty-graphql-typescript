@@ -123,7 +123,8 @@ const MessagesListData = (props: IProps) => {
 										return {
 											chat: {
 												...prev.chat,
-												messages: [...prev.chat.messages, updatedData.message]
+												messages: [...prev.chat.messages, updatedData.message],
+												lastMessage: updatedData.message.text
 											}
 										};
 

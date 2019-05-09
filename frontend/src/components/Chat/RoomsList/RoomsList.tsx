@@ -4,7 +4,6 @@ import gql from 'graphql-tag';
 import { IChat, ITypingUser } from '../../../types/interfaces';
 import RoomsListItem from './RoomsListItem';
 import styled from 'styled-components/macro';
-import { IChatProps } from '../Chat';
 import RoomsListLoader from './RoomsListLoader';
 import { IReducerState } from '../../../redux/reducers';
 import { connect } from 'react-redux';
@@ -26,7 +25,9 @@ const ROOMS_LIST_QUERY = gql`
 
 interface IProps {
 	chatSlug: string;
-	typingUsers: ITypingUser[];
+	typingUsers: {
+		[key: string]: ITypingUser[];
+	};
 }
 
 const RoomsList = (props: IProps) => (
@@ -43,8 +44,12 @@ const RoomsList = (props: IProps) => (
 									selected={room.slug === props.chatSlug}
 									room={room}
 									key={room.slug}
-									chatSlug={props.chatSlug}
-									typingUsers={props.typingUsers}
+									chatSlug={room.slug}
+									typingUsers={
+										props.typingUsers[room.slug]
+											? props.typingUsers[room.slug]
+											: []
+									}
 								/>
 						  ))}
 				</ScRoomsList>
