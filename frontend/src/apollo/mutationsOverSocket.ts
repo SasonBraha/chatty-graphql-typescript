@@ -1,1 +1,6 @@
-export default ['postMessage', 'updateActiveUsers', 'updateTypingUsers', 'updateMessage'];
+export default [
+	'postMessage',
+	'updateActiveUsers',
+	'updateTypingUsers',
+	'updateMessage'
+];

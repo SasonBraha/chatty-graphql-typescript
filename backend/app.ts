@@ -60,7 +60,10 @@ const main = async () => {
 	const apolloServer = new ApolloServer({
 		schema,
 		subscriptions: {
-			path: '/subscriptions'
+			path: '/subscriptions',
+			onDisconnect: async (_ws, context) => {
+				const ctx = await context.initPromise;
+			}
 		},
 		//@ts-ignore
 		context: async ({ req, res, connection }) => {

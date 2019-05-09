@@ -1,15 +1,15 @@
-import React, { Component } from 'react';
+import React, { Component, useEffect } from 'react';
 import styled from 'styled-components';
 import gql from 'graphql-tag';
-import { IChatProps } from '../Chat';
+import { IChatProps } from './Chat';
 import Subscription from 'react-apollo/Subscriptions';
-import { IUser } from '../../../types/interfaces';
+import { IUser } from '../../types/interfaces';
 import { Link } from 'react-router-dom';
 import { withApollo } from 'react-apollo';
 import ApolloClient from 'apollo-client';
 import { connect } from 'react-redux';
-import { IReducerState } from '../../../redux/reducers';
-import { CrudEnum } from '../../../types/enums';
+import { IReducerState } from '../../redux/reducers';
+import { CrudEnum } from '../../types/enums';
 
 const ACTIVE_USERS_SUBSCRIPTION = gql`
 	subscription($chatSlug: String!) {
@@ -34,16 +34,6 @@ interface IProps extends IChatProps {
 
 @connect(({ currentUser }: IReducerState) => ({ currentUser }))
 class ActiveUsers extends Component<IProps> {
-	constructor(props: IProps) {
-		super(props);
-		this.init();
-	}
-
-	private init = () => {
-		// @ts-ignore
-		window.addEventListener('beforeunload', this.removeActiveUser);
-	};
-
 	componentDidMount() {
 		this.addActiveUser();
 	}
@@ -56,8 +46,6 @@ class ActiveUsers extends Component<IProps> {
 	}
 
 	componentWillUnmount() {
-		//@ts-ignore
-		window.removeEventListener('beforeunload', this.removeActiveUser);
 		this.removeActiveUser();
 	}
 

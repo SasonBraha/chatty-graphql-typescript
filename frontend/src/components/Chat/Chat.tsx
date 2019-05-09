@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import RoomsList from './RoomsList';
 import styled from 'styled-components/macro';
 import { RouteComponentProps } from 'react-router';
-import ActiveUsers from './ActiveUsers/ActiveUsers';
+import ActiveUsers from './ActiveUsers';
 import MessagesList from './MessagesList';
 import SendMessage from './SendMessage';
 import UploadPreview from './UploadPreview';

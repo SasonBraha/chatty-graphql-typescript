@@ -24,6 +24,7 @@
 		"google-translate": "^2.2.0",
 		"graphql": "^14.2.1",
 		"graphql-redis-subscriptions": "^2.1.0",
+		"graphql-request": "^1.8.2",
 		"helmet": "^3.16.0",
 		"ioredis": "^4.9.0",
 		"joi": "^14.3.1",

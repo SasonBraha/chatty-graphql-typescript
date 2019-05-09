@@ -9,6 +9,7 @@ import {
 	validateRegistrationInput
 } from '../../utils/validation';
 import { ErrorTypesEnum } from '../../utils/errors';
+import { SuccessfulLoginOutput } from './user.resolver.outputs';
 
 @Resolver(UserEntity)
 export default class UserResolver {

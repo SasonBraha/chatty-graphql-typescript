@@ -1,12 +1,15 @@
 import {
-	SET_AUTH_MODAL,
 	RESET_MODALS,
-	SET_NAV_STATE,
+	SET_AUTH_MODAL,
+	SET_CHAT_SLUG,
 	SET_CURRENT_USER,
 	SET_GENERIC_MODAL,
-	SET_MESSAGE_CONTEXT_MENU
+	SET_NAV_STATE,
+	SET_TYPING_USERS
 } from './constants';
-import { IUser, IMessage } from '../types/interfaces';
+import { ITypingUser, IUser } from '../types/interfaces';
+import { CrudEnum } from '../types/enums';
+import produce from 'immer';
 
 interface IAction {
 	type: string;
@@ -22,6 +25,12 @@ export interface IReducerState {
 	};
 	isNavOpen: boolean;
 	currentUser: IUser | null;
+	chat: {
+		chatSlug: string;
+		typingUsers: {
+			[key: string]: ITypingUser[];
+		};
+	};
 }
 
 const initialState: IReducerState = {
@@ -32,51 +41,64 @@ const initialState: IReducerState = {
 		text: null
 	},
 	isNavOpen: window.innerWidth > 992,
-	currentUser: null
+	currentUser: null,
+	chat: {
+		typingUsers: {},
+		chatSlug: ''
+	}
 };
 
-export default (state = initialState, action: IAction): IReducerState => {
-	switch (action.type) {
-		case RESET_MODALS:
-			return {
-				...state,
-				showAuthModal: false,
-				genericModal: {
+export default (state = initialState, action: IAction): IReducerState =>
+	produce(state, (draft: IReducerState) => {
+		switch (action.type) {
+			case RESET_MODALS:
+				draft.genericModal = {
 					show: false,
 					text: state.genericModal.text,
 					type: state.genericModal.type
-				}
-			};
+				};
+				break;
 
-		case SET_AUTH_MODAL:
-			return {
-				...state,
-				showAuthModal: action.payload
-			};
+			case SET_AUTH_MODAL:
+				draft.showAuthModal = action.payload;
+				break;
 
-		case SET_NAV_STATE:
-			return {
-				...state,
-				isNavOpen: !state.isNavOpen
-			};
+			case SET_NAV_STATE:
+				draft.isNavOpen = !state.isNavOpen;
+				break;
 
-		case SET_CURRENT_USER:
-			return {
-				...state,
-				currentUser: action.payload
-			};
+			case SET_CURRENT_USER:
+				draft.currentUser = action.payload;
+				break;
 
-		case SET_GENERIC_MODAL:
-			return {
-				...state,
-				genericModal: {
+			case SET_GENERIC_MODAL:
+				draft.genericModal = {
 					type: action.payload.type,
 					show: true,
 					text: action.payload.text
-				}
-			};
+				};
+				break;
 
-		default:
-			return state;
-	}
-};
+			case SET_CHAT_SLUG:
+				draft.chat.chatSlug = action.payload;
+				break;
+
+			case SET_TYPING_USERS:
+				const chatSlug = action.payload.chatSlug;
+
+				if (!draft.chat.typingUsers[chatSlug]) {
+					draft.chat.typingUsers[chatSlug] = [];
+				}
+
+				draft.chat.typingUsers[chatSlug] =
+					action.payload.crudType === CrudEnum.UPDATE
+						? [...draft.chat.typingUsers[chatSlug], action.payload.user]
+						: draft.chat.typingUsers[chatSlug].filter(
+								({ slug }) => slug !== action.payload.user.slug
+						  );
+				break;
+
+			default:
+				return state;
+		}
+	});
