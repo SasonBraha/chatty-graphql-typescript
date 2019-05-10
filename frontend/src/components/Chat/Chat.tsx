@@ -10,6 +10,7 @@ import { connect } from 'react-redux';
 import { setChatSlug, setTypingUsers } from '../../redux/actions';
 import Subscription from 'react-apollo/Subscriptions';
 import gql from 'graphql-tag';
+import { withAuth } from '../Shared/Hoc';
 
 const TYPING_USERS_SUBSCRIPTION = gql`
 	subscription {
@@ -41,8 +42,8 @@ const Chat = (props: IChatProps) => {
 	return (
 		<>
 			<ScChat>
-				<RoomsList {...props} />
-				<ActiveUsers {...props} />
+				<RoomsList />
+				<ActiveUsers />
 
 				<ScMessagesArea>
 					<UploadPreview file={filePreview} />
@@ -82,4 +83,4 @@ const ScMessagesArea = styled.div`
 export default connect(
 	null,
 	{ setChatSlug, setTypingUsers }
-)(Chat);
+)(withAuth(Chat));

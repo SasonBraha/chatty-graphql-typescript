@@ -1,7 +1,6 @@
-import React, { Component, useEffect } from 'react';
+import React, { Component } from 'react';
 import styled from 'styled-components';
 import gql from 'graphql-tag';
-import { IChatProps } from './Chat';
 import Subscription from 'react-apollo/Subscriptions';
 import { IUser } from '../../types/interfaces';
 import { Link } from 'react-router-dom';
@@ -27,26 +26,32 @@ const UPDATE_ACTIVE_USERS = gql`
 	}
 `;
 
-interface IProps extends IChatProps {
+interface IProps {
 	client?: ApolloClient<any>;
 	currentUser: IUser | null;
+	chatSlug: string;
 }
 
-@connect(({ currentUser }: IReducerState) => ({ currentUser }))
+@connect(({ currentUser, chat: { chatSlug } }: IReducerState) => ({
+	currentUser,
+	chatSlug
+}))
 class ActiveUsers extends Component<IProps> {
 	componentDidMount() {
-		this.updateActiveUsers(CrudEnum.UPDATE, this.props.match.params.chatSlug);
+		this.updateActiveUsers(CrudEnum.UPDATE, this.props.chatSlug);
 	}
 
-	componentDidUpdate(prevProps: Readonly<IProps>) {
-		if (prevProps.match.params.chatSlug !== this.props.match.params.chatSlug) {
-			this.updateActiveUsers(CrudEnum.DELETE, prevProps.match.params.chatSlug);
-			this.updateActiveUsers(CrudEnum.UPDATE, this.props.match.params.chatSlug);
+	componentDidUpdate(prevProps: IProps) {
+		const { chatSlug: oldSlug } = prevProps;
+		const { chatSlug: newSlug } = this.props;
+		if (oldSlug !== newSlug) {
+			this.updateActiveUsers(CrudEnum.DELETE, oldSlug);
+			this.updateActiveUsers(CrudEnum.UPDATE, newSlug);
 		}
 	}
 
 	componentWillUnmount() {
-		this.updateActiveUsers(CrudEnum.DELETE, this.props.match.params.chatSlug);
+		this.updateActiveUsers(CrudEnum.DELETE, this.props.chatSlug);
 	}
 
 	private updateActiveUsers = (crudType: string, chatSlug: string) => {
@@ -64,7 +69,7 @@ class ActiveUsers extends Component<IProps> {
 			<ScActiveUsers>
 				<Subscription
 					subscription={ACTIVE_USERS_SUBSCRIPTION}
-					variables={{ chatSlug: this.props.match.params.chatSlug }}
+					variables={{ chatSlug: this.props.chatSlug }}
 				>
 					{({ data = { subscribeToActiveUsersUpdates: [] }, loading }) => {
 						return data.subscribeToActiveUsersUpdates.map(

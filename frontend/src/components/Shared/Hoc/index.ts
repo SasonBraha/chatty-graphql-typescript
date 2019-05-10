@@ -1,1 +1,2 @@
-export {};
+import withAuth from './withAuth';
+export { withAuth };

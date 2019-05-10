@@ -19,11 +19,6 @@ export interface IMessageFileUploadedOutput {
 	updateType: string;
 }
 
-export interface IMessageUpdated {
-	messageId: string;
-	updatedText?: string;
-}
-
 @ObjectType()
 export class FileAddedOutput {
 	@Field()
