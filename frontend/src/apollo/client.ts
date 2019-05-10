@@ -22,7 +22,8 @@ const wsLink = () => {
 		options: {
 			reconnect: true,
 			connectionParams: {
-				authToken: authToken ? `Bearer ${authToken}` : null
+				authToken: authToken ? `Bearer ${authToken}` : null,
+				fromUrl: window.location.href
 			}
 		}
 	});

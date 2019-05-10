@@ -35,42 +35,28 @@ interface IProps extends IChatProps {
 @connect(({ currentUser }: IReducerState) => ({ currentUser }))
 class ActiveUsers extends Component<IProps> {
 	componentDidMount() {
-		this.addActiveUser();
+		this.updateActiveUsers(CrudEnum.UPDATE, this.props.match.params.chatSlug);
 	}
 
 	componentDidUpdate(prevProps: Readonly<IProps>) {
 		if (prevProps.match.params.chatSlug !== this.props.match.params.chatSlug) {
-			this.removeActiveUser(prevProps.match.params.chatSlug);
-			this.addActiveUser();
+			this.updateActiveUsers(CrudEnum.DELETE, prevProps.match.params.chatSlug);
+			this.updateActiveUsers(CrudEnum.UPDATE, this.props.match.params.chatSlug);
 		}
 	}
 
 	componentWillUnmount() {
-		this.removeActiveUser();
+		this.updateActiveUsers(CrudEnum.DELETE, this.props.match.params.chatSlug);
 	}
 
-	private addActiveUser = () => {
+	private updateActiveUsers = (crudType: string, chatSlug: string) => {
 		this.props.client!.mutate({
 			variables: {
-				chatSlug: this.props.match.params.chatSlug,
-				crudType: CrudEnum.UPDATE
+				chatSlug,
+				crudType
 			},
 			mutation: UPDATE_ACTIVE_USERS
 		});
-	};
-
-	private removeActiveUser = (chatSlug?: string) => {
-		this.props.client!.mutate({
-			variables: {
-				chatSlug:
-					typeof chatSlug === 'string'
-						? chatSlug
-						: this.props.match.params.chatSlug,
-				crudType: CrudEnum.DELETE
-			},
-			mutation: UPDATE_ACTIVE_USERS
-		});
-		return null;
 	};
 
 	render() {

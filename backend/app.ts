@@ -1,3 +1,5 @@
+import { handleSocketDisconnect } from './handlers';
+
 require('dotenv').config({ path: './.env' });
 import 'reflect-metadata';
 import * as http from 'http';
@@ -62,7 +64,7 @@ const main = async () => {
 		subscriptions: {
 			path: '/subscriptions',
 			onDisconnect: async (_ws, context) => {
-				const ctx = await context.initPromise;
+				handleSocketDisconnect(_ws, context);
 			}
 		},
 		//@ts-ignore
