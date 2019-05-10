@@ -10,7 +10,7 @@ const handleSocketDisconnect = async (
 	// Handle socket disconnect while user is active in chat
 	const ctx = await context.initPromise;
 	const chatRegex = new RegExp(
-		'https?:\\/\\/(?<baseDomain>[\\w\\d:?]+)\\/chat\\/(?<chatSlug>.+)'
+		'https?:\\/\\/(?<baseDomain>[\\w\\d:?.?]+)\\/chat\\/(?<chatSlug>[\\w-@\\d]+)'
 	);
 	const regexResult = chatRegex.exec(ctx.fromUrl);
 
