@@ -15,7 +15,7 @@ interface IValidationOutput {
 const validateRegistrationInput = async (
 	registrationData: RegisterInput
 ): Promise<IValidationOutput> => {
-	const captchaVildation = await rp({
+	const captchaValidation = await rp({
 		method: 'POST',
 		uri: 'https://www.google.com/recaptcha/api/siteverify',
 		qs: {
@@ -25,10 +25,10 @@ const validateRegistrationInput = async (
 		json: true
 	});
 
-	if (!captchaVildation.success) {
+	if (!captchaValidation.success) {
 		return {
 			isValid: false,
-			errors: [{ captcha: 'אימות האישיות נכשל' }]
+			errors: [{ captcha: 'אימות האנושיות נכשל' }]
 		};
 	}
 
