@@ -15,7 +15,6 @@ interface IValidationOutput {
 const validateRegistrationInput = async (
 	registrationData: RegisterInput
 ): Promise<IValidationOutput> => {
-	console.log(process.env.GOOGLE_OAUTH_CLIENT_SECRET);
 	const captchaVildation = await rp({
 		method: 'POST',
 		uri: 'https://www.google.com/recaptcha/api/siteverify',
