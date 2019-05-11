@@ -14,7 +14,7 @@ const handleSocketDisconnect = async (
 	);
 	const regexResult = chatRegex.exec(ctx.fromUrl);
 
-	if (regexResult) {
+	if (regexResult && ctx.authToken) {
 		const { chatSlug } = regexResult.groups;
 		if (chatSlug) {
 			const graphqlClient = new GraphQLClient(

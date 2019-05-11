@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import { IUser } from '../../../types/interfaces';
 import { IReducerState } from '../../../redux/reducers';
 import { setGenericModal } from '../../../redux/actions';
+import { Redirect } from 'react-router';
 
 interface IProps {
 	currentUser: IUser | null;
@@ -38,9 +39,10 @@ export default (WrappedComponent: any) => {
 		};
 
 		render() {
-			//prettier-ignore
-			return (
-				this.props.currentUser && <WrappedComponent {...this.props} />
+			return this.props.currentUser ? (
+				<WrappedComponent {...this.props} />
+			) : (
+				<Redirect to='/login' />
 			);
 		}
 	}

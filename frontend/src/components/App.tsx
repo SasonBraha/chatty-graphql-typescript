@@ -1,4 +1,4 @@
-import React, { Component, lazy, Suspense } from 'react';
+import React, { Component } from 'react';
 import styled from 'styled-components/macro';
 import Header from './Header';
 import AuthModal from './Auth/AuthModal';
@@ -8,16 +8,15 @@ import { setCurrentUser } from '../redux/actions';
 import { IUser } from '../types/interfaces';
 import Nav from './Nav';
 import Container from './Container';
-import { Switch, Route, withRouter } from 'react-router-dom';
+import { withRouter } from 'react-router-dom';
 import { GenericModal } from './Shared';
-const Chat = lazy(() => import('./Chat'));
+import Routes from './Routes';
 
 interface IProps {
 	setCurrentUser: typeof setCurrentUser;
 }
 
 class App extends Component<IProps> {
-	static whyDidYouRender = true;
 	constructor(props: IProps) {
 		super(props);
 		this.init();
@@ -41,20 +40,7 @@ class App extends Component<IProps> {
 					<ScContent>
 						<Nav />
 						<Container>
-							<Suspense fallback={<div>Loading...</div>}>
-								<Switch>
-									<Route
-										exact
-										path='/chat'
-										render={props => <Chat {...props} />}
-									/>
-									<Route
-										exact
-										path='/chat/:chatSlug'
-										render={props => <Chat {...props} />}
-									/>
-								</Switch>
-							</Suspense>
+							<Routes />
 						</Container>
 					</ScContent>
 				</StyledApp>

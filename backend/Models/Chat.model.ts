@@ -13,7 +13,6 @@ export interface IChat extends Document {
 	storeMessages: boolean;
 	moderators: Array<ObjectID> | Array<IUser>;
 	allowedUsers: Array<ObjectID> | Array<IUser>;
-	messages: Array<ObjectID> | Array<IMessage>;
 	admin: ObjectID | IUser;
 	lastMessage: string;
 }
@@ -48,10 +47,6 @@ const ChatSchema = new Schema(
 		allowedUsers: {
 			type: [Schema.Types.ObjectId],
 			ref: 'User'
-		},
-		messages: {
-			type: [Schema.Types.ObjectId],
-			ref: 'Message'
 		},
 		admin: {
 			type: Schema.Types.ObjectId,

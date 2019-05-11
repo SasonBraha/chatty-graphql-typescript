@@ -7,6 +7,8 @@ export class RegisterInput {
 	@Field() email: string;
 
 	@Field() password: string;
+
+	@Field() captcha: string;
 }
 
 @InputType()

@@ -98,6 +98,7 @@ input LoginInput {
 }
 
 input RegisterInput {
+    captcha: String!
     displayName: String!
     email: String!
     password: String!

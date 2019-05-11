@@ -9,19 +9,19 @@ import {
 	validateRegistrationInput
 } from '../../utils/validation';
 import { ErrorTypesEnum } from '../../utils/errors';
-import { SuccessfulLoginOutput } from './user.resolver.outputs';
 
 @Resolver(UserEntity)
 export default class UserResolver {
 	@Mutation(returns => Boolean)
 	async register(
-		@Arg('data') { displayName, email, password }: RegisterInput,
+		@Arg('data') { displayName, email, password, captcha }: RegisterInput,
 		@Ctx('req') req: Request
 	): Promise<boolean> {
-		const { isValid, errors } = validateRegistrationInput({
+		const { isValid, errors } = await validateRegistrationInput({
 			displayName,
 			email,
-			password
+			password,
+			captcha
 		});
 
 		if (!isValid) {

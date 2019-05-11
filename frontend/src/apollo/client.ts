@@ -8,7 +8,7 @@ import { getOperationName } from './utils';
 import mutationsOverSocket from './mutationsOverSocket';
 import { createUploadLink } from 'apollo-upload-client';
 
-interface IDefinintion {
+interface IDefinition {
 	kind: string;
 	operation?: string;
 	selectionSet: any;
@@ -46,7 +46,7 @@ const authLink = setContext((_, { headers }) => {
 
 const link = split(
 	({ query }) => {
-		const { kind, operation, selectionSet }: IDefinintion = getMainDefinition(
+		const { kind, operation, selectionSet }: IDefinition = getMainDefinition(
 			query
 		);
 		return (

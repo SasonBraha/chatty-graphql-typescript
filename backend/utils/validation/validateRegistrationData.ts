@@ -1,5 +1,7 @@
 import * as Joi from 'joi';
 import { RegisterInput } from '../../resolvers/User/user.resolver.inputs';
+import * as rp from 'request-promise';
+import { googleOAuthClient } from '../../config';
 
 interface IErrors {
 	[key: string]: string;
@@ -10,9 +12,27 @@ interface IValidationOutput {
 	errors: IErrors[] | null;
 }
 
-const validateRegistrationInput = (
+const validateRegistrationInput = async (
 	registrationData: RegisterInput
-): IValidationOutput => {
+): Promise<IValidationOutput> => {
+	console.log(process.env.GOOGLE_OAUTH_CLIENT_SECRET);
+	const captchaVildation = await rp({
+		method: 'POST',
+		uri: 'https://www.google.com/recaptcha/api/siteverify',
+		qs: {
+			secret: process.env.GOOGLE_RECAPTCHA_SECRET_KEY,
+			response: registrationData.captcha
+		},
+		json: true
+	});
+
+	if (!captchaVildation.success) {
+		return {
+			isValid: false,
+			errors: [{ captcha: 'אימות האישיות נכשל' }]
+		};
+	}
+
 	const joiSchema = Joi.object().keys({
 		displayName: Joi.string()
 			.min(3)
@@ -25,7 +45,8 @@ const validateRegistrationInput = (
 			.error(() => 'כתובת דואר האלקטרוני שהוזנה אינה תקנית'),
 		password: Joi.string()
 			.min(6)
-			.error(() => 'הסיסמה חייבת להכיל לכל הפחות 6 תווים')
+			.error(() => 'הסיסמה חייבת להכיל לכל הפחות 6 תווים'),
+		captcha: Joi.string()
 	});
 
 	const validationResult = Joi.validate(registrationData, joiSchema, {
