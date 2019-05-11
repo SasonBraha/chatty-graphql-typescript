@@ -1,7 +1,7 @@
 import * as winston from 'winston';
 import * as fs from 'fs';
 
-const logDir = process.env.NODE_ENV === 'development' ? '../logs' : 'logs';
+const logDir = process.env.NODE_ENV === 'development' ? './logs' : 'logs';
 
 if (!fs.existsSync(logDir)) {
 	fs.mkdirSync(logDir);
@@ -20,6 +20,7 @@ const logger = winston.createLogger({
 		}),
 		new (require('winston-daily-rotate-file'))({
 			filename: `${logDir}/info.log`,
+			level: 'info',
 			format: winston.format.combine(
 				winston.format.timestamp(),
 				winston.format.json()

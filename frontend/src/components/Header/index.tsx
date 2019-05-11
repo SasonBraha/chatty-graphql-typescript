@@ -1,13 +1,12 @@
 import React, { useState } from 'react';
 import styled from 'styled-components/macro';
 import { Link } from 'react-router-dom';
-import { Burger, Dropdown, Button, ListItem } from '../Shared';
+import { Burger, Button, Dropdown, ListItem } from '../Shared';
 import { connect } from 'react-redux';
 import { setAuthModal, setNavState } from '../../redux/actions';
 import Ripple from 'react-ink';
 import { IUser } from '../../types/interfaces';
 import { IReducerState } from '../../redux/reducers';
-import Icon from '../Shared/Icon';
 
 interface IProps {
 	setAuthModal: typeof setAuthModal;
@@ -49,7 +48,6 @@ const Header: React.FC<IProps> = props => {
 
 			{currentUser ? (
 				<ScHeaderMenu>
-					{/*<Icon icon='icon-notifications' />*/}
 					<ScProfileDropdown onClick={() => setHeaderDropdown(true)}>
 						<ScProfileImg src={currentUser.avatar} />
 						<Dropdown

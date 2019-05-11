@@ -1,7 +1,7 @@
 import React from 'react';
 import styled, { css } from 'styled-components/macro';
 import { Link } from 'react-router-dom';
-import { IChat, ITypingUser, ITypingUsers } from '../../../types/interfaces';
+import { IChat, ITypingUser } from '../../../types/interfaces';
 import Ripple from 'react-ink';
 import TypingUsers from '../TypingUsers';
 
@@ -34,6 +34,11 @@ const ScRoomsListItem = styled(Link)<{ selected: boolean }>`
 	padding: 1rem;
 	position: relative;
 	transition: 0.3s;
+	border-right: 0rem solid transparent;
+
+	&:hover {
+		background: ${props => props.theme.activeUsersBackground};
+	}
 
 	${({ selected }) =>
 		selected &&

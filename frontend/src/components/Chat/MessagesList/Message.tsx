@@ -216,10 +216,6 @@ const ScImage = styled.img`
 
 const ScText = styled.p`
 	padding: 0.5rem 0;
-
-	&[contenteditable='true'] {
-		background: red;
-	}
 `;
 
 const ScEditable = styled(({ isMine, ...rest }) => <Editable {...rest} />)<{

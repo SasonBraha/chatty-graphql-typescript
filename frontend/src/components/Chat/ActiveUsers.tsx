@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import gql from 'graphql-tag';
 import Subscription from 'react-apollo/Subscriptions';
@@ -27,69 +27,59 @@ const UPDATE_ACTIVE_USERS = gql`
 `;
 
 interface IProps {
-	client?: ApolloClient<any>;
+	client: ApolloClient<any>;
 	currentUser: IUser | null;
 	chatSlug: string;
 }
 
-@connect(({ currentUser, chat: { chatSlug } }: IReducerState) => ({
-	currentUser,
-	chatSlug
-}))
-class ActiveUsers extends Component<IProps> {
-	componentDidMount() {
-		this.updateActiveUsers(CrudEnum.UPDATE, this.props.chatSlug);
-	}
+const updateActiveUsers = (
+	crudType: string,
+	chatSlug: string,
+	props: IProps
+) => {
+	props.client!.mutate({
+		variables: {
+			chatSlug,
+			crudType
+		},
+		mutation: UPDATE_ACTIVE_USERS
+	});
+};
 
-	componentDidUpdate(prevProps: IProps) {
-		const { chatSlug: oldSlug } = prevProps;
-		const { chatSlug: newSlug } = this.props;
-		if (oldSlug !== newSlug) {
-			this.updateActiveUsers(CrudEnum.DELETE, oldSlug);
-			this.updateActiveUsers(CrudEnum.UPDATE, newSlug);
-		}
-	}
+const ActiveUsers: React.FC<IProps> = props => {
+	const [previousSlug, setPreviousSlug] = useState(props.chatSlug);
+	useEffect(() => {
+		const { chatSlug } = props;
+		updateActiveUsers(CrudEnum.DELETE, previousSlug, props);
+		updateActiveUsers(CrudEnum.UPDATE, chatSlug, props);
+		setPreviousSlug(chatSlug);
 
-	componentWillUnmount() {
-		this.updateActiveUsers(CrudEnum.DELETE, this.props.chatSlug);
-	}
+		return () => updateActiveUsers(CrudEnum.DELETE, chatSlug, props);
+	}, [props.chatSlug]);
 
-	private updateActiveUsers = (crudType: string, chatSlug: string) => {
-		this.props.client!.mutate({
-			variables: {
-				chatSlug,
-				crudType
-			},
-			mutation: UPDATE_ACTIVE_USERS
-		});
-	};
-
-	render() {
-		return (
-			<ScActiveUsers>
-				<Subscription
-					subscription={ACTIVE_USERS_SUBSCRIPTION}
-					variables={{ chatSlug: this.props.chatSlug }}
-				>
-					{({ data = { subscribeToActiveUsersUpdates: [] }, loading }) => {
-						return data.subscribeToActiveUsersUpdates.map(
-							(user: IUser, i: number) => (
-								<Link to={`/user/${user.slug}`} key={i}>
-									<ScActiveUser>
-										<ScAvatar src={user.avatar} alt={user.displayName} />
-									</ScActiveUser>
-								</Link>
-							)
-						);
-					}}
-				</Subscription>
-			</ScActiveUsers>
-		);
-	}
-}
+	return (
+		<ScActiveUsers>
+			<Subscription
+				subscription={ACTIVE_USERS_SUBSCRIPTION}
+				variables={{ chatSlug: props.chatSlug }}
+			>
+				{({ data = { subscribeToActiveUsersUpdates: [] }, loading }) => {
+					return data.subscribeToActiveUsersUpdates.map(
+						(user: IUser, i: number) => (
+							<Link to={`/user/${user.slug}`} key={i}>
+								<ScActiveUser>
+									<ScAvatar src={user.avatar} alt={user.displayName} />
+								</ScActiveUser>
+							</Link>
+						)
+					);
+				}}
+			</Subscription>
+		</ScActiveUsers>
+	);
+};
 
 const ScActiveUsers = styled.div`
-	padding: 0 2rem 0 2rem;
 	text-align: center;
 	background: ${props => props.theme.activeUsersBackground};
 	padding: 0.5rem;
@@ -130,5 +120,14 @@ const ScAvatar = styled.img`
 	transform: translateY(0.2rem);
 `;
 
-// @ts-ignore
-export default withApollo(ActiveUsers);
+const mapStateToProps = ({
+	currentUser,
+	chat: { chatSlug }
+}: IReducerState) => ({
+	currentUser,
+	chatSlug
+});
+export default connect(
+	mapStateToProps,
+	null
+)(withApollo(ActiveUsers));

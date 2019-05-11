@@ -1,9 +1,9 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import gql from 'graphql-tag';
 import { Query, withApollo } from 'react-apollo';
 import MessagesList from './MessagesList';
 import { IChatProps } from '../Chat';
-import { IChat, IFile, IMessage } from '../../../types/interfaces';
+import { IChat, IMessage } from '../../../types/interfaces';
 import ApolloClient from 'apollo-client';
 import produce from 'immer';
 
