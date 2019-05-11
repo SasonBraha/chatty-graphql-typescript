@@ -83,37 +83,28 @@ export default class ChatResolver {
 		@Arg('chatSlug') chatSlug: string,
 		@Ctx('user') user: IUser
 	): Promise<IMessage[]> {
-		// FIXME - Use pipelines
 		try {
-			const oldMessages = await Chat.aggregate([
-				{
-					$match: {
-						$or: [
-							{ slug: chatSlug, isPrivate: false },
-							{
-								slug: chatSlug,
-								isPrivate: true,
-								allowedUsers: user._id
-							}
-						]
+			const fromChat = await Chat.findOne({
+				$or: [
+					{ slug: chatSlug, isPrivate: false },
+					{
+						slug: chatSlug,
+						isPrivate: true,
+						allowedUsers: user._id
 					}
-				},
-				{
-					$lookup: {
-						from: 'messages',
-						localField: 'messages',
-						foreignField: '_id',
-						as: 'messages'
-					}
-				},
-				{ $unwind: '$messages' },
-				{ $match: { 'messages._id': { $lt: new ObjectID(beforeMessageId) } } },
-				{ $sort: { 'messages.createdAt': -1 } },
-				{ $limit: 20 },
-				{ $group: { _id: '$_id', messages: { $push: '$messages' } } }
-			]);
+				]
+			});
 
-			return oldMessages.length ? oldMessages[0].messages : [];
+			if (fromChat) {
+				const olderMessages = await Message.aggregate([
+					{ $match: { _id: { $lt: new ObjectID(beforeMessageId) }, chatSlug } },
+					{ $sort: { createdAt: -1 } },
+					{ $limit: 20 }
+				]);
+				return olderMessages;
+			} else {
+				throw new Error(ErrorTypesEnum.NOT_FOUND);
+			}
 		} catch (ex) {
 			throw new Error(ErrorTypesEnum.INTERNAL_SERVER_ERROR);
 		}
@@ -201,7 +192,6 @@ export default class ChatResolver {
 				]
 			},
 			{
-				$push: { messages: newMessage._id },
 				$set: { lastMessage: newMessage.text }
 			}
 		);
@@ -236,15 +226,7 @@ export default class ChatResolver {
 						user.hasPermission([ChatPermissionTypesEnum.DELETE_MESSAGE]) ||
 						isUserCreatedTargetMessage
 					) {
-						await Promise.all([
-							Chat.updateOne(
-								{ slug: targetMessage.chatSlug },
-								{
-									$pull: { messages: messageId }
-								}
-							),
-							targetMessage.remove()
-						]);
+						await targetMessage.remove();
 
 						pubSub.publish(SubscriptionTypesEnum.MESSAGE_DELETED, {
 							messageId,
@@ -432,16 +414,12 @@ export default class ChatResolver {
 
 	@FieldResolver()
 	async messages(@Root() chat: IChat): Promise<IMessage[]> {
-		const populatedChat = await Chat.findOne(
-			{ slug: chat.slug },
-			{ messages: { $slice: -20 } }
-		)
-			.populate({
-				path: 'messages',
-				model: 'Message'
-			})
-			.lean();
+		const messages = await Message.find({
+			chatSlug: chat.slug
+		})
+			.limit(20)
+			.sort({ createdAt: 'desc' });
 
-		return populatedChat.messages;
+		return messages.reverse();
 	}
 }
