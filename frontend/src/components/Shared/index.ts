@@ -7,6 +7,7 @@ import GenericModal from './GenericModal';
 import LoadingShimmer from './LoadingShimmer';
 import Spinner from './Spinner';
 import Editable from './Editable';
+import GoogleLogin from './GoogleLogin';
 
 export {
 	Burger,
@@ -17,5 +18,6 @@ export {
 	GenericModal,
 	LoadingShimmer,
 	Spinner,
-	Editable
+	Editable,
+	GoogleLogin
 };

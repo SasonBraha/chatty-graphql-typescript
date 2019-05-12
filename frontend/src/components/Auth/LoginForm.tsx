@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button } from '../Shared';
+import { Button, GoogleLogin } from '../Shared';
 import { connect } from 'react-redux';
 import { FormikProps, withFormik } from 'formik';
 import { compose, graphql } from 'react-apollo';
@@ -31,6 +31,7 @@ const LoginForm = (props: FormikProps<IFormValues>) => {
 	} = props;
 	return (
 		<Form onSubmit={handleSubmit} icon={'icon-user-circle-o'} header='התחברות'>
+			<GoogleLogin />
 			<FormGroup>
 				<TextInput
 					name='email'

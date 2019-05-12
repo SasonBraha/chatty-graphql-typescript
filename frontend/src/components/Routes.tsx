@@ -14,6 +14,7 @@ const Routes: React.FC<{}> = props => {
 					render={props => <RegisterForm {...props} />}
 				/>
 				<Route exact path='/login' render={props => <LoginForm {...props} />} />
+
 				<Route
 					exact
 					path='/chat/:chatSlug'
