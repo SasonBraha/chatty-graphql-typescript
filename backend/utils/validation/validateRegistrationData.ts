@@ -1,7 +1,6 @@
 import * as Joi from 'joi';
 import { RegisterInput } from '../../resolvers/User/user.resolver.inputs';
 import * as rp from 'request-promise';
-import { googleOAuthClient } from '../../config';
 
 interface IErrors {
 	[key: string]: string;
@@ -54,7 +53,7 @@ const validateRegistrationInput = async (
 
 	if (validationResult.error) {
 		const joiErrors = validationResult.error.details;
-		const errorsArr: IErrors[] = joiErrors.reduce((acc, currentError) => {
+		const errors: IErrors[] = joiErrors.reduce((acc, currentError) => {
 			acc.push({
 				[currentError.path[0]]: currentError.message
 			});
@@ -63,7 +62,7 @@ const validateRegistrationInput = async (
 
 		return {
 			isValid: false,
-			errors: errorsArr
+			errors
 		};
 	}
 
