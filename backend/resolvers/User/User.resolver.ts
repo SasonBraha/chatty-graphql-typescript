@@ -9,6 +9,7 @@ import {
 	validateRegistrationInput
 } from '../../utils/validation';
 import { ErrorTypesEnum } from '../../utils/errors';
+import { googleOAuthClient } from '../../config';
 
 @Resolver(UserEntity)
 export default class UserResolver {
@@ -48,5 +49,34 @@ export default class UserResolver {
 		if (!isPasswordMatch) throw new Error(ErrorTypesEnum.BAD_REQUEST);
 
 		return generateJWT(user);
+	}
+
+	@Mutation(returns => String, { nullable: true })
+	async loginWithGoogle(
+		@Arg('token') token: string,
+		@Ctx('req') req: Request
+	): Promise<string> {
+		let userData = null;
+		// Verify OAuth Token
+		const ticket = await googleOAuthClient.verifyIdToken({
+			idToken: token,
+			audience: process.env.GOOGLE_OAUTH_CLIENT_ID
+		});
+		const { email, name: displayName, picture: avatar } = ticket.getPayload();
+
+		const user = await User.findOne({ email });
+		userData = user
+			? user
+			: await User.create({
+					displayName,
+					email,
+					avatar,
+					slug: `${displayName}@${uuid()}`,
+					jwtId: uuid(),
+					ipAddress:
+						req.headers['x-forwarded-for'] || req.connection.remoteAddress
+			  });
+
+		return generateJWT(userData);
 	}
 }
