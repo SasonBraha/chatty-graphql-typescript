@@ -31,7 +31,7 @@ const LoginForm = (props: FormikProps<IFormValues>) => {
 	} = props;
 	return (
 		<Form onSubmit={handleSubmit} icon={'icon-user-circle-o'} header='התחברות'>
-			<GoogleLogin />
+			<GoogleLogin text='התחבר באמצעות Google' />
 			<FormGroup>
 				<TextInput
 					name='email'
