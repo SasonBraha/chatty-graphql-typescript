@@ -8,6 +8,7 @@ import { RouteComponentProps } from 'react-router';
 import { FileInput } from '../Shared/Form';
 import ApolloClient from 'apollo-client';
 import { CrudEnum } from '../../types/enums';
+import { InputTrigger } from '../Shared';
 
 const SEND_MESSAGE_MUTATION = gql`
 	mutation($chatSlug: String!, $text: String!) {
@@ -82,23 +83,6 @@ let lastIndex: number = 0;
 const handleMention = (value: string) => {
 	const mentionUserRegex = new RegExp('(@[a-zA-Z0-9א-ת_-]+)', 'g');
 	const mentions: string[] = mentionUserRegex[Symbol.match](value) || [];
-	if (mentions) {
-		const mentionsData = mentions.reduce((acc, currentMention) => {
-			const startIndex = value.indexOf(currentMention);
-			const endIndex = startIndex + currentMention.length;
-
-			acc.push({
-				// @ts-ignore
-				startIndex,
-				// @ts-ignore
-				endIndex,
-				// @ts-ignore
-				username: currentMention.slice(1)
-			});
-			return acc;
-		}, []);
-		console.log(mentionsData);
-	}
 };
 
 const SendMessage: React.FC<IProps> = props => {
@@ -129,19 +113,21 @@ const SendMessage: React.FC<IProps> = props => {
 				<ScAttachIcon icon='icon-paperclip' />
 			</ScAttachLabel>
 
-			<ScMessageInput
-				autoComplete='off'
-				type='text'
-				value={values.text}
-				name='text'
-				onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-					handleFormikChange(e);
-					handleChange(isTyping, setIsTyping, props, values.text);
-				}}
-				onKeyUp={e => handleMention((e.target as HTMLInputElement).value)}
-				onBlur={handleBlur}
-				placeholder='הכנס הודעה ולחץ Enter'
-			/>
+			<ScInputTrigger triggerSymbol='@'>
+				<ScMessageInput
+					autoComplete='off'
+					type='text'
+					value={values.text}
+					name='text'
+					onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+						handleFormikChange(e);
+						handleChange(isTyping, setIsTyping, props, values.text);
+					}}
+					onKeyUp={e => handleMention((e.target as HTMLInputElement).value)}
+					onBlur={handleBlur}
+					placeholder='הכנס הודעה ולחץ Enter'
+				/>
+			</ScInputTrigger>
 		</ScForm>
 	);
 };
@@ -170,7 +156,7 @@ const ScAttachIcon = styled(Icon)`
 `;
 
 const ScMessageInput = styled.input`
-	flex: 1;
+	width: 100%;
 	border: none;
 	outline: none;
 	background: linear-gradient(to left, #eee, white);
@@ -179,6 +165,10 @@ const ScMessageInput = styled.input`
 	padding: 1.6rem 4rem 1.6rem 1.6rem;
 	text-overflow: ellipsis;
 	cursor: text;
+`;
+
+const ScInputTrigger = styled(InputTrigger)`
+	flex: 1;
 `;
 
 export default compose(

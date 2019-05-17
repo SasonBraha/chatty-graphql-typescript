@@ -71,8 +71,8 @@ NotificationSchema.post('find', (notifications: Array<INotification>) => {
 //       popultedNotification.content
 //     );
 
-//     // Save Notificationn Refrence In { User<Schema> }
-//     await User.findOneAndUpdate(
+//     // Save Notificationn Refrence In { Auth<Schema> }
+//     await Auth.findOneAndUpdate(
 //       { _id: notification.receiver },
 //       { $push: { notifications: notification._id } }
 //     );

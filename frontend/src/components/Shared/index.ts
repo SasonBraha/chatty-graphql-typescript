@@ -8,6 +8,7 @@ import LoadingShimmer from './LoadingShimmer';
 import Spinner from './Spinner';
 import Editable from './Editable';
 import GoogleLogin from './GoogleLogin';
+import InputTrigger from './InputTrigger';
 
 export {
 	Burger,
@@ -19,5 +20,6 @@ export {
 	LoadingShimmer,
 	Spinner,
 	Editable,
-	GoogleLogin
+	GoogleLogin,
+	InputTrigger
 };
