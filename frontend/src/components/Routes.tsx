@@ -13,6 +13,7 @@ const Routes: React.FC<{}> = props => {
 					path='/register'
 					render={props => <RegisterForm {...props} />}
 				/>
+
 				<Route exact path='/login' render={props => <LoginForm {...props} />} />
 
 				<Route

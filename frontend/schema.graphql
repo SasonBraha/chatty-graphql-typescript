@@ -50,18 +50,25 @@ type Mutation {
     createChat(data: CreateChatInput!): ChatEntity!
     login(data: LoginInput!): String
     loginWithGoogle(token: String!): String
+    me: UserEntity!
     postMessage(chatSlug: String!, text: String!): MessageEntity!
     register(data: RegisterInput!): Boolean!
     updateActiveUsers(chatSlug: String!, crudType: String!): Boolean
     updateMessage(updatePayload: UpdateMessageInput!): Boolean!
     updateTypingUsers(chatSlug: String!, crudType: String!): Boolean
     uploadMessageFile(chatSlug: String!, file: Upload!, messageId: String!): Boolean!
+    users(displayName: String!, limit: Int): SearchUsersOutput!
 }
 
 type Query {
     chat(chatSlug: String!): ChatEntity!
     olderMessages(beforeMessageId: ID!, chatSlug: String!): [MessageEntity!]
     roomsList: [ChatEntity!]!
+}
+
+type SearchUsersOutput {
+    searchToken: String!
+    userList: [UserEntity!]!
 }
 
 type Subscription {

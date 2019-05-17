@@ -1,4 +1,5 @@
 export enum UserPermissionTypesEnum {
+	SEARCH_USERS = 'SEARCH_USERS',
 	DELETE_USER = 'DELETE_USER',
 	EDIT_USER = 'EDIT_USER'
 }
@@ -17,6 +18,7 @@ export enum ChatPermissionTypesEnum {
 }
 
 const userPermissions = [
+	UserPermissionTypesEnum.SEARCH_USERS,
 	ChatPermissionTypesEnum.CREATE_CHAT,
 	ChatPermissionTypesEnum.VIEW_CHAT,
 	ChatPermissionTypesEnum.POST_MESSAGE,

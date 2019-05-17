@@ -46,11 +46,13 @@ interface IProps
 }
 
 let emitTypingTimeout: ReturnType<typeof setTimeout>;
-const updateTypingUsers = (
+const handleChange = (
 	isTyping: boolean,
 	setIsTyping: React.Dispatch<React.SetStateAction<boolean>>,
-	props: IProps
+	props: IProps,
+	value: string
 ) => {
+	// Manage Typing Auth
 	if (isTyping) {
 		clearTimeout(emitTypingTimeout);
 		emitTypingTimeout = setTimeout(() => {
@@ -72,7 +74,30 @@ const updateTypingUsers = (
 				crudType: CrudEnum.UPDATE
 			}
 		});
-		updateTypingUsers(true, setIsTyping, props);
+		handleChange(true, setIsTyping, props, value);
+	}
+};
+
+let lastIndex: number = 0;
+const handleMention = (value: string) => {
+	const mentionUserRegex = new RegExp('(@[a-zA-Z0-9א-ת_-]+)', 'g');
+	const mentions: string[] = mentionUserRegex[Symbol.match](value) || [];
+	if (mentions) {
+		const mentionsData = mentions.reduce((acc, currentMention) => {
+			const startIndex = value.indexOf(currentMention);
+			const endIndex = startIndex + currentMention.length;
+
+			acc.push({
+				// @ts-ignore
+				startIndex,
+				// @ts-ignore
+				endIndex,
+				// @ts-ignore
+				username: currentMention.slice(1)
+			});
+			return acc;
+		}, []);
+		console.log(mentionsData);
 	}
 };
 
@@ -82,7 +107,7 @@ const SendMessage: React.FC<IProps> = props => {
 		values,
 		errors,
 		touched,
-		handleChange,
+		handleChange: handleFormikChange,
 		handleBlur,
 		handleSubmit,
 		isSubmitting,
@@ -110,9 +135,10 @@ const SendMessage: React.FC<IProps> = props => {
 				value={values.text}
 				name='text'
 				onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-					handleChange(e);
-					updateTypingUsers(isTyping, setIsTyping, props);
+					handleFormikChange(e);
+					handleChange(isTyping, setIsTyping, props, values.text);
 				}}
+				onKeyUp={e => handleMention((e.target as HTMLInputElement).value)}
 				onBlur={handleBlur}
 				placeholder='הכנס הודעה ולחץ Enter'
 			/>
@@ -152,6 +178,7 @@ const ScMessageInput = styled.input`
 	font-size: 1.6rem;
 	padding: 1.6rem 4rem 1.6rem 1.6rem;
 	text-overflow: ellipsis;
+	cursor: text;
 `;
 
 export default compose(

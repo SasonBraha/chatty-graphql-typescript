@@ -9,6 +9,7 @@ import gql from 'graphql-tag';
 import { CrudEnum } from '../../../types/enums';
 import { Editable } from '../../Shared';
 import { IMessageCtxMenu } from './MessagesList';
+import reactStringReplace from 'react-string-replace';
 
 const UPDATE_MESSAGE_MUTATION = gql`
 	mutation($messageId: ID!, $crudType: String!, $messageText: String) {
@@ -137,7 +138,7 @@ class Message extends Component<IProps, IState> {
 							onCancel={() =>
 								this.setState({ messageBody: message.text, isEditable: false })
 							}
-							html={this.state.messageBody}
+							html={message.text}
 							submitOnEnter={true}
 							disabled={!this.state.isEditable}
 							innerRef={this.editableEl}

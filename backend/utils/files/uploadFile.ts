@@ -1,4 +1,4 @@
-import { IFileInput } from '../../resolvers/User/user.resolver.inputs';
+import { IFileInput } from '../../resolvers/Chat/Chat.resolver.inputs';
 import { createBufferFromStream, extractDataFromBuffer } from './index';
 import { IFileData } from './extractDataFromBuffer';
 import * as uuid from 'uuid';

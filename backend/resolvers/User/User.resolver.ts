@@ -1,82 +1,40 @@
-import { Arg, Ctx, Mutation, Resolver } from 'type-graphql';
-import User, { UserEntity } from '../../models/User.model';
-import { LoginInput, RegisterInput } from './user.resolver.inputs';
-import { Request } from 'express';
-import generateJWT from '../../auth/generateJWT';
-import * as uuid from 'uuid';
-import {
-	throwValidationError,
-	validateRegistrationInput
-} from '../../utils/validation';
-import { ErrorTypesEnum } from '../../utils/errors';
-import { googleOAuthClient } from '../../config';
+import { Arg, Ctx, Int, Mutation, Resolver, UseMiddleware } from 'type-graphql';
+import User, { IUser, UserEntity } from '../../models/User.model';
+import { Authenticated, WithPermission } from '../../middlewares';
+import { SearchUsersOutput } from './user.resolver.outputs';
+import * as jwt from 'jsonwebtoken';
+import { UserPermissionTypesEnum } from '../../permissions';
 
 @Resolver(UserEntity)
 export default class UserResolver {
-	@Mutation(returns => Boolean)
-	async register(
-		@Arg('data') { displayName, email, password, captcha }: RegisterInput,
-		@Ctx('req') req: Request
-	): Promise<boolean> {
-		const { isValid, errors } = await validateRegistrationInput({
-			displayName,
-			email,
-			password,
-			captcha
-		});
-
-		if (!isValid) {
-			throwValidationError(errors);
-		}
-
-		await User.create({
-			displayName,
-			email,
-			password,
-			slug: `${displayName}@${uuid()}`,
-			jwtId: uuid(),
-			ipAddress: req.headers['x-forwarded-for'] || req.connection.remoteAddress
-		});
-		return true;
+	@UseMiddleware(Authenticated)
+	@Mutation(returns => UserEntity)
+	me(@Ctx('user') user: IUser): IUser {
+		return user;
 	}
 
-	@Mutation(returns => String, { nullable: true })
-	async login(@Arg('data') { email, password }: LoginInput): Promise<string> {
-		const user = await User.findOne({ email });
-		if (!user) throw new Error(ErrorTypesEnum.BAD_REQUEST);
+	@UseMiddleware(WithPermission([UserPermissionTypesEnum.SEARCH_USERS]))
+	@Mutation(returns => SearchUsersOutput)
+	async users(
+		@Arg('displayName') displayName: string,
+		@Arg('limit', () => Int, { nullable: true }) limit: number
+	): Promise<SearchUsersOutput> {
+		const userList: IUser[] = await User.find({
+			displayName: new RegExp(
+				displayName.replace(/[-[\]{}()*+?.,\\^$|#\s]/, '\\$&'),
+				'gi'
+			)
+		}).limit(limit ? limit : 20);
 
-		const isPasswordMatch = await user.comparePassword(password);
-		if (!isPasswordMatch) throw new Error(ErrorTypesEnum.BAD_REQUEST);
+		const searchToken = await jwt.sign(
+			{ userIds: userList.map(({ _id }) => _id) },
+			process.env.JWT_SECRET,
+			{ expiresIn: '7m' }
+		);
 
-		return generateJWT(user);
-	}
-
-	@Mutation(returns => String, { nullable: true })
-	async loginWithGoogle(
-		@Arg('token') token: string,
-		@Ctx('req') req: Request
-	): Promise<string> {
-		let userData = null;
-		// Verify OAuth Token
-		const ticket = await googleOAuthClient.verifyIdToken({
-			idToken: token,
-			audience: process.env.GOOGLE_OAUTH_CLIENT_ID
-		});
-		const { email, name: displayName, picture: avatar } = ticket.getPayload();
-
-		const user = await User.findOne({ email });
-		userData = user
-			? user
-			: await User.create({
-					displayName,
-					email,
-					avatar,
-					slug: `${displayName}@${uuid()}`,
-					jwtId: uuid(),
-					ipAddress:
-						req.headers['x-forwarded-for'] || req.connection.remoteAddress
-			  });
-
-		return generateJWT(userData);
+		return {
+			userList,
+			searchToken
+		};
 	}
 }

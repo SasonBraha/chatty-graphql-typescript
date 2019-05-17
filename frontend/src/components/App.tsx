@@ -11,6 +11,7 @@ import Container from './Container';
 import { withRouter } from 'react-router-dom';
 import { GenericModal } from './Shared';
 import Routes from './Routes';
+import { Helmet } from 'react-helmet';
 
 interface IProps {
 	setCurrentUser: typeof setCurrentUser;
@@ -32,8 +33,11 @@ class App extends Component<IProps> {
 	}
 
 	render() {
+		//@prettier-ignore
 		return (
 			<>
+				<Helmet />
+
 				<StyledApp>
 					<Header />
 

@@ -1,7 +1,6 @@
-import { handleSocketDisconnect } from './handlers';
-
 require('dotenv').config({ path: './.env' });
 import 'reflect-metadata';
+import { handleSocketDisconnect } from './handlers';
 import * as http from 'http';
 import { ApolloServer } from 'apollo-server-express';
 import * as express from 'express';
@@ -11,7 +10,7 @@ import * as mongoose from 'mongoose';
 import * as morgan from 'morgan';
 import getUserData from './auth/getUserData';
 import { buildSchema } from 'type-graphql';
-import { ChatResolver, UserResolver } from './resolvers';
+import { ChatResolver, AuthResolver, UserResolver } from './resolvers';
 import * as bodyParser from 'body-parser';
 import { GraphQLError } from 'graphql';
 import CustomError, { ErrorResponse, ErrorTypesEnum } from './utils/errors';
@@ -55,7 +54,7 @@ const main = async () => {
 	//  Apollo Setup                      //
 	//------------------------------------//
 	const schema = await buildSchema({
-		resolvers: [UserResolver, ChatResolver],
+		resolvers: [AuthResolver, ChatResolver, UserResolver],
 		validate: false
 	});
 

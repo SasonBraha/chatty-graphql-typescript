@@ -1,5 +1,5 @@
 import * as Joi from 'joi';
-import { RegisterInput } from '../../resolvers/User/user.resolver.inputs';
+import { RegisterInput } from '../../resolvers/Auth/auth.resolver.inputs';
 import * as rp from 'request-promise';
 
 interface IErrors {
