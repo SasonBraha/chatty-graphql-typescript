@@ -30,6 +30,18 @@ const UPDATE_TYPING_USERS = gql`
 	}
 `;
 
+const SEARCH_USERS_MUTATION = gql`
+	mutation($limit: Int, $displayName: String!) {
+		users(displayName: $displayName, limit: $limit) {
+			searchToken
+			userList {
+				displayName
+				slug
+			}
+		}
+	}
+`;
+
 interface IFormValues {
 	text: string;
 	file: string;
@@ -79,12 +91,6 @@ const handleChange = (
 	}
 };
 
-let lastIndex: number = 0;
-const handleMention = (value: string) => {
-	const mentionUserRegex = new RegExp('(@[a-zA-Z0-9א-ת_-]+)', 'g');
-	const mentions: string[] = mentionUserRegex[Symbol.match](value) || [];
-};
-
 const SendMessage: React.FC<IProps> = props => {
 	const [isTyping, setIsTyping] = useState(false);
 	const {
@@ -113,7 +119,21 @@ const SendMessage: React.FC<IProps> = props => {
 				<ScAttachIcon icon='icon-paperclip' />
 			</ScAttachLabel>
 
-			<ScInputTrigger triggerSymbol='@'>
+			<ScInputTrigger
+				triggerSymbol='@'
+				typeCallbackDebounceRate={400}
+				onType={async data => {
+					const m = await props.client.mutate({
+						mutation: SEARCH_USERS_MUTATION,
+						variables: {
+							displayName: data.value,
+							limit: 5
+						}
+					});
+
+					console.log(m);
+				}}
+			>
 				<ScMessageInput
 					autoComplete='off'
 					type='text'
@@ -123,7 +143,6 @@ const SendMessage: React.FC<IProps> = props => {
 						handleFormikChange(e);
 						handleChange(isTyping, setIsTyping, props, values.text);
 					}}
-					onKeyUp={e => handleMention((e.target as HTMLInputElement).value)}
 					onBlur={handleBlur}
 					placeholder='הכנס הודעה ולחץ Enter'
 				/>
