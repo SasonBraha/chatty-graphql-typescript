@@ -138,7 +138,7 @@ class Message extends Component<IProps, IState> {
 							onCancel={() =>
 								this.setState({ messageBody: message.text, isEditable: false })
 							}
-							html={message.text}
+							html={this.state.messageBody}
 							submitOnEnter={true}
 							disabled={!this.state.isEditable}
 							innerRef={this.editableEl}

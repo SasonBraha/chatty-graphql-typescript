@@ -45,8 +45,8 @@ const InputTrigger: React.FC<IProps> = props => {
 				const eventTarget = e.target as HTMLInputElement;
 				const { selectionStart, value } = eventTarget;
 				const { which } = e;
-				clearTimeout(onTypeTimeout);
 
+				clearTimeout(onTypeTimeout);
 				if (!isTriggered) {
 					if (which === TRIGGER_SYMBOL_KEY_CODE) {
 						setTriggerStartIndex(selectionStart as number);

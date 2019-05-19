@@ -4,6 +4,7 @@ import {
 	SET_CHAT_SLUG,
 	SET_CURRENT_USER,
 	SET_GENERIC_MODAL,
+	SET_MENTION_SUGGESTER,
 	SET_NAV_STATE,
 	SET_TYPING_USERS
 } from './constants';
@@ -47,3 +48,14 @@ export const setTypingUsers = (
 });
 
 export const resetModals = () => ({ type: RESET_MODALS });
+
+export const setMentionSuggester = (
+	shouldShow: boolean,
+	userList: IUser[]
+) => ({
+	type: SET_MENTION_SUGGESTER,
+	payload: {
+		shouldShow,
+		userList
+	}
+});

@@ -4,6 +4,7 @@ import {
 	SET_CHAT_SLUG,
 	SET_CURRENT_USER,
 	SET_GENERIC_MODAL,
+	SET_MENTION_SUGGESTER,
 	SET_NAV_STATE,
 	SET_TYPING_USERS
 } from './constants';
@@ -30,6 +31,10 @@ export interface IReducerState {
 		typingUsers: {
 			[key: string]: ITypingUser[];
 		};
+		mentionSuggester: {
+			shouldShow: boolean;
+			userList: IUser[];
+		};
 	};
 }
 
@@ -44,7 +49,11 @@ const initialState: IReducerState = {
 	currentUser: null,
 	chat: {
 		typingUsers: {},
-		chatSlug: ''
+		chatSlug: '',
+		mentionSuggester: {
+			shouldShow: false,
+			userList: []
+		}
 	}
 };
 
@@ -96,6 +105,10 @@ export default (state = initialState, action: IAction): IReducerState =>
 						: draft.chat.typingUsers[chatSlug].filter(
 								({ slug }) => slug !== action.payload.user.slug
 						  );
+				break;
+
+			case SET_MENTION_SUGGESTER:
+				draft.chat.mentionSuggester = action.payload;
 				break;
 
 			default:

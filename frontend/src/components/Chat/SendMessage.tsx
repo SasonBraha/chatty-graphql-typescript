@@ -9,6 +9,8 @@ import { FileInput } from '../Shared/Form';
 import ApolloClient from 'apollo-client';
 import { CrudEnum } from '../../types/enums';
 import { InputTrigger } from '../Shared';
+import { setMentionSuggester } from '../../redux/actions';
+import { connect } from 'react-redux';
 
 const SEND_MESSAGE_MUTATION = gql`
 	mutation($chatSlug: String!, $text: String!) {
@@ -37,6 +39,7 @@ const SEARCH_USERS_MUTATION = gql`
 			userList {
 				displayName
 				slug
+				avatar
 			}
 		}
 	}
@@ -56,6 +59,7 @@ interface IProps
 		RouteComponentProps<IMatchParams> {
 	setFilePreview: (file: File | null) => void;
 	client: ApolloClient<any>;
+	setMentionSuggester: typeof setMentionSuggester;
 }
 
 let emitTypingTimeout: ReturnType<typeof setTimeout>;
@@ -123,7 +127,7 @@ const SendMessage: React.FC<IProps> = props => {
 				triggerSymbol='@'
 				typeCallbackDebounceRate={400}
 				onType={async data => {
-					const m = await props.client.mutate({
+					const userData = await props.client.mutate({
 						mutation: SEARCH_USERS_MUTATION,
 						variables: {
 							displayName: data.value,
@@ -131,8 +135,9 @@ const SendMessage: React.FC<IProps> = props => {
 						}
 					});
 
-					console.log(m);
+					props.setMentionSuggester(true, userData.data.users.userList);
 				}}
+				onCancel={() => props.setMentionSuggester(false, [])}
 			>
 				<ScMessageInput
 					autoComplete='off'
@@ -221,4 +226,11 @@ export default compose(
 			}
 		}
 	})
-)(withApollo(SendMessage));
+)(
+	withApollo(
+		connect(
+			null,
+			{ setMentionSuggester }
+		)(SendMessage)
+	)
+);
