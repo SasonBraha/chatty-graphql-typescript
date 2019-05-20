@@ -153,6 +153,23 @@ export default class ChatResolver {
 		@Ctx('user') user: IUser,
 		@PubSub() pubSub: PubSubEngine
 	): Promise<IMessage> {
+		const mentionUserRegex = new RegExp('(@[\\wא-ת-]+)', 'g');
+		const mentions = text.match(mentionUserRegex);
+		if (mentions) {
+			const mentionsData = mentions.reduce((acc, currentMention) => {
+				const startIndex = text.indexOf(currentMention);
+				const endIndex = startIndex + currentMention.length;
+
+				acc.push({
+					indices: [startIndex, endIndex],
+					username: currentMention.slice(1)
+				});
+				return acc;
+			}, []);
+
+			console.log(mentionsData);
+		}
+
 		const preSaveId = new Message();
 		const { _id, displayName, slug, avatar } = user;
 		const messageData = {
