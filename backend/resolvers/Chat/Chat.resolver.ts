@@ -39,6 +39,7 @@ import {
 } from './chat.resolver.output';
 import { UpdateMessageInput } from './chat.resolver.inputs';
 import { CrudEnum } from '../../types/enums';
+import * as sanitizeHtml from 'sanitize-html';
 
 enum SubscriptionTypesEnum {
 	NEW_MESSAGE = 'NEW_MESSAGE',
@@ -162,7 +163,7 @@ export default class ChatResolver {
 
 				acc.push({
 					indices: [startIndex, endIndex],
-					username: currentMention.slice(1)
+					text: currentMention.slice(1)
 				});
 				return acc;
 			}, []);
@@ -174,7 +175,10 @@ export default class ChatResolver {
 		const { _id, displayName, slug, avatar } = user;
 		const messageData = {
 			_id: preSaveId._id,
-			text,
+			text: sanitizeHtml(text, {
+				allowedTags: [],
+				allowedAttributes: {}
+			}),
 			chatSlug,
 			file: null,
 			createdBy: {
@@ -258,12 +262,16 @@ export default class ChatResolver {
 						user.hasPermission([ChatPermissionTypesEnum.EDIT_MESSAGE]) ||
 						isUserCreatedTargetMessage
 					) {
-						targetMessage.text = updatePayload.messageText!;
+						const sanitizedText = sanitizeHtml(updatePayload.messageText, {
+							allowedTags: [],
+							allowedAttributes: {}
+						});
+						targetMessage.text = sanitizedText;
 						await targetMessage.save();
 
 						pubSub.publish(SubscriptionTypesEnum.MESSAGE_EDITED, {
 							chatSlug: targetMessage.chatSlug,
-							updatedText: targetMessage.text,
+							updatedText: sanitizedText,
 							updateType: SubscriptionTypesEnum.MESSAGE_EDITED,
 							messageId
 						});

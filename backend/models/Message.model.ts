@@ -2,6 +2,7 @@ import { Document, Schema, model } from 'mongoose';
 import File, { IFile, FileEntity } from './File.model';
 import { ObjectType, Field, ID } from 'type-graphql';
 import { UserEntity, IUser } from './User.model';
+import * as sanitizeHtml from 'sanitize-html';
 
 export interface IMessage extends Document {
 	text: string;
@@ -38,6 +39,17 @@ const MessageSchema = new Schema(
 	},
 	{ timestamps: true }
 );
+
+// Sanitize Text
+MessageSchema.pre('save', async function(next) {
+	const message = this as IMessage;
+	if (!message.isModified('text')) return next();
+	message.text = sanitizeHtml(message.text, {
+		allowedTags: [],
+		allowedAttributes: {}
+	});
+	next();
+});
 
 @ObjectType()
 export class MessageEntity {

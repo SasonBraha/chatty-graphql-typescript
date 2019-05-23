@@ -56,8 +56,6 @@ export default class AuthResolver {
 		@Arg('token') token: string,
 		@Ctx('req') req: Request
 	): Promise<string> {
-		let userData = null;
-		// Verify OAuth Token
 		const ticket = await googleOAuthClient.verifyIdToken({
 			idToken: token,
 			audience: process.env.GOOGLE_OAUTH_CLIENT_ID
@@ -65,7 +63,7 @@ export default class AuthResolver {
 		const { email, name: displayName, picture: avatar } = ticket.getPayload();
 
 		const user = await User.findOne({ email });
-		userData = user
+		const userData = user
 			? user
 			: await User.create({
 					displayName,
