@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import ReactDOMServer from 'react-dom/server';
 import { IMessage } from '../../../types/interfaces';
 import styled, { css } from 'styled-components';
 import formatRelative from 'date-fns/formatRelative';
@@ -11,6 +10,7 @@ import { CrudEnum } from '../../../types/enums';
 import { Editable } from '../../Shared';
 import { IMessageCtxMenu } from './MessagesList';
 import reactStringReplace from 'react-string-replace';
+import { Link } from 'react-router-dom';
 
 const UPDATE_MESSAGE_MUTATION = gql`
 	mutation($messageId: ID!, $crudType: String!, $messageText: String) {
@@ -127,7 +127,7 @@ class Message extends Component<IProps, IState> {
 					if (userDataIndex !== -1) {
 						const userData = message.userMentions[userDataIndex];
 						return (
-							<ScMention target='_blank' href={`/user/${userData.slug}`}>
+							<ScMention key={i} to={`/user/${userData.slug}`}>
 								{match}
 							</ScMention>
 						);
@@ -135,8 +135,7 @@ class Message extends Component<IProps, IState> {
 					return match;
 				}
 			);
-			//@ts-ignore
-			return ReactDOMServer.renderToString(updatedText);
+			return updatedText;
 		} else {
 			return message.text;
 		}
@@ -185,7 +184,7 @@ class Message extends Component<IProps, IState> {
 								isMine={isMine}
 							/>
 						) : (
-							<div dangerouslySetInnerHTML={{ __html: this.renderText() }} />
+							<ScText>{this.renderText()}</ScText>
 						)}
 
 						<ScMetaData alignLeft={true}>
@@ -262,18 +261,20 @@ const ScText = styled.p`
 	padding: 0.5rem 0;
 `;
 
-const ScMention = styled.a`
-	background: red;
+const ScMention = styled(Link)`
+	font-weight: bold;
+	letter-spacing: 0.05rem;
+	background: rgba(0, 0, 0, 0.1);
+	border-radius: 0.5rem;
 	padding: 0 0.5rem;
-	border-radius: 0.3rem;
+	cursor: pointer;
 `;
 
 const ScEditable = styled(({ isMine, ...rest }) => <Editable {...rest} />)<{
 	isMine: boolean;
 }>`
-	padding: 0.5rem 0;
-
 	&[contenteditable='true'] {
+		padding: 0.5rem 0;
 		background: #0268c7;
 		padding: 0.7rem;
 		border-radius: 0.3rem;
