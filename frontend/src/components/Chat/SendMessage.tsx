@@ -69,7 +69,6 @@ const handleChange = (
 	props: IProps,
 	value: string
 ) => {
-	// Manage Typing Auth
 	if (isTyping) {
 		clearTimeout(emitTypingTimeout);
 		emitTypingTimeout = setTimeout(() => {

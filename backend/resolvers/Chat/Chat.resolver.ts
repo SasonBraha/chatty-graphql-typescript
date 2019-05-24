@@ -171,8 +171,8 @@ export default class ChatResolver {
 			if (usersData.length) {
 				userMentions = usersData.reduce(
 					(acc: IMention[], { displayName, slug, _id }) => {
-						const startIndex = sanitizedText.indexOf(displayName);
-						const endIndex = startIndex + displayName.length;
+						const startIndex = sanitizedText.indexOf(displayName) - 1;
+						const endIndex = startIndex + displayName.length + 1;
 
 						acc.push({
 							indices: [startIndex, endIndex],

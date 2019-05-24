@@ -17,6 +17,13 @@ export interface IChat {
 	messages: IMessage[];
 }
 
+export interface IMention {
+	indices: number[];
+	displayName: string;
+	slug: string;
+	_id: string;
+}
+
 export interface IMessage {
 	_id: string;
 	text: string;
@@ -28,6 +35,7 @@ export interface IMessage {
 		avatar: string;
 	};
 	createdAt: Date;
+	userMentions: IMention[];
 	isClientDeleted: boolean | null;
 }
 

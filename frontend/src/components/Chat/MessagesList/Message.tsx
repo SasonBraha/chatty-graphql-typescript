@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import ReactDOMServer from 'react-dom/server';
 import { IMessage } from '../../../types/interfaces';
 import styled, { css } from 'styled-components';
 import formatRelative from 'date-fns/formatRelative';
@@ -52,7 +53,10 @@ class Message extends Component<IProps, IState> {
 	}
 
 	componentDidUpdate(prevProps: IProps, prevState: IState) {
-		if (prevState.isEditable !== this.state.isEditable) {
+		if (
+			prevState.isEditable !== this.state.isEditable &&
+			this.state.isEditable
+		) {
 			this.editableEl.current!.focus();
 		}
 
@@ -107,6 +111,37 @@ class Message extends Component<IProps, IState> {
 		}
 	};
 
+	renderText = () => {
+		const { message } = this.props;
+		const { messageBody } = this.state;
+		if (message.userMentions && message.userMentions.length) {
+			let updatedText = null;
+			const mentionRegex = new RegExp('(@[\\wא-ת-_]+)', 'g');
+			updatedText = reactStringReplace(
+				messageBody,
+				mentionRegex,
+				(match, i) => {
+					const userDataIndex = message.userMentions.findIndex(
+						mention => mention.displayName === match.slice(1)
+					);
+					if (userDataIndex !== -1) {
+						const userData = message.userMentions[userDataIndex];
+						return (
+							<ScMention target='_blank' href={`/user/${userData.slug}`}>
+								{match}
+							</ScMention>
+						);
+					}
+					return match;
+				}
+			);
+			//@ts-ignore
+			return ReactDOMServer.renderToString(updatedText);
+		} else {
+			return message.text;
+		}
+	};
+
 	deleteMessage = async () => {
 		await this.props.client!.mutate({
 			mutation: DELETE_MESSAGE_MUTATION,
@@ -131,20 +166,28 @@ class Message extends Component<IProps, IState> {
 					<>
 						<ScMetaData>{message.createdBy.displayName}</ScMetaData>
 						{this.renderFile()}
-						<ScEditable
-							onChange={(e: any) =>
-								this.setState({ messageBody: e.target.value })
-							}
-							onCancel={() =>
-								this.setState({ messageBody: message.text, isEditable: false })
-							}
-							html={this.state.messageBody}
-							submitOnEnter={true}
-							disabled={!this.state.isEditable}
-							innerRef={this.editableEl}
-							onBlur={this.handleEditableBlur}
-							isMine={isMine}
-						/>
+						{this.state.isEditable ? (
+							<ScEditable
+								onChange={(e: any) =>
+									this.setState({ messageBody: e.target.value })
+								}
+								onCancel={() =>
+									this.setState({
+										messageBody: message.text,
+										isEditable: false
+									})
+								}
+								html={this.state.messageBody}
+								submitOnEnter={true}
+								disabled={!this.state.isEditable}
+								innerRef={this.editableEl}
+								onBlur={this.handleEditableBlur}
+								isMine={isMine}
+							/>
+						) : (
+							<div dangerouslySetInnerHTML={{ __html: this.renderText() }} />
+						)}
+
 						<ScMetaData alignLeft={true}>
 							{formatRelative(
 								parseISO((message.createdAt as unknown) as string),
@@ -217,6 +260,12 @@ const ScImage = styled.img`
 
 const ScText = styled.p`
 	padding: 0.5rem 0;
+`;
+
+const ScMention = styled.a`
+	background: red;
+	padding: 0 0.5rem;
+	border-radius: 0.3rem;
 `;
 
 const ScEditable = styled(({ isMine, ...rest }) => <Editable {...rest} />)<{
