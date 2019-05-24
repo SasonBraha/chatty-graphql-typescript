@@ -1,5 +1,5 @@
 import * as jwt from 'jsonwebtoken';
-import { IUser } from '../models/User.model';
+import { IUser } from '../entities/User.model';
 import { ErrorTypesEnum } from '../utils/errors';
 
 const generateJWT = async (user: IUser) => {

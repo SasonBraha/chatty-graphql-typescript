@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import { IUser } from '../models/User.model';
+import { IUser } from '../entities/User.model';
 
 export interface IContext {
 	req?: Request;

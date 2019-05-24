@@ -1,7 +1,7 @@
-import { IMessage } from '../../models/Message.model';
-import { IFile } from '../../models/File.model';
+import { IMessage } from '../../entities/Message.model';
+import { IFile } from '../../entities/File.model';
 import { Field, ObjectType } from 'type-graphql';
-import { UserEntity } from '../../models/User.model';
+import { UserEntity } from '../../entities/User.model';
 
 export interface IMessageCreatedOutput {
 	message: IMessage;

@@ -51,7 +51,6 @@
 		"@types/react-router-dom": "^4.3.2",
 		"@types/react-transition-group": "^2.9.0",
 		"@types/styled-components": "^4.1.13",
-		"@welldone-software/why-did-you-render": "^3.0.6",
 		"redux-devtools-extension": "^2.13.8"
 	},
 	"scripts": {

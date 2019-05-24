@@ -3,6 +3,7 @@ import File, { IFile, FileEntity } from './File.model';
 import { ObjectType, Field, ID } from 'type-graphql';
 import { UserEntity, IUser } from './User.model';
 import * as sanitizeHtml from 'sanitize-html';
+import MentionSchema, { IMention, MentionEntity } from './Mention.model';
 
 export interface IMessage extends Document {
 	text: string;
@@ -14,6 +15,7 @@ export interface IMessage extends Document {
 		slug: string;
 		avatar: string;
 	};
+	userMentions: IMention[];
 }
 
 const MessageSchema = new Schema(
@@ -35,7 +37,8 @@ const MessageSchema = new Schema(
 			displayName: String,
 			slug: String,
 			avatar: String
-		}
+		},
+		userMentions: [MentionSchema]
 	},
 	{ timestamps: true }
 );
@@ -64,6 +67,9 @@ export class MessageEntity {
 
 	@Field(type => UserEntity)
 	createdBy: IUser;
+
+	@Field(type => [MentionEntity], { nullable: true })
+	userMentions: IMention[];
 
 	@Field(type => Date)
 	createdAt: Date;

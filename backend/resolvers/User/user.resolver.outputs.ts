@@ -1,5 +1,5 @@
 import { Field, ObjectType } from 'type-graphql';
-import { IUser, UserEntity } from '../../models/User.model';
+import { IUser, UserEntity } from '../../entities/User.model';
 
 @ObjectType()
 export class SearchUsersOutput {

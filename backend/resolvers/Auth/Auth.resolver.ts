@@ -1,5 +1,5 @@
 import { Arg, Ctx, Mutation, Resolver } from 'type-graphql';
-import User, { UserEntity } from '../../models/User.model';
+import User, { UserEntity } from '../../entities/User.model';
 import { LoginInput, RegisterInput } from './auth.resolver.inputs';
 import { Request } from 'express';
 import generateJWT from '../../auth/generateJWT';

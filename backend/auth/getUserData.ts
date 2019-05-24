@@ -1,6 +1,6 @@
 import * as jwt from 'jsonwebtoken';
 import { ErrorTypesEnum } from '../utils/errors';
-import User, { IUser } from '../models/User.model';
+import User, { IUser } from '../entities/User.model';
 
 export default async (authToken: string) => {
 	if (!authToken) return null;

@@ -122,13 +122,11 @@ const main = async () => {
 		console.log(`Server Started Successfully On Port ${PORT} ✈️`)
 	);
 
-	if (process.env.NODE_ENV === 'production') {
-		process
-			.on('unhandledRejection', (reason, promise) =>
-				logger.error(reason, promise)
-			)
-			.on('uncaughtException', ex => logger.error(ex));
-	}
+	process
+		.on('unhandledRejection', (reason, promise) =>
+			logger.error(reason, promise)
+		)
+		.on('uncaughtException', ex => logger.error(ex));
 };
 
 main();

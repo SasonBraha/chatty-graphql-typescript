@@ -1,5 +1,5 @@
 import { Arg, Ctx, Int, Mutation, Resolver, UseMiddleware } from 'type-graphql';
-import User, { IUser, UserEntity } from '../../models/User.model';
+import User, { IUser, UserEntity } from '../../entities/User.model';
 import { Authenticated, WithPermission } from '../../middlewares';
 import { SearchUsersOutput } from './user.resolver.outputs';
 import * as jwt from 'jsonwebtoken';

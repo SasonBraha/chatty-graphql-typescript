@@ -37,6 +37,13 @@ type FileEntity {
     path: String!
 }
 
+type MentionEntity {
+    _id: String!
+    displayName: String!
+    indices: [Int!]!
+    slug: String!
+}
+
 type MessageEntity {
     _id: ID!
     createdAt: DateTime!
@@ -44,6 +51,7 @@ type MessageEntity {
     file: FileEntity
     isClientDeleted: Boolean
     text: String!
+    userMentions: [MentionEntity!]
 }
 
 type Mutation {

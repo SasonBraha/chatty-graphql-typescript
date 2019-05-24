@@ -1,5 +1,5 @@
 import redis, { RedisCategoriesEnum } from '../';
-import { IUser } from '../../models/User.model';
+import { IUser } from '../../entities/User.model';
 
 class ActiveUsersService {
 	private async getUsers(chatSlug: string): Promise<IUser[]> {

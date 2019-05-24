@@ -3,7 +3,7 @@ import { createBufferFromStream, extractDataFromBuffer } from './index';
 import { IFileData } from './extractDataFromBuffer';
 import * as uuid from 'uuid';
 import s3 from '../../config/s3.config';
-import { IFile } from '../../models/File.model';
+import { IFile } from '../../entities/File.model';
 
 const uploadFile = (
 	file: IFileInput,

@@ -12,13 +12,13 @@ import {
 	Subscription,
 	UseMiddleware
 } from 'type-graphql';
-import Chat, { ChatEntity, IChat } from '../../models/Chat.model';
+import Chat, { ChatEntity, IChat } from '../../entities/Chat.model';
 import User, {
 	IUser,
 	IUserSchemaMethods,
 	UserEntity
-} from '../../models/User.model';
-import Message, { IMessage, MessageEntity } from '../../models/Message.model';
+} from '../../entities/User.model';
+import Message, { IMessage, MessageEntity } from '../../entities/Message.model';
 import { ObjectID } from 'bson';
 import { CreateChatInput, IFileInput } from './chat.resolver.inputs';
 import activeUsersService from '../../redis/services/ActiveUsers.service';
@@ -40,6 +40,7 @@ import {
 import { UpdateMessageInput } from './chat.resolver.inputs';
 import { CrudEnum } from '../../types/enums';
 import * as sanitizeHtml from 'sanitize-html';
+import { IMention } from '../../entities/Mention.model';
 
 enum SubscriptionTypesEnum {
 	NEW_MESSAGE = 'NEW_MESSAGE',
@@ -154,31 +155,44 @@ export default class ChatResolver {
 		@Ctx('user') user: IUser,
 		@PubSub() pubSub: PubSubEngine
 	): Promise<IMessage> {
-		const mentionUserRegex = new RegExp('(@[\\wא-ת-]+)', 'g');
-		const mentions = text.match(mentionUserRegex);
+		const sanitizedText = sanitizeHtml(text, {
+			allowedTags: [],
+			allowedAttributes: {}
+		});
+		const mentionUserRegex = new RegExp('(@[\\wא-ת-_]+)', 'g');
+		const mentions = sanitizedText.match(mentionUserRegex);
+		let userMentions: IMention[] = [];
 		if (mentions) {
-			const mentionsData = mentions.reduce((acc, currentMention) => {
-				const startIndex = text.indexOf(currentMention);
-				const endIndex = startIndex + currentMention.length;
+			const usernames = mentions.map(mention => mention.slice(1));
+			const usersData = await User.find({ displayName: { $in: usernames } })
+				.select('displayName _id slug')
+				.lean();
 
-				acc.push({
-					indices: [startIndex, endIndex],
-					text: currentMention.slice(1)
-				});
-				return acc;
-			}, []);
+			if (usersData.length) {
+				userMentions = usersData.reduce(
+					(acc: IMention[], { displayName, slug, _id }) => {
+						const startIndex = sanitizedText.indexOf(displayName);
+						const endIndex = startIndex + displayName.length;
 
-			console.log(mentionsData);
+						acc.push({
+							indices: [startIndex, endIndex],
+							displayName,
+							slug,
+							_id
+						});
+
+						return acc;
+					},
+					[]
+				);
+			}
 		}
 
 		const preSaveId = new Message();
 		const { _id, displayName, slug, avatar } = user;
 		const messageData = {
 			_id: preSaveId._id,
-			text: sanitizeHtml(text, {
-				allowedTags: [],
-				allowedAttributes: {}
-			}),
+			text: sanitizedText,
 			chatSlug,
 			file: null,
 			createdBy: {
@@ -186,10 +200,10 @@ export default class ChatResolver {
 				displayName,
 				slug,
 				avatar
-			}
+			},
+			userMentions
 		};
 
-		// Emit New Message
 		pubSub.publish(SubscriptionTypesEnum.NEW_MESSAGE, {
 			message: {
 				...messageData,

@@ -24,6 +24,11 @@ const MESSAGE_DATA_FRAGMENT = `
 	}
 	isClientDeleted
 	createdAt
+	userMentions {
+		displayName
+		indices
+		slug
+	}
 `;
 
 const MESSAGES_LIST_QUERY = gql`
