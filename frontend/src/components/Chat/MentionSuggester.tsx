@@ -25,7 +25,7 @@ const MentionSuggester: React.FC<IProps> = props => {
 						{props.userList.map(user => (
 							<ListItem
 								linkTo={`/user/${user.slug}`}
-								icon={''}
+								image={user.avatar}
 								key={user.slug}
 								color='black'
 							>

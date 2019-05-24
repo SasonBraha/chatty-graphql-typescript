@@ -2,9 +2,11 @@ import React, { ReactNode } from 'react';
 import styled from 'styled-components/macro';
 import { Link } from 'react-router-dom';
 import Ripple from 'react-ink';
+import Icon from './Icon';
 
 interface IProps {
-	icon: string;
+	icon?: string;
+	image?: string;
 	linkTo?: string;
 	hoverBackground: string;
 	color: string;
@@ -13,23 +15,25 @@ interface IProps {
 	children?: ReactNode;
 }
 
-const generateIcon = (icon: string) => (
-	<StyledListIcon>
-		<use xlinkHref={`/images/sprite.svg#${icon}`} />
-	</StyledListIcon>
-);
+const renderSymbol = (props: IProps) => {
+	return props.icon ? (
+		<StyledListIcon icon={props.icon} />
+	) : (
+		props.image && <ScListImage src={props.image} />
+	);
+};
 
 const ListItem = (props: IProps) => (
 	<StyledListItem hoverBackground={props.hoverBackground} color={props.color}>
 		{props.linkTo ? (
 			<Link className='ListItem' to={props.linkTo}>
-				{generateIcon(props.icon)}
+				{renderSymbol(props)}
 				{props.children}
 				{props.withRipple ? <Ripple /> : null}
 			</Link>
 		) : (
 			<div className='ListItem' onClick={props.onClick}>
-				{generateIcon(props.icon)}
+				{renderSymbol(props)}
 				{props.children}
 				{props.withRipple ? <Ripple /> : null}
 			</div>
@@ -67,9 +71,16 @@ const StyledListItem = styled('li')<{ hoverBackground: string; color: string }>`
 	}
 `;
 
-const StyledListIcon = styled.svg`
+const StyledListIcon = styled(Icon)`
 	width: 2.7rem;
 	height: 2.7rem;
+	margin-left: 1rem;
+`;
+
+const ScListImage = styled.img`
+	width: 3rem;
+	height: 3rem;
+	border-radius: 50%;
 	margin-left: 1rem;
 `;
 
