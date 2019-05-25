@@ -1,10 +1,11 @@
 import React from 'react';
 import { Transition } from 'react-transition-group';
 import styled, { css } from 'styled-components/macro';
-import { ListItem } from '../Shared';
+import { List, ListItem } from '../Shared';
 import { IUser } from '../../types/interfaces';
 import { connect } from 'react-redux';
 import { IReducerState } from '../../redux/reducers';
+import { IListItem } from '../Shared/List/List';
 
 interface IProps {
 	shouldShow: boolean;
@@ -21,18 +22,19 @@ const MentionSuggester: React.FC<IProps> = props => {
 		>
 			{mountState => (
 				<ScMentionSuggester userList={props.userList} className={mountState}>
-					<ul>
-						{props.userList.map(user => (
-							<ListItem
-								linkTo={`/user/${user.slug}`}
-								image={user.avatar}
-								key={user.slug}
-								color='black'
-							>
-								{user.displayName}
-							</ListItem>
-						))}
-					</ul>
+					<List
+						onSelect={text => console.log(text)}
+						items={props.userList.reduce((acc: IListItem[], currentUser) => {
+							acc.push({
+								linkTo: `/user/${currentUser.slug}`,
+								image: currentUser.avatar,
+								color: 'black',
+								text: currentUser.displayName
+							});
+							return acc;
+						}, [])}
+						withKeyboardNavigation={true}
+					/>
 				</ScMentionSuggester>
 			)}
 		</Transition>

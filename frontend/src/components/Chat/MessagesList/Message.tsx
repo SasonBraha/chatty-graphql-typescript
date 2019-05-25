@@ -114,28 +114,23 @@ class Message extends Component<IProps, IState> {
 	renderText = () => {
 		const { message } = this.props;
 		const { messageBody } = this.state;
+
 		if (message.userMentions && message.userMentions.length) {
-			let updatedText = null;
 			const mentionRegex = new RegExp('(@[\\wא-ת-_]+)', 'g');
-			updatedText = reactStringReplace(
-				messageBody,
-				mentionRegex,
-				(match, i) => {
-					const userDataIndex = message.userMentions.findIndex(
-						mention => mention.displayName === match.slice(1)
+			return reactStringReplace(messageBody, mentionRegex, (match, i) => {
+				const userDataIndex = message.userMentions.findIndex(
+					mention => mention.displayName === match.slice(1)
+				);
+				if (userDataIndex !== -1) {
+					const userData = message.userMentions[userDataIndex];
+					return (
+						<ScMention key={i} to={`/user/${userData.slug}`}>
+							{match}
+						</ScMention>
 					);
-					if (userDataIndex !== -1) {
-						const userData = message.userMentions[userDataIndex];
-						return (
-							<ScMention key={i} to={`/user/${userData.slug}`}>
-								{match}
-							</ScMention>
-						);
-					}
-					return match;
 				}
-			);
-			return updatedText;
+				return match;
+			});
 		} else {
 			return message.text;
 		}
@@ -178,7 +173,6 @@ class Message extends Component<IProps, IState> {
 								}
 								html={this.state.messageBody}
 								submitOnEnter={true}
-								disabled={!this.state.isEditable}
 								innerRef={this.editableEl}
 								onBlur={this.handleEditableBlur}
 								isMine={isMine}

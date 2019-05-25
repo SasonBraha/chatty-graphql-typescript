@@ -1,19 +1,11 @@
 import React, { ReactNode } from 'react';
-import styled from 'styled-components/macro';
+import styled, { css } from 'styled-components/macro';
 import { Link } from 'react-router-dom';
 import Ripple from 'react-ink';
-import Icon from './Icon';
+import Icon from '../Icon';
+import { IListItem } from './List';
 
-interface IProps {
-	icon?: string;
-	image?: string;
-	linkTo?: string;
-	hoverBackground: string;
-	color: string;
-	onClick?: () => void;
-	withRipple?: boolean;
-	children?: ReactNode;
-}
+interface IProps extends IListItem {}
 
 const renderSymbol = (props: IProps) => {
 	return props.icon ? (
@@ -24,17 +16,21 @@ const renderSymbol = (props: IProps) => {
 };
 
 const ListItem = (props: IProps) => (
-	<StyledListItem hoverBackground={props.hoverBackground} color={props.color}>
+	<StyledListItem
+		hoverBackground={props.hoverBackground as string}
+		color={props.color}
+		isSelected={props.isSelected as boolean}
+	>
 		{props.linkTo ? (
 			<Link className='ListItem' to={props.linkTo}>
 				{renderSymbol(props)}
-				{props.children}
+				{props.text}
 				{props.withRipple ? <Ripple /> : null}
 			</Link>
 		) : (
 			<div className='ListItem' onClick={props.onClick}>
 				{renderSymbol(props)}
-				{props.children}
+				{props.text}
 				{props.withRipple ? <Ripple /> : null}
 			</div>
 		)}
@@ -46,7 +42,11 @@ ListItem.defaultProps = {
 	color: ''
 };
 
-const StyledListItem = styled('li')<{ hoverBackground: string; color: string }>`
+const StyledListItem = styled('li')<{
+	hoverBackground: string;
+	color: string;
+	isSelected: boolean;
+}>`
 	transition: 0.3s;
 	position: relative;
 	color: ${props => (props.color ? props.color : props.theme.gray10)};
@@ -58,6 +58,12 @@ const StyledListItem = styled('li')<{ hoverBackground: string; color: string }>`
 				? 'rgba(255, 255, 255, .1)'
 				: 'rgba(0, 0, 0, .1)'};
 	}
+
+	${({ isSelected }) =>
+		isSelected &&
+		css`
+			background: red;
+		`}
 
 	.ListItem {
 		display: flex;

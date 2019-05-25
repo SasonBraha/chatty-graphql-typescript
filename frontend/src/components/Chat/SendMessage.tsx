@@ -11,6 +11,7 @@ import { CrudEnum } from '../../types/enums';
 import { InputTrigger } from '../Shared';
 import { setMentionSuggester } from '../../redux/actions';
 import { connect } from 'react-redux';
+import MentionSuggester from './MentionSuggester';
 
 const SEND_MESSAGE_MUTATION = gql`
 	mutation($chatSlug: String!, $text: String!) {
