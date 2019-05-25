@@ -1,6 +1,7 @@
 import React, { ReactNode, useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
 import ListItem from './ListItem';
+import { KeyCodeEnum } from '../../../types/enums';
 
 export interface IListItem {
 	icon?: string;
@@ -29,21 +30,17 @@ const handleKeyDown = (
 	setSelectedIndex: React.Dispatch<React.SetStateAction<number>>
 ) => {
 	if (props.withKeyboardNavigation) {
-		const ARROW_UP_KEYCODE = 38;
-		const ARROW_DOWN_KEYCODE = 40;
-		const ENTER_KEY_CODE = 13;
-
 		switch (e.which) {
-			case ARROW_UP_KEYCODE:
+			case KeyCodeEnum.ARROW_UP:
 				if (selectedIndex !== 0) setSelectedIndex(selectedIndex - 1);
 				break;
 
-			case ARROW_DOWN_KEYCODE:
+			case KeyCodeEnum.ARROW_DOWN:
 				if (selectedIndex < props.items.length - 1)
 					setSelectedIndex(selectedIndex + 1);
 				break;
 
-			case ENTER_KEY_CODE:
+			case KeyCodeEnum.ENTER:
 				typeof props.onSelect === 'function' &&
 					props.onSelect(props.items[selectedIndex].text as string);
 				break;
@@ -68,7 +65,11 @@ const List: React.FC<IProps> = props => {
 			tabIndex={0}
 		>
 			{props.items.map((item, i) => (
-				<ListItem key={i} {...item} isSelected={i === selectedIndex} />
+				<ListItem
+					key={i}
+					{...item}
+					isSelected={props.withKeyboardNavigation && i === selectedIndex}
+				/>
 			))}
 		</ScList>
 	);

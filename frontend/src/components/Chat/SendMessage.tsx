@@ -110,49 +110,57 @@ const SendMessage: React.FC<IProps> = props => {
 	} = props;
 
 	return (
-		<ScForm onSubmit={handleSubmit}>
-			<ScAttachLabel>
-				<FileInput
-					maxFileSize={5000}
-					onChange={(file: File | null) => {
-						setFilePreview(file);
-						setFieldValue('file', file);
+		<>
+			<ScForm onSubmit={handleSubmit}>
+				<ScAttachLabel>
+					<FileInput
+						maxFileSize={5000}
+						onChange={(file: File | null) => {
+							setFilePreview(file);
+							setFieldValue('file', file);
+						}}
+						onBlur={handleBlur}
+					/>
+					<ScAttachIcon icon='icon-paperclip' />
+				</ScAttachLabel>
+
+				<ScInputTrigger
+					triggerSymbol='@'
+					typeCallbackDebounceRate={200}
+					onType={async data => {
+						const userData = await props.client.mutate({
+							mutation: SEARCH_USERS_MUTATION,
+							variables: {
+								displayName: data.value,
+								limit: 5
+							}
+						});
+
+						props.setMentionSuggester(true, userData.data.users.userList);
 					}}
-					onBlur={handleBlur}
-				/>
-				<ScAttachIcon icon='icon-paperclip' />
-			</ScAttachLabel>
-
-			<ScInputTrigger
-				triggerSymbol='@'
-				typeCallbackDebounceRate={400}
-				onType={async data => {
-					const userData = await props.client.mutate({
-						mutation: SEARCH_USERS_MUTATION,
-						variables: {
-							displayName: data.value,
-							limit: 5
-						}
-					});
-
-					props.setMentionSuggester(true, userData.data.users.userList);
+					onCancel={() => props.setMentionSuggester(false, [])}
+				>
+					<ScMessageInput
+						autoComplete='off'
+						type='text'
+						value={values.text}
+						name='text'
+						onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+							handleFormikChange(e);
+							handleChange(isTyping, setIsTyping, props, values.text);
+						}}
+						onBlur={handleBlur}
+						placeholder='הכנס הודעה ולחץ Enter'
+					/>
+				</ScInputTrigger>
+			</ScForm>
+			<MentionSuggester
+				onSelect={(text: string) => {
+					setFieldValue('text', `${values.text}${text}`);
+					props.setMentionSuggester(false, []);
 				}}
-				onCancel={() => props.setMentionSuggester(false, [])}
-			>
-				<ScMessageInput
-					autoComplete='off'
-					type='text'
-					value={values.text}
-					name='text'
-					onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-						handleFormikChange(e);
-						handleChange(isTyping, setIsTyping, props, values.text);
-					}}
-					onBlur={handleBlur}
-					placeholder='הכנס הודעה ולחץ Enter'
-				/>
-			</ScInputTrigger>
-		</ScForm>
+			/>
+		</>
 	);
 };
 

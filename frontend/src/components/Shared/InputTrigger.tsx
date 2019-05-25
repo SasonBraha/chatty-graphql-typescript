@@ -1,4 +1,5 @@
 import React, { ReactNode, useState } from 'react';
+import { KeyCodeEnum } from '../../types/enums';
 
 interface ITriggerData {
 	start: number;
@@ -38,8 +39,6 @@ const InputTrigger: React.FC<IProps> = props => {
 	return (
 		<div
 			onKeyUp={async e => {
-				const SPACE_KEY_CODE = 32;
-				const BACKSPACE_KEY_CODE = 8;
 				const TRIGGER_SYMBOL_KEY_CODE =
 					supportedTriggerSymbols[props.triggerSymbol];
 				const eventTarget = e.target as HTMLInputElement;
@@ -56,7 +55,7 @@ const InputTrigger: React.FC<IProps> = props => {
 					}
 				} else {
 					if (
-						which === BACKSPACE_KEY_CODE &&
+						which === KeyCodeEnum.BACKSPACE &&
 						selectionStart! < triggerStartIndex
 					) {
 						setIsTriggered(false);
@@ -64,7 +63,7 @@ const InputTrigger: React.FC<IProps> = props => {
 						return;
 					}
 
-					if (which === SPACE_KEY_CODE) {
+					if (which === KeyCodeEnum.SPACE) {
 						setIsTriggered(false);
 						typeof props.onCancel === 'function' && props.onCancel();
 						return;

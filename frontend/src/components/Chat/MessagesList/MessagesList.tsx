@@ -10,7 +10,6 @@ import MessageContextMenu from './MessageContextMenu';
 import { withApollo } from 'react-apollo';
 import { ApolloClient } from 'apollo-client';
 import client from '../../../apollo/client';
-import MentionSuggester from '../MentionSuggester';
 
 interface IProps {
 	currentUser?: IUser | null;
@@ -227,7 +226,6 @@ class MessagesList extends Component<IProps, IState> {
 						})
 					}
 				/>
-				<MentionSuggester />
 			</ScMessagesList>
 		);
 	}

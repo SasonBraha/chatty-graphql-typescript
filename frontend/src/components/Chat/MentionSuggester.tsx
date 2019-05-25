@@ -10,6 +10,7 @@ import { IListItem } from '../Shared/List/List';
 interface IProps {
 	shouldShow: boolean;
 	userList: IUser[];
+	onSelect?: (value: string) => any | void;
 }
 
 const MentionSuggester: React.FC<IProps> = props => {
@@ -23,13 +24,14 @@ const MentionSuggester: React.FC<IProps> = props => {
 			{mountState => (
 				<ScMentionSuggester userList={props.userList} className={mountState}>
 					<List
-						onSelect={text => console.log(text)}
 						items={props.userList.reduce((acc: IListItem[], currentUser) => {
 							acc.push({
-								linkTo: `/user/${currentUser.slug}`,
 								image: currentUser.avatar,
 								color: 'black',
-								text: currentUser.displayName
+								text: currentUser.displayName,
+								onClick: () =>
+									typeof props.onSelect === 'function' &&
+									props.onSelect(currentUser.displayName)
 							});
 							return acc;
 						}, [])}

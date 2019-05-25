@@ -112,6 +112,6 @@ export default (state = initialState, action: IAction): IReducerState =>
 				break;
 
 			default:
-				return state;
+				return draft;
 		}
 	});
