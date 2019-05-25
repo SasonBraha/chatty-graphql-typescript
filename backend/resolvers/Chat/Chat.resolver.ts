@@ -164,13 +164,14 @@ export default class ChatResolver {
 		let userMentions: IMention[] = [];
 		if (mentions) {
 			const usernames = mentions.map(mention => mention.slice(1));
-			const usersData = await User.find({ displayName: { $in: usernames } })
-				.select('displayName _id slug')
-				.lean();
+			const usersData = await User.find({
+				displayName: { $in: usernames }
+			}).select('displayName _id slug');
 
 			if (usersData.length) {
 				userMentions = usersData.reduce(
-					(acc: IMention[], { displayName, slug, _id }) => {
+					(acc: IMention[], currentUser: IUser) => {
+						const { displayName, slug, _id } = currentUser;
 						const startIndex = sanitizedText.indexOf(displayName) - 1;
 						const endIndex = startIndex + displayName.length + 1;
 

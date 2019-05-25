@@ -8,7 +8,7 @@ export interface IListItem {
 	image?: string;
 	linkTo?: string;
 	hoverBackground?: string;
-	color: string;
+	color?: string;
 	onClick?: () => void;
 	withRipple?: boolean;
 	text?: string;

@@ -7,6 +7,7 @@ import { setAuthModal, setNavState } from '../../redux/actions';
 import Ripple from 'react-ink';
 import { IUser } from '../../types/interfaces';
 import { IReducerState } from '../../redux/reducers';
+import Icon from '../Shared/Icon';
 
 interface IProps {
 	setAuthModal: typeof setAuthModal;
@@ -19,12 +20,14 @@ const headerDropdownItmes = (props: IProps) => {
 		{
 			icon: 'icon-user',
 			text: 'הפרופיל שלי',
-			to: `/user/${props.currentUser!.slug}`
+			linkTo: `/user/${props.currentUser!.slug}`,
+			withRipple: true
 		},
 		{
 			icon: 'icon-cog',
 			text: 'הגדרות',
-			to: '/user/settings'
+			linkTo: '/user/settings',
+			withRipple: true
 		},
 		{
 			icon: 'icon-sign-out',
@@ -32,14 +35,18 @@ const headerDropdownItmes = (props: IProps) => {
 			onClick: () => {
 				localStorage.removeItem(process.env.REACT_APP_LS_AUTH_TOKEN);
 				window.location.href = '/';
-			}
+			},
+			withRipple: true
 		}
 	];
 };
 
 const Header: React.FC<IProps> = props => {
 	const { setAuthModal, setNavState, currentUser } = props;
-	const [isHeaderDropdownOpen, setHeaderDropdown] = useState(false);
+	const [isProfileDropdownOpen, setProfileDropdown] = useState(false);
+	const [isNotificationsDropdownOpen, setNotificationsDropdown] = useState(
+		false
+	);
 
 	return (
 		<ScHeader>
@@ -48,27 +55,28 @@ const Header: React.FC<IProps> = props => {
 
 			{currentUser ? (
 				<ScHeaderMenu>
-					<ScProfileDropdown onClick={() => setHeaderDropdown(true)}>
+					<ScNotificationsDropdown
+						onClick={() => setNotificationsDropdown(true)}
+					>
+						<Icon icon='icon-notifications' color='white' />
+						<Dropdown
+							resetDropdown={() => setNotificationsDropdown(false)}
+							isOpen={isNotificationsDropdownOpen}
+						>
+							<div>Hello!</div>
+							<div>Hello!</div>
+							<div>Hello!</div>
+							<div>Hello!</div>
+						</Dropdown>
+					</ScNotificationsDropdown>
+
+					<ScProfileDropdown onClick={() => setProfileDropdown(true)}>
 						<ScProfileImg src={currentUser.avatar} />
 						<Dropdown
-							isOpen={isHeaderDropdownOpen}
-							resetDropdown={() => setHeaderDropdown(false)}
+							isOpen={isProfileDropdownOpen}
+							resetDropdown={() => setProfileDropdown(false)}
 						>
-							<ul>
-								{headerDropdownItmes(props).map(
-									({ icon, text, onClick, to }, i) => (
-										<ListItem
-											key={i}
-											icon={icon}
-											linkTo={to}
-											onClick={onClick}
-											withRipple
-										>
-											{text}
-										</ListItem>
-									)
-								)}
-							</ul>
+							<List items={headerDropdownItmes(props)} />
 						</Dropdown>
 					</ScProfileDropdown>
 				</ScHeaderMenu>
@@ -121,6 +129,11 @@ const ScAuthBtn = styled(Button)`
 
 const ScHeaderMenu = styled.div`
 	display: flex;
+`;
+
+const ScNotificationsDropdown = styled.div`
+	cursor: pointer;
+	position: relative;
 `;
 
 const ScProfileDropdown = styled.div`

@@ -2,30 +2,26 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { IReducerState } from '../../redux/reducers';
 import styled from 'styled-components/macro';
-import { ListItem } from '../Shared';
+import { List } from '../Shared';
 
 interface IProps {
 	isNavOpen: boolean;
 }
 
-const navItems = [{ icon: 'icon-comments-o', to: '/chat', text: `צ'אט` }];
+const navItems = [
+	{
+		icon: 'icon-comments-o',
+		linkTo: '/chat',
+		text: `צ'אט`,
+		color: 'white',
+		withRipple: true,
+		hoverBackground: 'light'
+	}
+];
 
 const Nav = (props: IProps) => (
 	<ScNav isNavOpen={props.isNavOpen}>
-		<ul>
-			{navItems.map(({ icon, to, text }, i) => (
-				<ListItem
-					key={i}
-					icon={icon}
-					linkTo={to}
-					hoverBackground='light'
-					color='white'
-					withRipple
-				>
-					{text}
-				</ListItem>
-			))}
-		</ul>
+		<List items={navItems} />
 	</ScNav>
 );
 

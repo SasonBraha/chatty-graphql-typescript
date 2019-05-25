@@ -18,7 +18,7 @@ const renderSymbol = (props: IProps) => {
 const ListItem = (props: IProps) => (
 	<StyledListItem
 		hoverBackground={props.hoverBackground as string}
-		color={props.color}
+		color={props.color as string}
 		isSelected={props.isSelected as boolean}
 	>
 		{props.linkTo ? (
