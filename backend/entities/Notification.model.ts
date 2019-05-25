@@ -7,6 +7,8 @@ export interface INotification extends Document {
 	sender: IUser | ObjectID;
 	receiver: IUser | ObjectID;
 	content: string;
+	type: string;
+	ref: string;
 	isRead: boolean;
 }
 
@@ -14,13 +16,20 @@ const NotificationSchema = new Schema(
 	{
 		sender: {
 			type: Schema.Types.ObjectId,
-			ref: 'User'
+			ref: 'User',
+			required: true
 		},
 		receiver: {
 			type: Schema.Types.ObjectId,
-			ref: 'User'
+			ref: 'User',
+			required: true
 		},
-		content: {
+		content: String,
+		type: {
+			type: String,
+			required: true
+		},
+		ref: {
 			type: String,
 			required: true
 		},
@@ -40,19 +49,25 @@ export class NotificationEntity {
 	@Field(() => UserEntity)
 	receiver: IUser;
 
-	@Field()
+	@Field({ nullable: true })
 	content: string;
+
+	@Field()
+	type: string;
+
+	@Field()
+	ref: string;
 
 	@Field()
 	isRead: boolean;
 }
 
 // @ts-ignore
-NotificationSchema.post('find', (notifications: Array<INotification>) => {
+NotificationSchema.post('find', async (notifications: Array<INotification>) => {
 	for (let notification of notifications) {
 		if (!notification.isRead) {
 			notification.isRead = true;
-			notification.save();
+			await notification.save();
 		}
 	}
 });

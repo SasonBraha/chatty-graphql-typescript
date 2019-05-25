@@ -1,5 +1,6 @@
 import React from 'react';
 import ContentEditable from 'react-contenteditable';
+import { KeyCodeEnum } from '../../types/enums';
 
 interface IProps {
 	onCancel?: (...args: any[]) => any;
@@ -16,8 +17,8 @@ interface IProps {
 }
 
 const handleKeyDown = (e: React.KeyboardEvent, props: IProps) => {
-	const isEnterPressed = e.which === 13;
-	const isEscapePressed = e.which === 27;
+	const isEnterPressed = e.which === KeyCodeEnum.ENTER;
+	const isEscapePressed = e.which === KeyCodeEnum.ESCAPE;
 
 	switch (true) {
 		case isEnterPressed &&

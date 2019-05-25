@@ -18,6 +18,7 @@ import User, {
 	IUserSchemaMethods,
 	UserEntity
 } from '../../entities/User.model';
+import Notification, { INotification } from '../../entities/Notification.model';
 import Message, { IMessage, MessageEntity } from '../../entities/Message.model';
 import { ObjectID } from 'bson';
 import { CreateChatInput, IFileInput } from './chat.resolver.inputs';
@@ -27,7 +28,6 @@ import { GraphQLUpload } from 'apollo-server-express';
 import { uploadFile } from '../../utils/files';
 import { translate } from '../../utils';
 import { ErrorTypesEnum } from '../../utils/errors';
-
 import { Authenticated, WithPermission } from '../../middlewares';
 import { ChatPermissionTypesEnum } from '../../permissions';
 import withPermission from '../../middlewares/WithPermission';
@@ -41,6 +41,7 @@ import { UpdateMessageInput } from './chat.resolver.inputs';
 import { CrudEnum } from '../../types/enums';
 import * as sanitizeHtml from 'sanitize-html';
 import { IMention } from '../../entities/Mention.model';
+import { generateUserMentionedNotification } from '../../utils/notifications';
 
 enum SubscriptionTypesEnum {
 	NEW_MESSAGE = 'NEW_MESSAGE',
@@ -162,9 +163,11 @@ export default class ChatResolver {
 		const mentionUserRegex = new RegExp('(@[\\wא-ת-_]+)', 'g');
 		const mentions = sanitizedText.match(mentionUserRegex);
 		let userMentions: IMention[] = [];
+		let usersData: IUser[] = [];
+
 		if (mentions) {
 			const usernames = mentions.map(mention => mention.slice(1));
-			const usersData = await User.find({
+			usersData = await User.find({
 				displayName: { $in: usernames }
 			}).select('displayName _id slug');
 
@@ -209,7 +212,7 @@ export default class ChatResolver {
 			message: {
 				...messageData,
 				createdAt: new Date(),
-				isClientDeleted: null
+				isClientDeleted: false
 			},
 			updateType: SubscriptionTypesEnum.NEW_MESSAGE,
 			chatSlug
@@ -231,6 +234,16 @@ export default class ChatResolver {
 				$set: { lastMessage: newMessage.text }
 			}
 		);
+
+		usersData.forEach(async ({ _id }) => {
+			await Notification.create(
+				generateUserMentionedNotification(
+					user._id,
+					_id,
+					`${chatSlug}/${newMessage._id}`
+				)
+			);
+		});
 
 		return newMessage;
 	}
