@@ -4,6 +4,10 @@ import { Authenticated, WithPermission } from '../../middlewares';
 import { SearchUsersOutput } from './user.resolver.outputs';
 import * as jwt from 'jsonwebtoken';
 import { UserPermissionTypesEnum } from '../../permissions';
+import Notification, {
+	INotification,
+	NotificationEntity
+} from '../../entities/Notification.model';
 
 @Resolver(UserEntity)
 export default class UserResolver {
@@ -36,5 +40,14 @@ export default class UserResolver {
 			userList,
 			searchToken
 		};
+	}
+
+	@UseMiddleware(Authenticated)
+	@Mutation(returns => [NotificationEntity])
+	async notifications(@Ctx('user') user: IUser): Promise<INotification[]> {
+		const notifications = await Notification.find({
+			receiver: user._id
+		}).populate('sender', 'displayName slug');
+		return notifications;
 	}
 }

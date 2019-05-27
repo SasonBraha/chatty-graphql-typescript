@@ -49,7 +49,8 @@ enum SubscriptionTypesEnum {
 	MESSAGE_DELETED = 'MESSAGE_DELETED',
 	MESSAGE_EDITED = 'MESSAGE_EDITED',
 	UPDATE_TYPING_USERS = 'UPDATE_TYPING_USERS',
-	UPDATE_ACTIVE_USERS = 'UPDATE_ACTIVE_USERS'
+	UPDATE_ACTIVE_USERS = 'UPDATE_ACTIVE_USERS',
+	USER_MENTIONED = 'USER_MENTIONED'
 }
 
 @Resolver(ChatEntity)
@@ -236,13 +237,20 @@ export default class ChatResolver {
 		);
 
 		usersData.forEach(async ({ _id }) => {
-			await Notification.create(
-				generateUserMentionedNotification(
-					user._id,
-					_id,
-					`${chatSlug}/${newMessage._id}`
-				)
-			);
+			if (user._id !== _id) {
+				const notification = await Notification.create(
+					generateUserMentionedNotification(
+						user._id,
+						_id,
+						`${chatSlug}/${newMessage._id}`
+					)
+				);
+
+				pubSub.publish(SubscriptionTypesEnum.USER_MENTIONED, {
+					notification,
+					userId: _id
+				});
+			}
 		});
 
 		return newMessage;
