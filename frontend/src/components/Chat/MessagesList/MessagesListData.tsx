@@ -6,6 +6,7 @@ import { IChatProps } from '../Chat';
 import { IChat, IMessage } from '../../../types/interfaces';
 import ApolloClient from 'apollo-client';
 import produce from 'immer';
+import { useQuery } from 'react-apollo-hooks';
 
 const MESSAGE_DATA_FRAGMENT = `
 	_id

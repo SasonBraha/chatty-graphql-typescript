@@ -7,6 +7,7 @@ import styled from 'styled-components/macro';
 import RoomsListLoader from './RoomsListLoader';
 import { IReducerState } from '../../../redux/reducers';
 import { connect } from 'react-redux';
+import { useQuery } from 'react-apollo-hooks';
 
 const ROOMS_LIST_QUERY = gql`
 	query {
@@ -30,33 +31,26 @@ interface IProps {
 	};
 }
 
-const RoomsList = (props: IProps) => (
-	<Query query={ROOMS_LIST_QUERY}>
-		{({ loading, data }) => {
-			return (
-				<ScRoomsList>
-					{loading
-						? Array.from({ length: 15 }).map((_, i) => (
-								<RoomsListLoader key={i} />
-						  ))
-						: data.roomsList.map((room: IChat) => (
-								<RoomsListItem
-									selected={room.slug === props.chatSlug}
-									room={room}
-									key={room.slug}
-									chatSlug={room.slug}
-									typingUsers={
-										props.typingUsers[room.slug]
-											? props.typingUsers[room.slug]
-											: []
-									}
-								/>
-						  ))}
-				</ScRoomsList>
-			);
-		}}
-	</Query>
-);
+const RoomsList: React.FC<IProps> = props => {
+	const { data, loading } = useQuery(ROOMS_LIST_QUERY);
+	return (
+		<ScRoomsList>
+			{loading
+				? Array.from({ length: 15 }).map((_, i) => <RoomsListLoader key={i} />)
+				: data.roomsList.map((room: IChat) => (
+						<RoomsListItem
+							selected={room.slug === props.chatSlug}
+							room={room}
+							key={room.slug}
+							chatSlug={room.slug}
+							typingUsers={
+								props.typingUsers[room.slug] ? props.typingUsers[room.slug] : []
+							}
+						/>
+				  ))}
+		</ScRoomsList>
+	);
+};
 
 const ScRoomsList = styled.div`
 	background: ${props => props.theme.roomsListBackground};

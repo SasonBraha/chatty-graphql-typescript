@@ -1,14 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import gql from 'graphql-tag';
-import Subscription from 'react-apollo/Subscriptions';
 import { IUser } from '../../types/interfaces';
 import { Link } from 'react-router-dom';
-import { withApollo } from 'react-apollo';
 import ApolloClient from 'apollo-client';
 import { connect } from 'react-redux';
 import { IReducerState } from '../../redux/reducers';
 import { CrudEnum } from '../../types/enums';
+import { useApolloClient, useSubscription } from 'react-apollo-hooks';
 
 const ACTIVE_USERS_SUBSCRIPTION = gql`
 	subscription($chatSlug: String!) {
@@ -27,7 +26,6 @@ const UPDATE_ACTIVE_USERS = gql`
 `;
 
 interface IProps {
-	client: ApolloClient<any>;
 	currentUser: IUser | null;
 	chatSlug: string;
 }
@@ -35,9 +33,9 @@ interface IProps {
 const updateActiveUsers = (
 	crudType: string,
 	chatSlug: string,
-	props: IProps
+	client: ApolloClient<any>
 ) => {
-	props.client!.mutate({
+	client!.mutate({
 		variables: {
 			chatSlug,
 			crudType
@@ -48,33 +46,29 @@ const updateActiveUsers = (
 
 const ActiveUsers: React.FC<IProps> = props => {
 	const [previousSlug, setPreviousSlug] = useState(props.chatSlug);
+	const client = useApolloClient();
+	const {
+		data = { subscribeToActiveUsersUpdates: [] },
+		loading
+	} = useSubscription(ACTIVE_USERS_SUBSCRIPTION, {
+		variables: { chatSlug: props.chatSlug }
+	});
 	useEffect(() => {
 		const { chatSlug } = props;
-		updateActiveUsers(CrudEnum.DELETE, previousSlug, props);
-		updateActiveUsers(CrudEnum.UPDATE, chatSlug, props);
+		updateActiveUsers(CrudEnum.DELETE, previousSlug, client);
+		updateActiveUsers(CrudEnum.UPDATE, chatSlug, client);
 		setPreviousSlug(chatSlug);
-
-		return () => updateActiveUsers(CrudEnum.DELETE, chatSlug, props);
 	}, [props.chatSlug]);
 
 	return (
 		<ScActiveUsers>
-			<Subscription
-				subscription={ACTIVE_USERS_SUBSCRIPTION}
-				variables={{ chatSlug: props.chatSlug }}
-			>
-				{({ data = { subscribeToActiveUsersUpdates: [] }, loading }) => {
-					return data.subscribeToActiveUsersUpdates.map(
-						(user: IUser, i: number) => (
-							<Link to={`/user/${user.slug}`} key={i}>
-								<ScActiveUser>
-									<ScAvatar src={user.avatar} alt={user.displayName} />
-								</ScActiveUser>
-							</Link>
-						)
-					);
-				}}
-			</Subscription>
+			{data.subscribeToActiveUsersUpdates.map((user: IUser, i: number) => (
+				<Link to={`/user/${user.slug}`} key={i}>
+					<ScActiveUser>
+						<ScAvatar src={user.avatar} alt={user.displayName} />
+					</ScActiveUser>
+				</Link>
+			))}
 		</ScActiveUsers>
 	);
 };
@@ -130,4 +124,4 @@ const mapStateToProps = ({
 export default connect(
 	mapStateToProps,
 	null
-)(withApollo(ActiveUsers));
+)(ActiveUsers);

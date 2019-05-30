@@ -59,6 +59,7 @@ type Mutation {
     login(data: LoginInput!): String
     loginWithGoogle(token: String!): String
     me: UserEntity!
+    notifications: [NotificationEntity!]!
     postMessage(chatSlug: String!, text: String!): MessageEntity!
     register(data: RegisterInput!): Boolean!
     updateActiveUsers(chatSlug: String!, crudType: String!): Boolean
@@ -66,6 +67,15 @@ type Mutation {
     updateTypingUsers(chatSlug: String!, crudType: String!): Boolean
     uploadMessageFile(chatSlug: String!, file: Upload!, messageId: String!): Boolean!
     users(displayName: String!, limit: Int): SearchUsersOutput!
+}
+
+type NotificationEntity {
+    content: String
+    isRead: Boolean!
+    receiver: UserEntity!
+    ref: String!
+    sender: UserEntity!
+    type: String!
 }
 
 type Query {

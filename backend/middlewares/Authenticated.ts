@@ -1,9 +1,9 @@
 import { MiddlewareFn } from 'type-graphql';
 import { ErrorTypesEnum } from '../utils/errors';
+import { IContext } from '../types/interfaces';
 
 export const Authenticated: MiddlewareFn = async ({ context }, next) => {
-	// @ts-ignore
-	if (!context.user) {
+	if (!(context as IContext).user) {
 		throw new Error(ErrorTypesEnum.UNAUTHORIZED);
 	}
 
