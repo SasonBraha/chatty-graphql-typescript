@@ -10,6 +10,7 @@ import Spinner from './Spinner';
 import Editable from './Editable';
 import GoogleLogin from './GoogleLogin';
 import InputTrigger from './InputTrigger';
+import Scrollable from './Scrollable';
 
 export {
 	Burger,
@@ -23,5 +24,6 @@ export {
 	Spinner,
 	Editable,
 	GoogleLogin,
-	InputTrigger
+	InputTrigger,
+	Scrollable
 };

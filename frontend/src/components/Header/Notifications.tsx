@@ -3,6 +3,8 @@ import gql from 'graphql-tag';
 import { useApolloClient } from 'react-apollo-hooks';
 import { INotification } from '../../types/interfaces';
 import { ListItem } from '../Shared';
+import { Link } from 'react-router-dom';
+import styled from 'styled-components/macro';
 
 const NOTIFICATIONS_QUERY = gql`
 	query {
@@ -31,10 +33,16 @@ const convertNotificationToListItemData = (notification: INotification) => {
 		case NotificationTypesEnum.USER_MENTION:
 			return {
 				icon: 'icon-at-sign',
-				text: `
-					המשתמש ${notification.sender.displayName} תייג אותך 
-				`,
-				linkTo: ''
+				linkTo: '',
+				children: (
+					<>
+						המשתמש
+						<ScUsername to={`/user/${notification.sender.slug}`}>
+							{notification.sender.displayName}
+						</ScUsername>
+						תייג אותך בהודעה
+					</>
+				)
 			};
 			break;
 	}
@@ -67,5 +75,14 @@ const Notifications: React.FC<IProps> = props => {
 		</ul>
 	);
 };
+
+const ScUsername = styled(Link)`
+	font-weight: bold;
+	margin: 0 0.5rem;
+
+	&:hover {
+		text-decoration: underline;
+	}
+`;
 
 export default Notifications;
