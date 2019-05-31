@@ -1,7 +1,7 @@
 import { Document, Schema, model } from 'mongoose';
 import ObjectID = Schema.Types.ObjectId;
 import { IUser, UserEntity } from './User.model';
-import { ObjectType, Field } from 'type-graphql';
+import { ObjectType, Field, ID } from 'type-graphql';
 
 export interface INotification extends Document {
 	sender: IUser | ObjectID;
@@ -43,6 +43,8 @@ const NotificationSchema = new Schema(
 
 @ObjectType()
 export class NotificationEntity {
+	@Field(() => ID) _id: string;
+
 	@Field(() => UserEntity)
 	sender: IUser;
 

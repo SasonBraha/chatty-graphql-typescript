@@ -1,4 +1,12 @@
-import { Arg, Ctx, Int, Mutation, Resolver, UseMiddleware } from 'type-graphql';
+import {
+	Arg,
+	Ctx,
+	Int,
+	Mutation,
+	Query,
+	Resolver,
+	UseMiddleware
+} from 'type-graphql';
 import User, { IUser, UserEntity } from '../../entities/User.model';
 import { Authenticated, WithPermission } from '../../middlewares';
 import { SearchUsersOutput } from './user.resolver.outputs';
@@ -12,13 +20,13 @@ import Notification, {
 @Resolver(UserEntity)
 export default class UserResolver {
 	@UseMiddleware(Authenticated)
-	@Mutation(returns => UserEntity)
+	@Query(returns => UserEntity)
 	me(@Ctx('user') user: IUser): IUser {
 		return user;
 	}
 
 	@UseMiddleware(WithPermission([UserPermissionTypesEnum.SEARCH_USERS]))
-	@Mutation(returns => SearchUsersOutput)
+	@Query(returns => SearchUsersOutput)
 	async users(
 		@Arg('displayName') displayName: string,
 		@Arg('limit', () => Int, { nullable: true }) limit: number
@@ -43,11 +51,11 @@ export default class UserResolver {
 	}
 
 	@UseMiddleware(Authenticated)
-	@Mutation(returns => [NotificationEntity])
+	@Query(returns => [NotificationEntity])
 	async notifications(@Ctx('user') user: IUser): Promise<INotification[]> {
 		const notifications = await Notification.find({
 			receiver: user._id
 		}).populate('sender', 'displayName slug');
-		return notifications;
+		return notifications.reverse();
 	}
 }

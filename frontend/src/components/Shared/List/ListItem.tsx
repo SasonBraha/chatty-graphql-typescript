@@ -24,13 +24,13 @@ const ListItem = (props: IProps) => (
 		{props.linkTo ? (
 			<Link className='ListItem' to={props.linkTo}>
 				{renderSymbol(props)}
-				{props.text}
+				{props.children ? props.children : props.text}
 				{props.withRipple ? <Ripple /> : null}
 			</Link>
 		) : (
 			<div className='ListItem' onClick={props.onClick}>
 				{renderSymbol(props)}
-				{props.text}
+				{props.children ? props.children : props.text}
 				{props.withRipple ? <Ripple /> : null}
 			</div>
 		)}

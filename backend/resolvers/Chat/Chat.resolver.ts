@@ -455,16 +455,18 @@ export default class ChatResolver {
 		return JSON.stringify(subscriptionPayload);
 	}
 
-	//prettier-ignore
 	@UseMiddleware(Authenticated)
 	@Subscription(returns => UserTypingOutput, {
 		topics: SubscriptionTypesEnum.UPDATE_TYPING_USERS,
 		defaultValue: null,
 		filter: ({ payload, context }) => payload.user.slug !== context.user.slug
 	})
-	subscribeToTypingUsersUpdates(
-		@Root() payloadData: { chatSlug: string; user: IUser; crudType: string },
-	) {
+	subscribeToTypingUsersUpdates(@Root()
+	payloadData: {
+		chatSlug: string;
+		user: IUser;
+		crudType: string;
+	}) {
 		return payloadData;
 	}
 

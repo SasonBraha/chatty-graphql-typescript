@@ -42,14 +42,13 @@ const StyledDropdown = styled('div')<IProps>`
 	color: ${({ color }) => color};
 	top: ${({ top }) => validCss(top!)};
 	left: ${({ left }) => validCss(left!)};
-	width: ${({ width }) => validCss(width!)};
 	position: absolute;
 	transition: all 0.15s, transform 0.17s, left 0s, top 0s;
 	transform-origin: left top;
 	visibility: hidden;
 	opacity: 0;
 	transform: scale(0.5);
-	min-width: 20rem;
+	min-width: ${({ width }) => validCss(width!)};
 	z-index: 9999;
 	overflow-y: auto;
 	border-radius: 0.3rem;

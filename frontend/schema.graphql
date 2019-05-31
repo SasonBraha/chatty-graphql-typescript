@@ -58,18 +58,16 @@ type Mutation {
     createChat(data: CreateChatInput!): ChatEntity!
     login(data: LoginInput!): String
     loginWithGoogle(token: String!): String
-    me: UserEntity!
-    notifications: [NotificationEntity!]!
     postMessage(chatSlug: String!, text: String!): MessageEntity!
     register(data: RegisterInput!): Boolean!
     updateActiveUsers(chatSlug: String!, crudType: String!): Boolean
     updateMessage(updatePayload: UpdateMessageInput!): Boolean!
     updateTypingUsers(chatSlug: String!, crudType: String!): Boolean
     uploadMessageFile(chatSlug: String!, file: Upload!, messageId: String!): Boolean!
-    users(displayName: String!, limit: Int): SearchUsersOutput!
 }
 
 type NotificationEntity {
+    _id: ID!
     content: String
     isRead: Boolean!
     receiver: UserEntity!
@@ -80,8 +78,11 @@ type NotificationEntity {
 
 type Query {
     chat(chatSlug: String!): ChatEntity!
+    me: UserEntity!
+    notifications: [NotificationEntity!]!
     olderMessages(beforeMessageId: ID!, chatSlug: String!): [MessageEntity!]
     roomsList: [ChatEntity!]!
+    users(displayName: String!, limit: Int): SearchUsersOutput!
 }
 
 type SearchUsersOutput {

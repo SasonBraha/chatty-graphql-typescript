@@ -33,8 +33,8 @@ const UPDATE_TYPING_USERS = gql`
 	}
 `;
 
-const SEARCH_USERS_MUTATION = gql`
-	mutation($limit: Int, $displayName: String!) {
+const SEARCH_USERS_QUERY = gql`
+	query($limit: Int, $displayName: String!) {
 		users(displayName: $displayName, limit: $limit) {
 			searchToken
 			userList {
@@ -128,8 +128,8 @@ const SendMessage: React.FC<IProps> = props => {
 					triggerSymbol='@'
 					typeCallbackDebounceRate={200}
 					onType={async data => {
-						const userData = await props.client.mutate({
-							mutation: SEARCH_USERS_MUTATION,
+						const userData = await props.client.query({
+							query: SEARCH_USERS_QUERY,
 							variables: {
 								displayName: data.value,
 								limit: 5

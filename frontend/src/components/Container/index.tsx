@@ -18,7 +18,6 @@ const Container = (props: IProps) => {
 			} else if (shouldShrink && windowWidth < 992) {
 				setShouldShrink(false);
 			}
-			console.log('called', shouldShrink, windowWidth);
 		};
 	}, [shouldShrink]);
 

@@ -8,6 +8,16 @@ export interface IUser {
 	jwtHandshake: string;
 }
 
+export interface INotification {
+	_id: string;
+	sender: IUser;
+	receiver: IUser;
+	content: string;
+	type: string;
+	ref: string;
+	isRead: boolean;
+}
+
 export interface IChat {
 	name: string;
 	lastMessage: string;
