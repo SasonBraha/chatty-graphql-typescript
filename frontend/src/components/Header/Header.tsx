@@ -64,9 +64,16 @@ const Header: React.FC<IProps> = props => {
 						onClick={() => setNotificationsDropdown(true)}
 					>
 						<Icon icon='icon-notifications' color='white' />
-						<ScUnreadNotifications>
-							{props.notifications.unread}
-						</ScUnreadNotifications>
+						{props.notifications.unread ? (
+							<ScUnreadNotifications>
+								{props.notifications.unread > 9
+									? '+9'
+									: props.notifications.unread}
+							</ScUnreadNotifications>
+						) : (
+							''
+						)}
+
 						<Dropdown
 							resetDropdown={() => setNotificationsDropdown(false)}
 							isOpen={isNotificationsDropdownOpen}
@@ -160,8 +167,8 @@ const ScProfileImg = styled.img`
 
 const ScUnreadNotifications = styled.small`
 	background: red;
-	width: 1.5rem;
-	height: 1.5rem;
+	width: 1.6rem;
+	height: 1.6rem;
 	display: flex;
 	justify-content: center;
 	align-items: center;

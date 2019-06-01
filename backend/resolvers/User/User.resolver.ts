@@ -12,13 +12,17 @@ import {
 } from 'type-graphql';
 import User, { IUser, UserEntity } from '../../entities/User.model';
 import { Authenticated, WithPermission } from '../../middlewares';
-import { SearchUsersOutput } from './user.resolver.outputs';
+import {
+	IUserMentionedOutput,
+	SearchUsersOutput
+} from './user.resolver.outputs';
 import * as jwt from 'jsonwebtoken';
 import { UserPermissionTypesEnum } from '../../permissions';
 import Notification, {
 	INotification,
 	NotificationEntity
 } from '../../entities/Notification.model';
+import { SubscriptionTypesEnum } from '../../types/enums';
 
 @Resolver(UserEntity)
 export default class UserResolver {
@@ -60,6 +64,19 @@ export default class UserResolver {
 			receiver: user._id
 		}).populate('sender', 'displayName slug');
 		return notifications.reverse();
+	}
+
+	@UseMiddleware(Authenticated)
+	@Subscription(returns => String, {
+		topics: SubscriptionTypesEnum.USER_MENTIONED,
+		filter: ({ payload, context }) =>
+			payload.userId.toString() === context.user._id.toString()
+	})
+	userUpdates(
+		@Root() payload: IUserMentionedOutput,
+		@Ctx('user') user: IUser
+	): string {
+		return JSON.stringify(payload);
 	}
 
 	@UseMiddleware(Authenticated)

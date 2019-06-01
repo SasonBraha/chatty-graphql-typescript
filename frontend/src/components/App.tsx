@@ -12,7 +12,7 @@ import { withRouter } from 'react-router-dom';
 import { GenericModal } from './Shared';
 import Routes from './Routes';
 import { Helmet } from 'react-helmet';
-import { useApolloClient } from 'react-apollo-hooks';
+import { useApolloClient, useSubscription } from 'react-apollo-hooks';
 import gql from 'graphql-tag';
 
 const ME_DATA_QUERY = gql`
@@ -23,6 +23,12 @@ const ME_DATA_QUERY = gql`
 	}
 `;
 
+const SUBSCRIBE_TO_USER_UPDATES = gql`
+	subscription {
+		userUpdates
+	}
+`;
+
 interface IProps {
 	setCurrentUser: typeof setCurrentUser;
 	setNotificationsData: typeof setNotificationsData;
@@ -30,6 +36,8 @@ interface IProps {
 
 const App: React.FC<IProps> = props => {
 	const client = useApolloClient();
+	const { data } = useSubscription(SUBSCRIBE_TO_USER_UPDATES);
+
 	useLayoutEffect(() => {
 		const accessToken = localStorage.getItem(
 			process.env.REACT_APP_LS_AUTH_TOKEN
@@ -55,6 +63,10 @@ const App: React.FC<IProps> = props => {
 				});
 			});
 	}, []);
+
+	useEffect(() => {
+		console.log('changed', data);
+	}, [data]);
 
 	return (
 		<>

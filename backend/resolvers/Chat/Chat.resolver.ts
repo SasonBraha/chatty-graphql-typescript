@@ -38,20 +38,10 @@ import {
 	UserTypingOutput
 } from './chat.resolver.output';
 import { UpdateMessageInput } from './chat.resolver.inputs';
-import { CrudEnum } from '../../types/enums';
+import { CrudEnum, SubscriptionTypesEnum } from '../../types/enums';
 import * as sanitizeHtml from 'sanitize-html';
 import { IMention } from '../../entities/Mention.model';
 import { generateUserMentionedNotification } from '../../utils/notifications';
-
-enum SubscriptionTypesEnum {
-	NEW_MESSAGE = 'NEW_MESSAGE',
-	FILE_UPLOADED = 'FILE_UPLOADED',
-	MESSAGE_DELETED = 'MESSAGE_DELETED',
-	MESSAGE_EDITED = 'MESSAGE_EDITED',
-	UPDATE_TYPING_USERS = 'UPDATE_TYPING_USERS',
-	UPDATE_ACTIVE_USERS = 'UPDATE_ACTIVE_USERS',
-	USER_MENTIONED = 'USER_MENTIONED'
-}
 
 @Resolver(ChatEntity)
 export default class ChatResolver {
@@ -237,7 +227,7 @@ export default class ChatResolver {
 		);
 
 		usersData.forEach(async ({ _id }) => {
-			if (user._id !== _id) {
+			if (user._id.toString() !== _id.toString()) {
 				const notification = await Notification.create(
 					generateUserMentionedNotification(
 						user._id,
