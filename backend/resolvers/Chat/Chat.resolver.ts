@@ -38,7 +38,11 @@ import {
 	UserTypingOutput
 } from './chat.resolver.output';
 import { UpdateMessageInput } from './chat.resolver.inputs';
-import { CrudEnum, SubscriptionTypesEnum } from '../../types/enums';
+import {
+	CrudEnum,
+	SubscriptionTypesEnum,
+	UserUpdatesEnum
+} from '../../types/enums';
 import * as sanitizeHtml from 'sanitize-html';
 import { IMention } from '../../entities/Mention.model';
 import { generateUserMentionedNotification } from '../../utils/notifications';
@@ -238,7 +242,8 @@ export default class ChatResolver {
 
 				pubSub.publish(SubscriptionTypesEnum.USER_MENTIONED, {
 					notification,
-					userId: _id
+					userId: _id,
+					type: UserUpdatesEnum.NEW_NOTIFICATION
 				});
 			}
 		});

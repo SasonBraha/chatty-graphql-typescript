@@ -14,6 +14,8 @@ import Routes from './Routes';
 import { Helmet } from 'react-helmet';
 import { useApolloClient, useSubscription } from 'react-apollo-hooks';
 import gql from 'graphql-tag';
+import { UserUpdatesEnum } from '../types/enums';
+import { IReducerState } from '../redux/reducers';
 
 const ME_DATA_QUERY = gql`
 	query {
@@ -32,11 +34,12 @@ const SUBSCRIBE_TO_USER_UPDATES = gql`
 interface IProps {
 	setCurrentUser: typeof setCurrentUser;
 	setNotificationsData: typeof setNotificationsData;
+	unreadNotificationsCount: number;
 }
 
 const App: React.FC<IProps> = props => {
 	const client = useApolloClient();
-	const { data } = useSubscription(SUBSCRIBE_TO_USER_UPDATES);
+	const { data, loading } = useSubscription(SUBSCRIBE_TO_USER_UPDATES);
 
 	useLayoutEffect(() => {
 		const accessToken = localStorage.getItem(
@@ -65,7 +68,16 @@ const App: React.FC<IProps> = props => {
 	}, []);
 
 	useEffect(() => {
-		console.log('changed', data);
+		if (!loading && data) {
+			const updateData = JSON.parse(data.userUpdates);
+			switch (updateData.type) {
+				case UserUpdatesEnum.NEW_NOTIFICATION:
+					props.setNotificationsData({
+						unread: props.unreadNotificationsCount + 1
+					});
+					break;
+			}
+		}
 	}, [data]);
 
 	return (
@@ -98,9 +110,12 @@ const ScContent = styled.div`
 	height: calc(100vh - ${props => props.theme.headerHeight});
 `;
 
+const mapStateToProps = ({ notifications: { unread } }: IReducerState) => ({
+	unreadNotificationsCount: unread
+});
 export default withRouter(
 	connect(
-		null,
+		mapStateToProps,
 		{ setCurrentUser, setNotificationsData }
 	)(App)
 );

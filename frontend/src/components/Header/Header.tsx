@@ -172,7 +172,7 @@ const ScUnreadNotifications = styled.small`
 	display: flex;
 	justify-content: center;
 	align-items: center;
-	border-radius: 50%;
+	border-radius: 0.3rem;
 	position: absolute;
 	right: 0;
 	top: 0;

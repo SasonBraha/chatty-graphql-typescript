@@ -11,3 +11,7 @@ export enum KeyCodeEnum {
 	BACKSPACE = 8,
 	ESCAPE = 27
 }
+
+export enum UserUpdatesEnum {
+	NEW_NOTIFICATION = 'NEW_NOTIFICATION'
+}

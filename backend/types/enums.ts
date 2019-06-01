@@ -12,3 +12,7 @@ export enum SubscriptionTypesEnum {
 	UPDATE_ACTIVE_USERS = 'UPDATE_ACTIVE_USERS',
 	USER_MENTIONED = 'USER_MENTIONED'
 }
+
+export enum UserUpdatesEnum {
+	NEW_NOTIFICATION = 'NEW_NOTIFICATION'
+}
