@@ -11,6 +11,7 @@ interface IProps {
 	left?: number;
 	width?: number;
 	children?: ReactNode;
+	height?: number;
 }
 
 const Dropdown = React.forwardRef((props: IProps, ref: Ref<any>) => {
@@ -50,9 +51,9 @@ const StyledDropdown = styled('div')<IProps>`
 	transform: scale(0.5);
 	min-width: ${({ width }) => validCss(width!)};
 	z-index: 9999;
-	overflow-y: auto;
 	border-radius: 0.3rem;
-	${props => props.theme.boxShadow}
+	${props => props.theme.boxShadow};
+	height: ${({ height }) => (height ? `${height}px` : '')};
 
 	${({ isOpen }) =>
 		isOpen &&

@@ -1,10 +1,10 @@
-import React, { Component } from 'react';
+import React, { useEffect, useLayoutEffect } from 'react';
 import styled from 'styled-components/macro';
 import Header from './Header';
 import AuthModal from './Auth/AuthModal';
 import jwtDecode from 'jwt-decode';
 import { connect } from 'react-redux';
-import { setCurrentUser } from '../redux/actions';
+import { setCurrentUser, setNotificationsData } from '../redux/actions';
 import { IUser } from '../types/interfaces';
 import Nav from './Nav';
 import Container from './Container';
@@ -12,49 +12,70 @@ import { withRouter } from 'react-router-dom';
 import { GenericModal } from './Shared';
 import Routes from './Routes';
 import { Helmet } from 'react-helmet';
+import { useApolloClient } from 'react-apollo-hooks';
+import gql from 'graphql-tag';
+
+const ME_DATA_QUERY = gql`
+	query {
+		me {
+			unreadNotificationsCount
+		}
+	}
+`;
 
 interface IProps {
 	setCurrentUser: typeof setCurrentUser;
+	setNotificationsData: typeof setNotificationsData;
 }
 
-class App extends Component<IProps> {
-	constructor(props: IProps) {
-		super(props);
-		this.init();
-	}
-
-	private init() {
+const App: React.FC<IProps> = props => {
+	const client = useApolloClient();
+	useLayoutEffect(() => {
 		const accessToken = localStorage.getItem(
 			process.env.REACT_APP_LS_AUTH_TOKEN
 		);
 		if (accessToken) {
-			this.props.setCurrentUser(jwtDecode<IUser>(accessToken));
+			props.setCurrentUser(jwtDecode<IUser>(accessToken));
 		}
-	}
+	}, []);
 
-	render() {
-		//@prettier-ignore
-		return (
-			<>
-				<Helmet />
+	useEffect(() => {
+		client
+			.query({
+				query: ME_DATA_QUERY
+			})
+			.then(queryObject => {
+				const {
+					data: {
+						me: { unreadNotificationsCount }
+					}
+				} = queryObject;
+				props.setNotificationsData({
+					unread: unreadNotificationsCount
+				});
+			});
+	}, []);
 
-				<StyledApp>
-					<Header />
+	return (
+		<>
+			<Helmet />
 
-					<ScContent>
-						<Nav />
-						<Container>
-							<Routes />
-						</Container>
-					</ScContent>
-				</StyledApp>
+			<StyledApp>
+				<Header />
 
-				<AuthModal />
-				<GenericModal />
-			</>
-		);
-	}
-}
+				<ScContent>
+					<Nav />
+					<Container>
+						<Routes />
+					</Container>
+				</ScContent>
+			</StyledApp>
+
+			<AuthModal />
+			<GenericModal />
+		</>
+	);
+};
 
 const StyledApp = styled.div`
 	height: 100vh;
@@ -68,6 +89,6 @@ const ScContent = styled.div`
 export default withRouter(
 	connect(
 		null,
-		{ setCurrentUser }
+		{ setCurrentUser, setNotificationsData }
 	)(App)
 );

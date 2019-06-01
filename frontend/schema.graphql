@@ -105,6 +105,7 @@ type UserEntity {
     lastActivity: String!
     role: String!
     slug: String!
+    unreadNotificationsCount: Int!
 }
 
 type UserTypingOutput {

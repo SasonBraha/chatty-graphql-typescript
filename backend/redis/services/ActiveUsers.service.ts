@@ -2,7 +2,7 @@ import redis, { RedisCategoriesEnum } from '../';
 import { IUser } from '../../entities/User.model';
 
 class ActiveUsersService {
-	private async getUsers(chatSlug: string): Promise<IUser[]> {
+	public async getUsers(chatSlug: string): Promise<IUser[]> {
 		const userList = await redis.hget(
 			RedisCategoriesEnum.ACTIVE_USERS,
 			chatSlug

@@ -2,7 +2,7 @@ import { Document, Schema, model } from 'mongoose';
 import * as bcrypt from 'bcryptjs';
 import ObjectId = Schema.Types.ObjectId;
 import { INotification } from './Notification.model';
-import { ObjectType, Field, ID } from 'type-graphql';
+import { ObjectType, Field, ID, Int } from 'type-graphql';
 import rolePermissions from '../permissions';
 
 export interface IUser extends Document {
@@ -104,6 +104,9 @@ export class UserEntity {
 
 	@Field()
 	lastActivity: string;
+
+	@Field(type => Int)
+	unreadNotificationsCount: number;
 }
 
 // Hash Password Before Saving

@@ -6,9 +6,10 @@ import {
 	SET_GENERIC_MODAL,
 	SET_MENTION_SUGGESTER,
 	SET_NAV_STATE,
+	SET_NOTIFICATIONS_DATA,
 	SET_TYPING_USERS
 } from './constants';
-import { IUser } from '../types/interfaces';
+import { INotification, IUser } from '../types/interfaces';
 
 export const setAuthModal = (bool: boolean) => ({
 	type: SET_AUTH_MODAL,
@@ -58,4 +59,12 @@ export const setMentionSuggester = (
 		shouldShow,
 		userList
 	}
+});
+
+export const setNotificationsData = (data: {
+	unread?: number;
+	list?: INotification[];
+}) => ({
+	type: SET_NOTIFICATIONS_DATA,
+	payload: data
 });

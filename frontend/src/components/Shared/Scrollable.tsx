@@ -9,6 +9,7 @@ interface IProps {
 	reachBottomDebounce?: number;
 	reachTopDebounce?: number;
 	children?: ReactNode;
+	className?: string;
 }
 
 const Scrollable: React.FC<IProps> = props => {
@@ -21,23 +22,36 @@ const Scrollable: React.FC<IProps> = props => {
 		reachTopDebounce = 0
 	} = props;
 	const scrollableRef: any = useRef();
+	let reachTopTimeout: ReturnType<typeof setTimeout>;
+	let reachBottomTimeout: ReturnType<typeof setTimeout>;
 	return (
 		<ScScrollable
-			onScroll={() => {
+			onScroll={e => {
+				const target = e.target as HTMLDivElement;
 				if (typeof whileScrolling === 'function') {
 					whileScrolling();
 				}
 
 				if (typeof onReachBottom === 'function') {
 					const isReachedOffset =
-						scrollableRef.scrollHeight - reachBottomDebounce <=
-						scrollableRef.scrollTop + scrollableRef.clientHeight;
+						target.scrollHeight - offsetToCallback <=
+						target.scrollTop + target.clientHeight;
 					const isReachedBottom =
-						scrollableRef.scrollHeight ===
-						scrollableRef.scrollTop + scrollableRef.clientHeight;
+						target.scrollHeight === target.scrollTop + target.clientHeight;
 
 					if (isReachedBottom || isReachedOffset) {
-						onReachBottom();
+						clearTimeout(reachBottomTimeout);
+						reachBottomTimeout = setTimeout(onReachBottom, reachBottomDebounce);
+					}
+				}
+
+				if (typeof onReachTop === 'function') {
+					const isReachedOffset = target.scrollTop < offsetToCallback;
+					const isReachedTop = target.scrollTop === 0;
+
+					if (isReachedOffset || isReachedTop) {
+						clearTimeout(reachTopTimeout);
+						reachTopTimeout = setTimeout(onReachTop, reachTopDebounce);
 					}
 				}
 			}}

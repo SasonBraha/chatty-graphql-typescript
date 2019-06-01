@@ -65,14 +65,14 @@ export class NotificationEntity {
 }
 
 // @ts-ignore
-NotificationSchema.post('find', async (notifications: Array<INotification>) => {
-	for (let notification of notifications) {
-		if (!notification.isRead) {
-			notification.isRead = true;
-			await notification.save();
-		}
-	}
-});
+// NotificationSchema.post('find', async (notifications: Array<INotification>) => {
+// 	for (let notification of notifications) {
+// 		if (!notification.isRead) {
+// 			notification.isRead = true;
+// 			await notification.save();
+// 		}
+// 	}
+// });
 
 // NotificationSchema.post('save', async (notification: INotification) => {
 //   // Check If Notifications Is New (To Prevent { Schema.post('find') } From Emitting Notification)

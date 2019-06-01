@@ -1,10 +1,13 @@
 import {
 	Arg,
 	Ctx,
+	FieldResolver,
 	Int,
 	Mutation,
 	Query,
 	Resolver,
+	Root,
+	Subscription,
 	UseMiddleware
 } from 'type-graphql';
 import User, { IUser, UserEntity } from '../../entities/User.model';
@@ -57,5 +60,15 @@ export default class UserResolver {
 			receiver: user._id
 		}).populate('sender', 'displayName slug');
 		return notifications.reverse();
+	}
+
+	@UseMiddleware(Authenticated)
+	@FieldResolver(returns => Int)
+	async unreadNotificationsCount(@Root() user: IUser): Promise<number> {
+		const unreadCount = await Notification.countDocuments({
+			receiver: user._id,
+			isRead: false
+		});
+		return unreadCount;
 	}
 }

@@ -6,9 +6,10 @@ import {
 	SET_GENERIC_MODAL,
 	SET_MENTION_SUGGESTER,
 	SET_NAV_STATE,
+	SET_NOTIFICATIONS_DATA,
 	SET_TYPING_USERS
 } from './constants';
-import { ITypingUser, IUser } from '../types/interfaces';
+import { INotification, ITypingUser, IUser } from '../types/interfaces';
 import { CrudEnum } from '../types/enums';
 import produce from 'immer';
 
@@ -26,6 +27,10 @@ export interface IReducerState {
 	};
 	isNavOpen: boolean;
 	currentUser: IUser | null;
+	notifications: {
+		unread: number;
+		list: INotification[];
+	};
 	chat: {
 		chatSlug: string;
 		typingUsers: {
@@ -47,6 +52,10 @@ const initialState: IReducerState = {
 	},
 	isNavOpen: window.innerWidth > 992,
 	currentUser: null,
+	notifications: {
+		unread: 0,
+		list: []
+	},
 	chat: {
 		typingUsers: {},
 		chatSlug: '',
@@ -109,6 +118,13 @@ export default (state = initialState, action: IAction): IReducerState =>
 
 			case SET_MENTION_SUGGESTER:
 				draft.chat.mentionSuggester = action.payload;
+				break;
+
+			case SET_NOTIFICATIONS_DATA:
+				draft.notifications = {
+					...draft.notifications,
+					...action.payload
+				};
 				break;
 
 			default:

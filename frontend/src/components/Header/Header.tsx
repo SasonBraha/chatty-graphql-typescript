@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
 import styled from 'styled-components/macro';
 import { Link } from 'react-router-dom';
-import { Burger, Button, Dropdown, List } from '../Shared';
+import { Burger, Button, Dropdown, List, Scrollable } from '../Shared';
 import { connect } from 'react-redux';
 import { setAuthModal, setNavState } from '../../redux/actions';
 import Ripple from 'react-ink';
-import { IUser } from '../../types/interfaces';
+import { INotification, IUser } from '../../types/interfaces';
 import { IReducerState } from '../../redux/reducers';
 import Icon from '../Shared/Icon';
 import Notifications from './Notifications';
@@ -14,6 +14,10 @@ interface IProps {
 	setAuthModal: typeof setAuthModal;
 	setNavState: typeof setNavState;
 	currentUser: IUser | null;
+	notifications: {
+		unread: number;
+		list: INotification[];
+	};
 }
 
 const headerDropdownItmes = (props: IProps) => {
@@ -60,12 +64,23 @@ const Header: React.FC<IProps> = props => {
 						onClick={() => setNotificationsDropdown(true)}
 					>
 						<Icon icon='icon-notifications' color='white' />
+						<ScUnreadNotifications>
+							{props.notifications.unread}
+						</ScUnreadNotifications>
 						<Dropdown
 							resetDropdown={() => setNotificationsDropdown(false)}
 							isOpen={isNotificationsDropdownOpen}
 							width={400}
+							height={200}
 						>
-							<Notifications isOpen={isNotificationsDropdownOpen} />
+							<Scrollable
+								onReachBottom={() => {
+									//TODO - FETCH MORE NOTIFICATIONS
+								}}
+								offsetToCallback={20}
+							>
+								<Notifications isOpen={isNotificationsDropdownOpen} />
+							</Scrollable>
 						</Dropdown>
 					</ScNotificationsDropdown>
 
@@ -143,8 +158,24 @@ const ScProfileImg = styled.img`
 	pointer-events: none;
 `;
 
-const mapStateToProps = ({ currentUser }: IReducerState) => ({
-	currentUser
+const ScUnreadNotifications = styled.small`
+	background: red;
+	width: 1.5rem;
+	height: 1.5rem;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	border-radius: 50%;
+	position: absolute;
+	right: 0;
+	top: 0;
+	color: white;
+	font-size: 1.2rem;
+`;
+
+const mapStateToProps = ({ currentUser, notifications }: IReducerState) => ({
+	currentUser,
+	notifications
 });
 export default connect(
 	mapStateToProps,

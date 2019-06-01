@@ -47,17 +47,20 @@ const updateActiveUsers = (
 const ActiveUsers: React.FC<IProps> = props => {
 	const [previousSlug, setPreviousSlug] = useState(props.chatSlug);
 	const client = useApolloClient();
-	const {
-		data = { subscribeToActiveUsersUpdates: [] },
-		loading
-	} = useSubscription(ACTIVE_USERS_SUBSCRIPTION, {
-		variables: { chatSlug: props.chatSlug }
-	});
+	const { data = { subscribeToActiveUsersUpdates: [] } } = useSubscription(
+		ACTIVE_USERS_SUBSCRIPTION,
+		{
+			variables: { chatSlug: props.chatSlug }
+		}
+	);
+
 	useEffect(() => {
 		const { chatSlug } = props;
 		updateActiveUsers(CrudEnum.DELETE, previousSlug, client);
 		updateActiveUsers(CrudEnum.UPDATE, chatSlug, client);
 		setPreviousSlug(chatSlug);
+
+		return () => updateActiveUsers(CrudEnum.DELETE, chatSlug, client);
 	}, [props.chatSlug]);
 
 	return (
