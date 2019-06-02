@@ -62,8 +62,11 @@ export default class UserResolver {
 	async notifications(@Ctx('user') user: IUser): Promise<INotification[]> {
 		const notifications = await Notification.find({
 			receiver: user._id
-		}).populate('sender', 'displayName slug');
-		return notifications.reverse();
+		})
+			.populate('sender', 'displayName slug')
+			.sort({ createdAt: -1 })
+			.limit(10);
+		return notifications;
 	}
 
 	@UseMiddleware(Authenticated)

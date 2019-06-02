@@ -35,6 +35,7 @@ interface IProps {
 	setCurrentUser: typeof setCurrentUser;
 	setNotificationsData: typeof setNotificationsData;
 	unreadNotificationsCount: number;
+	currentUser: IUser | null;
 }
 
 const App: React.FC<IProps> = props => {
@@ -51,20 +52,22 @@ const App: React.FC<IProps> = props => {
 	}, []);
 
 	useEffect(() => {
-		client
-			.query({
-				query: ME_DATA_QUERY
-			})
-			.then(queryObject => {
-				const {
-					data: {
-						me: { unreadNotificationsCount }
-					}
-				} = queryObject;
-				props.setNotificationsData({
-					unread: unreadNotificationsCount
+		if (props.currentUser) {
+			client
+				.query({
+					query: ME_DATA_QUERY
+				})
+				.then(queryObject => {
+					const {
+						data: {
+							me: { unreadNotificationsCount }
+						}
+					} = queryObject;
+					props.setNotificationsData({
+						unread: unreadNotificationsCount
+					});
 				});
-			});
+		}
 	}, []);
 
 	useEffect(() => {
@@ -110,8 +113,12 @@ const ScContent = styled.div`
 	height: calc(100vh - ${props => props.theme.headerHeight});
 `;
 
-const mapStateToProps = ({ notifications: { unread } }: IReducerState) => ({
-	unreadNotificationsCount: unread
+const mapStateToProps = ({
+	notifications: { unread },
+	currentUser
+}: IReducerState) => ({
+	unreadNotificationsCount: unread,
+	currentUser
 });
 export default withRouter(
 	connect(
