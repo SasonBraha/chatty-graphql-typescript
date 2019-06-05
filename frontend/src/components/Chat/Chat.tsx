@@ -7,30 +7,14 @@ import MessagesList from './MessagesList';
 import SendMessage from './SendMessage';
 import UploadPreview from './UploadPreview';
 import { connect } from 'react-redux';
-import { setChatSlug, setTypingUsers } from '../../redux/actions';
-import Subscription from 'react-apollo/Subscriptions';
-import gql from 'graphql-tag';
+import { setChatSlug } from '../../redux/actions';
 import { withAuth } from '../Shared/Hoc';
-
-const TYPING_USERS_SUBSCRIPTION = gql`
-	subscription {
-		subscribeToTypingUsersUpdates {
-			crudType
-			chatSlug
-			user {
-				displayName
-				slug
-			}
-		}
-	}
-`;
 
 interface IMatchParams {
 	chatSlug: string;
 }
 export interface IChatProps extends RouteComponentProps<IMatchParams> {
 	setChatSlug: typeof setChatSlug;
-	setTypingUsers: typeof setTypingUsers;
 }
 
 const Chat = (props: IChatProps) => {
@@ -40,29 +24,16 @@ const Chat = (props: IChatProps) => {
 	}, [props.match.params.chatSlug]);
 
 	return (
-		<>
-			<ScChat>
-				<RoomsList />
-				<ActiveUsers />
+		<ScChat>
+			<RoomsList />
+			<ActiveUsers />
 
-				<ScMessagesArea>
-					<UploadPreview file={filePreview} />
-					<MessagesList {...props} />
-					<SendMessage {...props} setFilePreview={setFilePreview} />
-				</ScMessagesArea>
-			</ScChat>
-
-			<Subscription
-				subscription={TYPING_USERS_SUBSCRIPTION}
-				onSubscriptionData={({
-					subscriptionData: {
-						data: {
-							subscribeToTypingUsersUpdates: { chatSlug, crudType, user }
-						}
-					}
-				}) => props.setTypingUsers(user, crudType, chatSlug)}
-			/>
-		</>
+			<ScMessagesArea>
+				<UploadPreview file={filePreview} />
+				<MessagesList {...props} />
+				<SendMessage {...props} setFilePreview={setFilePreview} />
+			</ScMessagesArea>
+		</ScChat>
 	);
 };
 
@@ -82,5 +53,5 @@ const ScMessagesArea = styled.div`
 
 export default connect(
 	null,
-	{ setChatSlug, setTypingUsers }
+	{ setChatSlug }
 )(withAuth(Chat));

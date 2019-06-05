@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Query } from 'react-apollo';
 import gql from 'graphql-tag';
 import { IChat, ITypingUser } from '../../../types/interfaces';
@@ -7,7 +7,8 @@ import styled from 'styled-components/macro';
 import RoomsListLoader from './RoomsListLoader';
 import { IReducerState } from '../../../redux/reducers';
 import { connect } from 'react-redux';
-import { useQuery } from 'react-apollo-hooks';
+import { useQuery, useSubscription } from 'react-apollo-hooks';
+import { setTypingUsers } from '../../../redux/actions';
 
 const ROOMS_LIST_QUERY = gql`
 	query {
@@ -24,15 +25,40 @@ const ROOMS_LIST_QUERY = gql`
 	}
 `;
 
+const TYPING_USERS_SUBSCRIPTION = gql`
+	subscription {
+		subscribeToTypingUsersUpdates {
+			crudType
+			chatSlug
+			user {
+				displayName
+				slug
+			}
+		}
+	}
+`;
+
 interface IProps {
 	chatSlug: string;
 	typingUsers: {
 		[key: string]: ITypingUser[];
 	};
+	setTypingUsers: typeof setTypingUsers;
 }
 
 const RoomsList: React.FC<IProps> = props => {
 	const { data, loading } = useQuery(ROOMS_LIST_QUERY);
+	useSubscription(TYPING_USERS_SUBSCRIPTION, {
+		onSubscriptionData({ subscriptionData }) {
+			const {
+				data: {
+					subscribeToTypingUsersUpdates: { chatSlug, crudType, user }
+				}
+			} = subscriptionData;
+			props.setTypingUsers(user, crudType, chatSlug);
+		}
+	});
+
 	return (
 		<ScRoomsList>
 			{loading
@@ -70,5 +96,5 @@ const mapStateToProps = ({
 });
 export default connect(
 	mapStateToProps,
-	null
+	{ setTypingUsers }
 )(RoomsList);
