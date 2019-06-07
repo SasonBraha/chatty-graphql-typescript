@@ -70,6 +70,7 @@ const Notifications: React.FC<IProps> = props => {
 				<ListItem
 					key={notification._id}
 					{...convertNotificationToListItemData(notification)}
+					withRipple
 				/>
 			))}
 		</ul>

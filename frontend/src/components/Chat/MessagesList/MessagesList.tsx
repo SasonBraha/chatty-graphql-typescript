@@ -5,7 +5,7 @@ import { connect } from 'react-redux';
 import { IReducerState } from '../../../redux/reducers';
 import styled from 'styled-components/macro';
 import MessagesListLoader from './MessagesListLoader';
-import { Spinner } from '../../Shared';
+import { Spinner, InfoBanner } from '../../Shared';
 import MessageContextMenu from './MessageContextMenu';
 import { withApollo } from 'react-apollo';
 import { ApolloClient } from 'apollo-client';
@@ -20,6 +20,7 @@ interface IProps {
 	data: {
 		chat: {
 			messages: IMessage[];
+			storeMessages: boolean;
 		};
 	};
 	subscribeToUpdates: (chatSlug: string) => void;
@@ -52,6 +53,7 @@ class MessagesList extends Component<IProps, IState> {
 	private messagesList: React.RefObject<any> = React.createRef();
 	private messageCtxMenuRef: React.RefObject<HTMLElement> = React.createRef();
 	private shouldFetchThreshold: number = 250;
+
 	constructor(props: IProps) {
 		super(props);
 		this.state = {
@@ -189,25 +191,36 @@ class MessagesList extends Component<IProps, IState> {
 		const {
 			currentUser,
 			loading,
-			isMoreMessagesToFetch,
+			isFetching,
 			data: { chat }
 		} = this.props;
 
 		// @ts-nocheck
 		return (
 			<ScMessagesList ref={this.messagesList} onScroll={this.handleScroll}>
+				{!loading && !chat.storeMessages && (
+					<InfoBanner
+						type='warning'
+						text='בחדר זה לא נשמרת היסטוריית ההודעות'
+					/>
+				)}
+
+				{!loading && chat.storeMessages && !chat.messages.length && (
+					<InfoBanner type='info' text='טרם נשלחו הודעות בחדר זה' />
+				)}
+
 				<Spinner
 					size={35}
 					spinnerColor='#0079ea'
 					spinnerWidth={3}
-					visible={isMoreMessagesToFetch && !loading}
+					visible={isFetching}
 				/>
+
 				{loading
 					? Array.from({ length: 20 }).map((_, i) => (
 							<MessagesListLoader key={i} />
 					  ))
 					: chat.messages.map(message => (
-							// @ts-ignore
 							<Message
 								message={message}
 								key={message._id}

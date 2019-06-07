@@ -144,7 +144,7 @@ export default class ChatResolver {
 
 	@UseMiddleware(Authenticated)
 	@UseMiddleware(withPermission([ChatPermissionTypesEnum.POST_MESSAGE]))
-	@Mutation(returns => MessageEntity)
+	@Mutation(returns => MessageEntity, { nullable: true })
 	async postMessage(
 		@Arg('text') text: string,
 		@Arg('chatSlug') chatSlug: string,
@@ -213,22 +213,24 @@ export default class ChatResolver {
 			chatSlug
 		});
 
-		const newMessage = await Message.create(messageData);
-		await Chat.updateOne(
-			{
-				$or: [
-					{ slug: chatSlug, isPrivate: false },
-					{
-						slug: chatSlug,
-						isPrivate: true,
-						allowedUsers: user._id
-					}
-				]
-			},
-			{
-				$set: { lastMessage: newMessage.text }
-			}
-		);
+		const targetChatRoom = await Chat.findOne({
+			$or: [
+				{ slug: chatSlug, isPrivate: false, storeMessages: true },
+				{
+					slug: chatSlug,
+					isPrivate: true,
+					storeMessages: true,
+					allowedUsers: user._id
+				}
+			]
+		});
+
+		let newMessage = null;
+		if (targetChatRoom && targetChatRoom.storeMessages) {
+			newMessage = await Message.create(messageData);
+			targetChatRoom.lastMessage = newMessage.text;
+			await targetChatRoom.save();
+		}
 
 		usersData.forEach(async ({ _id }) => {
 			if (user._id.toString() !== _id.toString()) {

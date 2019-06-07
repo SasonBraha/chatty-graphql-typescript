@@ -17,6 +17,8 @@ declare module 'styled-components' {
 		ownMessageBackground: string;
 
 		success: string;
-		errorColor: string;
+		error: string;
+		warning: string;
+		info: string;
 	}
 }

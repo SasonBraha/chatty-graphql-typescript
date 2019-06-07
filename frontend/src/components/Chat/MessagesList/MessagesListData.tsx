@@ -35,6 +35,7 @@ const MESSAGE_DATA_FRAGMENT = `
 const MESSAGES_LIST_QUERY = gql`
 	query($chatSlug: String!) {
 		chat(chatSlug: $chatSlug) {
+			storeMessages	
 			messages {
 				${MESSAGE_DATA_FRAGMENT}
 			}
@@ -84,7 +85,8 @@ const MessagesListData = (props: IProps) => {
 					updateQuery={result.updateQuery as any}
 					data={{
 						chat: {
-							messages: loading ? [] : data.chat.messages
+							messages: loading ? [] : data.chat.messages,
+							storeMessages: loading ? null : data.chat.storeMessages
 						}
 					}}
 					loading={loading}

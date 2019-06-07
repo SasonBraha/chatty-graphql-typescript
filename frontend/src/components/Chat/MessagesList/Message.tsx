@@ -229,6 +229,7 @@ const ScMessage = styled('div')<{
 		css`
 			min-width: initial;
 			opacity: 0.6;
+			filter: blur(1.5px);
 		`}
 `;
 

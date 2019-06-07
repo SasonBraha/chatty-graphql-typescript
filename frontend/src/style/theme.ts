@@ -12,7 +12,9 @@ const defaultTheme: DefaultTheme = {
 	activeUsersBackground: '#2E353D',
 	ownMessageBackground: '#0079ea',
 	success: '#28A745',
-	errorColor: '#DC3545'
+	error: '#DC3545',
+	warning: '#ff9503',
+	info: '#007bff'
 };
 
 export { defaultTheme };

@@ -11,6 +11,7 @@ import Editable from './Editable';
 import GoogleLogin from './GoogleLogin';
 import InputTrigger from './InputTrigger';
 import Scrollable from './Scrollable';
+import InfoBanner from './InfoBanner';
 
 export {
 	Burger,
@@ -25,5 +26,6 @@ export {
 	Editable,
 	GoogleLogin,
 	InputTrigger,
-	Scrollable
+	Scrollable,
+	InfoBanner
 };

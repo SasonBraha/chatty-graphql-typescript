@@ -39,12 +39,12 @@ const StyledInput = styled('input')<{ error: string | undefined }>`
 
 	&:focus,
 	&:valid {
-		border-color: ${props => props.theme.errorColor};
+		border-color: ${props => props.theme.error};
 
 		& ~ label,
 		& ~ svg {
-			color: ${props => props.theme.errorColor};
-			fill: ${props => props.theme.errorColor};
+			color: ${props => props.theme.error};
+			fill: ${props => props.theme.error};
 		}
 
 		& ~ label {
@@ -55,12 +55,12 @@ const StyledInput = styled('input')<{ error: string | undefined }>`
 	${({ error }) =>
 		error &&
 		css`
-			border-color: ${props => props.theme.errorColor};
+			border-color: ${props => props.theme.error};
 
 			& ~ label,
 			& ~ svg {
-				color: ${props => props.theme.errorColor};
-				fill: ${props => props.theme.errorColor};
+				color: ${props => props.theme.error};
+				fill: ${props => props.theme.error};
 			}
 		`}
 `;
@@ -86,7 +86,7 @@ const StyledInputIcon = styled.svg`
 `;
 
 const StyledInputError = styled.div`
-	color: ${props => props.theme.errorColor};
+	color: ${props => props.theme.error};
 	font-size: 1.25rem;
 	text-align: right;
 `;
