@@ -1,6 +1,7 @@
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import ContentEditable from 'react-contenteditable';
 import { KeyCodeEnum } from '../../types/enums';
+import { placeCaretAtEnd } from '../../utils';
 
 interface IProps {
 	onCancel?: (...args: any[]) => any;
@@ -13,7 +14,6 @@ interface IProps {
 	tagName?: string;
 	className?: string;
 	style?: {};
-	innerRef?: React.RefObject<any>;
 }
 
 const handleKeyDown = (e: React.KeyboardEvent, props: IProps) => {
@@ -37,12 +37,18 @@ const handleKeyDown = (e: React.KeyboardEvent, props: IProps) => {
 
 const Editable: React.FC<IProps> = props => {
 	const { onCancel, submitOnEnter, ...defaultEditableProps } = props;
+	const editableRef: React.RefObject<any> = useRef();
+
+	useEffect(() => {
+		placeCaretAtEnd(editableRef.current);
+	}, []);
+
 	return (
 		<div
 			className='Editable'
 			onKeyDown={(e: React.KeyboardEvent) => handleKeyDown(e, props)}
 		>
-			<ContentEditable {...defaultEditableProps} />
+			<ContentEditable innerRef={editableRef} {...defaultEditableProps} />
 		</div>
 	);
 };

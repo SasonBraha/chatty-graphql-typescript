@@ -58,7 +58,7 @@ type Mutation {
     createChat(data: CreateChatInput!): ChatEntity!
     login(data: LoginInput!): String
     loginWithGoogle(token: String!): String
-    postMessage(chatSlug: String!, text: String!): MessageEntity!
+    postMessage(chatSlug: String!, text: String!): MessageEntity
     register(data: RegisterInput!): Boolean!
     updateActiveUsers(chatSlug: String!, crudType: String!): Boolean
     updateMessage(updatePayload: UpdateMessageInput!): Boolean!

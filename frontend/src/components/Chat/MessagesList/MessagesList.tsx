@@ -195,7 +195,6 @@ class MessagesList extends Component<IProps, IState> {
 			data: { chat }
 		} = this.props;
 
-		// @ts-nocheck
 		return (
 			<ScMessagesList ref={this.messagesList} onScroll={this.handleScroll}>
 				{!loading && !chat.storeMessages && (

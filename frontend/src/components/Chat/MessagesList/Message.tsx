@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { IMessage } from '../../../types/interfaces';
-import styled, { css } from 'styled-components';
+import styled, { css } from 'styled-components/macro';
 import formatRelative from 'date-fns/formatRelative';
 import he from 'date-fns/locale/he';
 import { parseISO } from 'date-fns';
@@ -43,7 +43,6 @@ interface IState {
 }
 
 class Message extends Component<IProps, IState> {
-	private editableEl: React.RefObject<HTMLElement> = React.createRef();
 	constructor(props: IProps) {
 		super(props);
 		this.state = {
@@ -53,13 +52,6 @@ class Message extends Component<IProps, IState> {
 	}
 
 	componentDidUpdate(prevProps: IProps, prevState: IState) {
-		if (
-			prevState.isEditable !== this.state.isEditable &&
-			this.state.isEditable
-		) {
-			this.editableEl.current!.focus();
-		}
-
 		if (prevProps.message.text !== this.props.message.text) {
 			this.setState({ messageBody: this.props.message.text });
 		}
@@ -173,7 +165,6 @@ class Message extends Component<IProps, IState> {
 								}
 								html={this.state.messageBody}
 								submitOnEnter={true}
-								innerRef={this.editableEl}
 								onBlur={this.handleEditableBlur}
 								isMine={isMine}
 							/>
