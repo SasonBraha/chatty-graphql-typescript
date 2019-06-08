@@ -71,9 +71,12 @@ const List: React.FC<IProps> = props => {
 						props.withKeyboardNavigation &&
 						selectedIndex % props.items.length === i
 					}
-					onClick={() =>
-						typeof props.onSelect === 'function' &&
-						props.onSelect(item.text as string)
+					onClick={
+						item.onClick
+							? item.onClick
+							: () =>
+									typeof props.onSelect === 'function' &&
+									props.onSelect(item.text as string)
 					}
 				/>
 			))}

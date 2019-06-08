@@ -2,7 +2,7 @@ import { IFileInput } from '../../resolvers/Chat/Chat.resolver.inputs';
 import { createBufferFromStream, extractDataFromBuffer } from './index';
 import { IFileData } from './extractDataFromBuffer';
 import * as uuid from 'uuid';
-import s3 from '../../config/s3.config';
+import s3 from '../../services/s3.config';
 import { IFile } from '../../entities/File.model';
 
 const uploadFile = (

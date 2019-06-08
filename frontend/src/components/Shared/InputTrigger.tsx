@@ -1,6 +1,5 @@
 import React, { ReactNode, useState } from 'react';
 import { KeyCodeEnum } from '../../types/enums';
-import MentionSuggester from '../Chat/MentionSuggester';
 
 interface ITriggerData {
 	start: number;

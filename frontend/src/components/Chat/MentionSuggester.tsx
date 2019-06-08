@@ -1,7 +1,7 @@
 import React from 'react';
 import { Transition } from 'react-transition-group';
 import styled, { css } from 'styled-components/macro';
-import { List, ListItem } from '../Shared';
+import { List } from '../Shared';
 import { IUser } from '../../types/interfaces';
 import { connect } from 'react-redux';
 import { IReducerState } from '../../redux/reducers';

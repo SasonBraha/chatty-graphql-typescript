@@ -9,7 +9,7 @@ import {
 	validateRegistrationInput
 } from '../../utils/validation';
 import { ErrorTypesEnum } from '../../utils/errors';
-import { googleOAuthClient } from '../../config';
+import { googleOAuthClient } from '../../services';
 
 @Resolver(UserEntity)
 export default class AuthResolver {

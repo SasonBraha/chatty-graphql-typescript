@@ -17,6 +17,7 @@ import CustomError, { ErrorResponse, ErrorTypesEnum } from './utils/errors';
 import { isJson, logger } from './utils';
 import * as uuid from 'uuid';
 import './permissions';
+import './services/cache';
 
 const main = async () => {
 	const app = express();

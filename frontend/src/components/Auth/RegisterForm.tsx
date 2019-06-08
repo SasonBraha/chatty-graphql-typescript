@@ -46,9 +46,11 @@ const LoginForm = (props: FormikProps<IFormValues>) => {
 		isSubmitting
 	} = props;
 	let captchaRef: React.RefObject<any> = useRef();
+
 	useEffect(() => {
 		captchaRef.current.execute();
 	}, []);
+
 	return (
 		<>
 			<Form onSubmit={handleSubmit} icon={'icon-user-circle-o'} header='הרשמה'>

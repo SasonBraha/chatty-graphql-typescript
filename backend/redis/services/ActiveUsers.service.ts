@@ -1,4 +1,4 @@
-import redis, { RedisCategoriesEnum } from '../';
+import { redis, RedisCategoriesEnum } from '../../services';
 import { IUser } from '../../entities/User.model';
 
 class ActiveUsersService {
@@ -41,5 +41,5 @@ class ActiveUsersService {
 	}
 }
 
-const activeUsersSerivce = new ActiveUsersService();
-export default activeUsersSerivce;
+const activeUsersService = new ActiveUsersService();
+export default activeUsersService;

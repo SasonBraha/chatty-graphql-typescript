@@ -15,7 +15,8 @@ export default async (authToken: string) => {
 		if (!isTokenValid) throw new Error(ErrorTypesEnum.FORBIDDEN);
 
 		const userData = isTokenValid;
-		return await User.findById(userData._id);
+		//@ts-ignore
+		return await User.findById(userData._id).cache({ hashKey: userData._id });
 	} catch (ex) {
 		throw new Error(ErrorTypesEnum.FORBIDDEN);
 	}
