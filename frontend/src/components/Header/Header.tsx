@@ -56,7 +56,9 @@ const Header: React.FC<IProps> = props => {
 	return (
 		<ScHeader>
 			<Burger onClick={setNavState} />
-			<ScBrand to='/'>Chatty</ScBrand>
+			<ScBrand data-e2e-id='brand' to='/'>
+				Chatty
+			</ScBrand>
 
 			{currentUser ? (
 				<ScHeaderMenu>

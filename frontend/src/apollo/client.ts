@@ -17,17 +17,30 @@ interface IDefinition {
 const wsLink = () => {
 	const authToken = localStorage.getItem(process.env.REACT_APP_LS_AUTH_TOKEN);
 
-	return new WebSocketLink({
+	const wsLink = new WebSocketLink({
 		uri: `${process.env.REACT_APP_GRAPHQL_SOCKET_URL}`,
 		options: {
 			reconnect: true,
-			connectionParams: {
+			connectionParams: () => ({
 				authToken: authToken ? `Bearer ${authToken}` : null,
 				fromUrl: window.location.href
-			}
+			})
 		}
 	});
+
+	const subscriptionMiddleware = {
+		applyMiddleware(options: any, next: any) {
+			options.fromUrl = window.location.href;
+			next();
+		}
+	};
+
+	//@ts-ignore
+	wsLink.subscriptionClient.use([subscriptionMiddleware]);
+
+	return wsLink;
 };
+
 const httpLink = createUploadLink({
 	uri: process.env.REACT_APP_GRAPHQL_URI
 });

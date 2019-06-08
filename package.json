@@ -9,7 +9,8 @@
 		"dev:client": "cd frontend && npm start",
 		"deploy": "",
 		"deploy:server": "",
-		"deploy:client": ""
+		"deploy:client": "",
+		"test": "jest"
 	},
 	"repository": {
 		"type": "git",
@@ -22,5 +23,8 @@
 	},
 	"homepage": "https://github.com/SasonBraha/chatty-graphql-typescript#readme",
 	"dependencies": {},
-	"devDependencies": {}
+	"devDependencies": {
+		"jest": "^24.8.0",
+		"puppeteer": "^1.17.0"
+	}
 }
