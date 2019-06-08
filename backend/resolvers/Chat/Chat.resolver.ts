@@ -225,7 +225,7 @@ export default class ChatResolver {
 			]
 		});
 
-		let newMessage = null;
+		let newMessage: IMessage = null;
 		if (targetChatRoom && targetChatRoom.storeMessages) {
 			newMessage = await Message.create(messageData);
 			targetChatRoom.lastMessage = newMessage.text;
@@ -280,13 +280,13 @@ export default class ChatResolver {
 						user.hasPermission([ChatPermissionTypesEnum.DELETE_MESSAGE]) ||
 						isUserCreatedTargetMessage
 					) {
-						await targetMessage.remove();
-
 						pubSub.publish(SubscriptionTypesEnum.MESSAGE_DELETED, {
 							messageId,
 							chatSlug: targetMessage.chatSlug,
 							updateType: SubscriptionTypesEnum.MESSAGE_DELETED
 						});
+
+						await targetMessage.remove();
 					}
 					return true;
 

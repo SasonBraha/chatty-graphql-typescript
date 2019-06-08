@@ -4,7 +4,7 @@ import { setGenericModal } from '../../../redux/actions';
 import { connect } from 'react-redux';
 
 interface IProps {
-	maxFileSize?: number;
+	maxFileSizeInKB?: number;
 	onChange: (file: File | null) => void;
 	onBlur?: any;
 	setGenericModal: typeof setGenericModal;
@@ -25,8 +25,8 @@ const validateFile = (
 		return resetFile();
 	}
 
-	if (props.maxFileSize) {
-		const maxFileSize = props.maxFileSize;
+	if (props.maxFileSizeInKB) {
+		const maxFileSize = props.maxFileSizeInKB;
 		const fileSize = Math.floor(file.size / 1024);
 
 		if (fileSize > maxFileSize) {
@@ -34,7 +34,7 @@ const validateFile = (
 			const isLimitOver1MB: boolean = maxFileSize >= 1024;
 			return props.setGenericModal(
 				'error',
-				//prettier-ignore
+				// prettier-ignore
 				`הקובץ שנבחר גדול מדי, הגודל המירבי הניתן להעלאה הינו ${isLimitOver1MB ? Math.ceil(maxFileSize / 1024) : maxFileSize}${isLimitOver1MB ? 'MB' : 'KB'}`
 			);
 		}

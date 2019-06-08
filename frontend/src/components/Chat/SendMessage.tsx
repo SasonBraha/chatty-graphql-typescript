@@ -114,7 +114,7 @@ const SendMessage: React.FC<IProps> = props => {
 			<ScForm onSubmit={handleSubmit}>
 				<ScAttachLabel>
 					<FileInput
-						maxFileSize={5000}
+						maxFileSizeInKB={5000}
 						onChange={(file: File | null) => {
 							setFilePreview(file);
 							setFieldValue('file', file);
@@ -126,7 +126,7 @@ const SendMessage: React.FC<IProps> = props => {
 
 				<ScInputTrigger
 					triggerSymbol='@'
-					typeCallbackDebounceRate={200}
+					typeCallbackDebounce={200}
 					onType={async data => {
 						const userData = await props.client.query({
 							query: SEARCH_USERS_QUERY,
@@ -153,13 +153,14 @@ const SendMessage: React.FC<IProps> = props => {
 						placeholder='הכנס הודעה ולחץ Enter'
 					/>
 				</ScInputTrigger>
+
+				<MentionSuggester
+					onSelect={(text: string) => {
+						setFieldValue('text', `${values.text}${text}`);
+						props.setMentionSuggester(false, []);
+					}}
+				/>
 			</ScForm>
-			<MentionSuggester
-				onSelect={(text: string) => {
-					setFieldValue('text', `${values.text}${text}`);
-					props.setMentionSuggester(false, []);
-				}}
-			/>
 		</>
 	);
 };

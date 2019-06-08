@@ -16,26 +16,28 @@ interface IProps {
 const MentionSuggester: React.FC<IProps> = props => {
 	return (
 		<Transition
-			in={props.shouldShow && !!props.userList.length}
+			in={true}
 			mountOnEnter
 			unmountOnExit
 			timeout={{ enter: 0, exit: 300 }}
 		>
 			{mountState => (
-				<ScMentionSuggester userList={props.userList} className={mountState}>
+				<ScMentionSuggester
+					userList={props.userList}
+					className={mountState}
+					tabIndex={-1}
+				>
 					<List
 						items={props.userList.reduce((acc: IListItem[], currentUser) => {
 							acc.push({
 								image: currentUser.avatar,
 								color: 'black',
-								text: currentUser.displayName,
-								onClick: () =>
-									typeof props.onSelect === 'function' &&
-									props.onSelect(currentUser.displayName)
+								text: currentUser.displayName
 							});
 							return acc;
 						}, [])}
-						withKeyboardNavigation={true}
+						onSelect={props.onSelect}
+						withKeyboardNavigation
 					/>
 				</ScMentionSuggester>
 			)}

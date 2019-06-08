@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, ReactNode, useState } from 'react';
+import React, { ReactNode } from 'react';
 import ReactDOM from 'react-dom';
 import styled from 'styled-components';
 import Transition from 'react-transition-group/Transition';
@@ -16,7 +16,7 @@ const Modal = (props: IProps) => {
 
 	return ReactDOM.createPortal(
 		<Transition
-			in={props.isOpen}
+			in={isOpen}
 			mountOnEnter
 			unmountOnExit
 			timeout={{ enter: 0, exit: 300 }}
@@ -34,7 +34,7 @@ const Modal = (props: IProps) => {
 				</StyledOverlay>
 			)}
 		</Transition>,
-		document.getElementById('modalMount') as HTMLElement
+		document.getElementById('modalMount')!
 	);
 };
 

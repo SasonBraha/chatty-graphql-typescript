@@ -36,8 +36,7 @@ const handleKeyDown = (
 				break;
 
 			case KeyCodeEnum.ARROW_DOWN:
-				if (selectedIndex < props.items.length - 1)
-					setSelectedIndex(selectedIndex + 1);
+				setSelectedIndex(selectedIndex + 1);
 				break;
 
 			case KeyCodeEnum.ENTER:
@@ -62,13 +61,20 @@ const List: React.FC<IProps> = props => {
 		<ScList
 			onKeyDown={e => handleKeyDown(e, props, selectedIndex, setSelectedIndex)}
 			ref={listRef}
-			tabIndex={0}
+			tabIndex={-1}
 		>
 			{props.items.map((item, i) => (
 				<ListItem
 					key={i}
 					{...item}
-					isSelected={props.withKeyboardNavigation && i === selectedIndex}
+					isSelected={
+						props.withKeyboardNavigation &&
+						selectedIndex % props.items.length === i
+					}
+					onClick={() =>
+						typeof props.onSelect === 'function' &&
+						props.onSelect(item.text as string)
+					}
 				/>
 			))}
 		</ScList>

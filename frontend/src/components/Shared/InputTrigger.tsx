@@ -1,5 +1,6 @@
 import React, { ReactNode, useState } from 'react';
 import { KeyCodeEnum } from '../../types/enums';
+import MentionSuggester from '../Chat/MentionSuggester';
 
 interface ITriggerData {
 	start: number;
@@ -10,7 +11,7 @@ interface IProps {
 	onStart?: (mentionData: ITriggerData) => any;
 	onType?: (mentionData: ITriggerData) => any;
 	onCancel?: () => any;
-	typeCallbackDebounceRate?: number;
+	typeCallbackDebounce?: number;
 	triggerSymbol: '@' | '#' | '$';
 	children: ReactNode;
 	className?: string;
@@ -30,7 +31,7 @@ const InputTrigger: React.FC<IProps> = props => {
 		onStart,
 		onType,
 		onCancel,
-		typeCallbackDebounceRate,
+		typeCallbackDebounce,
 		triggerSymbol,
 		children,
 		...rest
@@ -75,7 +76,7 @@ const InputTrigger: React.FC<IProps> = props => {
 								value: value.slice(triggerStartIndex),
 								start: triggerStartIndex
 							});
-					}, props.typeCallbackDebounceRate || 0);
+					}, props.typeCallbackDebounce || 0);
 				}
 			}}
 			{...rest}

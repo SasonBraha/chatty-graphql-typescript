@@ -62,7 +62,7 @@ const StyledListItem = styled('li')<{
 	${({ isSelected }) =>
 		isSelected &&
 		css`
-			background: red;
+			background: rgba(0, 0, 0, 0.1);
 		`}
 
 	.ListItem {

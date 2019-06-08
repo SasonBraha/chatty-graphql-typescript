@@ -85,8 +85,6 @@ const App: React.FC<IProps> = props => {
 
 	return (
 		<>
-			<Helmet />
-
 			<StyledApp>
 				<Header />
 

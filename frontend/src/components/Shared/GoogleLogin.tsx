@@ -10,7 +10,7 @@ interface IProps {
 	text: string;
 }
 
-const LOGIN_WITH_GOOGLE_MUATION = gql`
+const LOGIN_WITH_GOOGLE_MUTATION = gql`
 	mutation($token: String!) {
 		loginWithGoogle(token: $token)
 	}
@@ -29,7 +29,7 @@ const GoogleLogin: React.FC<IProps> = props => {
 			onFailure={() => null}
 			onSuccess={async response => {
 				const userAccessToken = await props.client!.mutate({
-					mutation: LOGIN_WITH_GOOGLE_MUATION,
+					mutation: LOGIN_WITH_GOOGLE_MUTATION,
 					variables: {
 						//@ts-ignore
 						token: response.Zi.id_token
