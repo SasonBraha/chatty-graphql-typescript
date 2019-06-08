@@ -16,7 +16,7 @@ interface IProps {
 const MentionSuggester: React.FC<IProps> = props => {
 	return (
 		<Transition
-			in={true}
+			in={props.shouldShow && !!props.userList.length}
 			mountOnEnter
 			unmountOnExit
 			timeout={{ enter: 0, exit: 300 }}
