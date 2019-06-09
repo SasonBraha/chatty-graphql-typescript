@@ -6,3 +6,5 @@ mongoose.connect('mongodb://localhost:27017/chatty', {
 	useFindAndModify: false,
 	useCreateIndex: true
 });
+
+afterAll(() => mongoose.disconnect());

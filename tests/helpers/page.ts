@@ -4,15 +4,16 @@ class Page {
 	private page: any;
 	static async init() {
 		const browser = await puppeteer.launch({
-			headless: true
+			headless: false,
+			args: ['--no-sandbox']
 		});
 
 		const page = await browser.newPage();
-		const customPage = new Page(page);
+		const extendedPage = new Page(page);
 
-		return new Proxy(customPage, {
+		return new Proxy(extendedPage, {
 			get(target, property) {
-				return customPage[property] || browser[property] || page[property];
+				return extendedPage[property] || browser[property] || page[property];
 			}
 		});
 	}
