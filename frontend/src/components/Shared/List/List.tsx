@@ -55,7 +55,7 @@ const List: React.FC<IProps> = props => {
 		if (props.focusWhenVisible) {
 			listRef.current.focus();
 		}
-	}, []);
+	}, [props.focusWhenVisible]);
 
 	return (
 		<ScList

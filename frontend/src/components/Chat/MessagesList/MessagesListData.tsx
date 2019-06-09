@@ -6,7 +6,6 @@ import { IChatProps } from '../Chat';
 import { IChat, IMessage } from '../../../types/interfaces';
 import ApolloClient from 'apollo-client';
 import produce from 'immer';
-import { useQuery } from 'react-apollo-hooks';
 
 const MESSAGE_DATA_FRAGMENT = `
 	_id
@@ -98,6 +97,7 @@ const MessagesListData = (props: IProps) => {
 						setIsFetching(true);
 						fetchMore({
 							query: GET_OLDER_MESSAGES,
+							//@ts-ignore
 							variables: { chatSlug, beforeMessageId },
 							updateQuery: (prev, { fetchMoreResult }) => {
 								setIsFetching(false);

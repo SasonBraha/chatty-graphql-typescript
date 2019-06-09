@@ -99,12 +99,9 @@ const SendMessage: React.FC<IProps> = props => {
 	const [isTyping, setIsTyping] = useState(false);
 	const {
 		values,
-		errors,
-		touched,
 		handleChange: handleFormikChange,
 		handleBlur,
 		handleSubmit,
-		isSubmitting,
 		setFieldValue,
 		setFilePreview
 	} = props;

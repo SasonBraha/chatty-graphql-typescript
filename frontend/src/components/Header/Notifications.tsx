@@ -44,7 +44,6 @@ const convertNotificationToListItemData = (notification: INotification) => {
 					</>
 				)
 			};
-			break;
 	}
 };
 

@@ -24,7 +24,7 @@
 	"homepage": "https://github.com/SasonBraha/chatty-graphql-typescript#readme",
 	"dependencies": {},
 	"devDependencies": {
-		"jest": "^24.8.0",
+		"jest": "^24.7.1",
 		"puppeteer": "^1.17.0"
 	}
 }

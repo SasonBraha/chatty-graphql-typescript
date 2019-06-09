@@ -15,11 +15,7 @@ import { Link } from 'react-router-dom';
 const UPDATE_MESSAGE_MUTATION = gql`
 	mutation($messageId: ID!, $crudType: String!, $messageText: String) {
 		updateMessage(
-			updatePayload: {
-				messageId: $messageId
-				crudType: $crudType
-				messageText: $messageText
-			}
+			updatePayload: { messageId: $messageId, crudType: $crudType, messageText: $messageText }
 		)
 	}
 `;
@@ -58,11 +54,7 @@ class Message extends Component<IProps, IState> {
 	}
 
 	handleContextMenu = (e: React.MouseEvent) => {
-		if (
-			this.props.isMine &&
-			!this.props.message.isClientDeleted &&
-			!this.state.isEditable
-		) {
+		if (this.props.isMine && !this.props.message.isClientDeleted && !this.state.isEditable) {
 			e.preventDefault();
 			this.props.setMessageCtxMenu({
 				isOpen: true,
@@ -154,9 +146,7 @@ class Message extends Component<IProps, IState> {
 						{this.renderFile()}
 						{this.state.isEditable ? (
 							<ScEditable
-								onChange={(e: any) =>
-									this.setState({ messageBody: e.target.value })
-								}
+								onChange={(e: any) => this.setState({ messageBody: e.target.value })}
 								onCancel={() =>
 									this.setState({
 										messageBody: message.text,
@@ -173,13 +163,9 @@ class Message extends Component<IProps, IState> {
 						)}
 
 						<ScMetaData alignLeft={true}>
-							{formatRelative(
-								parseISO((message.createdAt as unknown) as string),
-								new Date(),
-								{
-									locale: he
-								}
-							)}
+							{formatRelative(parseISO((message.createdAt as unknown) as string), new Date(), {
+								locale: he
+							})}
 						</ScMetaData>
 					</>
 				)}

@@ -20,15 +20,7 @@ interface IFormValues {
 }
 
 const LoginForm = (props: FormikProps<IFormValues>) => {
-	const {
-		values,
-		errors,
-		touched,
-		handleChange,
-		handleBlur,
-		handleSubmit,
-		isSubmitting
-	} = props;
+	const { values, handleChange, handleBlur, handleSubmit } = props;
 	return (
 		<Form onSubmit={handleSubmit} icon={'icon-user-circle-o'} header='התחברות'>
 			<GoogleLogin text='התחבר באמצעות Google' />
@@ -90,9 +82,7 @@ export default compose(
 					localStorage.setItem(process.env.REACT_APP_LS_AUTH_TOKEN, authToken);
 					window.location.reload();
 				}
-			} catch (ex) {
-				const { message, status, formValidation } = ex.graphQLErrors[0];
-			}
+			} catch (ex) {}
 		}
 	})
 )(LoginForm);

@@ -1,5 +1,4 @@
-import React, { useEffect } from 'react';
-import { Query } from 'react-apollo';
+import React from 'react';
 import gql from 'graphql-tag';
 import { IChat, ITypingUser } from '../../../types/interfaces';
 import RoomsListItem from './RoomsListItem';

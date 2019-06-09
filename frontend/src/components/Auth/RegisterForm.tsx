@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { Button } from '../Shared';
 import { FormikProps, withFormik } from 'formik';
 import { compose, graphql } from 'react-apollo';
@@ -38,12 +38,10 @@ const LoginForm = (props: FormikProps<IFormValues>) => {
 	const {
 		values,
 		errors,
-		touched,
 		handleChange,
 		setFieldValue,
 		handleBlur,
-		handleSubmit,
-		isSubmitting
+		handleSubmit
 	} = props;
 	let captchaRef: React.RefObject<any> = useRef();
 
@@ -121,7 +119,7 @@ export default compose(
 		handleSubmit: async (
 			values,
 			//@ts-ignore
-			{ props: { mutate }, setSubmitting, resetForm, setErrors }
+			{ props: { mutate }, setErrors }
 		) => {
 			try {
 				const registerData = await mutate({
@@ -135,7 +133,7 @@ export default compose(
 					console.log('Success! Registered successfully');
 				}
 			} catch (ex) {
-				const { message, status, formValidation } = ex.graphQLErrors[0];
+				const { formValidation } = ex.graphQLErrors[0];
 				if (formValidation.captcha) {
 					console.log('אימות');
 				} else {

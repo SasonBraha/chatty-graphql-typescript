@@ -11,7 +11,6 @@ import Container from './Container';
 import { withRouter } from 'react-router-dom';
 import { GenericModal } from './Shared';
 import Routes from './Routes';
-import { Helmet } from 'react-helmet';
 import { useApolloClient, useSubscription } from 'react-apollo-hooks';
 import gql from 'graphql-tag';
 import { UserUpdatesEnum } from '../types/enums';
