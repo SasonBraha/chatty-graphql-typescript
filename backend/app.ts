@@ -25,11 +25,11 @@ const main = async () => {
 	//------------------------------------//
 	//  DB Config & Connection            //
 	//------------------------------------//
-	mongoose.set('useCreateIndex', true);
 	mongoose
 		.connect(process.env.MONGO_URI, {
 			useNewUrlParser: true,
-			useFindAndModify: false
+			useFindAndModify: false,
+			useCreateIndex: true
 		})
 		.catch(ex => {
 			throw new Error(ex);

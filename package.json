@@ -24,7 +24,14 @@
 	"homepage": "https://github.com/SasonBraha/chatty-graphql-typescript#readme",
 	"dependencies": {},
 	"devDependencies": {
+		"@types/jest": "^24.0.13",
+		"@types/mongoose": "^5.5.5",
+		"@types/node": "^12.0.7",
+		"@types/puppeteer": "^1.12.4",
 		"jest": "^24.7.1",
-		"puppeteer": "^1.17.0"
+		"mongoose": "^5.5.14",
+		"puppeteer": "^1.17.0",
+		"ts-jest": "^24.0.2",
+		"typescript": "^3.5.1"
 	}
 }
