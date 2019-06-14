@@ -15,6 +15,8 @@ export class UpdateMessageInput {
 	@Field(type => ID) messageId: string;
 	@Field() crudType: string;
 	@Field({ nullable: true }) messageText: string;
+	@Field({ nullable: true }) creationToken: string;
+	@Field() chatSlug: string;
 }
 
 export interface IFileInput {

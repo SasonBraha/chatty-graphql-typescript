@@ -9,9 +9,10 @@ export default async (authToken: string) => {
 			throw new Error(ErrorTypesEnum.FORBIDDEN);
 		}
 
-		//prettier-ignore
-		const isTokenValid = await jwt.verify(authToken.split(' ')[1], process.env.JWT_SECRET) as IUser;
-
+		const isTokenValid = (await jwt.verify(
+			authToken.split(' ')[1],
+			process.env.JWT_SECRET
+		)) as IUser;
 		if (!isTokenValid) throw new Error(ErrorTypesEnum.FORBIDDEN);
 
 		const userData = isTokenValid;

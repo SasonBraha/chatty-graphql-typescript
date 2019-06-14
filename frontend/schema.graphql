@@ -46,8 +46,10 @@ type MentionEntity {
 
 type MessageEntity {
     _id: ID!
+    chatSlug: String!
     createdAt: DateTime!
     createdBy: UserEntity!
+    creationToken: String
     file: FileEntity
     isClientDeleted: Boolean
     text: String!
@@ -134,6 +136,8 @@ input RegisterInput {
 }
 
 input UpdateMessageInput {
+    chatSlug: String!
+    creationToken: String
     crudType: String!
     messageId: ID!
     messageText: String

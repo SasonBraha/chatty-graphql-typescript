@@ -1,8 +1,9 @@
 import * as puppeteer from 'puppeteer';
+import '../factories/userFactory';
 
 class Page {
 	private page: any;
-	static async init() {
+	public static async init() {
 		const browser = await puppeteer.launch({
 			headless: false,
 			args: ['--no-sandbox']
@@ -22,8 +23,8 @@ class Page {
 		this.page = page;
 	}
 
-	async login() {
-		await this.page.goto('localhost:3000');
+	public async login() {
+		await this.page.goto('http://localhost:3000');
 		await this.page.evaluate(() => {
 			localStorage.setItem(
 				'authToken',
@@ -33,7 +34,7 @@ class Page {
 		await this.page.reload();
 	}
 
-	async getContentsOf(selector: string): Promise<string> {
+	public async getContentsOf(selector: string): Promise<string> {
 		return this.page.$eval(selector, el => el.textContent);
 	}
 }

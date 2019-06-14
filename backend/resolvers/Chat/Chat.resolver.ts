@@ -13,11 +13,7 @@ import {
 	UseMiddleware
 } from 'type-graphql';
 import Chat, { ChatEntity, IChat } from '../../entities/Chat.model';
-import User, {
-	IUser,
-	IUserSchemaMethods,
-	UserEntity
-} from '../../entities/User.model';
+import User, { IUser, IUserSchemaMethods, UserEntity } from '../../entities/User.model';
 import Notification, { INotification } from '../../entities/Notification.model';
 import Message, { IMessage, MessageEntity } from '../../entities/Message.model';
 import { ObjectID } from 'bson';
@@ -38,24 +34,18 @@ import {
 	UserTypingOutput
 } from './chat.resolver.output';
 import { UpdateMessageInput } from './chat.resolver.inputs';
-import {
-	CrudEnum,
-	SubscriptionTypesEnum,
-	UserUpdatesEnum
-} from '../../types/enums';
+import { CrudEnum, SubscriptionTypesEnum, UserUpdatesEnum } from '../../types/enums';
 import * as sanitizeHtml from 'sanitize-html';
 import { IMention } from '../../entities/Mention.model';
 import { generateUserMentionedNotification } from '../../utils/notifications';
+import * as jwt from 'jsonwebtoken';
 
 @Resolver(ChatEntity)
 export default class ChatResolver {
 	@UseMiddleware(Authenticated)
 	@UseMiddleware(WithPermission([ChatPermissionTypesEnum.VIEW_CHAT]))
 	@Query(returns => ChatEntity)
-	async chat(
-		@Arg('chatSlug') chatSlug: string,
-		@Ctx('user') user: IUser
-	): Promise<IChat> {
+	async chat(@Arg('chatSlug') chatSlug: string, @Ctx('user') user: IUser): Promise<IChat> {
 		const chat = await Chat.findOne({
 			$or: [
 				{ slug: chatSlug, isPrivate: false },
@@ -167,23 +157,20 @@ export default class ChatResolver {
 			}).select('displayName _id slug');
 
 			if (usersData.length) {
-				userMentions = usersData.reduce(
-					(acc: IMention[], currentUser: IUser) => {
-						const { displayName, slug, _id } = currentUser;
-						const startIndex = sanitizedText.indexOf(displayName) - 1;
-						const endIndex = startIndex + displayName.length + 1;
+				userMentions = usersData.reduce((acc: IMention[], currentUser: IUser) => {
+					const { displayName, slug, _id } = currentUser;
+					const startIndex = sanitizedText.indexOf(displayName) - 1;
+					const endIndex = startIndex + displayName.length + 1;
 
-						acc.push({
-							indices: [startIndex, endIndex],
-							displayName,
-							slug,
-							_id
-						});
+					acc.push({
+						indices: [startIndex, endIndex],
+						displayName,
+						slug,
+						_id
+					});
 
-						return acc;
-					},
-					[]
-				);
+					return acc;
+				}, []);
 			}
 		}
 
@@ -207,7 +194,8 @@ export default class ChatResolver {
 			message: {
 				...messageData,
 				createdAt: new Date(),
-				isClientDeleted: false
+				isClientDeleted: false,
+				creationToken: jwt.sign({ _id: user._id.toString() }, process.env.JWT_SECRET)
 			},
 			updateType: SubscriptionTypesEnum.NEW_MESSAGE,
 			chatSlug
@@ -235,11 +223,7 @@ export default class ChatResolver {
 		usersData.forEach(async ({ _id }) => {
 			if (user._id.toString() !== _id.toString()) {
 				const notification = await Notification.create(
-					generateUserMentionedNotification(
-						user._id,
-						_id,
-						`${chatSlug}/${newMessage._id}`
-					)
+					generateUserMentionedNotification(user._id, _id, `${chatSlug}/${newMessage._id}`)
 				);
 
 				pubSub.publish(SubscriptionTypesEnum.USER_MENTIONED, {
@@ -268,51 +252,68 @@ export default class ChatResolver {
 		@Ctx('user') user: IUserSchemaMethods,
 		@PubSub() pubSub: PubSubEngine
 	): Promise<boolean> {
-		const { messageId, crudType } = updatePayload;
+		const { messageId, creationToken, crudType, chatSlug } = updatePayload;
 		const targetMessage = await Message.findOne({ _id: messageId });
+		let isUserCreatedTargetMessage: boolean = false;
+		let shouldUpdateDB: boolean = false;
 
-		if (targetMessage) {
-			const isUserCreatedTargetMessage =
-				targetMessage.createdBy._id === user._id.toString();
-			switch (crudType) {
-				case CrudEnum.DELETE:
-					if (
-						user.hasPermission([ChatPermissionTypesEnum.DELETE_MESSAGE]) ||
-						isUserCreatedTargetMessage
-					) {
-						pubSub.publish(SubscriptionTypesEnum.MESSAGE_DELETED, {
-							messageId,
-							chatSlug: targetMessage.chatSlug,
-							updateType: SubscriptionTypesEnum.MESSAGE_DELETED
-						});
+		if (!targetMessage && creationToken) {
+			// @ts-ignore
+			const creationTokenData: { _id: string } = await jwt.verify(
+				creationToken,
+				process.env.JWT_SECRET
+			);
 
+			if (creationTokenData) {
+				isUserCreatedTargetMessage = creationTokenData._id === user._id.toString();
+				shouldUpdateDB = false;
+			}
+		} else if (targetMessage) {
+			isUserCreatedTargetMessage = targetMessage.createdBy._id === user._id.toString();
+			shouldUpdateDB = true;
+		}
+
+		switch (crudType) {
+			case CrudEnum.DELETE:
+				if (
+					user.hasPermission([ChatPermissionTypesEnum.DELETE_MESSAGE]) ||
+					isUserCreatedTargetMessage
+				) {
+					pubSub.publish(SubscriptionTypesEnum.MESSAGE_DELETED, {
+						messageId,
+						chatSlug: chatSlug,
+						updateType: SubscriptionTypesEnum.MESSAGE_DELETED
+					});
+
+					if (shouldUpdateDB) {
 						await targetMessage.remove();
 					}
-					return true;
+				}
+				return true;
 
-				case CrudEnum.UPDATE:
-					if (
-						user.hasPermission([ChatPermissionTypesEnum.EDIT_MESSAGE]) ||
-						isUserCreatedTargetMessage
-					) {
-						const sanitizedText = sanitizeHtml(updatePayload.messageText, {
-							allowedTags: [],
-							allowedAttributes: {}
-						});
+			case CrudEnum.UPDATE:
+				if (
+					user.hasPermission([ChatPermissionTypesEnum.EDIT_MESSAGE]) ||
+					isUserCreatedTargetMessage
+				) {
+					const sanitizedText = sanitizeHtml(updatePayload.messageText, {
+						allowedTags: [],
+						allowedAttributes: {}
+					});
+
+					pubSub.publish(SubscriptionTypesEnum.MESSAGE_EDITED, {
+						chatSlug: chatSlug,
+						updatedText: sanitizedText,
+						updateType: SubscriptionTypesEnum.MESSAGE_EDITED,
+						messageId
+					});
+
+					if (shouldUpdateDB) {
 						targetMessage.text = sanitizedText;
 						await targetMessage.save();
-
-						pubSub.publish(SubscriptionTypesEnum.MESSAGE_EDITED, {
-							chatSlug: targetMessage.chatSlug,
-							updatedText: sanitizedText,
-							updateType: SubscriptionTypesEnum.MESSAGE_EDITED,
-							messageId
-						});
 					}
-					return true;
-			}
-		} else {
-			throw new Error(ErrorTypesEnum.NOT_FOUND);
+				}
+				return true;
 		}
 	}
 
@@ -443,10 +444,7 @@ export default class ChatResolver {
 	})
 	messagesUpdates(
 		@Root()
-		subscriptionPayload:
-			| IMessageCreatedOutput
-			| IMessageDeletedOutput
-			| IMessageFileUploadedOutput,
+		subscriptionPayload: IMessageCreatedOutput | IMessageDeletedOutput | IMessageFileUploadedOutput,
 		@Arg('chatSlug') chatSlug: string
 	): string {
 		return JSON.stringify(subscriptionPayload);

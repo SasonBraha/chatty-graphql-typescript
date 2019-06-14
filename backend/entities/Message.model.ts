@@ -62,6 +62,9 @@ export class MessageEntity {
 	@Field()
 	text: string;
 
+	@Field()
+	chatSlug: string;
+
 	@Field({ nullable: true })
 	file: FileEntity;
 
@@ -75,6 +78,7 @@ export class MessageEntity {
 	createdAt: Date;
 
 	@Field({ defaultValue: false }) isClientDeleted: boolean;
+	@Field({ nullable: true }) creationToken: string;
 }
 
 const Message = model<IMessage>('Message', MessageSchema);

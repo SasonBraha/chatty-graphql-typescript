@@ -13,16 +13,22 @@ import reactStringReplace from 'react-string-replace';
 import { Link } from 'react-router-dom';
 
 const UPDATE_MESSAGE_MUTATION = gql`
-	mutation($messageId: ID!, $crudType: String!, $messageText: String) {
+	mutation(
+		$messageId: ID!
+		$crudType: String!
+		$messageText: String
+		$creationToken: String
+		$chatSlug: String!
+	) {
 		updateMessage(
-			updatePayload: { messageId: $messageId, crudType: $crudType, messageText: $messageText }
+			updatePayload: {
+				messageId: $messageId
+				crudType: $crudType
+				messageText: $messageText
+				creationToken: $creationToken
+				chatSlug: $chatSlug
+			}
 		)
-	}
-`;
-
-const DELETE_MESSAGE_MUTATION = gql`
-	mutation($messageId: ID!, $crudType: String!) {
-		updateMessage(updatePayload: { messageId: $messageId, crudType: $crudType })
 	}
 `;
 
@@ -77,7 +83,9 @@ class Message extends Component<IProps, IState> {
 				variables: {
 					messageId: this.props.message._id,
 					crudType: CrudEnum.UPDATE,
-					messageText: this.state.messageBody
+					messageText: this.state.messageBody,
+					creationToken: this.props.message.creationToken,
+					chatSlug: this.props.message.chatSlug
 				}
 			});
 		}
@@ -122,10 +130,12 @@ class Message extends Component<IProps, IState> {
 
 	deleteMessage = async () => {
 		await this.props.client!.mutate({
-			mutation: DELETE_MESSAGE_MUTATION,
+			mutation: UPDATE_MESSAGE_MUTATION,
 			variables: {
 				messageId: this.props.message!._id,
-				crudType: CrudEnum.DELETE
+				crudType: CrudEnum.DELETE,
+				creationToken: this.props.message.creationToken,
+				chatSlug: this.props.message.chatSlug
 			}
 		});
 	};

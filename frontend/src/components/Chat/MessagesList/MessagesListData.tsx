@@ -23,6 +23,8 @@ const MESSAGE_DATA_FRAGMENT = `
 		}
 	}
 	isClientDeleted
+	creationToken
+	chatSlug
 	createdAt
 	userMentions {
 		displayName
@@ -108,10 +110,7 @@ const MessagesListData = (props: IProps) => {
 								return {
 									chat: {
 										...prev.chat,
-										messages: [
-											...fetchMoreResult.olderMessages.reverse(),
-											...prev.chat.messages
-										]
+										messages: [...fetchMoreResult.olderMessages.reverse(), ...prev.chat.messages]
 									}
 								};
 							}
@@ -122,9 +121,7 @@ const MessagesListData = (props: IProps) => {
 							document: MESSAGES_LIST_UPDATES,
 							variables: { chatSlug },
 							updateQuery: (prev, { subscriptionData }) => {
-								const updatedData = JSON.parse(
-									subscriptionData.data.messagesUpdates
-								);
+								const updatedData = JSON.parse(subscriptionData.data.messagesUpdates);
 								const updateType = updatedData.updateType;
 								switch (updateType) {
 									case SubscriptionTypesEnum.NEW_MESSAGE:
@@ -145,28 +142,21 @@ const MessagesListData = (props: IProps) => {
 											prev.chat.messages
 												.slice()
 												.reverse()
-												.findIndex(
-													(message: IMessage) =>
-														message._id === updatedData.messageId
-												);
+												.findIndex((message: IMessage) => message._id === updatedData.messageId);
 										switch (updateType) {
 											case SubscriptionTypesEnum.FILE_UPLOADED:
 												return produce(prev, (draft: IPrev) => {
-													draft.chat.messages[targetMessageIdx].file =
-														updatedData.file;
+													draft.chat.messages[targetMessageIdx].file = updatedData.file;
 												});
 
 											case SubscriptionTypesEnum.MESSAGE_DELETED:
 												return produce(prev, (draft: IPrev) => {
-													draft.chat.messages[
-														targetMessageIdx
-													].isClientDeleted = true;
+													draft.chat.messages[targetMessageIdx].isClientDeleted = true;
 												});
 
 											case SubscriptionTypesEnum.MESSAGE_EDITED:
 												return produce(prev, (draft: IPrev) => {
-													draft.chat.messages[targetMessageIdx].text =
-														updatedData.updatedText;
+													draft.chat.messages[targetMessageIdx].text = updatedData.updatedText;
 												});
 										}
 								}
