@@ -3,16 +3,16 @@ import styled from 'styled-components/macro';
 import { Link } from 'react-router-dom';
 import { Burger, Button, Dropdown, List, Scrollable } from '../Shared';
 import { connect } from 'react-redux';
-import { setAuthModal, setNavState } from '../../redux/actions';
+import { setAuthModal } from '../../redux/actions';
 import Ripple from 'react-ink';
 import { INotification, IUser } from '../../types/interfaces';
 import { IReducerState } from '../../redux/reducers';
 import Icon from '../Shared/Icon';
 import Notifications from './Notifications';
+import { setNavState } from '../../apollo/actions';
 
 interface IProps {
 	setAuthModal: typeof setAuthModal;
-	setNavState: typeof setNavState;
 	currentUser: IUser | null;
 	notifications: {
 		unread: number;
@@ -47,7 +47,7 @@ const headerDropdownItmes = (props: IProps) => {
 };
 
 const Header: React.FC<IProps> = props => {
-	const { setAuthModal, setNavState, currentUser } = props;
+	const { setAuthModal, currentUser } = props;
 	const [isProfileDropdownOpen, setProfileDropdown] = useState(false);
 	const [isNotificationsDropdownOpen, setNotificationsDropdown] = useState(
 		false

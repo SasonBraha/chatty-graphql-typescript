@@ -13,7 +13,11 @@ import {
 	UseMiddleware
 } from 'type-graphql';
 import Chat, { ChatEntity, IChat } from '../../entities/Chat.model';
-import User, { IUser, IUserSchemaMethods, UserEntity } from '../../entities/User.model';
+import User, {
+	IUser,
+	IUserSchemaMethods,
+	UserEntity
+} from '../../entities/User.model';
 import Notification, { INotification } from '../../entities/Notification.model';
 import Message, { IMessage, MessageEntity } from '../../entities/Message.model';
 import { ObjectID } from 'bson';
@@ -34,7 +38,11 @@ import {
 	UserTypingOutput
 } from './chat.resolver.output';
 import { UpdateMessageInput } from './chat.resolver.inputs';
-import { CrudEnum, SubscriptionTypesEnum, UserUpdatesEnum } from '../../types/enums';
+import {
+	CrudEnum,
+	SubscriptionTypesEnum,
+	UserUpdatesEnum
+} from '../../types/enums';
 import * as sanitizeHtml from 'sanitize-html';
 import { IMention } from '../../entities/Mention.model';
 import { generateUserMentionedNotification } from '../../utils/notifications';
@@ -45,7 +53,10 @@ export default class ChatResolver {
 	@UseMiddleware(Authenticated)
 	@UseMiddleware(WithPermission([ChatPermissionTypesEnum.VIEW_CHAT]))
 	@Query(returns => ChatEntity)
-	async chat(@Arg('chatSlug') chatSlug: string, @Ctx('user') user: IUser): Promise<IChat> {
+	async chat(
+		@Arg('chatSlug') chatSlug: string,
+		@Ctx('user') user: IUser
+	): Promise<IChat> {
 		const chat = await Chat.findOne({
 			$or: [
 				{ slug: chatSlug, isPrivate: false },
@@ -157,20 +168,23 @@ export default class ChatResolver {
 			}).select('displayName _id slug');
 
 			if (usersData.length) {
-				userMentions = usersData.reduce((acc: IMention[], currentUser: IUser) => {
-					const { displayName, slug, _id } = currentUser;
-					const startIndex = sanitizedText.indexOf(displayName) - 1;
-					const endIndex = startIndex + displayName.length + 1;
+				userMentions = usersData.reduce(
+					(acc: IMention[], currentUser: IUser) => {
+						const { displayName, slug, _id } = currentUser;
+						const startIndex = sanitizedText.indexOf(displayName) - 1;
+						const endIndex = startIndex + displayName.length + 1;
 
-					acc.push({
-						indices: [startIndex, endIndex],
-						displayName,
-						slug,
-						_id
-					});
+						acc.push({
+							indices: [startIndex, endIndex],
+							displayName,
+							slug,
+							_id
+						});
 
-					return acc;
-				}, []);
+						return acc;
+					},
+					[]
+				);
 			}
 		}
 
@@ -195,7 +209,10 @@ export default class ChatResolver {
 				...messageData,
 				createdAt: new Date(),
 				isClientDeleted: false,
-				creationToken: jwt.sign({ _id: user._id.toString() }, process.env.JWT_SECRET)
+				creationToken: jwt.sign(
+					{ _id: user._id.toString() },
+					process.env.JWT_SECRET
+				)
 			},
 			updateType: SubscriptionTypesEnum.NEW_MESSAGE,
 			chatSlug
@@ -223,7 +240,11 @@ export default class ChatResolver {
 		usersData.forEach(async ({ _id }) => {
 			if (user._id.toString() !== _id.toString()) {
 				const notification = await Notification.create(
-					generateUserMentionedNotification(user._id, _id, `${chatSlug}/${newMessage._id}`)
+					generateUserMentionedNotification(
+						user._id,
+						_id,
+						`${chatSlug}/${newMessage._id}`
+					)
 				);
 
 				pubSub.publish(SubscriptionTypesEnum.USER_MENTIONED, {
@@ -265,11 +286,13 @@ export default class ChatResolver {
 			);
 
 			if (creationTokenData) {
-				isUserCreatedTargetMessage = creationTokenData._id === user._id.toString();
+				isUserCreatedTargetMessage =
+					creationTokenData._id === user._id.toString();
 				shouldUpdateDB = false;
 			}
 		} else if (targetMessage) {
-			isUserCreatedTargetMessage = targetMessage.createdBy._id === user._id.toString();
+			isUserCreatedTargetMessage =
+				targetMessage.createdBy._id === user._id.toString();
 			shouldUpdateDB = true;
 		}
 
@@ -314,6 +337,9 @@ export default class ChatResolver {
 					}
 				}
 				return true;
+
+			default:
+				throw new Error(ErrorTypesEnum.FORBIDDEN);
 		}
 	}
 
@@ -444,7 +470,10 @@ export default class ChatResolver {
 	})
 	messagesUpdates(
 		@Root()
-		subscriptionPayload: IMessageCreatedOutput | IMessageDeletedOutput | IMessageFileUploadedOutput,
+		subscriptionPayload:
+			| IMessageCreatedOutput
+			| IMessageDeletedOutput
+			| IMessageFileUploadedOutput,
 		@Arg('chatSlug') chatSlug: string
 	): string {
 		return JSON.stringify(subscriptionPayload);

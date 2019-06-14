@@ -2,6 +2,7 @@ import React, { useState, useEffect, ReactNode } from 'react';
 import { connect } from 'react-redux';
 import styled, { css } from 'styled-components/macro';
 import { IReducerState } from '../../redux/reducers';
+import { useCacheData } from '../Shared/Hooks';
 
 interface IProps {
 	isNavOpen: boolean;
@@ -10,6 +11,8 @@ interface IProps {
 
 const Container = (props: IProps) => {
 	const [shouldShrink, setShouldShrink] = useState(window.innerWidth > 992);
+	const { isNavOpen } = useCacheData(['isNavOpen']);
+
 	useEffect(() => {
 		window.onresize = () => {
 			const windowWidth = window.innerWidth;
@@ -22,7 +25,7 @@ const Container = (props: IProps) => {
 	}, [shouldShrink]);
 
 	return (
-		<StyledContainer navOpen={props.isNavOpen} shouldShrink={shouldShrink}>
+		<StyledContainer navOpen={isNavOpen} shouldShrink={shouldShrink}>
 			{props.children}
 		</StyledContainer>
 	);

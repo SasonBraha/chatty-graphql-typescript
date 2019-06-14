@@ -37,7 +37,6 @@ const wsLink = () => {
 
 	//@ts-ignore
 	wsLink.subscriptionClient.use([subscriptionMiddleware]);
-
 	return wsLink;
 };
 
@@ -46,9 +45,7 @@ const httpLink = createUploadLink({
 });
 
 const authLink = setContext((_, { headers }) => {
-	// Get the authentication token from local storage if it exists
 	const token = localStorage.getItem(process.env.REACT_APP_LS_AUTH_TOKEN);
-	// Return the headers to the context so httpLink can read them
 	return {
 		headers: {
 			...headers,
@@ -71,11 +68,21 @@ const link = split(
 	authLink.concat(httpLink)
 );
 
+const cache = new InMemoryCache({
+	addTypename: false
+});
+
 const client = new ApolloClient({
 	link,
-	cache: new InMemoryCache({
-		addTypename: false
-	})
+	cache
+});
+
+cache.writeData({
+	data: {
+		client: {
+			isNavOpen: window.innerWidth > 992
+		}
+	}
 });
 
 if (process.env.NODE_ENV === 'development') {

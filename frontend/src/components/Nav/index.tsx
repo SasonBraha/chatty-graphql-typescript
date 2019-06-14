@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import { IReducerState } from '../../redux/reducers';
 import styled from 'styled-components/macro';
 import { List } from '../Shared';
+import { useCacheData } from '../Shared/Hooks';
 
 interface IProps {
 	isNavOpen: boolean;
@@ -19,11 +20,15 @@ const navItems = [
 	}
 ];
 
-const Nav = (props: IProps) => (
-	<ScNav isNavOpen={props.isNavOpen}>
-		<List items={navItems} />
-	</ScNav>
-);
+const Nav = (props: IProps) => {
+	const { isNavOpen } = useCacheData(['isNavOpen']);
+	console.log('render');
+	return (
+		<ScNav isNavOpen={isNavOpen}>
+			<List items={navItems} />
+		</ScNav>
+	);
+};
 
 const ScNav = styled('nav')<{ isNavOpen: boolean }>`
 	width: ${props => props.theme.navWidth};
