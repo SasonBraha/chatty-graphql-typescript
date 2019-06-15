@@ -4,7 +4,7 @@ import Header from './Header';
 import AuthModal from './Auth/AuthModal';
 import jwtDecode from 'jwt-decode';
 import { connect } from 'react-redux';
-import { setCurrentUser, setNotificationsData } from '../redux/actions';
+import { setNotificationsData } from '../redux/actions';
 import { IUser } from '../types/interfaces';
 import Nav from './Nav';
 import Container from './Container';
@@ -15,6 +15,9 @@ import { useApolloClient, useSubscription } from 'react-apollo-hooks';
 import gql from 'graphql-tag';
 import { UserUpdatesEnum } from '../types/enums';
 import { IReducerState } from '../redux/reducers';
+import { setCurrentUser } from '../apollo/actions';
+import { useLocalCache } from './Shared/Hooks';
+import { USER_ENTITY_FRAGMENT } from '../apollo/fragments';
 
 const ME_DATA_QUERY = gql`
 	query {
@@ -31,7 +34,6 @@ const SUBSCRIBE_TO_USER_UPDATES = gql`
 `;
 
 interface IProps {
-	setCurrentUser: typeof setCurrentUser;
 	setNotificationsData: typeof setNotificationsData;
 	unreadNotificationsCount: number;
 	currentUser: IUser | null;
@@ -40,18 +42,23 @@ interface IProps {
 const App: React.FC<IProps> = props => {
 	const client = useApolloClient();
 	const { data, loading } = useSubscription(SUBSCRIBE_TO_USER_UPDATES);
+	const { currentUser } = useLocalCache(`
+		currentUser {
+			${USER_ENTITY_FRAGMENT}
+		}
+	`);
 
 	useLayoutEffect(() => {
 		const accessToken = localStorage.getItem(
 			process.env.REACT_APP_LS_AUTH_TOKEN
 		);
 		if (accessToken) {
-			props.setCurrentUser(jwtDecode<IUser>(accessToken));
+			setCurrentUser(jwtDecode<IUser>(accessToken));
 		}
 	}, []);
 
 	useEffect(() => {
-		if (props.currentUser) {
+		if (currentUser) {
 			client
 				.query({
 					query: ME_DATA_QUERY
@@ -67,7 +74,7 @@ const App: React.FC<IProps> = props => {
 					});
 				});
 		}
-	}, []);
+	}, [currentUser]);
 
 	useEffect(() => {
 		if (!loading && data) {
@@ -110,16 +117,12 @@ const ScContent = styled.div`
 	height: calc(100vh - ${props => props.theme.headerHeight});
 `;
 
-const mapStateToProps = ({
-	notifications: { unread },
-	currentUser
-}: IReducerState) => ({
-	unreadNotificationsCount: unread,
-	currentUser
+const mapStateToProps = ({ notifications: { unread } }: IReducerState) => ({
+	unreadNotificationsCount: unread
 });
 export default withRouter(
 	connect(
 		mapStateToProps,
-		{ setCurrentUser, setNotificationsData }
+		{ setNotificationsData }
 	)(App)
 );

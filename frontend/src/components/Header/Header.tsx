@@ -11,6 +11,7 @@ import Icon from '../Shared/Icon';
 import Notifications from './Notifications';
 import { setNavState } from '../../apollo/actions';
 import { useLocalCache } from '../Shared/Hooks';
+import { USER_ENTITY_FRAGMENT } from '../../apollo/fragments';
 
 interface IProps {
 	setAuthModal: typeof setAuthModal;
@@ -21,12 +22,12 @@ interface IProps {
 	};
 }
 
-const headerDropdownItems = (props: IProps) => {
+const headerDropdownItems = (currentUser: IUser) => {
 	return [
 		{
 			icon: 'icon-user',
 			text: 'הפרופיל שלי',
-			linkTo: `/user/${props.currentUser!.slug}`,
+			linkTo: `/user/${currentUser!.slug}`,
 			withRipple: true
 		},
 		{
@@ -48,11 +49,16 @@ const headerDropdownItems = (props: IProps) => {
 };
 
 const Header: React.FC<IProps> = props => {
-	const { setAuthModal, currentUser } = props;
+	const { setAuthModal } = props;
 	const [isProfileDropdownOpen, setProfileDropdown] = useState(false);
 	const [isNotificationsDropdownOpen, setNotificationsDropdown] = useState(
 		false
 	);
+	const { currentUser } = useLocalCache(`
+		currentUser {
+			${USER_ENTITY_FRAGMENT}
+		}
+	`);
 
 	return (
 		<ScHeader>
@@ -100,7 +106,7 @@ const Header: React.FC<IProps> = props => {
 							isOpen={isProfileDropdownOpen}
 							resetDropdown={() => setProfileDropdown(false)}
 						>
-							<List items={headerDropdownItems(props)} />
+							<List items={headerDropdownItems(currentUser)} />
 						</Dropdown>
 					</ScProfileDropdown>
 				</ScHeaderMenu>

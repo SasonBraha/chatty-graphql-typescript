@@ -1,11 +1,15 @@
 import client from './client';
 import gql from 'graphql-tag';
 import { IUser } from '../types/interfaces';
+import { USER_ENTITY_FRAGMENT } from './fragments';
 
 export const CLIENT_QUERY = gql`
 	{
 		client @client {
 			isNavOpen
+			currentUser {
+					${USER_ENTITY_FRAGMENT}
+			}	
 		}
 	}
 `;

@@ -10,7 +10,7 @@ const buildQuery = (dataToFetch: string) => gql`
     }
 `;
 
-const withCacheData = (dataToFetch: string) => (
+const withLocalCache = (dataToFetch: string) => (
 	WrappedComponent: any
 ): typeof WrappedComponent => {
 	return class ComposedComponent extends Component<any, any> {
@@ -23,4 +23,4 @@ const withCacheData = (dataToFetch: string) => (
 		}
 	};
 };
-export default withCacheData;
+export default withLocalCache;

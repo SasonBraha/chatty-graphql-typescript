@@ -10,6 +10,7 @@ import MessageContextMenu from './MessageContextMenu';
 import { ApolloClient } from 'apollo-client';
 import client from '../../../apollo/client';
 import withLocalCache from '../../Shared/Hoc/withLocalCache';
+import { USER_ENTITY_FRAGMENT } from '../../../apollo/fragments';
 
 interface IProps {
 	currentUser?: IUser | null;
@@ -46,8 +47,11 @@ interface IState {
 	messageCtxMenu: IMessageCtxMenu;
 }
 
-@connect(({ currentUser }: IReducerState) => ({ currentUser }))
-@withLocalCache('isNavOpen')
+@withLocalCache(`
+	currentUser {
+		${USER_ENTITY_FRAGMENT}
+	}
+`)
 class MessagesList extends Component<IProps, IState> {
 	private unsubscribeFromUpdates: any;
 	private listEnd: React.RefObject<any> = React.createRef();

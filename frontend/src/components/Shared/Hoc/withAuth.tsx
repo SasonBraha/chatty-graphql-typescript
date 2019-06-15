@@ -4,6 +4,8 @@ import { IUser } from '../../../types/interfaces';
 import { IReducerState } from '../../../redux/reducers';
 import { setGenericModal } from '../../../redux/actions';
 import { Redirect } from 'react-router';
+import withLocalCache from './withLocalCache';
+import { USER_ENTITY_FRAGMENT } from '../../../apollo/fragments';
 
 interface IProps {
 	currentUser: IUser | null;
@@ -11,11 +13,15 @@ interface IProps {
 }
 
 export default (WrappedComponent: any) => {
-	const mapStateToProps = ({ currentUser }: IReducerState) => ({ currentUser });
 	@connect(
-		mapStateToProps,
+		null,
 		{ setGenericModal }
 	)
+	@withLocalCache(`
+		currentUser {
+			${USER_ENTITY_FRAGMENT}
+		}
+	`)
 	class ComposedComponent extends Component<IProps> {
 		componentDidMount(): void {
 			this.validateLoginState();

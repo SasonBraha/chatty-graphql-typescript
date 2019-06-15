@@ -1,7 +1,5 @@
 export const SET_AUTH_MODAL = 'SET_AUTH_MODAL';
 export const RESET_MODALS = 'RESET_MODALS';
-export const SET_NAV_STATE = 'SET_NAV_STATE';
-export const SET_CURRENT_USER = 'SET_CURRENT_USER';
 export const SET_GENERIC_MODAL = 'SET_GENERIC_MODAL';
 export const SET_CHAT_SLUG = 'SET_CHAT_SLUG';
 export const SET_TYPING_USERS = 'SET_TYPING_USERS';
