@@ -10,6 +10,7 @@ import { IReducerState } from '../../redux/reducers';
 import Icon from '../Shared/Icon';
 import Notifications from './Notifications';
 import { setNavState } from '../../apollo/actions';
+import { useLocalCache } from '../Shared/Hooks';
 
 interface IProps {
 	setAuthModal: typeof setAuthModal;
@@ -20,7 +21,7 @@ interface IProps {
 	};
 }
 
-const headerDropdownItmes = (props: IProps) => {
+const headerDropdownItems = (props: IProps) => {
 	return [
 		{
 			icon: 'icon-user',
@@ -99,7 +100,7 @@ const Header: React.FC<IProps> = props => {
 							isOpen={isProfileDropdownOpen}
 							resetDropdown={() => setProfileDropdown(false)}
 						>
-							<List items={headerDropdownItmes(props)} />
+							<List items={headerDropdownItems(props)} />
 						</Dropdown>
 					</ScProfileDropdown>
 				</ScHeaderMenu>
@@ -188,5 +189,5 @@ const mapStateToProps = ({ currentUser, notifications }: IReducerState) => ({
 });
 export default connect(
 	mapStateToProps,
-	{ setAuthModal, setNavState }
+	{ setAuthModal }
 )(Header);

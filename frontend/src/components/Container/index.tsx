@@ -2,7 +2,7 @@ import React, { useState, useEffect, ReactNode } from 'react';
 import { connect } from 'react-redux';
 import styled, { css } from 'styled-components/macro';
 import { IReducerState } from '../../redux/reducers';
-import { useCacheData } from '../Shared/Hooks';
+import { useLocalCache } from '../Shared/Hooks';
 
 interface IProps {
 	isNavOpen: boolean;
@@ -11,7 +11,7 @@ interface IProps {
 
 const Container = (props: IProps) => {
 	const [shouldShrink, setShouldShrink] = useState(window.innerWidth > 992);
-	const { isNavOpen } = useCacheData(['isNavOpen']);
+	const { isNavOpen } = useLocalCache(`isNavOpen`);
 
 	useEffect(() => {
 		window.onresize = () => {

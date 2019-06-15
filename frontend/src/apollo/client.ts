@@ -80,7 +80,8 @@ const client = new ApolloClient({
 cache.writeData({
 	data: {
 		client: {
-			isNavOpen: window.innerWidth > 992
+			isNavOpen: window.innerWidth > 992,
+			currentUser: null
 		}
 	}
 });

@@ -1,2 +1,4 @@
 import withAuth from './withAuth';
-export { withAuth };
+import withLocalCache from './withLocalCache';
+
+export { withAuth, withLocalCache };

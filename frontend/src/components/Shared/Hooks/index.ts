@@ -1,3 +1,3 @@
-import useCacheData from './useCacheData';
+import useLocalCache from './useLocalCache';
 
-export { useCacheData };
+export { useLocalCache };

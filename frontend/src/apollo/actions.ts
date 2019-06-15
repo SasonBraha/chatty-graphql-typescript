@@ -1,5 +1,6 @@
 import client from './client';
 import gql from 'graphql-tag';
+import { IUser } from '../types/interfaces';
 
 export const CLIENT_QUERY = gql`
 	{
@@ -27,5 +28,11 @@ export const setNavState = () => {
 	const { isNavOpen } = getData();
 	writeData({
 		isNavOpen: !isNavOpen
+	});
+};
+
+export const setCurrentUser = (currentUser: IUser) => {
+	writeData({
+		currentUser
 	});
 };

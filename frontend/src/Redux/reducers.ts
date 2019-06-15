@@ -5,7 +5,6 @@ import {
 	SET_CURRENT_USER,
 	SET_GENERIC_MODAL,
 	SET_MENTION_SUGGESTER,
-	SET_NAV_STATE,
 	SET_NOTIFICATIONS_DATA,
 	SET_TYPING_USERS
 } from './constants';
@@ -79,10 +78,6 @@ export default (state = initialState, action: IAction): IReducerState =>
 
 			case SET_AUTH_MODAL:
 				draft.showAuthModal = action.payload;
-				break;
-
-			case SET_NAV_STATE:
-				draft.isNavOpen = !state.isNavOpen;
 				break;
 
 			case SET_CURRENT_USER:

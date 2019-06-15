@@ -5,7 +5,6 @@ import {
 	SET_CURRENT_USER,
 	SET_GENERIC_MODAL,
 	SET_MENTION_SUGGESTER,
-	SET_NAV_STATE,
 	SET_NOTIFICATIONS_DATA,
 	SET_TYPING_USERS
 } from './constants';
@@ -14,10 +13,6 @@ import { INotification, IUser } from '../types/interfaces';
 export const setAuthModal = (bool: boolean) => ({
 	type: SET_AUTH_MODAL,
 	payload: bool
-});
-
-export const setNavState = () => ({
-	type: SET_NAV_STATE
 });
 
 export const setCurrentUser = (user: IUser) => ({

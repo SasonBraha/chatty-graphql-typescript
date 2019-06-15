@@ -5,11 +5,11 @@ import { connect } from 'react-redux';
 import { IReducerState } from '../../../redux/reducers';
 import styled from 'styled-components/macro';
 import MessagesListLoader from './MessagesListLoader';
-import { Spinner, InfoBanner } from '../../Shared';
+import { InfoBanner, Spinner } from '../../Shared';
 import MessageContextMenu from './MessageContextMenu';
-import { withApollo } from 'react-apollo';
 import { ApolloClient } from 'apollo-client';
 import client from '../../../apollo/client';
+import withLocalCache from '../../Shared/Hoc/withLocalCache';
 
 interface IProps {
 	currentUser?: IUser | null;
@@ -47,6 +47,7 @@ interface IState {
 }
 
 @connect(({ currentUser }: IReducerState) => ({ currentUser }))
+@withLocalCache('isNavOpen')
 class MessagesList extends Component<IProps, IState> {
 	private unsubscribeFromUpdates: any;
 	private listEnd: React.RefObject<any> = React.createRef();
@@ -260,4 +261,4 @@ const ScMessagesList = styled.div`
 	}
 `;
 
-export default withApollo(MessagesList);
+export default MessagesList;
