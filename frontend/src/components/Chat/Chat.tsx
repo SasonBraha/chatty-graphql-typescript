@@ -6,21 +6,18 @@ import ActiveUsers from './ActiveUsers';
 import MessagesList from './MessagesList';
 import SendMessage from './SendMessage';
 import UploadPreview from './UploadPreview';
-import { connect } from 'react-redux';
-import { setChatSlug } from '../../redux/actions';
 import { withAuth } from '../Shared/Hoc';
+import { setChatSlug } from '../../apollo/actions';
 
 interface IMatchParams {
 	chatSlug: string;
 }
-export interface IChatProps extends RouteComponentProps<IMatchParams> {
-	setChatSlug: typeof setChatSlug;
-}
+export interface IChatProps extends RouteComponentProps<IMatchParams> {}
 
 const Chat = (props: IChatProps) => {
 	const [filePreview, setFilePreview] = useState(null);
 	useEffect(() => {
-		props.setChatSlug(props.match.params.chatSlug);
+		setChatSlug(props.match.params.chatSlug);
 	}, [props.match.params.chatSlug]);
 
 	return (
@@ -51,7 +48,4 @@ const ScMessagesArea = styled.div`
 	overflow: hidden;
 `;
 
-export default connect(
-	null,
-	{ setChatSlug }
-)(withAuth(Chat));
+export default withAuth(Chat);

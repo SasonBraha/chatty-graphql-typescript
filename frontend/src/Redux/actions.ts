@@ -2,7 +2,6 @@ import {
 	RESET_MODALS,
 	SET_AUTH_MODAL,
 	SET_CHAT_SLUG,
-	SET_CURRENT_USER,
 	SET_GENERIC_MODAL,
 	SET_MENTION_SUGGESTER,
 	SET_NOTIFICATIONS_DATA,
@@ -13,11 +12,6 @@ import { INotification, IUser } from '../types/interfaces';
 export const setAuthModal = (bool: boolean) => ({
 	type: SET_AUTH_MODAL,
 	payload: bool
-});
-
-export const setCurrentUser = (user: IUser) => ({
-	type: SET_CURRENT_USER,
-	payload: user
 });
 
 export const setGenericModal = (type: 'success' | 'error', text: string) => ({

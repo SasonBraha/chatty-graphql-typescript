@@ -40,3 +40,11 @@ export const setCurrentUser = (currentUser: IUser) => {
 		currentUser
 	});
 };
+
+export const setChatSlug = (chatSlug: string) => {
+	writeData({
+		chat: {
+			chatSlug
+		}
+	});
+};

@@ -2,7 +2,6 @@ import {
 	RESET_MODALS,
 	SET_AUTH_MODAL,
 	SET_CHAT_SLUG,
-	SET_CURRENT_USER,
 	SET_GENERIC_MODAL,
 	SET_MENTION_SUGGESTER,
 	SET_NOTIFICATIONS_DATA,
@@ -78,10 +77,6 @@ export default (state = initialState, action: IAction): IReducerState =>
 
 			case SET_AUTH_MODAL:
 				draft.showAuthModal = action.payload;
-				break;
-
-			case SET_CURRENT_USER:
-				draft.currentUser = action.payload;
 				break;
 
 			case SET_GENERIC_MODAL:

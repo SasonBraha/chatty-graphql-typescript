@@ -81,7 +81,10 @@ cache.writeData({
 	data: {
 		client: {
 			isNavOpen: window.innerWidth > 992,
-			currentUser: null
+			currentUser: null,
+			chat: {
+				chatSlug: ''
+			}
 		}
 	}
 });

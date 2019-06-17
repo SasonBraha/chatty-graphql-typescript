@@ -4,10 +4,9 @@ import gql from 'graphql-tag';
 import { IUser } from '../../types/interfaces';
 import { Link } from 'react-router-dom';
 import ApolloClient from 'apollo-client';
-import { connect } from 'react-redux';
-import { IReducerState } from '../../redux/reducers';
 import { CrudEnum } from '../../types/enums';
 import { useApolloClient, useSubscription } from 'react-apollo-hooks';
+import { useLocalCache } from '../Shared/Hooks';
 
 const ACTIVE_USERS_SUBSCRIPTION = gql`
 	subscription($chatSlug: String!) {
@@ -25,10 +24,7 @@ const UPDATE_ACTIVE_USERS = gql`
 	}
 `;
 
-interface IProps {
-	currentUser: IUser | null;
-	chatSlug: string;
-}
+interface IProps {}
 
 const updateActiveUsers = (
 	crudType: string,
@@ -45,23 +41,29 @@ const updateActiveUsers = (
 };
 
 const ActiveUsers: React.FC<IProps> = props => {
-	const [previousSlug, setPreviousSlug] = useState(props.chatSlug);
+	const {
+		chat: { chatSlug }
+	} = useLocalCache(`
+		chat {
+			chatSlug 
+		}
+	`);
+	const [previousSlug, setPreviousSlug] = useState(chatSlug);
 	const client = useApolloClient();
 	const { data = { subscribeToActiveUsersUpdates: [] } } = useSubscription(
 		ACTIVE_USERS_SUBSCRIPTION,
 		{
-			variables: { chatSlug: props.chatSlug }
+			variables: { chatSlug }
 		}
 	);
 
 	useEffect(() => {
-		const { chatSlug } = props;
 		updateActiveUsers(CrudEnum.DELETE, previousSlug, client);
 		updateActiveUsers(CrudEnum.UPDATE, chatSlug, client);
 		setPreviousSlug(chatSlug);
 
 		return () => updateActiveUsers(CrudEnum.DELETE, chatSlug, client);
-	}, [props.chatSlug]);
+	}, [chatSlug]);
 
 	return (
 		<ScActiveUsers>
@@ -117,14 +119,4 @@ const ScAvatar = styled.img`
 	transform: translateY(0.2rem);
 `;
 
-const mapStateToProps = ({
-	currentUser,
-	chat: { chatSlug }
-}: IReducerState) => ({
-	currentUser,
-	chatSlug
-});
-export default connect(
-	mapStateToProps,
-	null
-)(ActiveUsers);
+export default ActiveUsers;

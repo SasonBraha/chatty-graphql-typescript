@@ -19,7 +19,7 @@ const Routes: React.FC<{}> = props => {
 				<Route
 					exact
 					path='/chat/:chatSlug'
-					render={props => <Chat {...props} />}
+					render={props => <Chat {...(props as any)} />}
 				/>
 			</Switch>
 		</Suspense>
