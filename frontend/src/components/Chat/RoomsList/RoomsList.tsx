@@ -38,11 +38,7 @@ const TYPING_USERS_SUBSCRIPTION = gql`
 	}
 `;
 
-interface IProps {
-	typingUsers: {
-		[key: string]: ITypingUser[];
-	};
-}
+interface IProps {}
 
 const RoomsList: React.FC<IProps> = props => {
 	const { data, loading } = useQuery(ROOMS_LIST_QUERY);
@@ -93,12 +89,4 @@ const ScRoomsList = styled.div`
 	}
 `;
 
-const mapStateToProps = ({
-	chat: { typingUsers, chatSlug }
-}: IReducerState) => ({
-	typingUsers
-});
-export default connect(
-	mapStateToProps,
-	null
-)(RoomsList);
+export default RoomsList;
