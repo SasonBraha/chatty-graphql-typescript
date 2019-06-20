@@ -1,14 +1,11 @@
 import {
 	RESET_MODALS,
 	SET_AUTH_MODAL,
-	SET_CHAT_SLUG,
 	SET_GENERIC_MODAL,
 	SET_MENTION_SUGGESTER,
-	SET_NOTIFICATIONS_DATA,
-	SET_TYPING_USERS
+	SET_NOTIFICATIONS_DATA
 } from './constants';
 import { INotification, ITypingUser, IUser } from '../types/interfaces';
-import { CrudEnum } from '../types/enums';
 import produce from 'immer';
 
 interface IAction {
@@ -85,25 +82,6 @@ export default (state = initialState, action: IAction): IReducerState =>
 					show: true,
 					text: action.payload.text
 				};
-				break;
-
-			case SET_CHAT_SLUG:
-				draft.chat.chatSlug = action.payload;
-				break;
-
-			case SET_TYPING_USERS:
-				const chatSlug = action.payload.chatSlug;
-
-				if (!draft.chat.typingUsers[chatSlug]) {
-					draft.chat.typingUsers[chatSlug] = [];
-				}
-
-				draft.chat.typingUsers[chatSlug] =
-					action.payload.crudType === CrudEnum.UPDATE
-						? [...draft.chat.typingUsers[chatSlug], action.payload.user]
-						: draft.chat.typingUsers[chatSlug].filter(
-								({ slug }) => slug !== action.payload.user.slug
-						  );
 				break;
 
 			case SET_MENTION_SUGGESTER:

@@ -1,8 +1,6 @@
 import React, { Component } from 'react';
 import { IMessage, IUser } from '../../../types/interfaces';
 import Message from './Message';
-import { connect } from 'react-redux';
-import { IReducerState } from '../../../redux/reducers';
 import styled from 'styled-components/macro';
 import MessagesListLoader from './MessagesListLoader';
 import { InfoBanner, Spinner } from '../../Shared';

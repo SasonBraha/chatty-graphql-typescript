@@ -80,10 +80,25 @@ const client = new ApolloClient({
 cache.writeData({
 	data: {
 		client: {
+			showAuthModal: false,
+			genericModal: {
+				type: null,
+				show: false,
+				text: null
+			},
 			isNavOpen: window.innerWidth > 992,
 			currentUser: null,
+			notifications: {
+				unread: 0,
+				list: []
+			},
 			chat: {
-				chatSlug: ''
+				typingUsers: '',
+				chatSlug: '',
+				mentionSuggester: {
+					shouldShow: false,
+					userList: []
+				}
 			}
 		}
 	}

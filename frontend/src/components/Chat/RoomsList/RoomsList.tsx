@@ -7,7 +7,8 @@ import RoomsListLoader from './RoomsListLoader';
 import { IReducerState } from '../../../redux/reducers';
 import { connect } from 'react-redux';
 import { useQuery, useSubscription } from 'react-apollo-hooks';
-import { setTypingUsers } from '../../../redux/actions';
+import { setTypingUsers } from '../../../apollo/actions';
+import { useLocalCache } from '../../Shared/Hooks';
 
 const ROOMS_LIST_QUERY = gql`
 	query {
@@ -38,15 +39,22 @@ const TYPING_USERS_SUBSCRIPTION = gql`
 `;
 
 interface IProps {
-	chatSlug: string;
 	typingUsers: {
 		[key: string]: ITypingUser[];
 	};
-	setTypingUsers: typeof setTypingUsers;
 }
 
 const RoomsList: React.FC<IProps> = props => {
 	const { data, loading } = useQuery(ROOMS_LIST_QUERY);
+	const {
+		chat: { chatSlug, typingUsers }
+	} = useLocalCache(`
+		chat {
+			chatSlug
+			typingUsers
+		}
+	`);
+
 	useSubscription(TYPING_USERS_SUBSCRIPTION, {
 		onSubscriptionData({ subscriptionData }) {
 			const {
@@ -54,7 +62,7 @@ const RoomsList: React.FC<IProps> = props => {
 					subscribeToTypingUsersUpdates: { chatSlug, crudType, user }
 				}
 			} = subscriptionData;
-			props.setTypingUsers(user, crudType, chatSlug);
+			setTypingUsers(user, crudType, chatSlug);
 		}
 	});
 
@@ -64,13 +72,11 @@ const RoomsList: React.FC<IProps> = props => {
 				? Array.from({ length: 15 }).map((_, i) => <RoomsListLoader key={i} />)
 				: data.roomsList.map((room: IChat) => (
 						<RoomsListItem
-							selected={room.slug === props.chatSlug}
+							selected={room.slug === chatSlug}
 							room={room}
 							key={room.slug}
 							chatSlug={room.slug}
-							typingUsers={
-								props.typingUsers[room.slug] ? props.typingUsers[room.slug] : []
-							}
+							typingUsers={typingUsers[room.slug] ? typingUsers[room.slug] : []}
 						/>
 				  ))}
 		</ScRoomsList>
@@ -90,10 +96,9 @@ const ScRoomsList = styled.div`
 const mapStateToProps = ({
 	chat: { typingUsers, chatSlug }
 }: IReducerState) => ({
-	typingUsers,
-	chatSlug
+	typingUsers
 });
 export default connect(
 	mapStateToProps,
-	{ setTypingUsers }
+	null
 )(RoomsList);

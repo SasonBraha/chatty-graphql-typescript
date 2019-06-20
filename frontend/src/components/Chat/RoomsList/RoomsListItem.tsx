@@ -18,7 +18,7 @@ const RoomsListItem = ({ room, selected, chatSlug, typingUsers }: IProps) => (
 
 		<ScRoomData>
 			<ScRoomName>{room.name}</ScRoomName>
-			<ScLastMessage shouldHide={!!typingUsers.length}>
+			<ScLastMessage shouldHide={typingUsers.length > 0}>
 				{room.lastMessage}
 			</ScLastMessage>
 			<ScTypingUsers chatSlug={chatSlug} />

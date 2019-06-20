@@ -10,8 +10,22 @@ const buildQuery = (dataToFetch: string) => gql`
 `;
 
 const useCacheData = (dataToFetch: string) => {
-	const { data } = useQuery(buildQuery(dataToFetch));
-	return data.client;
+	let { data } = useQuery(buildQuery(dataToFetch));
+	data = data.client;
+
+	if (data.chat && data.chat.typingUsers) {
+		return {
+			...data,
+			chat: {
+				...data.chat,
+				typingUsers: data.chat.typingUsers.length
+					? JSON.parse(data.chat.typingUsers)
+					: {}
+			}
+		};
+	}
+
+	return data;
 };
 
 export default useCacheData;

@@ -1,11 +1,9 @@
 import React from 'react';
-import { connect } from 'react-redux';
-import { IReducerState } from '../../redux/reducers';
-import { ITypingUser, ITypingUsers } from '../../types/interfaces';
+import { ITypingUser } from '../../types/interfaces';
+import { useLocalCache } from '../Shared/Hooks';
 
 interface IProps {
 	className?: string;
-	typingUsers: ITypingUsers;
 	chatSlug: string;
 }
 
@@ -33,16 +31,20 @@ const renderTypingUsers = (typingUsers: ITypingUser[]) => {
 
 };
 
-const TypingUsers = (props: IProps) => (
-	<div className={props.className}>
-		{renderTypingUsers(props.typingUsers[props.chatSlug])}
-	</div>
-);
+const TypingUsers = (props: IProps) => {
+	const {
+		chat: { typingUsers }
+	} = useLocalCache(`
+		chat { 
+			typingUsers 
+		}
+	`);
 
-const mapStateToProps = ({ chat: { typingUsers } }: IReducerState) => ({
-	typingUsers
-});
-export default connect(
-	mapStateToProps,
-	null
-)(TypingUsers);
+	return (
+		<div className={props.className}>
+			{renderTypingUsers(typingUsers[props.chatSlug])}
+		</div>
+	);
+};
+
+export default TypingUsers;
