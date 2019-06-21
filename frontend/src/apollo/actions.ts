@@ -15,7 +15,11 @@ export const CLIENT_QUERY = gql`
 					typingUsers
           mentionSuggester {
 							shouldShow
-							userList
+							userList {
+									displayName
+									avatar
+									slug
+							}
   				}
 			}	
 		}
@@ -90,6 +94,17 @@ export const setTypingUsers = (
 	writeData({
 		chat: {
 			typingUsers: JSON.stringify(chat.typingUsers)
+		}
+	});
+};
+
+export const setMentionSuggester = (shouldShow: boolean, userList: IUser[]) => {
+	writeData({
+		chat: {
+			mentionSuggester: {
+				shouldShow,
+				userList
+			}
 		}
 	});
 };

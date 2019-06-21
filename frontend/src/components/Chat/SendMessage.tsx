@@ -9,9 +9,9 @@ import { FileInput } from '../Shared/Form';
 import ApolloClient from 'apollo-client';
 import { CrudEnum } from '../../types/enums';
 import { InputTrigger } from '../Shared';
-import { setMentionSuggester } from '../../redux/actions';
-import { connect } from 'react-redux';
 import MentionSuggester from './MentionSuggester';
+import { useApolloClient } from 'react-apollo-hooks';
+import { setMentionSuggester } from '../../apollo/actions';
 
 const SEND_MESSAGE_MUTATION = gql`
 	mutation($chatSlug: String!, $text: String!) {
@@ -60,7 +60,6 @@ interface IProps
 		RouteComponentProps<IMatchParams> {
 	setFilePreview: (file: File | null) => void;
 	client: ApolloClient<any>;
-	setMentionSuggester: typeof setMentionSuggester;
 }
 
 let emitTypingTimeout: ReturnType<typeof setTimeout>;
@@ -97,6 +96,7 @@ const handleChange = (
 
 const SendMessage: React.FC<IProps> = props => {
 	const [isTyping, setIsTyping] = useState(false);
+	const client = useApolloClient();
 	const {
 		values,
 		handleChange: handleFormikChange,
@@ -107,58 +107,56 @@ const SendMessage: React.FC<IProps> = props => {
 	} = props;
 
 	return (
-		<>
-			<ScForm onSubmit={handleSubmit}>
-				<ScAttachLabel>
-					<FileInput
-						maxFileSizeInKB={5000}
-						onChange={(file: File | null) => {
-							setFilePreview(file);
-							setFieldValue('file', file);
-						}}
-						onBlur={handleBlur}
-					/>
-					<ScAttachIcon icon='icon-paperclip' />
-				</ScAttachLabel>
-
-				<ScInputTrigger
-					triggerSymbol='@'
-					typeCallbackDebounce={200}
-					onType={async data => {
-						const userData = await props.client.query({
-							query: SEARCH_USERS_QUERY,
-							variables: {
-								displayName: data.value,
-								limit: 5
-							}
-						});
-
-						props.setMentionSuggester(true, userData.data.users.userList);
+		<ScForm onSubmit={handleSubmit}>
+			<ScAttachLabel>
+				<FileInput
+					maxFileSizeInKB={5000}
+					onChange={(file: File | null) => {
+						setFilePreview(file);
+						setFieldValue('file', file);
 					}}
-					onCancel={() => props.setMentionSuggester(false, [])}
-				>
-					<ScMessageInput
-						autoComplete='off'
-						type='text'
-						value={values.text}
-						name='text'
-						onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-							handleFormikChange(e);
-							handleChange(isTyping, setIsTyping, props, values.text);
-						}}
-						onBlur={handleBlur}
-						placeholder='הכנס הודעה ולחץ Enter'
-					/>
-				</ScInputTrigger>
-
-				<MentionSuggester
-					onSelect={(text: string) => {
-						setFieldValue('text', `${values.text}${text}`);
-						props.setMentionSuggester(false, []);
-					}}
+					onBlur={handleBlur}
 				/>
-			</ScForm>
-		</>
+				<ScAttachIcon icon='icon-paperclip' />
+			</ScAttachLabel>
+
+			<ScInputTrigger
+				triggerSymbol='@'
+				typeCallbackDebounce={200}
+				onType={async data => {
+					const userData = await client.query({
+						query: SEARCH_USERS_QUERY,
+						variables: {
+							displayName: data.value,
+							limit: 5
+						}
+					});
+
+					setMentionSuggester(true, userData.data.users.userList);
+				}}
+				onCancel={() => setMentionSuggester(false, [])}
+			>
+				<ScMessageInput
+					autoComplete='off'
+					type='text'
+					value={values.text}
+					name='text'
+					onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+						handleFormikChange(e);
+						handleChange(isTyping, setIsTyping, props, values.text);
+					}}
+					onBlur={handleBlur}
+					placeholder='הכנס הודעה ולחץ Enter'
+				/>
+			</ScInputTrigger>
+
+			<MentionSuggester
+				onSelect={(text: string) => {
+					setFieldValue('text', `${values.text}${text}`);
+					setMentionSuggester(false, []);
+				}}
+			/>
+		</ScForm>
 	);
 };
 
@@ -232,11 +230,4 @@ export default compose(
 			}
 		}
 	})
-)(
-	withApollo(
-		connect(
-			null,
-			{ setMentionSuggester }
-		)(SendMessage)
-	)
-);
+)(withApollo(SendMessage));

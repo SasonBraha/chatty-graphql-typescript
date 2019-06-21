@@ -2,7 +2,6 @@ import {
 	RESET_MODALS,
 	SET_AUTH_MODAL,
 	SET_GENERIC_MODAL,
-	SET_MENTION_SUGGESTER,
 	SET_NOTIFICATIONS_DATA
 } from './constants';
 import { INotification, IUser } from '../types/interfaces';
@@ -18,17 +17,6 @@ export const setGenericModal = (type: 'success' | 'error', text: string) => ({
 });
 
 export const resetModals = () => ({ type: RESET_MODALS });
-
-export const setMentionSuggester = (
-	shouldShow: boolean,
-	userList: IUser[]
-) => ({
-	type: SET_MENTION_SUGGESTER,
-	payload: {
-		shouldShow,
-		userList
-	}
-});
 
 export const setNotificationsData = (data: {
 	unread?: number;

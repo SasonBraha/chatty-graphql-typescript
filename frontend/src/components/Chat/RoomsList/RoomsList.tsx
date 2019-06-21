@@ -1,11 +1,9 @@
 import React from 'react';
 import gql from 'graphql-tag';
-import { IChat, ITypingUser } from '../../../types/interfaces';
+import { IChat } from '../../../types/interfaces';
 import RoomsListItem from './RoomsListItem';
 import styled from 'styled-components/macro';
 import RoomsListLoader from './RoomsListLoader';
-import { IReducerState } from '../../../redux/reducers';
-import { connect } from 'react-redux';
 import { useQuery, useSubscription } from 'react-apollo-hooks';
 import { setTypingUsers } from '../../../apollo/actions';
 import { useLocalCache } from '../../Shared/Hooks';

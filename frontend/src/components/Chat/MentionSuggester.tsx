@@ -3,32 +3,46 @@ import { Transition } from 'react-transition-group';
 import styled, { css } from 'styled-components/macro';
 import { List } from '../Shared';
 import { IUser } from '../../types/interfaces';
-import { connect } from 'react-redux';
-import { IReducerState } from '../../redux/reducers';
 import { IListItem } from '../Shared/List/List';
+import { useLocalCache } from '../Shared/Hooks';
 
 interface IProps {
-	shouldShow: boolean;
-	userList: IUser[];
 	onSelect?: (value: string) => any | void;
 }
 
-const MentionSuggester: React.FC<IProps> = props => {
+const MentionSuggester: React.FC<IProps> = React.memo(props => {
+	const {
+		chat: {
+			mentionSuggester: { shouldShow, userList }
+		}
+	} = useLocalCache(`
+		chat {
+			mentionSuggester {
+				shouldShow
+				userList {
+					displayName
+					slug
+					avatar
+				}
+			}
+		}	
+	`);
+
 	return (
 		<Transition
-			in={props.shouldShow && !!props.userList.length}
+			in={shouldShow}
 			mountOnEnter
 			unmountOnExit
 			timeout={{ enter: 0, exit: 300 }}
 		>
 			{mountState => (
 				<ScMentionSuggester
-					userList={props.userList}
+					userList={userList}
 					className={mountState}
 					tabIndex={-1}
 				>
 					<List
-						items={props.userList.reduce((acc: IListItem[], currentUser) => {
+						items={userList.reduce((acc: IListItem[], currentUser: IUser) => {
 							acc.push({
 								image: currentUser.avatar,
 								color: 'black',
@@ -43,7 +57,7 @@ const MentionSuggester: React.FC<IProps> = props => {
 			)}
 		</Transition>
 	);
-};
+});
 
 const ScMentionSuggester = styled('div')<{ userList: IUser[] }>`
 	position: absolute;
@@ -70,12 +84,4 @@ const ScMentionSuggester = styled('div')<{ userList: IUser[] }>`
 	}
 `;
 
-const mapStateToProps = ({
-	chat: {
-		mentionSuggester: { shouldShow, userList }
-	}
-}: IReducerState) => ({ shouldShow, userList });
-export default connect(
-	mapStateToProps,
-	null
-)(MentionSuggester);
+export default MentionSuggester;
