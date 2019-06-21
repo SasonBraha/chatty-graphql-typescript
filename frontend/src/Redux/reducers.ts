@@ -2,7 +2,6 @@ import {
 	RESET_MODALS,
 	SET_AUTH_MODAL,
 	SET_GENERIC_MODAL,
-	SET_MENTION_SUGGESTER,
 	SET_NOTIFICATIONS_DATA
 } from './constants';
 import { INotification, ITypingUser, IUser } from '../types/interfaces';
@@ -82,10 +81,6 @@ export default (state = initialState, action: IAction): IReducerState =>
 					show: true,
 					text: action.payload.text
 				};
-				break;
-
-			case SET_MENTION_SUGGESTER:
-				draft.chat.mentionSuggester = action.payload;
 				break;
 
 			case SET_NOTIFICATIONS_DATA:

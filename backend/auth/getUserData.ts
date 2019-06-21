@@ -13,11 +13,11 @@ export default async (authToken: string) => {
 			authToken.split(' ')[1],
 			process.env.JWT_SECRET
 		)) as IUser;
+
 		if (!isTokenValid) throw new Error(ErrorTypesEnum.FORBIDDEN);
 
 		const userData = isTokenValid;
-		//@ts-ignore
-		return await User.findById(userData._id).cache({ hashKey: userData._id });
+		return await User.findById(userData._id).cache({ key: userData._id });
 	} catch (ex) {
 		throw new Error(ErrorTypesEnum.FORBIDDEN);
 	}

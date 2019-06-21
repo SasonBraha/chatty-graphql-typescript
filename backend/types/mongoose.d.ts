@@ -1,9 +1,17 @@
+import { Document } from 'mongoose';
+
 export {};
 
-declare global {
-	namespace Mongoose {
-		interface Query {
-			cache: any;
-		}
+type CacheOptions = { key?: string };
+
+declare module 'mongoose' {
+	interface Query<T> {
+		cache(options: CacheOptions): Query<T>;
+		useCache: boolean;
+		hashKey: string;
+	}
+
+	interface DocumentQuery<T, DocType extends Document, QueryHelpers = {}> {
+		cache(options: CacheOptions): Query<any>;
 	}
 }
