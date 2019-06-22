@@ -1,22 +1,15 @@
 import React, { Component } from 'react';
-import { connect } from 'react-redux';
 import { IUser } from '../../../types/interfaces';
-import { IReducerState } from '../../../redux/reducers';
-import { setGenericModal } from '../../../redux/actions';
 import { Redirect } from 'react-router';
 import withLocalCache from './withLocalCache';
 import { USER_ENTITY_FRAGMENT } from '../../../apollo/fragments';
+import { setGenericModal } from '../../../apollo/actions';
 
 interface IProps {
 	currentUser: IUser | null;
-	setGenericModal: typeof setGenericModal;
 }
 
 export default (WrappedComponent: any) => {
-	@connect(
-		null,
-		{ setGenericModal }
-	)
 	@withLocalCache(`
 		currentUser {
 			${USER_ENTITY_FRAGMENT}
@@ -38,7 +31,7 @@ export default (WrappedComponent: any) => {
 		}
 
 		private validateLoginState = () => {
-			const { currentUser, setGenericModal } = this.props;
+			const { currentUser } = this.props;
 			if (!currentUser) {
 				setGenericModal('error', 'עליך להתחבר על מנת לגשת לדף זה');
 			}

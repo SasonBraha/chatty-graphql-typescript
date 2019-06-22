@@ -6,3 +6,7 @@ export interface IContext {
 	res?: Response;
 	user: IUser | null;
 }
+
+export interface IQueryCacheOptions {
+	key?: string;
+}

@@ -6,8 +6,6 @@ import { Form, FormGroup, TextInput } from '../Shared/Form';
 import Ripple from 'react-ink';
 import gql from 'graphql-tag';
 import Recaptcha from 'react-google-recaptcha';
-import { setGenericModal } from '../../redux/actions';
-import { connect } from 'react-redux';
 
 const REGISTER_MUTATION = gql`
 	mutation(
@@ -142,9 +140,4 @@ export default compose(
 			}
 		}
 	})
-)(
-	connect(
-		null,
-		{ setGenericModal }
-	)(LoginForm)
-);
+)(LoginForm);

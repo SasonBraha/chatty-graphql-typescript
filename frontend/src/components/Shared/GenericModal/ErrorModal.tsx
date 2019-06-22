@@ -1,23 +1,27 @@
 import React from 'react';
-import { resetModals } from '../../../redux/actions';
-import { connect } from 'react-redux';
-import { IReducerState } from '../../../redux/reducers';
 import { Modal } from '../index';
 import Icon from '../Icon';
 import styled from 'styled-components/macro';
+import { useLocalCache } from '../Hooks';
 
-interface IProps {
-	resetModals: typeof resetModals;
-	showModal: boolean;
-	text: string | null;
-}
+interface IProps {}
 
-const ErrorModal = (props: IProps) => (
-	<Modal isOpen={props.showModal}>
-		<ScWarningIcon icon='icon-notification' />
-		<ScWarningText>{props.text}</ScWarningText>
-	</Modal>
-);
+const ErrorModal = (props: IProps) => {
+	const {
+		genericModal: { show, text }
+	} = useLocalCache(`
+		genericModal {
+			show
+			text
+		}
+	`);
+	return (
+		<Modal isOpen={show}>
+			<ScWarningIcon width={80} height={80} icon='icon-notification' />
+			<ScWarningText>{text}</ScWarningText>
+		</Modal>
+	);
+};
 
 const ScWarningIcon = styled(Icon)`
 	fill: #f8bb86;
@@ -32,11 +36,4 @@ const ScWarningText = styled.div`
 	margin: 2rem auto;
 `;
 
-const mapStateToProps = ({ genericModal: { show, text } }: IReducerState) => ({
-	showModal: show,
-	text
-});
-export default connect(
-	mapStateToProps,
-	{ resetModals }
-)(ErrorModal);
+export default ErrorModal;

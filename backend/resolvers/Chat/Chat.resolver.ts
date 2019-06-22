@@ -235,25 +235,25 @@ export default class ChatResolver {
 			newMessage = await Message.create(messageData);
 			targetChatRoom.lastMessage = newMessage.text;
 			await targetChatRoom.save();
+
+			usersData.forEach(async ({ _id }) => {
+				if (user._id.toString() !== _id.toString()) {
+					const notification = await Notification.create(
+						generateUserMentionedNotification(
+							user._id,
+							_id,
+							`${chatSlug}/${newMessage._id}`
+						)
+					);
+
+					pubSub.publish(SubscriptionTypesEnum.USER_MENTIONED, {
+						notification,
+						userId: _id,
+						type: UserUpdatesEnum.NEW_NOTIFICATION
+					});
+				}
+			});
 		}
-
-		usersData.forEach(async ({ _id }) => {
-			if (user._id.toString() !== _id.toString()) {
-				const notification = await Notification.create(
-					generateUserMentionedNotification(
-						user._id,
-						_id,
-						`${chatSlug}/${newMessage._id}`
-					)
-				);
-
-				pubSub.publish(SubscriptionTypesEnum.USER_MENTIONED, {
-					notification,
-					userId: _id,
-					type: UserUpdatesEnum.NEW_NOTIFICATION
-				});
-			}
-		});
 
 		return newMessage;
 	}
@@ -337,9 +337,6 @@ export default class ChatResolver {
 					}
 				}
 				return true;
-
-			default:
-				throw new Error(ErrorTypesEnum.FORBIDDEN);
 		}
 	}
 

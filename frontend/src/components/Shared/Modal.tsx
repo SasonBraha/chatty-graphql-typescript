@@ -2,17 +2,15 @@ import React, { ReactNode } from 'react';
 import ReactDOM from 'react-dom';
 import styled from 'styled-components';
 import Transition from 'react-transition-group/Transition';
-import { connect } from 'react-redux';
-import { resetModals } from '../../redux/actions';
+import { resetModals } from '../../apollo/actions';
 
 interface IProps {
 	isOpen: boolean;
 	children?: ReactNode;
-	resetModals: typeof resetModals;
 }
 
 const Modal = (props: IProps) => {
-	const { isOpen, resetModals, children } = props;
+	const { isOpen, children } = props;
 
 	return ReactDOM.createPortal(
 		<Transition
@@ -78,7 +76,4 @@ const StyledOverlay = styled.div`
 	}
 `;
 
-export default connect(
-	null,
-	{ resetModals }
-)(Modal);
+export default Modal;

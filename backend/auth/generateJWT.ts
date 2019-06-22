@@ -11,7 +11,8 @@ const generateJWT = async (user: IUser) => {
 			avatar,
 			jwtId: jwtHandshake,
 			role,
-			slug
+			slug,
+			password
 		} = user;
 
 		const authToken = await jwt.sign(

@@ -1,11 +1,8 @@
 import React, { useState, useEffect, ReactNode } from 'react';
-import { connect } from 'react-redux';
 import styled, { css } from 'styled-components/macro';
-import { IReducerState } from '../../redux/reducers';
 import { useLocalCache } from '../Shared/Hooks';
 
 interface IProps {
-	isNavOpen: boolean;
 	children: ReactNode;
 }
 
@@ -49,8 +46,4 @@ const StyledContainer = styled('main')<{
 		`};
 `;
 
-const mapStateToProps = ({ isNavOpen }: IReducerState) => ({ isNavOpen });
-export default connect(
-	mapStateToProps,
-	null
-)(Container);
+export default Container;

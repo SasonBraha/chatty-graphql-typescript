@@ -2,25 +2,15 @@ import React, { useState } from 'react';
 import styled from 'styled-components/macro';
 import { Link } from 'react-router-dom';
 import { Burger, Button, Dropdown, List, Scrollable } from '../Shared';
-import { connect } from 'react-redux';
-import { setAuthModal } from '../../redux/actions';
 import Ripple from 'react-ink';
-import { INotification, IUser } from '../../types/interfaces';
-import { IReducerState } from '../../redux/reducers';
+import { IUser } from '../../types/interfaces';
 import Icon from '../Shared/Icon';
 import Notifications from './Notifications';
-import { setNavState } from '../../apollo/actions';
+import { setAuthModal, setNavState } from '../../apollo/actions';
 import { useLocalCache } from '../Shared/Hooks';
 import { USER_ENTITY_FRAGMENT } from '../../apollo/fragments';
 
-interface IProps {
-	setAuthModal: typeof setAuthModal;
-	currentUser: IUser | null;
-	notifications: {
-		unread: number;
-		list: INotification[];
-	};
-}
+interface IProps {}
 
 const headerDropdownItems = (currentUser: IUser) => {
 	return [
@@ -49,14 +39,16 @@ const headerDropdownItems = (currentUser: IUser) => {
 };
 
 const Header: React.FC<IProps> = props => {
-	const { setAuthModal } = props;
 	const [isProfileDropdownOpen, setProfileDropdown] = useState(false);
 	const [isNotificationsDropdownOpen, setNotificationsDropdown] = useState(
 		false
 	);
-	const { currentUser } = useLocalCache(`
+	const { currentUser, notifications } = useLocalCache(`
 		currentUser {
 			${USER_ENTITY_FRAGMENT}
+		}
+		notifications {
+			unreadCount
 		}
 	`);
 
@@ -73,11 +65,11 @@ const Header: React.FC<IProps> = props => {
 						onClick={() => setNotificationsDropdown(true)}
 					>
 						<Icon icon='icon-notifications' color='white' />
-						{props.notifications.unread ? (
+						{notifications.unreadCount ? (
 							<ScUnreadNotifications>
-								{props.notifications.unread > 9
+								{notifications.unreadCount > 9
 									? '+9'
-									: props.notifications.unread}
+									: notifications.unreadCount}
 							</ScUnreadNotifications>
 						) : (
 							''
@@ -189,11 +181,4 @@ const ScUnreadNotifications = styled.small`
 	font-size: 1.2rem;
 `;
 
-const mapStateToProps = ({ currentUser, notifications }: IReducerState) => ({
-	currentUser,
-	notifications
-});
-export default connect(
-	mapStateToProps,
-	{ setAuthModal }
-)(Header);
+export default Header;

@@ -1,12 +1,10 @@
 import React from 'react';
 import { Button, GoogleLogin } from '../Shared';
-import { connect } from 'react-redux';
 import { FormikProps, withFormik } from 'formik';
 import { compose, graphql } from 'react-apollo';
 import { Form, FormGroup, TextInput } from '../Shared/Form';
 import Ripple from 'react-ink';
 import gql from 'graphql-tag';
-import { setGenericModal } from '../../redux/actions';
 
 const LOGIN_MUTATION = gql`
 	mutation($email: String!, $password: String!) {
@@ -59,16 +57,12 @@ const LoginForm = (props: FormikProps<IFormValues>) => {
 
 export default compose(
 	graphql(LOGIN_MUTATION),
-	connect(
-		null,
-		{ setGenericModal }
-	),
 	withFormik({
 		mapPropsToValues: () => ({ email: '', password: '' }),
 		handleSubmit: async (
 			values,
 			//@ts-ignore
-			{ props: { mutate, setGenericModal }, setSubmitting, resetForm }
+			{ props: { mutate }, setSubmitting, resetForm }
 		) => {
 			try {
 				const loginData = await mutate({

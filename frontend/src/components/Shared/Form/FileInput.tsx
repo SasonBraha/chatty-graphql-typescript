@@ -1,13 +1,11 @@
 import React from 'react';
 import styled from 'styled-components/macro';
-import { setGenericModal } from '../../../redux/actions';
-import { connect } from 'react-redux';
+import { setGenericModal } from '../../../apollo/actions';
 
 interface IProps {
 	maxFileSizeInKB?: number;
 	onChange: (file: File | null) => void;
 	onBlur?: any;
-	setGenericModal: typeof setGenericModal;
 }
 
 const validateFile = (
@@ -32,7 +30,7 @@ const validateFile = (
 		if (fileSize > maxFileSize) {
 			resetFile();
 			const isLimitOver1MB: boolean = maxFileSize >= 1024;
-			return props.setGenericModal(
+			return setGenericModal(
 				'error',
 				// prettier-ignore
 				`הקובץ שנבחר גדול מדי, הגודל המירבי הניתן להעלאה הינו ${isLimitOver1MB ? Math.ceil(maxFileSize / 1024) : maxFileSize}${isLimitOver1MB ? 'MB' : 'KB'}`
@@ -57,7 +55,4 @@ const StyledFileInput = styled.input`
 	display: none;
 `;
 
-export default connect(
-	null,
-	{ setGenericModal }
-)(FileInput);
+export default FileInput;

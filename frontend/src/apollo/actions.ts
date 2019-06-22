@@ -1,8 +1,33 @@
 import client from './client';
 import gql from 'graphql-tag';
-import { IUser } from '../types/interfaces';
+import { INotification, ITypingUser, IUser } from '../types/interfaces';
 import { USER_ENTITY_FRAGMENT } from './fragments';
 import { CrudEnum } from '../types/enums';
+
+export interface ILocalCache {
+	showAuthModal: boolean;
+	genericModal: {
+		type: string | null;
+		show: boolean;
+		text: string | null;
+	};
+	isNavOpen: boolean;
+	currentUser: IUser | null;
+	notifications: {
+		unreadCount: number;
+		list: INotification[];
+	};
+	chat: {
+		chatSlug: string;
+		typingUsers: {
+			[key: string]: ITypingUser[];
+		};
+		mentionSuggester: {
+			shouldShow: boolean;
+			userList: IUser[];
+		};
+	};
+}
 
 export const CLIENT_QUERY = gql`
 	{
@@ -21,12 +46,22 @@ export const CLIENT_QUERY = gql`
 									slug
 							}
   				}
+			}
+			notifications {
+					unreadCount
+					list
+			}	
+			showAuthModal
+			genericModal {
+					show
+					type
+					text
 			}	
 		}
 	}
 `;
 
-function getData() {
+function getData(): ILocalCache {
 	const data = client.readQuery({ query: CLIENT_QUERY }).client;
 
 	const parsedData = {
@@ -105,6 +140,44 @@ export const setMentionSuggester = (shouldShow: boolean, userList: IUser[]) => {
 				shouldShow,
 				userList
 			}
+		}
+	});
+};
+
+export const setNotificationsData = (data: {
+	unreadCount?: number;
+	list?: INotification[];
+}) => {
+	const { notifications } = getData();
+	writeData({
+		notifications: {
+			...notifications,
+			...data
+		}
+	});
+};
+
+export const setAuthModal = (bool: boolean) => {
+	writeData({
+		showAuthModal: bool
+	});
+};
+
+export const resetModals = () => {
+	writeData({
+		showAuthModal: false,
+		genericModal: {
+			show: false
+		}
+	});
+};
+
+export const setGenericModal = (type: 'success' | 'error', text: string) => {
+	writeData({
+		genericModal: {
+			type,
+			show: true,
+			text
 		}
 	});
 };

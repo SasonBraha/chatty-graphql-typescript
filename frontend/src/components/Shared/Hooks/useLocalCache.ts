@@ -1,5 +1,6 @@
 import { useQuery } from 'react-apollo-hooks';
 import gql from 'graphql-tag';
+import { ILocalCache } from '../../../apollo/actions';
 
 const buildQuery = (dataToFetch: string) => gql`
 	query {
@@ -9,7 +10,7 @@ const buildQuery = (dataToFetch: string) => gql`
 	}
 `;
 
-const useCacheData = (dataToFetch: string) => {
+const useCacheData = (dataToFetch: string): ILocalCache => {
 	let { data } = useQuery(buildQuery(dataToFetch));
 	data = data.client;
 

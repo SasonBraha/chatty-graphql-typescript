@@ -89,7 +89,7 @@ cache.writeData({
 			isNavOpen: window.innerWidth > 992,
 			currentUser: null,
 			notifications: {
-				unread: 0,
+				unreadCount: 0,
 				list: []
 			},
 			chat: {

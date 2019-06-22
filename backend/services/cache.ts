@@ -2,16 +2,12 @@ import * as mongoose from 'mongoose';
 import { Query } from 'mongoose';
 import { redis } from './';
 import { logger } from '../utils';
+import { IQueryCacheOptions } from '../types/interfaces';
 
 const execRef = mongoose.Query.prototype.exec;
-
-interface CacheOptions {
-	key?: string;
-}
-
 mongoose.Query.prototype.cache = function cache(
 	this: Query<any>,
-	options: CacheOptions = {}
+	options: IQueryCacheOptions = {}
 ) {
 	this.useCache = true;
 	this.hashKey = JSON.stringify(options.key || '');

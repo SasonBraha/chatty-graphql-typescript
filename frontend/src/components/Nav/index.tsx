@@ -1,13 +1,9 @@
 import React from 'react';
-import { connect } from 'react-redux';
-import { IReducerState } from '../../redux/reducers';
 import styled from 'styled-components/macro';
 import { List } from '../Shared';
 import { useLocalCache } from '../Shared/Hooks';
 
-interface IProps {
-	isNavOpen: boolean;
-}
+interface IProps {}
 
 const navItems = [
 	{
@@ -43,8 +39,4 @@ const ScNav = styled('nav')<{ isNavOpen: boolean }>`
 	height: 100%;
 `;
 
-const mapStateToProps = ({ isNavOpen }: IReducerState) => ({ isNavOpen });
-export default connect(
-	mapStateToProps,
-	null
-)(Nav);
+export default Nav;
