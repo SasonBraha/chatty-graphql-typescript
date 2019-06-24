@@ -84,6 +84,7 @@ type Query {
     notifications: [NotificationEntity!]!
     olderMessages(beforeMessageId: ID!, chatSlug: String!): [MessageEntity!]
     roomsList: [ChatEntity!]!
+    user(slug: String!): UserEntity
     users(displayName: String!, limit: Int): SearchUsersOutput!
 }
 
@@ -103,8 +104,9 @@ type Subscription {
 type UserEntity {
     _id: ID!
     avatar: String!
+    createdChatRooms: [ChatEntity!]
     displayName: String!
-    email: String!
+    email: String
     lastActivity: String!
     role: String!
     slug: String!

@@ -3,7 +3,6 @@ import {
 	Ctx,
 	FieldResolver,
 	Int,
-	Mutation,
 	Query,
 	Resolver,
 	Root,
@@ -30,6 +29,14 @@ export default class UserResolver {
 	@Query(returns => UserEntity)
 	me(@Ctx('user') user: IUser): IUser {
 		return user;
+	}
+
+	@Query(returns => UserEntity, { nullable: true })
+	async user(@Arg('slug') slug: string, @Ctx('user') user: IUser) {
+		const isTargetUserSameIsLoggedInUser = user ? user.slug === slug : false;
+		return await User.findOne({ slug }).select(
+			isTargetUserSameIsLoggedInUser ? '+email' : '-email'
+		);
 	}
 
 	@UseMiddleware(WithPermission([UserPermissionTypesEnum.SEARCH_USERS]))

@@ -3,6 +3,7 @@ import 'reflect-metadata';
 import { handleSocketDisconnect } from './handlers';
 import * as http from 'http';
 import { ApolloServer } from 'apollo-server-express';
+import { SubscriptionServer } from 'subscriptions-transport-ws';
 import * as express from 'express';
 import * as helmet from 'helmet';
 import * as cors from 'cors';

@@ -4,6 +4,7 @@ import ObjectId = Schema.Types.ObjectId;
 import { INotification } from './Notification.model';
 import { ObjectType, Field, ID, Int } from 'type-graphql';
 import rolePermissions from '../permissions';
+import { ChatEntity, IChat } from './Chat.model';
 
 export interface IUser extends Document {
 	displayName: string;
@@ -90,7 +91,7 @@ export class UserEntity {
 	@Field()
 	displayName: string;
 
-	@Field()
+	@Field({ nullable: true })
 	email: string;
 
 	@Field()
@@ -107,6 +108,9 @@ export class UserEntity {
 
 	@Field(type => Int)
 	unreadNotificationsCount: number;
+
+	@Field(type => [ChatEntity], { nullable: true })
+	createdChatRooms: IChat[];
 }
 
 // Hash Password Before Saving

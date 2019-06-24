@@ -6,7 +6,7 @@ interface IProps {
 	children: ReactNode;
 }
 
-const Container = (props: IProps) => {
+const Container: React.FC<IProps> = props => {
 	const [shouldShrink, setShouldShrink] = useState(window.innerWidth > 992);
 	const { isNavOpen } = useLocalCache(`isNavOpen`);
 
