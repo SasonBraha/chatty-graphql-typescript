@@ -47,7 +47,6 @@ const StyledListItem = styled('li')<{
 	color: string;
 	isSelected: boolean;
 }>`
-	transition: 0.3s;
 	position: relative;
 	color: ${props => (props.color ? props.color : props.theme.gray10)};
 	cursor: pointer;

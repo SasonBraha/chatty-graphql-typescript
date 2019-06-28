@@ -8,6 +8,8 @@ import { useLocalCache } from '../Shared/Hooks';
 
 interface IProps {
 	onSelect?: (value: string) => any | void;
+	returnFocusCb?: (pressedChar: string) => any;
+	focusTarget?: React.MutableRefObject<any>;
 }
 
 const MentionSuggester: React.FC<IProps> = React.memo(props => {
@@ -36,11 +38,7 @@ const MentionSuggester: React.FC<IProps> = React.memo(props => {
 			timeout={{ enter: 0, exit: 300 }}
 		>
 			{mountState => (
-				<ScMentionSuggester
-					userList={userList}
-					className={mountState}
-					tabIndex={-1}
-				>
+				<ScMentionSuggester userList={userList} className={mountState}>
 					<List
 						items={userList.reduce((acc: IListItem[], currentUser: IUser) => {
 							acc.push({
@@ -52,6 +50,9 @@ const MentionSuggester: React.FC<IProps> = React.memo(props => {
 						}, [])}
 						onSelect={props.onSelect}
 						withKeyboardNavigation
+						focusWhenVisible
+						returnFocusCb={props.returnFocusCb}
+						focusTarget={props.focusTarget}
 					/>
 				</ScMentionSuggester>
 			)}

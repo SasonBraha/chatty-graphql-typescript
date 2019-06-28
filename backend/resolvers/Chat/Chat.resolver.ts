@@ -151,7 +151,7 @@ export default class ChatResolver {
 		@Arg('chatSlug') chatSlug: string,
 		@Ctx('user') user: IUser,
 		@PubSub() pubSub: PubSubEngine
-	): Promise<IMessage> {
+	): Promise<IMessage | { _id: string }> {
 		const sanitizedText = sanitizeHtml(text, {
 			allowedTags: [],
 			allowedAttributes: {}
@@ -255,7 +255,7 @@ export default class ChatResolver {
 			});
 		}
 
-		return newMessage;
+		return newMessage ? newMessage : { _id: preSaveId._id };
 	}
 
 	@UseMiddleware(Authenticated)

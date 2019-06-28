@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 import styled from 'styled-components/macro';
 import gql from 'graphql-tag';
 import { FormikProps, withFormik } from 'formik';
@@ -97,6 +97,7 @@ const handleChange = (
 const SendMessage: React.FC<IProps> = props => {
 	const [isTyping, setIsTyping] = useState(false);
 	const client = useApolloClient();
+	const inputRef: React.MutableRefObject<any> = useRef(null);
 	const {
 		values,
 		handleChange: handleFormikChange,
@@ -132,7 +133,10 @@ const SendMessage: React.FC<IProps> = props => {
 						}
 					});
 
-					setMentionSuggester(true, userData.data.users.userList);
+					var userList = userData.data.users.userList;
+					if (userList.length) {
+						setMentionSuggester(true, userData.data.users.userList);
+					}
 				}}
 				onCancel={() => setMentionSuggester(false, [])}
 			>
@@ -147,6 +151,7 @@ const SendMessage: React.FC<IProps> = props => {
 					}}
 					onBlur={handleBlur}
 					placeholder='הכנס הודעה ולחץ Enter'
+					ref={inputRef}
 				/>
 			</ScInputTrigger>
 
@@ -155,6 +160,7 @@ const SendMessage: React.FC<IProps> = props => {
 					setFieldValue('text', `${values.text}${text}`);
 					setMentionSuggester(false, []);
 				}}
+				focusTarget={inputRef}
 			/>
 		</ScForm>
 	);
