@@ -8,8 +8,6 @@ import { useLocalCache } from '../Shared/Hooks';
 
 interface IProps {
 	onSelect?: (value: string) => any | void;
-	returnFocusCb?: (pressedChar: string) => any;
-	focusTarget?: React.MutableRefObject<any>;
 }
 
 const MentionSuggester: React.FC<IProps> = React.memo(props => {
@@ -51,8 +49,6 @@ const MentionSuggester: React.FC<IProps> = React.memo(props => {
 						onSelect={props.onSelect}
 						withKeyboardNavigation
 						focusWhenVisible
-						returnFocusCb={props.returnFocusCb}
-						focusTarget={props.focusTarget}
 					/>
 				</ScMentionSuggester>
 			)}

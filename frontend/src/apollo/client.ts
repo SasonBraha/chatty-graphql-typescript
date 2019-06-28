@@ -99,7 +99,8 @@ cache.writeData({
 					shouldShow: false,
 					userList: []
 				}
-			}
+			},
+			appLists: ''
 		}
 	}
 });

@@ -1,7 +1,7 @@
 import React, { ReactNode, useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
 import ListItem from './ListItem';
-import { KeyCodeEnum } from '../../../types/enums';
+import { getIndexAfterKeyboardEvent } from '../../../utils';
 
 export interface IListItem {
 	icon?: string;
@@ -21,57 +21,26 @@ interface IProps {
 	onSelect?: (text: string) => any | void;
 	withKeyboardNavigation?: boolean;
 	focusWhenVisible?: boolean;
-	returnFocusCb?: (pressedChar: string) => any;
-	focusTarget?: React.MutableRefObject<any>;
+	listName?: string;
 }
 
 const handleKeyDown = (
 	e: React.KeyboardEvent,
 	props: IProps,
 	selectedIndex: number,
-	setSelectedIndex: React.Dispatch<React.SetStateAction<number>>,
-	listRef: any
+	setSelectedIndex: React.Dispatch<React.SetStateAction<number>>
 ) => {
 	if (props.withKeyboardNavigation) {
-		switch (e.which) {
-			case KeyCodeEnum.ARROW_UP:
-				if (selectedIndex !== 0) setSelectedIndex(selectedIndex - 1);
-				break;
-
-			case KeyCodeEnum.ARROW_DOWN:
-				setSelectedIndex(selectedIndex + 1);
-				break;
-
-			case KeyCodeEnum.ENTER:
+		getIndexAfterKeyboardEvent(
+			e,
+			selectedIndex,
+			props.items.length,
+			setSelectedIndex,
+			() => {
 				typeof props.onSelect === 'function' &&
-					props.onSelect(props.items[selectedIndex % props.items.length]
-						.text as string);
-				listRef.current.blur();
-
-				if (props.focusTarget) {
-					requestAnimationFrame(() =>
-						requestAnimationFrame(() => {
-							props.focusTarget!.current!.focus();
-						})
-					);
-				}
-				break;
-
-			default:
-				if (typeof props.returnFocusCb === 'function') {
-					props.returnFocusCb(e.key);
-
-					if (props.focusTarget) {
-						props.focusTarget!.current!.focus();
-						props.focusTarget!.current.dispatchEvent(
-							new Event('change', { bubbles: true })
-						);
-						props.focusTarget!.current.dispatchEvent(
-							new Event('keyup', { bubbles: true })
-						);
-					}
-				}
-		}
+					props.onSelect(props.items[selectedIndex].text as string);
+			}
+		);
 	}
 };
 
@@ -85,11 +54,11 @@ const List: React.FC<IProps> = props => {
 		}
 	}, [props.focusWhenVisible, props.items]);
 
+	useEffect(() => {}, []);
+
 	return (
 		<ScList
-			onKeyDown={e =>
-				handleKeyDown(e, props, selectedIndex, setSelectedIndex, listRef)
-			}
+			onKeyDown={e => handleKeyDown(e, props, selectedIndex, setSelectedIndex)}
 			ref={listRef}
 			tabIndex={-1}
 		>
@@ -97,10 +66,7 @@ const List: React.FC<IProps> = props => {
 				<ListItem
 					key={i}
 					{...item}
-					isSelected={
-						props.withKeyboardNavigation &&
-						selectedIndex % props.items.length === i
-					}
+					isSelected={props.withKeyboardNavigation && selectedIndex === i}
 					onClick={
 						item.onClick
 							? item.onClick

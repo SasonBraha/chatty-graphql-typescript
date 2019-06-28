@@ -55,15 +55,10 @@ const InputTrigger: React.FC<IProps> = props => {
 					}
 				} else {
 					if (
-						which === KeyCodeEnum.BACKSPACE &&
-						selectionStart! < triggerStartIndex
+						(which === KeyCodeEnum.BACKSPACE &&
+							selectionStart! < triggerStartIndex) ||
+						which === KeyCodeEnum.SPACE
 					) {
-						setIsTriggered(false);
-						typeof props.onCancel === 'function' && props.onCancel();
-						return;
-					}
-
-					if (which === KeyCodeEnum.SPACE) {
 						setIsTriggered(false);
 						typeof props.onCancel === 'function' && props.onCancel();
 						return;

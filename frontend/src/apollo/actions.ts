@@ -3,6 +3,7 @@ import gql from 'graphql-tag';
 import { INotification, ITypingUser, IUser } from '../types/interfaces';
 import { USER_ENTITY_FRAGMENT } from './fragments';
 import { CrudEnum } from '../types/enums';
+import * as React from 'react';
 
 export interface ILocalCache {
 	showAuthModal: boolean;
@@ -27,6 +28,7 @@ export interface ILocalCache {
 			userList: IUser[];
 		};
 	};
+	appLists: { [key: string]: string };
 }
 
 export const CLIENT_QUERY = gql`
@@ -56,7 +58,8 @@ export const CLIENT_QUERY = gql`
 					show
 					type
 					text
-			}	
+			},
+			appLists	
 		}
 	}
 `;
@@ -71,7 +74,8 @@ function getData(): ILocalCache {
 			typingUsers: data.chat.typingUsers.length
 				? JSON.parse(data.chat.typingUsers)
 				: {}
-		}
+		},
+		appLists: data.appLists.length ? JSON.parse(data.appLists) : {}
 	};
 
 	return parsedData;
@@ -179,5 +183,25 @@ export const setGenericModal = (type: 'success' | 'error', text: string) => {
 			show: true,
 			text
 		}
+	});
+};
+
+export const addList = (
+	list: React.MutableRefObject<any>,
+	listName: string
+) => {
+	const { appLists } = getData();
+
+	if (appLists[listName]) {
+		throw new Error('שם הרשימה כבר קיים ב-cache, אנא בחר/י שם אחר');
+	}
+
+	const updatedAppLists = {
+		...appLists,
+		[listName]: list
+	};
+
+	writeData({
+		appLists: JSON.stringify(updatedAppLists)
 	});
 };

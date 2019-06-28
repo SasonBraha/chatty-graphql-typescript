@@ -160,7 +160,6 @@ const SendMessage: React.FC<IProps> = props => {
 					setFieldValue('text', `${values.text}${text}`);
 					setMentionSuggester(false, []);
 				}}
-				focusTarget={inputRef}
 			/>
 		</ScForm>
 	);
