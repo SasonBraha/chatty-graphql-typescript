@@ -1,4 +1,4 @@
-import React, { ReactNode, useEffect, useRef, useState } from 'react';
+import React, { ReactNode, Ref, useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
 import ListItem from './ListItem';
 import { getIndexAfterKeyboardEvent } from '../../../utils';
@@ -21,7 +21,7 @@ interface IProps {
 	onSelect?: (text: string) => any | void;
 	withKeyboardNavigation?: boolean;
 	focusWhenVisible?: boolean;
-	listName?: string;
+	ref?: Ref<any>;
 }
 
 const handleKeyDown = (
@@ -44,41 +44,47 @@ const handleKeyDown = (
 	}
 };
 
-const List: React.FC<IProps> = props => {
-	const [selectedIndex, setSelectedIndex] = useState(0);
-	const listRef: any = useRef(null);
+const List: React.FC<IProps> = React.forwardRef(
+	(props: IProps, ref: Ref<any>) => {
+		const [selectedIndex, setSelectedIndex] = useState(0);
+		const listRef: any = ref ? ref : useRef(null);
 
-	useEffect(() => {
-		if (props.focusWhenVisible && props.items.length) {
-			listRef.current.focus();
-		}
-	}, [props.focusWhenVisible, props.items]);
+		useEffect(() => {
+			if (props.focusWhenVisible && props.items.length) {
+				listRef.current.focus();
+			}
+		}, [props.focusWhenVisible, props.items]);
 
-	useEffect(() => {}, []);
+		useEffect(() => {
+			setSelectedIndex(0);
+		}, [props.items.length]);
 
-	return (
-		<ScList
-			onKeyDown={e => handleKeyDown(e, props, selectedIndex, setSelectedIndex)}
-			ref={listRef}
-			tabIndex={-1}
-		>
-			{props.items.map((item, i) => (
-				<ListItem
-					key={i}
-					{...item}
-					isSelected={props.withKeyboardNavigation && selectedIndex === i}
-					onClick={
-						item.onClick
-							? item.onClick
-							: () =>
-									typeof props.onSelect === 'function' &&
-									props.onSelect(item.text as string)
-					}
-				/>
-			))}
-		</ScList>
-	);
-};
+		return (
+			<ScList
+				onKeyDown={e =>
+					handleKeyDown(e, props, selectedIndex, setSelectedIndex)
+				}
+				ref={listRef}
+				tabIndex={-1}
+			>
+				{props.items.map((item, i) => (
+					<ListItem
+						key={i}
+						{...item}
+						isSelected={props.withKeyboardNavigation && selectedIndex === i}
+						onClick={
+							item.onClick
+								? item.onClick
+								: () =>
+										typeof props.onSelect === 'function' &&
+										props.onSelect(item.text as string)
+						}
+					/>
+				))}
+			</ScList>
+		);
+	}
+);
 
 const ScList = styled.ul`
 	outline: none;

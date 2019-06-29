@@ -8,7 +8,7 @@ const getIndexAfterKeyboardEvent = (
 	cb: (index: number) => any | void,
 	enterCb?: () => any | void
 ) => {
-	switch (e.which) {
+	switch (e.key) {
 		case KeyCodeEnum.ARROW_UP:
 			currentIndex === 0 ? cb(itemsLength - 1) : cb(currentIndex - 1);
 			break;
@@ -19,6 +19,7 @@ const getIndexAfterKeyboardEvent = (
 
 		case KeyCodeEnum.ENTER:
 			typeof enterCb === 'function' && enterCb();
+			break;
 	}
 };
 

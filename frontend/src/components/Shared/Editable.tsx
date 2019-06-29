@@ -17,8 +17,8 @@ interface IProps {
 }
 
 const handleKeyDown = (e: React.KeyboardEvent, props: IProps) => {
-	const isEnterPressed = e.which === KeyCodeEnum.ENTER;
-	const isEscapePressed = e.which === KeyCodeEnum.ESCAPE;
+	const isEnterPressed = e.key === KeyCodeEnum.ENTER;
+	const isEscapePressed = e.key === KeyCodeEnum.ESCAPE;
 
 	switch (true) {
 		case isEnterPressed &&

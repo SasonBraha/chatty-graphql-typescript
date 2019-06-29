@@ -4,12 +4,12 @@ export enum CrudEnum {
 }
 
 export enum KeyCodeEnum {
-	ARROW_UP = 38,
-	ARROW_DOWN = 40,
-	ENTER = 13,
-	SPACE = 32,
-	BACKSPACE = 8,
-	ESCAPE = 27
+	ARROW_UP = 'ArrowUp',
+	ARROW_DOWN = 'ArrowDown',
+	ENTER = 'Enter',
+	SPACE = ' ',
+	BACKSPACE = 'Backspace',
+	ESCAPE = 'Escape'
 }
 
 export enum UserUpdatesEnum {

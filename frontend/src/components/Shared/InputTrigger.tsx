@@ -43,8 +43,7 @@ const InputTrigger: React.FC<IProps> = props => {
 					supportedTriggerSymbols[props.triggerSymbol];
 				const eventTarget = e.target as HTMLInputElement;
 				const { selectionStart, value } = eventTarget;
-				const { which, shiftKey } = e;
-
+				const { which, shiftKey, key } = e;
 				clearTimeout(onTypeTimeout);
 				if (!isTriggered) {
 					if (which === TRIGGER_SYMBOL_KEY_CODE && shiftKey) {
@@ -55,21 +54,19 @@ const InputTrigger: React.FC<IProps> = props => {
 					}
 				} else {
 					if (
-						(which === KeyCodeEnum.BACKSPACE &&
+						(key === KeyCodeEnum.BACKSPACE &&
 							selectionStart! < triggerStartIndex) ||
-						which === KeyCodeEnum.SPACE
+						key === KeyCodeEnum.SPACE ||
+						key === KeyCodeEnum.ENTER
 					) {
 						setIsTriggered(false);
 						typeof props.onCancel === 'function' && props.onCancel();
 						return;
 					}
 
-					if (which === KeyCodeEnum.ENTER) {
-						setIsTriggered(false);
-					}
-
 					onTypeTimeout = setTimeout(() => {
 						typeof props.onType === 'function' &&
+							isTriggered &&
 							props.onType({
 								value: value.slice(triggerStartIndex),
 								start: triggerStartIndex

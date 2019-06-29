@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Ref } from 'react';
 import { Transition } from 'react-transition-group';
 import styled, { css } from 'styled-components/macro';
 import { List } from '../Shared';
@@ -8,14 +8,16 @@ import { useLocalCache } from '../Shared/Hooks';
 
 interface IProps {
 	onSelect?: (value: string) => any | void;
+	ref?: Ref<any>;
 }
 
-const MentionSuggester: React.FC<IProps> = React.memo(props => {
-	const {
-		chat: {
-			mentionSuggester: { shouldShow, userList }
-		}
-	} = useLocalCache(`
+const MentionSuggester: React.FC<IProps> = React.forwardRef(
+	(props: IProps, ref: Ref<any>) => {
+		const {
+			chat: {
+				mentionSuggester: { shouldShow, userList }
+			}
+		} = useLocalCache(`
 		chat {
 			mentionSuggester {
 				shouldShow
@@ -28,33 +30,34 @@ const MentionSuggester: React.FC<IProps> = React.memo(props => {
 		}	
 	`);
 
-	return (
-		<Transition
-			in={shouldShow}
-			mountOnEnter
-			unmountOnExit
-			timeout={{ enter: 0, exit: 300 }}
-		>
-			{mountState => (
-				<ScMentionSuggester userList={userList} className={mountState}>
-					<List
-						items={userList.reduce((acc: IListItem[], currentUser: IUser) => {
-							acc.push({
-								image: currentUser.avatar,
-								color: 'black',
-								text: currentUser.displayName
-							});
-							return acc;
-						}, [])}
-						onSelect={props.onSelect}
-						withKeyboardNavigation
-						focusWhenVisible
-					/>
-				</ScMentionSuggester>
-			)}
-		</Transition>
-	);
-});
+		return (
+			<Transition
+				in={shouldShow}
+				mountOnEnter
+				unmountOnExit
+				timeout={{ enter: 0, exit: 300 }}
+			>
+				{mountState => (
+					<ScMentionSuggester userList={userList} className={mountState}>
+						<List
+							items={userList.reduce((acc: IListItem[], currentUser: IUser) => {
+								acc.push({
+									image: currentUser.avatar,
+									color: 'black',
+									text: currentUser.displayName
+								});
+								return acc;
+							}, [])}
+							onSelect={props.onSelect}
+							withKeyboardNavigation
+							ref={ref!}
+						/>
+					</ScMentionSuggester>
+				)}
+			</Transition>
+		);
+	}
+);
 
 const ScMentionSuggester = styled('div')<{ userList: IUser[] }>`
 	position: absolute;

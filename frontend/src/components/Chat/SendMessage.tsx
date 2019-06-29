@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { Ref, useRef, useState } from 'react';
 import styled from 'styled-components/macro';
 import gql from 'graphql-tag';
 import { FormikProps, withFormik } from 'formik';
@@ -7,7 +7,7 @@ import Icon from '../Shared/Icon';
 import { RouteComponentProps } from 'react-router';
 import { FileInput } from '../Shared/Form';
 import ApolloClient from 'apollo-client';
-import { CrudEnum } from '../../types/enums';
+import { CrudEnum, KeyCodeEnum } from '../../types/enums';
 import { InputTrigger } from '../Shared';
 import MentionSuggester from './MentionSuggester';
 import { useApolloClient } from 'react-apollo-hooks';
@@ -97,7 +97,8 @@ const handleChange = (
 const SendMessage: React.FC<IProps> = props => {
 	const [isTyping, setIsTyping] = useState(false);
 	const client = useApolloClient();
-	const inputRef: React.MutableRefObject<any> = useRef(null);
+	const mentionSuggesterRef: Ref<any> = useRef(null);
+
 	const {
 		values,
 		handleChange: handleFormikChange,
@@ -134,9 +135,7 @@ const SendMessage: React.FC<IProps> = props => {
 					});
 
 					var userList = userData.data.users.userList;
-					if (userList.length) {
-						setMentionSuggester(true, userData.data.users.userList);
-					}
+					setMentionSuggester(!!userList.length, userList);
 				}}
 				onCancel={() => setMentionSuggester(false, [])}
 			>
@@ -149,9 +148,29 @@ const SendMessage: React.FC<IProps> = props => {
 						handleFormikChange(e);
 						handleChange(isTyping, setIsTyping, props, values.text);
 					}}
+					onKeyDown={(e: React.KeyboardEvent<HTMLInputElement>) => {
+						if (mentionSuggesterRef.current) {
+							const { key } = e;
+							if (
+								![
+									KeyCodeEnum.ARROW_DOWN,
+									KeyCodeEnum.ARROW_UP,
+									KeyCodeEnum.ENTER
+								].includes(key as KeyCodeEnum)
+							)
+								return;
+							e.preventDefault();
+
+							mentionSuggesterRef.current!.dispatchEvent(
+								new KeyboardEvent('keydown', {
+									key,
+									bubbles: true
+								})
+							);
+						}
+					}}
 					onBlur={handleBlur}
 					placeholder='הכנס הודעה ולחץ Enter'
-					ref={inputRef}
 				/>
 			</ScInputTrigger>
 
@@ -160,6 +179,7 @@ const SendMessage: React.FC<IProps> = props => {
 					setFieldValue('text', `${values.text}${text}`);
 					setMentionSuggester(false, []);
 				}}
+				ref={mentionSuggesterRef}
 			/>
 		</ScForm>
 	);
