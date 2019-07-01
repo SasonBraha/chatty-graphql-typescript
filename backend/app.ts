@@ -3,7 +3,6 @@ import 'reflect-metadata';
 import { handleSocketDisconnect } from './handlers';
 import * as http from 'http';
 import { ApolloServer } from 'apollo-server-express';
-import { SubscriptionServer } from 'subscriptions-transport-ws';
 import * as express from 'express';
 import * as helmet from 'helmet';
 import * as cors from 'cors';
@@ -11,12 +10,13 @@ import * as mongoose from 'mongoose';
 import * as morgan from 'morgan';
 import getUserData from './auth/getUserData';
 import { buildSchema } from 'type-graphql';
-import { ChatResolver, AuthResolver, UserResolver } from './resolvers';
+import { AuthResolver, ChatResolver, UserResolver } from './resolvers';
 import * as bodyParser from 'body-parser';
 import { GraphQLError } from 'graphql';
 import CustomError, { ErrorResponse, ErrorTypesEnum } from './utils/errors';
 import { isJson, logger } from './utils';
 import * as uuid from 'uuid';
+import pubSub from './services/pubSub';
 import './permissions';
 import './services/cache';
 
@@ -57,7 +57,8 @@ const main = async () => {
 	//------------------------------------//
 	const schema = await buildSchema({
 		resolvers: [AuthResolver, ChatResolver, UserResolver],
-		validate: false
+		validate: false,
+		pubSub
 	});
 
 	const apolloServer = new ApolloServer({
