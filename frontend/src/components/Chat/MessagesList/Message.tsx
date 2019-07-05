@@ -112,17 +112,16 @@ class Message extends Component<IProps, IState> {
 		const { messageBody } = this.state;
 
 		if (message.userMentions && message.userMentions.length) {
-			const mentionRegex = new RegExp(
-				'@\\[([A-Za-z\u0590-\u05FF-\\d]+:[\\w\u0590-\u05FF-]+@[A-Za-z\u0590-\u05FF-\\d]+)\\]',
-				'g'
-			);
+			const mentionRegex = new RegExp('(@[\\wא-ת-_]+)', 'g');
 			return reactStringReplace(messageBody, mentionRegex, (match, i) => {
-				const [displayName, slug] = match.split(':');
-				if (displayName && slug) {
-					//FIXME - Add mention validation after updating the backend
+				const userDataIndex = message.userMentions.findIndex(
+					mention => mention.displayName === match.slice(1)
+				);
+				if (userDataIndex !== -1) {
+					const userData = message.userMentions[userDataIndex];
 					return (
-						<ScMention key={i} to={`/user/${slug}`}>
-							{displayName}
+						<ScMention key={i} to={`/user/${userData.slug}`}>
+							{match}
 						</ScMention>
 					);
 				}
