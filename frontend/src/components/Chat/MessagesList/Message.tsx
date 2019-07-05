@@ -60,7 +60,11 @@ class Message extends Component<IProps, IState> {
 	}
 
 	handleContextMenu = (e: React.MouseEvent) => {
-		if (this.props.isMine && !this.props.message.isClientDeleted && !this.state.isEditable) {
+		if (
+			this.props.isMine &&
+			!this.props.message.isClientDeleted &&
+			!this.state.isEditable
+		) {
 			e.preventDefault();
 			this.props.setMessageCtxMenu({
 				isOpen: true,
@@ -108,16 +112,17 @@ class Message extends Component<IProps, IState> {
 		const { messageBody } = this.state;
 
 		if (message.userMentions && message.userMentions.length) {
-			const mentionRegex = new RegExp('(@[\\wא-ת-_]+)', 'g');
+			const mentionRegex = new RegExp(
+				'@\\[([A-Za-z\u0590-\u05FF-\\d]+:[\\w\u0590-\u05FF-]+@[A-Za-z\u0590-\u05FF-\\d]+)\\]',
+				'g'
+			);
 			return reactStringReplace(messageBody, mentionRegex, (match, i) => {
-				const userDataIndex = message.userMentions.findIndex(
-					mention => mention.displayName === match.slice(1)
-				);
-				if (userDataIndex !== -1) {
-					const userData = message.userMentions[userDataIndex];
+				const [displayName, slug] = match.split(':');
+				if (displayName && slug) {
+					//FIXME - Add mention validation after updating the backend
 					return (
-						<ScMention key={i} to={`/user/${userData.slug}`}>
-							{match}
+						<ScMention key={i} to={`/user/${slug}`}>
+							{displayName}
 						</ScMention>
 					);
 				}
@@ -156,7 +161,9 @@ class Message extends Component<IProps, IState> {
 						{this.renderFile()}
 						{this.state.isEditable ? (
 							<ScEditable
-								onChange={(e: any) => this.setState({ messageBody: e.target.value })}
+								onChange={(e: any) =>
+									this.setState({ messageBody: e.target.value })
+								}
 								onCancel={() =>
 									this.setState({
 										messageBody: message.text,
@@ -173,9 +180,13 @@ class Message extends Component<IProps, IState> {
 						)}
 
 						<ScMetaData alignLeft={true}>
-							{formatRelative(parseISO((message.createdAt as unknown) as string), new Date(), {
-								locale: he
-							})}
+							{formatRelative(
+								parseISO((message.createdAt as unknown) as string),
+								new Date(),
+								{
+									locale: he
+								}
+							)}
 						</ScMetaData>
 					</>
 				)}

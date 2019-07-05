@@ -152,7 +152,7 @@ export default class ChatResolver {
 		@Ctx('user') user: IUser,
 		@PubSub() pubSub: PubSubEngine
 	): Promise<IMessage | { _id: string }> {
-		const sanitizedText = sanitizeHtml(text, {
+		let sanitizedText = sanitizeHtml(text, {
 			allowedTags: [],
 			allowedAttributes: {}
 		});
@@ -168,11 +168,16 @@ export default class ChatResolver {
 			}).select('displayName _id slug');
 
 			if (usersData.length) {
+				//FIXME - Migrate mentions array to object for better performance client side
 				userMentions = usersData.reduce(
 					(acc: IMention[], currentUser: IUser) => {
 						const { displayName, slug, _id } = currentUser;
 						const startIndex = sanitizedText.indexOf(displayName) - 1;
 						const endIndex = startIndex + displayName.length + 1;
+						sanitizedText = sanitizedText.replace(
+							`@${displayName}`,
+							`@[${displayName}:${slug}]`
+						);
 
 						acc.push({
 							indices: [startIndex, endIndex],
