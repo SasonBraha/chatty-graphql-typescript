@@ -114,14 +114,15 @@ class Message extends Component<IProps, IState> {
 		if (message.userMentions && message.userMentions.length) {
 			const mentionRegex = new RegExp('(@[\\wא-ת-_]+)', 'g');
 			return reactStringReplace(messageBody, mentionRegex, (match, i) => {
+				const displayName = match.slice(1);
 				const userDataIndex = message.userMentions.findIndex(
-					mention => mention.displayName === match.slice(1)
+					mention => mention.displayName === displayName
 				);
 				if (userDataIndex !== -1) {
 					const userData = message.userMentions[userDataIndex];
 					return (
 						<ScMention key={i} to={`/user/${userData.slug}`}>
-							{match}
+							{displayName}
 						</ScMention>
 					);
 				}
