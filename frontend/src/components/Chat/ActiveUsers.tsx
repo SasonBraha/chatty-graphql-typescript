@@ -7,6 +7,7 @@ import ApolloClient from 'apollo-client';
 import { CrudEnum } from '../../types/enums';
 import { useApolloClient, useSubscription } from 'react-apollo-hooks';
 import { useLocalCache } from '../Shared/Hooks';
+import { afterRender } from '../../utils';
 
 const ACTIVE_USERS_SUBSCRIPTION = gql`
 	subscription($chatSlug: String!) {
@@ -56,10 +57,13 @@ const ActiveUsers: React.FC<IProps> = props => {
 			variables: { chatSlug }
 		}
 	);
+	console.log(data)
 
 	useEffect(() => {
 		updateActiveUsers(CrudEnum.DELETE, previousSlug, client);
-		updateActiveUsers(CrudEnum.UPDATE, chatSlug, client);
+		afterRender(() => {
+			updateActiveUsers(CrudEnum.UPDATE, chatSlug, client);
+		});
 		setPreviousSlug(chatSlug);
 
 		return () => updateActiveUsers(CrudEnum.DELETE, chatSlug, client);
