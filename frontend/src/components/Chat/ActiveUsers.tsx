@@ -57,7 +57,6 @@ const ActiveUsers: React.FC<IProps> = props => {
 			variables: { chatSlug }
 		}
 	);
-	console.log(data)
 
 	useEffect(() => {
 		updateActiveUsers(CrudEnum.DELETE, previousSlug, client);
