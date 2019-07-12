@@ -1,6 +1,7 @@
 import React from 'react';
 import { ITypingUser } from '../../types/interfaces';
 import { useLocalCache } from '../Shared/Hooks';
+import { removeChar } from '../../utils';
 
 interface IProps {
 	className?: string;
@@ -32,19 +33,19 @@ const renderTypingUsers = (typingUsers: ITypingUser[]) => {
 };
 
 const TypingUsers = (props: IProps) => {
-	const {
-		chat: { typingUsers }
-	} = useLocalCache(`
+	const { chatSlug } = props;
+	const d = useLocalCache(`
 		chat { 
-			typingUsers 
+			typingUsers {
+				${removeChar(chatSlug, '[@-]')} {
+					displayName
+				}
+			}
 		}
 	`);
+	console.log(d);
 
-	return (
-		<div className={props.className}>
-			{renderTypingUsers(typingUsers[props.chatSlug])}
-		</div>
-	);
+	return <div className={props.className}>{renderTypingUsers([])}</div>;
 };
 
 export default TypingUsers;

@@ -41,11 +41,10 @@ interface IProps {}
 const RoomsList: React.FC<IProps> = props => {
 	const { data, loading } = useQuery(ROOMS_LIST_QUERY);
 	const {
-		chat: { chatSlug, typingUsers }
+		chat: { chatSlug }
 	} = useLocalCache(`
 		chat {
 			chatSlug
-			typingUsers
 		}
 	`);
 
@@ -70,7 +69,6 @@ const RoomsList: React.FC<IProps> = props => {
 							room={room}
 							key={room.slug}
 							chatSlug={room.slug}
-							typingUsers={typingUsers[room.slug] ? typingUsers[room.slug] : []}
 						/>
 				  ))}
 		</ScRoomsList>

@@ -3,6 +3,7 @@ import gql from 'graphql-tag';
 import { INotification, ITypingUser, IUser } from '../types/interfaces';
 import { USER_ENTITY_FRAGMENT } from './fragments';
 import { CrudEnum } from '../types/enums';
+import { removeChar } from '../utils';
 
 export interface ILocalCache {
 	showAuthModal: boolean;
@@ -31,51 +32,51 @@ export interface ILocalCache {
 }
 
 export const CLIENT_QUERY = gql`
-	{
-		client @client {
-			isNavOpen
-			currentUser {
-					${USER_ENTITY_FRAGMENT}
-			}
-			chat {
-					typingUsers
-          mentionSuggester {
-							shouldShow
-							userList {
-									displayName
-									avatar
-									slug
-							}
-  				}
-			}
-			notifications {
-					unreadCount
-					list
-			}	
-			showAuthModal
-			genericModal {
-					show
-					type
-					text
-			}
-		}
-	}
+    {
+        client @client {
+            isNavOpen
+            currentUser {
+                ${USER_ENTITY_FRAGMENT}
+            }
+            chat {
+                mentionSuggester {
+                    shouldShow
+                    userList {
+                        displayName
+                        avatar
+                        slug
+                    }
+                }
+            }
+            notifications {
+                unreadCount
+                list
+            }
+            showAuthModal
+            genericModal {
+                show
+                type
+                text
+            }
+        }
+    }
 `;
 
-function getData(): ILocalCache {
-	const data = client.readQuery({ query: CLIENT_QUERY }).client;
+function getData(options: { [key: string]: any } = {}): ILocalCache {
+	const typingUsersFragment = options.chatSlug
+		? `
+			typingUsers {
+				${removeChar(options.chatSlug, '[@-]')} {
+					displayName
+				}
+			}
+		`
+		: '';
+	const data = client.readQuery({
+		query: CLIENT_QUERY
+	}).client;
 
-	const parsedData = {
-		...data,
-		chat: {
-			...data.chat,
-			typingUsers: data.chat.typingUsers.length
-				? JSON.parse(data.chat.typingUsers)
-				: {}
-		}
-	};
-
-	return parsedData;
+	return data;
 }
 
 function writeData(data: { [key: string]: any }) {
@@ -114,23 +115,25 @@ export const setTypingUsers = (
 	crudType: string,
 	chatSlug: string
 ) => {
-	const { chat } = getData();
-
-	if (!chat.typingUsers[chatSlug]) {
-		chat.typingUsers[chatSlug] = [];
+	const { chat } = getData({
+		chatSlug
+	});
+	const parsedSlug = removeChar(chatSlug, '[@-]');
+	if (!chat.typingUsers[parsedSlug]) {
+		chat.typingUsers[parsedSlug] = [];
 	}
 
-	chat.typingUsers[chatSlug] =
+	console.log(chat);
+
+	chat.typingUsers[parsedSlug] =
 		crudType === CrudEnum.UPDATE
-			? [...chat.typingUsers[chatSlug], user]
-			: chat.typingUsers[chatSlug].filter(
+			? [...chat.typingUsers[parsedSlug], user]
+			: chat.typingUsers[parsedSlug].filter(
 					({ slug }: { slug: string }) => slug !== user.slug
 			  );
 
 	writeData({
-		chat: {
-			typingUsers: JSON.stringify(chat.typingUsers)
-		}
+		chat
 	});
 };
 

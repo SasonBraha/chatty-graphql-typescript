@@ -93,7 +93,9 @@ cache.writeData({
 				list: []
 			},
 			chat: {
-				typingUsers: '',
+				typingUsers: {
+					__placeholder: {}
+				},
 				chatSlug: '',
 				mentionSuggester: {
 					shouldShow: false,

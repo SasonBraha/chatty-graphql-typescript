@@ -1,7 +1,7 @@
 import React from 'react';
 import styled, { css } from 'styled-components/macro';
 import { Link } from 'react-router-dom';
-import { IChat, ITypingUser } from '../../../types/interfaces';
+import { IChat } from '../../../types/interfaces';
 import Ripple from 'react-ink';
 import TypingUsers from '../TypingUsers';
 
@@ -9,24 +9,25 @@ interface IProps {
 	room: IChat;
 	selected: boolean;
 	chatSlug: string;
-	typingUsers: ITypingUser[];
 }
 
-const RoomsListItem = ({ room, selected, chatSlug, typingUsers }: IProps) => (
-	<ScRoomsListItem selected={selected} to={`/chat/${room.slug}`}>
-		<ScImage src={room.image.path} alt={room.name} />
+const RoomsListItem: React.FC<IProps> = props => {
+	const { room, selected, chatSlug } = props;
 
-		<ScRoomData>
-			<ScRoomName>{room.name}</ScRoomName>
-			<ScLastMessage shouldHide={typingUsers.length > 0}>
-				{room.lastMessage}
-			</ScLastMessage>
-			<ScTypingUsers chatSlug={chatSlug} />
-		</ScRoomData>
+	return (
+		<ScRoomsListItem selected={selected} to={`/chat/${room.slug}`}>
+			<ScImage src={room.image.path} alt={room.name} />
 
-		<Ripple />
-	</ScRoomsListItem>
-);
+			<ScRoomData>
+				<ScRoomName>{room.name}</ScRoomName>
+				<ScLastMessage shouldHide={false}>{room.lastMessage}</ScLastMessage>
+				<ScTypingUsers chatSlug={chatSlug} />
+			</ScRoomData>
+
+			<Ripple />
+		</ScRoomsListItem>
+	);
+};
 
 const ScRoomsListItem = styled(Link)<{ selected: boolean }>`
 	display: flex;
