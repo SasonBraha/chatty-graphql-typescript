@@ -3,7 +3,9 @@ export enum ErrorTypesEnum {
 	UNAUTHORIZED = 'Unauthorized',
 	FORBIDDEN = 'Forbidden',
 	NOT_FOUND = 'NotFound',
-	INTERNAL_SERVER_ERROR = 'InternalServerError'
+	INTERNAL_SERVER_ERROR = 'InternalServerError',
+	INVALID_TOKEN = 'InvalidToken',
+	_INTERNAL_JWT_VERIFY_ERROR = 'Context creation failed: InvalidToken'
 }
 
 export interface IErrorContext {
@@ -35,6 +37,14 @@ export const ErrorResponse: IError = {
 	InternalServerError: {
 		status: 500,
 		message: 'אופס! משהו השתבש'
+	},
+	InvalidToken: {
+		status: 403,
+		message: 'הייתה בעיה באימות הטוקן'
+	},
+	'Context creation failed: InvalidToken': {
+		status: 403,
+		message: 'הייתה בעיה באימות הטוקן'
 	}
 };
 

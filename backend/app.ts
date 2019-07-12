@@ -80,7 +80,9 @@ const main = async () => {
 			}
 		},
 		formatError(ex: GraphQLError): any {
-			const errorMessage = ex.originalError.message;
+			const errorMessage = ex.originalError
+				? ex.originalError.message
+				: ex.message;
 			const errorId = uuid();
 
 			if (isJson(errorMessage)) {

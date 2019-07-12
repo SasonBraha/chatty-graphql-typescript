@@ -1,7 +1,9 @@
 const afterRender = (callback: () => any) => {
-	requestAnimationFrame(() => requestAnimationFrame(() => {
-		callback();
-	}));
-}
+	requestAnimationFrame(() =>
+		requestAnimationFrame(() => {
+			callback();
+		})
+	);
+};
 
 export default afterRender;
