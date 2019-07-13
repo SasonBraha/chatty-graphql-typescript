@@ -9,6 +9,8 @@ import mutationsOverSocket from './mutationsOverSocket';
 import { createUploadLink } from 'apollo-upload-client';
 import initialCache from './initialCache';
 import { onError } from 'apollo-link-error';
+import { ErrorTypesEnum, LocalStorageEnum } from '../types/enums';
+import { setGenericModal } from './actions';
 
 interface IDefinition {
 	kind: string;
@@ -63,7 +65,19 @@ const apolloError = onError(({ graphQLErrors, operation }: any) => {
 			switch (error.status) {
 				case 401:
 					localStorage.removeItem(process.env.REACT_APP_LS_AUTH_TOKEN);
+					localStorage.setItem(
+						LocalStorageEnum.ON_LOAD_MESSAGE,
+						JSON.stringify({
+							message: ErrorTypesEnum.INVALID_TOKEN,
+							type: 'error'
+						})
+					);
 					window.location.href = '/login';
+					break;
+
+				case 500:
+					setGenericModal('error', 'אופס! משהו השתבש');
+					break;
 			}
 		});
 	}

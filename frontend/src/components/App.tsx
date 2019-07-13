@@ -11,8 +11,12 @@ import { GenericModal } from './Shared';
 import Routes from './Routes';
 import { useApolloClient, useSubscription } from 'react-apollo-hooks';
 import gql from 'graphql-tag';
-import { UserUpdatesEnum } from '../types/enums';
-import { setCurrentUser, setNotificationsData } from '../apollo/actions';
+import { LocalStorageEnum, UserUpdatesEnum } from '../types/enums';
+import {
+	setCurrentUser,
+	setGenericModal,
+	setNotificationsData
+} from '../apollo/actions';
 import { useLocalCache } from './Shared/Hooks';
 import { USER_ENTITY_FRAGMENT } from '../apollo/fragments';
 import { RouterProps } from 'react-router';
@@ -89,6 +93,17 @@ const App: React.FC<IProps> = props => {
 		}
 	}, [data]);
 
+	useEffect(() => {
+		const onLoadMessage = localStorage.getItem(
+			LocalStorageEnum.ON_LOAD_MESSAGE
+		);
+		if (onLoadMessage) {
+			const { message, type } = JSON.parse(onLoadMessage);
+			setGenericModal(type, message);
+			localStorage.removeItem(LocalStorageEnum.ON_LOAD_MESSAGE);
+		}
+	}, []);
+
 	return (
 		<>
 			<StyledApp>
@@ -117,4 +132,5 @@ const ScContent = styled.div`
 	height: calc(100vh - ${props => props.theme.headerHeight});
 `;
 
+// @ts-ignore
 export default withRouter(App);

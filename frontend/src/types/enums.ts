@@ -19,3 +19,7 @@ export enum UserUpdatesEnum {
 export enum ErrorTypesEnum {
 	INVALID_TOKEN = 'הייתה בעיה באימות הטוקן / פג תוקפו של הטוקן הקיים, אנא התחבר/י מחדש'
 }
+
+export enum LocalStorageEnum {
+	ON_LOAD_MESSAGE = 'ON_LOAD_MESSAGE'
+}

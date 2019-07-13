@@ -64,7 +64,9 @@ const RoomsList: React.FC<IProps> = props => {
 		<ScRoomsList>
 			{loading
 				? Array.from({ length: 15 }).map((_, i) => <RoomsListLoader key={i} />)
-				: data.roomsList.map((room: IChat) => (
+				: data &&
+				  data.roomsList &&
+				  data.roomsList.map((room: IChat) => (
 						<RoomsListItem
 							selected={room.slug === chatSlug}
 							room={room}
