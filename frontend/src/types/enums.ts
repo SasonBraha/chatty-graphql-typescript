@@ -15,3 +15,7 @@ export enum KeyCodeEnum {
 export enum UserUpdatesEnum {
 	NEW_NOTIFICATION = 'NEW_NOTIFICATION'
 }
+
+export enum ErrorTypesEnum {
+	INVALID_TOKEN = 'הייתה בעיה באימות הטוקן / פג תוקפו של הטוקן הקיים, אנא התחבר/י מחדש'
+}

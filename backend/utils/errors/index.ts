@@ -39,11 +39,11 @@ export const ErrorResponse: IError = {
 		message: 'אופס! משהו השתבש'
 	},
 	InvalidToken: {
-		status: 403,
+		status: 401,
 		message: 'הייתה בעיה באימות הטוקן'
 	},
 	'Context creation failed: InvalidToken': {
-		status: 403,
+		status: 401,
 		message: 'הייתה בעיה באימות הטוקן'
 	}
 };

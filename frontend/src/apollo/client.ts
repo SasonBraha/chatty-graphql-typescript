@@ -7,6 +7,8 @@ import { getMainDefinition } from 'apollo-utilities';
 import { getOperationName } from './utils';
 import mutationsOverSocket from './mutationsOverSocket';
 import { createUploadLink } from 'apollo-upload-client';
+import initialCache from './initialCache';
+import { onError } from 'apollo-link-error';
 
 interface IDefinition {
 	kind: string;
@@ -35,7 +37,7 @@ const wsLink = () => {
 		}
 	};
 
-	//@ts-ignore
+	// @ts-ignore
 	wsLink.subscriptionClient.use([subscriptionMiddleware]);
 	return wsLink;
 };
@@ -54,6 +56,19 @@ const authLink = setContext((_, { headers }) => {
 	};
 });
 
+const apolloError = onError(({ graphQLErrors, operation }: any) => {
+	if (graphQLErrors) {
+		graphQLErrors.forEach((error: Error) => {
+			//@ts-ignore
+			switch (error.status) {
+				case 401:
+					localStorage.removeItem(process.env.REACT_APP_LS_AUTH_TOKEN);
+					window.location.href = '/login';
+			}
+		});
+	}
+});
+
 const link = split(
 	({ query }) => {
 		const { kind, operation, selectionSet }: IDefinition = getMainDefinition(
@@ -65,7 +80,7 @@ const link = split(
 		);
 	},
 	wsLink(),
-	authLink.concat(httpLink)
+	authLink.concat(apolloError).concat(httpLink)
 );
 
 const cache = new InMemoryCache({
@@ -76,33 +91,7 @@ const client = new ApolloClient({
 	link,
 	cache
 });
-
-cache.writeData({
-	data: {
-		client: {
-			showAuthModal: false,
-			genericModal: {
-				type: null,
-				show: false,
-				text: null
-			},
-			isNavOpen: window.innerWidth > 992,
-			currentUser: null,
-			notifications: {
-				unreadCount: 0,
-				list: []
-			},
-			chat: {
-				typingUsers: '',
-				chatSlug: '',
-				mentionSuggester: {
-					shouldShow: false,
-					userList: []
-				}
-			}
-		}
-	}
-});
+cache.writeData(initialCache);
 
 if (process.env.NODE_ENV === 'development') {
 	window.apolloClient = client;
