@@ -1,2 +1,2 @@
 # Chatty
-![Screenshot_9](https://user-images.githubusercontent.com/30155843/61175937-94c8c400-a5c0-11e9-9767-be3b8064f261.png)
+![Screenshot_10](https://user-images.githubusercontent.com/30155843/61246659-0b4bfa00-a758-11e9-81ae-dd468a5d28b1.png)
