@@ -210,7 +210,7 @@ export default class ChatResolver {
 				createdAt: new Date(),
 				isClientDeleted: false,
 				creationToken: jwt.sign(
-					{ _id: user._id.toString() },
+					{ userId: user._id.toString(), messageId: preSaveId._id },
 					process.env.JWT_SECRET
 				)
 			},
@@ -280,14 +280,15 @@ export default class ChatResolver {
 
 		if (!targetMessage && creationToken) {
 			// @ts-ignore
-			const creationTokenData: { _id: string } = await jwt.verify(
+			const creationTokenData: { userId; messageId } = await jwt.verify(
 				creationToken,
 				process.env.JWT_SECRET
 			);
 
 			if (creationTokenData) {
 				isUserCreatedTargetMessage =
-					creationTokenData._id === user._id.toString();
+					creationTokenData.userId === user._id.toString() &&
+					messageId === creationTokenData.messageId;
 				shouldUpdateDB = false;
 			}
 		} else if (targetMessage) {

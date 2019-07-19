@@ -111,6 +111,9 @@ export class UserEntity {
 
 	@Field(type => [ChatEntity], { nullable: true })
 	createdChatRooms: IChat[];
+
+	@Field()
+	createdAt: Date;
 }
 
 // Hash Password Before Saving

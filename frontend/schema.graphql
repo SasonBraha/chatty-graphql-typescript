@@ -104,6 +104,7 @@ type Subscription {
 type UserEntity {
     _id: ID!
     avatar: String!
+    createdAt: DateTime!
     createdChatRooms: [ChatEntity!]
     displayName: String!
     email: String
