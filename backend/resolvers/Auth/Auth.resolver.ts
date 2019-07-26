@@ -1,5 +1,5 @@
-import { Arg, Ctx, Mutation, Resolver } from 'type-graphql';
-import User, { UserEntity } from '../../entities/User.model';
+import { Arg, Ctx, Mutation, Query, Resolver } from 'type-graphql';
+import User, { IUser, UserEntity } from '../../entities/User.model';
 import { LoginInput, RegisterInput } from './auth.resolver.inputs';
 import { Request } from 'express';
 import generateJWT from '../../auth/generateJWT';
@@ -9,7 +9,7 @@ import {
 	validateRegistrationInput
 } from '../../utils/validation';
 import { ErrorTypesEnum } from '../../utils/errors';
-import { googleOAuthClient } from '../../services';
+import { googleOAuthClient, mailer } from '../../services';
 
 @Resolver(UserEntity)
 export default class AuthResolver {
@@ -77,4 +77,29 @@ export default class AuthResolver {
 
 		return generateJWT(userData);
 	}
+
+	@Mutation(returns => String)
+	async createRestPasswordToken(@Arg('email') email: string) {
+		const isUserExists = await User.findOne({ email });
+		if (isUserExists) {
+			const restoreToken = `${uuid()}-${uuid()}`;
+			await mailer.send(
+				email,
+				'',
+				`<a href="${process.env.BASE_URL}/reset-password/${restoreToken}">לחץ כאן לאתחול הסיסמה</a>`
+			);
+		}
+
+		return `${!!isUserExists}`;
+	}
+
+	@Query(returns => Boolean)
+	async validateResetPasswordToken(@Arg('token') token: string) {}
+
+	@Mutation(returns => Boolean)
+	async changePassword(
+		@Ctx('user') user: IUser,
+		@Arg('token', { nullable: true }) token: string,
+		@Arg('newPassword') newPassword: string
+	) {}
 }

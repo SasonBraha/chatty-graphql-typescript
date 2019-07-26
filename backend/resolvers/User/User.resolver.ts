@@ -34,7 +34,7 @@ export default class UserResolver {
 	@Query(returns => UserEntity, { nullable: true })
 	async user(@Arg('slug') slug: string, @Ctx('user') user: IUser) {
 		const isTargetUserSameIsLoggedInUser = user ? user.slug === slug : false;
-		return await User.findOne({ slug }).select(
+		return User.findOne({ slug }).select(
 			isTargetUserSameIsLoggedInUser ? '+email' : '-email'
 		);
 	}
