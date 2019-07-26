@@ -16,6 +16,8 @@ declare global {
 			GOOGLE_RECAPTCHA_SECRET_KEY: string;
 			NODE_ENV: string;
 			PORT: string;
+			ZOHO_APPLICATION_MAIL: string;
+			ZOHO_APPLICATION_PASSWORD: string;
 		}
 	}
 }
