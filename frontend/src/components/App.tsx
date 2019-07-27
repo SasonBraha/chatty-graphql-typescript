@@ -1,3 +1,4 @@
+import { hot } from 'react-hot-loader/root';
 import React, { useEffect, useLayoutEffect } from 'react';
 import styled from 'styled-components/macro';
 import Header from './Header';
@@ -133,4 +134,4 @@ const ScContent = styled.div`
 `;
 
 // @ts-ignore
-export default withRouter(App);
+export default hot(withRouter(App));
