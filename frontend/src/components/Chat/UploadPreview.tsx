@@ -1,10 +1,36 @@
 import React from 'react';
-import styled from 'styled-components/macro';
+import styled, { css } from 'styled-components/macro';
 import Transition from 'react-transition-group/Transition';
 
 interface IProps {
 	file: File | null;
 }
+
+const renderMedia = (file: File) => {
+	const validImageTypes = ['png', 'jpg', 'gif', 'jpeg'];
+	const validVideoTypes = ['mp4'];
+	const currentFileType = file && file.type.split('/')[1];
+	console.log(currentFileType);
+
+	switch (true) {
+		case validImageTypes.includes(currentFileType):
+			return (
+				<ScImage
+					src={URL.createObjectURL(file)}
+					alt={file!.name}
+					title={file!.name}
+				/>
+			);
+
+		case validVideoTypes.includes(currentFileType):
+			return (
+				<ScVideo src={URL.createObjectURL(file)} muted controls playsInline />
+			);
+
+		default:
+			return 'This file type is not supported';
+	}
+};
 
 const UploadPreview = (props: IProps) => {
 	return (
@@ -17,11 +43,7 @@ const UploadPreview = (props: IProps) => {
 			{mountState =>
 				props.file ? (
 					<ScUploadPreview className={mountState}>
-						<ScImage
-							src={URL.createObjectURL(props.file)}
-							alt={props.file!.name}
-							title={props.file!.name}
-						/>
+						{renderMedia(props.file)}
 					</ScUploadPreview>
 				) : null
 			}
@@ -29,7 +51,7 @@ const UploadPreview = (props: IProps) => {
 	);
 };
 
-const ScImage = styled.img`
+const sharedMediaCss = css`
 	max-height: 70%;
 	max-width: 70%;
 	border: 0.1rem solid ${props => props.theme.gray30};
@@ -38,6 +60,14 @@ const ScImage = styled.img`
 	opacity: 0;
 	transform: scale(0.8);
 	border-radius: 50%;
+`;
+
+const ScImage = styled.img`
+	${sharedMediaCss}
+`;
+
+const ScVideo = styled.video`
+	${sharedMediaCss}
 `;
 
 const ScUploadPreview = styled.div`
@@ -58,7 +88,7 @@ const ScUploadPreview = styled.div`
 	&.entered {
 		transform: translateY(0);
 
-		${ScImage} {
+		${ScImage}, ${ScVideo} {
 			opacity: 1;
 			transform: scale(1);
 			border-radius: 0.4rem;
