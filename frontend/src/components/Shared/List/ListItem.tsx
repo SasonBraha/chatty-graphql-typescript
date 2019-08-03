@@ -9,14 +9,14 @@ interface IProps extends IListItem {}
 
 const renderSymbol = (props: IProps) => {
 	return props.icon ? (
-		<StyledListIcon icon={props.icon} />
+		<S.ListIcon icon={props.icon} />
 	) : (
 		props.image && <ScListImage src={props.image} />
 	);
 };
 
 const ListItem = (props: IProps) => (
-	<StyledListItem
+	<S.ListItem
 		hoverBackground={props.hoverBackground as string}
 		color={props.color as string}
 		isSelected={props.isSelected as boolean}
@@ -34,7 +34,7 @@ const ListItem = (props: IProps) => (
 				{props.withRipple ? <Ripple /> : null}
 			</div>
 		)}
-	</StyledListItem>
+	</S.ListItem>
 );
 
 ListItem.defaultProps = {
@@ -42,7 +42,8 @@ ListItem.defaultProps = {
 	color: ''
 };
 
-const StyledListItem = styled('li')<{
+const S: any = {};
+S.ListItem = styled('li')<{
 	hoverBackground: string;
 	color: string;
 	isSelected: boolean;
@@ -76,7 +77,7 @@ const StyledListItem = styled('li')<{
 	}
 `;
 
-const StyledListIcon = styled(Icon)`
+S.ListIcon = styled(Icon)`
 	width: 2.7rem;
 	height: 2.7rem;
 	margin-left: 1rem;

@@ -37,9 +37,9 @@ const convertNotificationToListItemData = (notification: INotification) => {
 				children: (
 					<>
 						המשתמש
-						<ScUsername to={`/user/${notification.sender.slug}`}>
+						<S.Username to={`/user/${notification.sender.slug}`}>
 							{notification.sender.displayName}
-						</ScUsername>
+						</S.Username>
 						תייג אותך בהודעה
 					</>
 				)
@@ -76,7 +76,8 @@ const Notifications: React.FC<IProps> = props => {
 	);
 };
 
-const ScUsername = styled(Link)`
+const S: any = {};
+S.Username = styled(Link)`
 	font-weight: bold;
 	margin: 0 0.5rem;
 

@@ -6,12 +6,13 @@ interface IProps {
 }
 
 const Burger = (props: IProps) => (
-	<StyledWrapper {...props}>
-		<StyledBurger />
-	</StyledWrapper>
+	<S.Wrapper {...props}>
+		<S.Burger />
+	</S.Wrapper>
 );
 
-const StyledBurger = styled.div`
+const S: any = {};
+S.Burger = styled.div`
 	position: relative;
 
 	&,
@@ -40,14 +41,14 @@ const StyledBurger = styled.div`
 	}
 `;
 
-const StyledWrapper = styled.div`
+S.Wrapper = styled.div`
 	cursor: pointer;
 	display: flex;
 	align-items: center;
 	height: 100%;
 	margin-right: 1rem;
 
-	&:hover ${StyledBurger} {
+	&:hover ${S.Burger} {
 		&::before {
 			left: 5px;
 		}

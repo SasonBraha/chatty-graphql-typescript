@@ -3,17 +3,18 @@ import styled from 'styled-components/macro';
 import { LoadingShimmer } from '../../Shared';
 
 const RoomsListLoader = () => (
-	<ScRoomsListLoader>
-		<ScRoomImage />
+	<S.RoomsListLoader>
+		<S.RoomImage />
 
-		<ScText>
-			<ScRoomName />
-			<ScRoomLastMessage />
-		</ScText>
-	</ScRoomsListLoader>
+		<S.Text>
+			<S.RoomName />
+			<S.RoomLastMessage />
+		</S.Text>
+	</S.RoomsListLoader>
 );
 
-const ScRoomsListLoader = styled.div`
+const S: any = {};
+S.RoomsListLoader = styled.div`
 	display: flex;
 	align-items: center;
 	padding: 1rem;
@@ -21,22 +22,22 @@ const ScRoomsListLoader = styled.div`
 	margin: 1rem;
 `;
 
-const ScRoomImage = styled(LoadingShimmer)`
+S.RoomImage = styled(LoadingShimmer)`
 	width: 3.7rem;
 	height: 3.7rem;
 	border-radius: 50%;
 `;
 
-const ScText = styled.div`
+S.Text = styled.div`
 	margin-right: 10px;
 `;
 
-const ScRoomName = styled(LoadingShimmer)`
+S.RoomName = styled(LoadingShimmer)`
 	height: 1.2rem;
 	width: 7rem;
 `;
 
-const ScRoomLastMessage = styled(LoadingShimmer)`
+S.RoomLastMessage = styled(LoadingShimmer)`
 	height: 0.8rem;
 	margin-top: 0.3rem;
 	width: 5.3rem;

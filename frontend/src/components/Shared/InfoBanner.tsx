@@ -7,10 +7,11 @@ interface IProps {
 }
 
 const InfoBanner: React.FC<IProps> = props => {
-	return <ScInfoBanner type={props.type}>{props.text}</ScInfoBanner>;
+	return <S.InfoBanner type={props.type}>{props.text}</S.InfoBanner>;
 };
 
-const ScInfoBanner = styled('div')<{ type: string }>`
+const S: any = {};
+S.InfoBanner = styled('div')<{ type: string }>`
 	width: 100%;
 	padding: 1rem;
 	text-align: center;

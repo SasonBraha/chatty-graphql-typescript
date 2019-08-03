@@ -10,12 +10,11 @@ const renderMedia = (file: File) => {
 	const validImageTypes = ['png', 'jpg', 'gif', 'jpeg'];
 	const validVideoTypes = ['mp4'];
 	const currentFileType = file && file.type.split('/')[1];
-	console.log(currentFileType);
 
 	switch (true) {
 		case validImageTypes.includes(currentFileType):
 			return (
-				<ScImage
+				<S.Image
 					src={URL.createObjectURL(file)}
 					alt={file!.name}
 					title={file!.name}
@@ -24,7 +23,7 @@ const renderMedia = (file: File) => {
 
 		case validVideoTypes.includes(currentFileType):
 			return (
-				<ScVideo src={URL.createObjectURL(file)} muted controls playsInline />
+				<S.Video src={URL.createObjectURL(file)} muted controls playsInline />
 			);
 
 		default:
@@ -42,15 +41,16 @@ const UploadPreview = (props: IProps) => {
 		>
 			{mountState =>
 				props.file ? (
-					<ScUploadPreview className={mountState}>
+					<S.ploadPreview className={mountState}>
 						{renderMedia(props.file)}
-					</ScUploadPreview>
+					</S.ploadPreview>
 				) : null
 			}
 		</Transition>
 	);
 };
 
+const S: any = {};
 const sharedMediaCss = css`
 	max-height: 70%;
 	max-width: 70%;
@@ -62,15 +62,15 @@ const sharedMediaCss = css`
 	border-radius: 50%;
 `;
 
-const ScImage = styled.img`
+S.Image = styled.img`
 	${sharedMediaCss}
 `;
 
-const ScVideo = styled.video`
+S.Video = styled.video`
 	${sharedMediaCss}
 `;
 
-const ScUploadPreview = styled.div`
+S.UploadPreview = styled.div`
 	position: absolute;
 	top: 0;
 	left: 0;
@@ -88,7 +88,7 @@ const ScUploadPreview = styled.div`
 	&.entered {
 		transform: translateY(0);
 
-		${ScImage}, ${ScVideo} {
+		${S.Image}, ${S.Video} {
 			opacity: 1;
 			transform: scale(1);
 			border-radius: 0.4rem;

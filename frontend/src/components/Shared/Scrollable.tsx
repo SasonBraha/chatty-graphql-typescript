@@ -25,7 +25,7 @@ const Scrollable: React.FC<IProps> = props => {
 	let reachTopTimeout: ReturnType<typeof setTimeout>;
 	let reachBottomTimeout: ReturnType<typeof setTimeout>;
 	return (
-		<ScScrollable
+		<S.Scrollable
 			onScroll={e => {
 				const target = e.target as HTMLDivElement;
 				if (typeof whileScrolling === 'function') {
@@ -58,11 +58,12 @@ const Scrollable: React.FC<IProps> = props => {
 			ref={scrollableRef}
 		>
 			{props.children}
-		</ScScrollable>
+		</S.Scrollable>
 	);
 };
 
-const ScScrollable = styled.div`
+const S: any = {};
+S.Scrollable = styled.div`
 	max-height: 100%;
 	overflow-y: auto;
 `;

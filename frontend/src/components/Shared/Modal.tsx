@@ -20,7 +20,7 @@ const Modal = (props: IProps) => {
 			timeout={{ enter: 0, exit: 300 }}
 		>
 			{mountState => (
-				<StyledOverlay
+				<S.Overlay
 					onClick={(e: React.MouseEvent) => {
 						if (e.target === e.currentTarget) {
 							resetModals();
@@ -28,15 +28,16 @@ const Modal = (props: IProps) => {
 					}}
 					className={mountState}
 				>
-					<StyledContainer>{children}</StyledContainer>
-				</StyledOverlay>
+					<S.Container>{children}</S.Container>
+				</S.Overlay>
 			)}
 		</Transition>,
 		document.getElementById('modalMount')!
 	);
 };
 
-const StyledContainer = styled.div`
+const S: any = {};
+S.Container = styled.div`
 	background: white;
 	box-shadow: 0 1rem 3rem rgba(0, 0, 0, 0.2);
 	padding: 3rem;
@@ -51,7 +52,7 @@ const StyledContainer = styled.div`
 	max-height: 95vh;
 `;
 
-const StyledOverlay = styled.div`
+S.Overlay = styled.div`
 	position: fixed;
 	display: flex;
 	align-items: center;
@@ -69,7 +70,7 @@ const StyledOverlay = styled.div`
 	&.entered {
 		opacity: 1;
 
-		${StyledContainer} {
+		${S.Container} {
 			transform: scale(1) translateY(0);
 			opacity: 1;
 		}

@@ -99,7 +99,7 @@ class Message extends Component<IProps, IState> {
 		const { file } = this.props.message;
 		if (file) {
 			return (
-				<ScImage
+				<S.Image
 					src={`${process.env.REACT_APP_S3_BUCKET_URL}/${file.path}`}
 					id={this.props.message._id}
 				/>
@@ -121,9 +121,9 @@ class Message extends Component<IProps, IState> {
 				if (userDataIndex !== -1) {
 					const userData = message.userMentions[userDataIndex];
 					return (
-						<ScMention key={i} to={`/user/${userData.slug}`}>
+						<S.Mention key={i} to={`/user/${userData.slug}`}>
 							{displayName}
-						</ScMention>
+						</S.Mention>
 					);
 				}
 				return match;
@@ -148,19 +148,19 @@ class Message extends Component<IProps, IState> {
 	render() {
 		const { message, isMine } = this.props;
 		return (
-			<ScMessage
+			<S.Message
 				isMine={isMine}
 				isClientDeleted={message.isClientDeleted}
 				onContextMenu={this.handleContextMenu}
 			>
 				{message.isClientDeleted ? (
-					<ScText>הודעה זו נמחקה</ScText>
+					<S.Text>הודעה זו נמחקה</S.Text>
 				) : (
 					<>
-						<ScMetaData>{message.createdBy.displayName}</ScMetaData>
+						<S.MetaData>{message.createdBy.displayName}</S.MetaData>
 						{this.renderFile()}
 						{this.state.isEditable ? (
-							<ScEditable
+							<S.Editable
 								onChange={(e: any) =>
 									this.setState({ messageBody: e.target.value })
 								}
@@ -176,10 +176,10 @@ class Message extends Component<IProps, IState> {
 								isMine={isMine}
 							/>
 						) : (
-							<ScText>{this.renderText()}</ScText>
+							<S.Text>{this.renderText()}</S.Text>
 						)}
 
-						<ScMetaData alignLeft={true}>
+						<S.MetaData alignLeft={true}>
 							{formatRelative(
 								parseISO((message.createdAt as unknown) as string),
 								new Date(),
@@ -187,15 +187,16 @@ class Message extends Component<IProps, IState> {
 									locale: he
 								}
 							)}
-						</ScMetaData>
+						</S.MetaData>
 					</>
 				)}
-			</ScMessage>
+			</S.Message>
 		);
 	}
 }
 
-const ScMessage = styled('div')<{
+const S: any = {};
+S.Message = styled('div')<{
 	isMine: boolean;
 	isClientDeleted: boolean | null;
 }>`
@@ -231,7 +232,7 @@ const ScMessage = styled('div')<{
 		`}
 `;
 
-const ScMetaData = styled('small')<{ alignLeft?: boolean }>`
+S.MetaData = styled('small')<{ alignLeft?: boolean }>`
 	font-size: 1.34rem;
 	color: #a9a9a9;
 	display: block;
@@ -242,7 +243,7 @@ const ScMetaData = styled('small')<{ alignLeft?: boolean }>`
 		`}
 `;
 
-const ScImage = styled.img`
+S.Image = styled.img`
 	max-height: 32rem;
 	max-width: 100%;
 	border-radius: 0.35rem;
@@ -250,11 +251,11 @@ const ScImage = styled.img`
 	margin-top: 0.3rem;
 `;
 
-const ScText = styled.p`
+S.Text = styled.p`
 	padding: 0.5rem 0;
 `;
 
-const ScMention = styled(Link)`
+S.Mention = styled(Link)`
 	font-weight: bold;
 	letter-spacing: 0.05rem;
 	background: rgba(0, 0, 0, 0.1);
@@ -263,7 +264,7 @@ const ScMention = styled(Link)`
 	cursor: pointer;
 `;
 
-const ScEditable = styled(({ isMine, ...rest }) => <Editable {...rest} />)<{
+S.Editable = styled(({ isMine, ...rest }) => <Editable {...rest} />)<{
 	isMine: boolean;
 }>`
 	&[contenteditable='true'] {

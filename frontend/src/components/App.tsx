@@ -107,16 +107,16 @@ const App: React.FC<IProps> = props => {
 
 	return (
 		<>
-			<StyledApp>
+			<S.App>
 				<Header />
 
-				<ScContent>
+				<S.Content>
 					<Nav />
 					<Container>
 						<Routes />
 					</Container>
-				</ScContent>
-			</StyledApp>
+				</S.Content>
+			</S.App>
 
 			<AuthModal />
 			<GenericModal />
@@ -124,11 +124,12 @@ const App: React.FC<IProps> = props => {
 	);
 };
 
-const StyledApp = styled.div`
+const S: any = {};
+S.App = styled.div`
 	height: 100vh;
 `;
 
-const ScContent = styled.div`
+S.Content = styled.div`
 	display: flex;
 	height: calc(100vh - ${props => props.theme.headerHeight});
 `;

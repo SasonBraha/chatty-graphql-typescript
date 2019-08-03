@@ -6,10 +6,11 @@ interface IProps {
 }
 
 const FormGroup = (props: IProps) => (
-	<StyledFormGroup>{props.children}</StyledFormGroup>
+	<S.FormGroup>{props.children}</S.FormGroup>
 );
 
-const StyledFormGroup = styled.div`
+const S: any = {};
+S.FormGroup = styled.div`
 	position: relative;
 	margin-bottom: 3.3rem;
 	flex: 1;

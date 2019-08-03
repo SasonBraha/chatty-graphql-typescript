@@ -61,7 +61,7 @@ const RoomsList: React.FC<IProps> = props => {
 	});
 
 	return (
-		<ScRoomsList>
+		<S.RoomsList>
 			{loading
 				? Array.from({ length: 15 }).map((_, i) => <RoomsListLoader key={i} />)
 				: data &&
@@ -75,11 +75,12 @@ const RoomsList: React.FC<IProps> = props => {
 							typingUsers={typingUsers[room.slug] ? typingUsers[room.slug] : []}
 						/>
 				  ))}
-		</ScRoomsList>
+		</S.RoomsList>
 	);
 };
 
-const ScRoomsList = styled.div`
+const S: any = {};
+S.RoomsList = styled.div`
 	background: ${props => props.theme.roomsListBackground};
 	grid-column: 1 / 2;
 	overflow: hidden;

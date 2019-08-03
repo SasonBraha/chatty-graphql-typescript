@@ -43,7 +43,7 @@ const validateFile = (
 
 const FileInput = (props: IProps) => {
 	return (
-		<StyledFileInput
+		<S.FileInput
 			type='file'
 			onChange={e => validateFile(props, e, e.target.files![0])}
 			onBlur={props.onBlur}
@@ -51,7 +51,8 @@ const FileInput = (props: IProps) => {
 	);
 };
 
-const StyledFileInput = styled.input`
+const S: any = {};
+S.FileInput = styled.input`
 	display: none;
 `;
 

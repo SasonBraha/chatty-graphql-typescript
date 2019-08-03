@@ -22,13 +22,14 @@ const Container: React.FC<IProps> = props => {
 	}, [shouldShrink]);
 
 	return (
-		<StyledContainer navOpen={isNavOpen} shouldShrink={shouldShrink}>
+		<S.Container navOpen={isNavOpen} shouldShrink={shouldShrink}>
 			{props.children}
-		</StyledContainer>
+		</S.Container>
 	);
 };
 
-const StyledContainer = styled('main')<{
+const S: any = {};
+S.Container = styled('main')<{
 	navOpen: boolean;
 	shouldShrink: boolean;
 }>`

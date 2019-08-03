@@ -109,8 +109,8 @@ const SendMessage: React.FC<IProps> = props => {
 	} = props;
 
 	return (
-		<ScForm onSubmit={handleSubmit}>
-			<ScAttachLabel>
+		<S.Form onSubmit={handleSubmit}>
+			<S.AttachLabel>
 				<FileInput
 					maxFileSizeInKB={5000}
 					onChange={(file: File | null) => {
@@ -119,13 +119,13 @@ const SendMessage: React.FC<IProps> = props => {
 					}}
 					onBlur={handleBlur}
 				/>
-				<ScAttachIcon icon='icon-paperclip' />
-			</ScAttachLabel>
+				<S.AttachIcon icon='icon-paperclip' />
+			</S.AttachLabel>
 
-			<ScInputTrigger
+			<S.InputTrigger
 				triggerSymbol='@'
 				typeCallbackDebounce={200}
-				onType={async data => {
+				onType={async (data: any) => {
 					const userData = await client.query({
 						query: SEARCH_USERS_QUERY,
 						variables: {
@@ -139,7 +139,7 @@ const SendMessage: React.FC<IProps> = props => {
 				}}
 				onCancel={() => setMentionSuggester(false, [])}
 			>
-				<ScMessageInput
+				<S.MessageInput
 					autoComplete='off'
 					type='text'
 					value={values.text}
@@ -172,7 +172,7 @@ const SendMessage: React.FC<IProps> = props => {
 					onBlur={handleBlur}
 					placeholder='הכנס הודעה ולחץ Enter'
 				/>
-			</ScInputTrigger>
+			</S.InputTrigger>
 
 			<MentionSuggester
 				onSelect={(text: string) => {
@@ -181,11 +181,12 @@ const SendMessage: React.FC<IProps> = props => {
 				}}
 				ref={mentionSuggesterRef}
 			/>
-		</ScForm>
+		</S.Form>
 	);
 };
 
-const ScForm = styled.form`
+const S: any = {};
+S.Form = styled.form`
 	flex: 0 0;
 	display: flex;
 	justify-content: space-between;
@@ -193,14 +194,14 @@ const ScForm = styled.form`
 	z-index: 2;
 `;
 
-const ScAttachLabel = styled.label`
+S.AttachLabel = styled.label`
 	cursor: pointer;
 	input[type='file'] {
 		display: none;
 	}
 `;
 
-const ScAttachIcon = styled(Icon)`
+S.AttachIcon = styled(Icon)`
 	width: 2.5rem;
 	height: 2.5rem;
 	position: absolute;
@@ -208,7 +209,7 @@ const ScAttachIcon = styled(Icon)`
 	top: 1.3rem;
 `;
 
-const ScMessageInput = styled.input`
+S.MessageInput = styled.input`
 	width: 100%;
 	border: none;
 	outline: none;
@@ -220,7 +221,7 @@ const ScMessageInput = styled.input`
 	cursor: text;
 `;
 
-const ScInputTrigger = styled(InputTrigger)`
+S.InputTrigger = styled(InputTrigger)`
 	flex: 1;
 `;
 

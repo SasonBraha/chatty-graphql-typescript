@@ -53,24 +53,24 @@ const Header: React.FC<IProps> = props => {
 	`);
 
 	return (
-		<ScHeader>
+		<S.Header>
 			<Burger onClick={setNavState} />
-			<ScBrand data-e2e-id='brand' to='/'>
+			<S.Brand data-e2e-id='brand' to='/'>
 				Chatty
-			</ScBrand>
+			</S.Brand>
 
 			{currentUser ? (
-				<ScHeaderMenu>
-					<ScNotificationsDropdown
+				<S.HeaderMenu>
+					<S.NotificationsDropdown
 						onClick={() => setNotificationsDropdown(true)}
 					>
 						<Icon icon='icon-notifications' color='white' />
 						{notifications.unreadCount ? (
-							<ScUnreadNotifications>
+							<S.UnreadNotifications>
 								{notifications.unreadCount > 9
 									? '+9'
 									: notifications.unreadCount}
-							</ScUnreadNotifications>
+							</S.UnreadNotifications>
 						) : (
 							''
 						)}
@@ -90,29 +90,30 @@ const Header: React.FC<IProps> = props => {
 								<Notifications isOpen={isNotificationsDropdownOpen} />
 							</Scrollable>
 						</Dropdown>
-					</ScNotificationsDropdown>
+					</S.NotificationsDropdown>
 
-					<ScProfileDropdown onClick={() => setProfileDropdown(true)}>
-						<ScProfileImg src={currentUser.avatar} />
+					<S.ProfileDropdown onClick={() => setProfileDropdown(true)}>
+						<S.ProfileImg src={currentUser.avatar} />
 						<Dropdown
 							isOpen={isProfileDropdownOpen}
 							resetDropdown={() => setProfileDropdown(false)}
 						>
 							<List items={headerDropdownItems(currentUser)} />
 						</Dropdown>
-					</ScProfileDropdown>
-				</ScHeaderMenu>
+					</S.ProfileDropdown>
+				</S.HeaderMenu>
 			) : (
-				<ScAuthBtn onClick={() => setAuthModal(true)}>
+				<S.AuthBtn onClick={() => setAuthModal(true)}>
 					הרשמה / התחברות
 					<Ripple />
-				</ScAuthBtn>
+				</S.AuthBtn>
 			)}
-		</ScHeader>
+		</S.Header>
 	);
 };
 
-const ScHeader = styled.header`
+const S: any = {};
+S.Header = styled.header`
 	display: flex;
 	justify-content: space-between;
 	align-items: center;
@@ -124,7 +125,7 @@ const ScHeader = styled.header`
 	height: ${props => props.theme.headerHeight};
 `;
 
-const ScBrand = styled(Link)`
+S.Brand = styled(Link)`
 	font-weight: bold;
 	font-size: 2.2rem;
 	color: white;
@@ -137,27 +138,27 @@ const ScBrand = styled(Link)`
 	transform: translate(-50%, -50%);
 `;
 
-const ScAuthBtn = styled(Button)`
+S.AuthBtn = styled(Button)`
 	margin-left: 3px;
 `;
 
-const ScHeaderMenu = styled.div`
+S.HeaderMenu = styled.div`
 	display: flex;
 `;
 
-const ScNotificationsDropdown = styled.div`
+S.NotificationsDropdown = styled.div`
 	cursor: pointer;
 	position: relative;
 `;
 
-const ScProfileDropdown = styled.div`
+S.ProfileDropdown = styled.div`
 	margin-left: 1.5rem;
 	margin-right: 1.3rem;
 	position: relative;
 	cursor: pointer;
 `;
 
-const ScProfileImg = styled.img`
+S.ProfileImg = styled.img`
 	width: 3rem;
 	height: 3rem;
 	border-radius: 50%;
@@ -166,7 +167,7 @@ const ScProfileImg = styled.img`
 	pointer-events: none;
 `;
 
-const ScUnreadNotifications = styled.small`
+S.UnreadNotifications = styled.small`
 	background: red;
 	width: 1.6rem;
 	height: 1.6rem;

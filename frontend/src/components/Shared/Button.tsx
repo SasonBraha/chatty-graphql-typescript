@@ -1,6 +1,7 @@
 import styled from 'styled-components/macro';
 
-const StyledButton = styled.button`
+const S: any = {};
+S.Button = styled.button`
 	border: none;
 	outline: none;
 	border-radius: 0.5rem;
@@ -17,4 +18,4 @@ const StyledButton = styled.button`
 	}
 `;
 
-export default StyledButton;
+export default S.Button;

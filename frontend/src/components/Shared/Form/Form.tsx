@@ -9,18 +9,19 @@ interface IProps {
 }
 
 const Form = (props: IProps) => (
-	<StyledForm onSubmit={props.onSubmit} noValidate>
-		<StyledFormHeader>
-			<StyledFormHeaderIcon>
+	<S.Form onSubmit={props.onSubmit} noValidate>
+		<S.FormHeader>
+			<S.FormHeaderIcon>
 				<use xlinkHref={`/images/sprite.svg#${props.icon}`} />
-			</StyledFormHeaderIcon>
+			</S.FormHeaderIcon>
 			{props.header}
-		</StyledFormHeader>
+		</S.FormHeader>
 		{props.children}
-	</StyledForm>
+	</S.Form>
 );
 
-const StyledForm = styled.form`
+const S: any = {};
+S.Form = styled.form`
 	max-width: 70%;
 	margin: 0 auto;
 
@@ -29,7 +30,7 @@ const StyledForm = styled.form`
 	}
 `;
 
-const StyledFormHeader = styled.header`
+S.FormHeader = styled.header`
 	font-size: 3rem;
 	letter-spacing: -0.1rem;
 	text-align: center;
@@ -49,7 +50,7 @@ const StyledFormHeader = styled.header`
 	}
 `;
 
-const StyledFormHeaderIcon = styled.svg`
+S.FormHeaderIcon = styled.svg`
 	width: 9rem;
 	height: 9rem;
 	color: currentColor;

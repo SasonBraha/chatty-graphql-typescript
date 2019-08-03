@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import styled, { css } from 'styled-components/macro';
 import { RouteComponentProps } from 'react-router';
 import gql from 'graphql-tag';
@@ -32,19 +32,19 @@ const Profile: React.FC<IProps> = props => {
 	return loading ? (
 		<div>Loading...</div>
 	) : (
-		<ScProfile>
-			<ScRightColumn>
-				<ScContainer column>
-					<ScProfileImage>
+		<S.Profile>
+			<S.RightColumn>
+				<S.Container column>
+					<S.ProfileImage>
 						<img
 							src={data.user.avatar}
 							alt={`תמונת הפרופיל של ${data.user.displayName}`}
 						/>
-					</ScProfileImage>
-					<ScUsername>{data.user.displayName}</ScUsername>
-				</ScContainer>
-				<ScContainer row>
-					<ScBold>תאריך הרשמה:</ScBold>
+					</S.ProfileImage>
+					<S.Username>{data.user.displayName}</S.Username>
+				</S.Container>
+				<S.Container row>
+					<S.Bold>תאריך הרשמה:</S.Bold>
 					{formatRelative(
 						parseISO((data.user.createdAt as unknown) as string),
 						new Date(),
@@ -52,14 +52,15 @@ const Profile: React.FC<IProps> = props => {
 							locale: he
 						}
 					)}
-				</ScContainer>
-			</ScRightColumn>
-			<ScLeftColumn></ScLeftColumn>
-		</ScProfile>
+				</S.Container>
+			</S.RightColumn>
+			<S.LeftColumn></S.LeftColumn>
+		</S.Profile>
 	);
 };
 
-const ScProfile = styled.div`
+const S: any = {};
+S.Profile = styled.div`
 	width: 100%;
 	height: 100%;
 	padding: 15px;
@@ -68,10 +69,11 @@ const ScProfile = styled.div`
 	margin: 0 auto;
 `;
 
-const ScRightColumn = styled.div`
+S.RightColumn = styled.div`
 	flex: 1;
 `;
-const ScContainer = styled('div')<{ column?: boolean; row?: boolean }>`
+
+S.Container = styled('div')<{ column?: boolean; row?: boolean }>`
 	box-shadow: 0 0 0.5rem rgba(0, 0, 0, 0.2);
 	margin-bottom: 10px;
 	padding: 10px;
@@ -92,21 +94,21 @@ const ScContainer = styled('div')<{ column?: boolean; row?: boolean }>`
 			flex-direction: row;
 		`}
 `;
-const ScProfileImage = styled.figure`
+S.ProfileImage = styled.figure`
 	img {
 		width: 30rem;
 		height: 30rem;
 		border-radius: 50%;
 	}
 `;
-const ScUsername = styled.p`
+S.Username = styled.p`
 	font-weight: bold;
 `;
-const ScLeftColumn = styled.div`
+S.LeftColumn = styled.div`
 	flex: 1;
 `;
 
-const ScBold = styled.span`
+S.Bold = styled.span`
 	font-weight: bold;
 	margin-left: 0.5rem;
 `;

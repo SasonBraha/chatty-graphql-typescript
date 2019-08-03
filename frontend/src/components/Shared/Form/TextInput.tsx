@@ -15,16 +15,17 @@ interface IProps {
 
 const TextInput = (props: IProps) => (
 	<FormGroup>
-		<StyledInput id={props.name} {...props} required />
-		<StyledInputError>{props.error}</StyledInputError>
-		<StyledLabel htmlFor={props.name}>{props.label}</StyledLabel>
-		<StyledInputIcon>
+		<S.Input id={props.name} {...props} required />
+		<S.InputError>{props.error}</S.InputError>
+		<S.Label htmlFor={props.name}>{props.label}</S.Label>
+		<S.InputIcon>
 			<use xlinkHref={`/images/sprite.svg#${props.icon}`} />
-		</StyledInputIcon>
+		</S.InputIcon>
 	</FormGroup>
 );
 
-const StyledInput = styled('input')<{ error: string | undefined }>`
+const S: any = {};
+S.Input = styled('input')<{ error: string | undefined }>`
 	border: none;
 	background: white;
 	border-bottom: 0.2rem solid #d4d4d4;
@@ -65,7 +66,7 @@ const StyledInput = styled('input')<{ error: string | undefined }>`
 		`}
 `;
 
-const StyledLabel = styled.label`
+S.Label = styled.label`
 	position: absolute;
 	transition: 0.25s;
 	cursor: text;
@@ -76,7 +77,7 @@ const StyledLabel = styled.label`
 	transition: 0.3s;
 `;
 
-const StyledInputIcon = styled.svg`
+S.InputIcon = styled.svg`
 	position: absolute;
 	transition: 0.3s;
 	left: 0.4rem;
@@ -85,7 +86,7 @@ const StyledInputIcon = styled.svg`
 	height: 3rem;
 `;
 
-const StyledInputError = styled.div`
+S.InputError = styled.div`
 	color: ${props => props.theme.error};
 	font-size: 1.25rem;
 	text-align: right;

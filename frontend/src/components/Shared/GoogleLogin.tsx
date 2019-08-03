@@ -21,10 +21,10 @@ const GoogleLogin: React.FC<IProps> = props => {
 		<ReactGoogleLogin
 			clientId={process.env.REACT_APP_GOOGLE_CLIENT_ID}
 			render={renderProps => (
-				<ScGoogleLoginBtn {...renderProps}>
+				<S.GoogleLoginBtn {...renderProps}>
 					{props.text}
-					<ScGoogleLogo src='./images/google_logo.svg' alt='google_logo' />
-				</ScGoogleLoginBtn>
+					<S.GoogleLogo src='./images/google_logo.svg' alt='google_logo' />
+				</S.GoogleLoginBtn>
 			)}
 			onFailure={() => null}
 			onSuccess={async response => {
@@ -46,7 +46,8 @@ const GoogleLogin: React.FC<IProps> = props => {
 	);
 };
 
-const ScGoogleLoginBtn = styled.button`
+const S: any = {};
+S.GoogleLoginBtn = styled.button`
 	border: none;
 	padding: 1.2rem 1.5rem;
 	display: flex;
@@ -67,7 +68,7 @@ const ScGoogleLoginBtn = styled.button`
 	}
 `;
 
-const ScGoogleLogo = styled.img`
+S.GoogleLogo = styled.img`
 	margin-right: 1rem;
 `;
 

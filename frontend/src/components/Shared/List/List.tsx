@@ -60,7 +60,7 @@ const List: React.FC<IProps> = React.forwardRef(
 		}, [props.items.length]);
 
 		return (
-			<ScList
+			<S.List
 				onKeyDown={e =>
 					handleKeyDown(e, props, selectedIndex, setSelectedIndex)
 				}
@@ -81,12 +81,14 @@ const List: React.FC<IProps> = React.forwardRef(
 						}
 					/>
 				))}
-			</ScList>
+			</S.List>
 		);
 	}
 );
 
-const ScList = styled.ul`
+const S: any = {};
+
+S.List = styled.ul`
 	outline: none;
 `;
 

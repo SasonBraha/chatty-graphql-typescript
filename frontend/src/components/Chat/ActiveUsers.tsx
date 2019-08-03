@@ -69,19 +69,20 @@ const ActiveUsers: React.FC<IProps> = props => {
 	}, [chatSlug]);
 
 	return (
-		<ScActiveUsers>
+		<S.ActiveUsers>
 			{data.subscribeToActiveUsersUpdates.map((user: IUser, i: number) => (
 				<Link to={`/user/${user.slug}`} key={i}>
-					<ScActiveUser>
-						<ScAvatar src={user.avatar} alt={user.displayName} />
-					</ScActiveUser>
+					<S.ActiveUser>
+						<S.Avatar src={user.avatar} alt={user.displayName} />
+					</S.ActiveUser>
 				</Link>
 			))}
-		</ScActiveUsers>
+		</S.ActiveUsers>
 	);
 };
 
-const ScActiveUsers = styled.div`
+const S: any = {};
+S.ActiveUsers = styled.div`
 	text-align: center;
 	background: ${props => props.theme.activeUsersBackground};
 	padding: 0.5rem;
@@ -95,7 +96,7 @@ const ScActiveUsers = styled.div`
 	align-items: center;
 `;
 
-const ScActiveUser = styled.div`
+S.ActiveUser = styled.div`
 	border-radius: 0.5rem;
 	display: flex;
 	align-items: center;
@@ -115,7 +116,7 @@ const ScActiveUser = styled.div`
 	}
 `;
 
-const ScAvatar = styled.img`
+S.Avatar = styled.img`
 	width: 3rem;
 	height: 3rem;
 	border-radius: 50%;

@@ -17,13 +17,14 @@ const ErrorModal = (props: IProps) => {
 	`);
 	return (
 		<Modal isOpen={show}>
-			<ScWarningIcon width={80} height={80} icon='icon-notification' />
-			<ScWarningText>{text}</ScWarningText>
+			<S.WarningIcon width={80} height={80} icon='icon-notification' />
+			<S.WarningText>{text}</S.WarningText>
 		</Modal>
 	);
 };
 
-const ScWarningIcon = styled(Icon)`
+const S: any = {};
+S.WarningIcon = styled(Icon)`
 	fill: #f8bb86;
 	width: 8rem;
 	height: 8rem;
@@ -31,7 +32,7 @@ const ScWarningIcon = styled(Icon)`
 	margin: 0 auto;
 `;
 
-const ScWarningText = styled.div`
+S.WarningText = styled.div`
 	font-size: 1.7rem;
 	margin: 2rem auto;
 `;

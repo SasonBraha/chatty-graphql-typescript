@@ -21,26 +21,27 @@ const Chat = (props: IChatProps) => {
 	}, [props.match.params.chatSlug]);
 
 	return (
-		<ScChat>
+		<S.Chat>
 			<RoomsList />
 			<ActiveUsers />
 
-			<ScMessagesArea>
+			<S.MessagesArea>
 				<UploadPreview file={filePreview} />
 				<MessagesList {...props} />
 				<SendMessage {...props} setFilePreview={setFilePreview} />
-			</ScMessagesArea>
-		</ScChat>
+			</S.MessagesArea>
+		</S.Chat>
 	);
 };
 
-const ScChat = styled.div`
+const S: any = {};
+S.Chat = styled.div`
 	display: grid;
 	grid-template-columns: 25rem 5rem 1fr;
 	height: 100%;
 `;
 
-const ScMessagesArea = styled.div`
+S.MessagesArea = styled.div`
 	display: flex;
 	flex-direction: column;
 	height: calc(100vh - ${props => props.theme.headerHeight});

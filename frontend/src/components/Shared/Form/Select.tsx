@@ -8,11 +8,12 @@ interface IProps {
 
 const Select = (props: IProps) => (
 	<FormGroup>
-		<StyledSelect>{props.children}</StyledSelect>
+		<S.Select>{props.children}</S.Select>
 	</FormGroup>
 );
 
-const StyledSelect = styled.select`
+const S: any = {};
+S.Select = styled.select`
 	width: 100%;
 	padding: 0.9rem 0;
 	border: none;

@@ -13,22 +13,23 @@ interface IProps {
 }
 
 const RoomsListItem = ({ room, selected, chatSlug, typingUsers }: IProps) => (
-	<ScRoomsListItem selected={selected} to={`/chat/${room.slug}`}>
-		<ScImage src={room.image.path} alt={room.name} />
+	<S.RoomsListItem selected={selected} to={`/chat/${room.slug}`}>
+		<S.Image src={room.image.path} alt={room.name} />
 
-		<ScRoomData>
-			<ScRoomName>{room.name}</ScRoomName>
-			<ScLastMessage shouldHide={typingUsers.length > 0}>
+		<S.RoomData>
+			<S.RoomName>{room.name}</S.RoomName>
+			<S.LastMessage shouldHide={typingUsers.length > 0}>
 				{room.lastMessage}
-			</ScLastMessage>
-			<ScTypingUsers chatSlug={chatSlug} />
-		</ScRoomData>
+			</S.LastMessage>
+			<S.TypingUsers chatSlug={chatSlug} />
+		</S.RoomData>
 
 		<Ripple />
-	</ScRoomsListItem>
+	</S.RoomsListItem>
 );
 
-const ScRoomsListItem = styled(Link)<{ selected: boolean }>`
+const S: any = {};
+S.RoomsListItem = styled(Link)<{ selected: boolean }>`
 	display: flex;
 	align-items: center;
 	padding: 1rem;
@@ -48,23 +49,23 @@ const ScRoomsListItem = styled(Link)<{ selected: boolean }>`
 		`}
 `;
 
-const ScImage = styled.img`
+S.Image = styled.img`
 	width: 3.7rem;
 	height: 3.7rem;
 	border-radius: 50%;
 `;
 
-const ScRoomData = styled.div`
+S.RoomData = styled.div`
 	margin-right: 1rem;
 	transform: translateY(-0.35rem);
 	max-width: 80%;
 `;
 
-const ScRoomName = styled.div`
+S.RoomName = styled.div`
 	color: white;
 `;
 
-const ScLastMessage = styled('div')<{ shouldHide: boolean }>`
+S.LastMessage = styled('div')<{ shouldHide: boolean }>`
 	font-size: 1.4rem;
 	overflow: hidden;
 	text-overflow: ellipsis;
@@ -78,7 +79,7 @@ const ScLastMessage = styled('div')<{ shouldHide: boolean }>`
 		`}
 `;
 
-const ScTypingUsers = styled(TypingUsers)`
+S.TypingUsers = styled(TypingUsers)`
 	color: ${props => props.theme.gray20};
 	font-size: 1.4rem;
 	overflow: hidden;

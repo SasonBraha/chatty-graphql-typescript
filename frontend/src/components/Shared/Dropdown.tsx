@@ -24,9 +24,9 @@ const Dropdown = React.forwardRef((props: IProps, ref: Ref<any>) => {
 	}, [isOpen]);
 
 	return (
-		<StyledDropdown ref={ref} {...props}>
+		<S.Dropdown ref={ref} {...props}>
 			{props.children}
-		</StyledDropdown>
+		</S.Dropdown>
 	);
 });
 
@@ -38,7 +38,8 @@ Dropdown.defaultProps = {
 	background: 'white'
 };
 
-const StyledDropdown = styled('div')<IProps>`
+const S: any = {};
+S.Dropdown = styled('div')<IProps>`
 	background: ${({ background }) => background};
 	color: ${({ color }) => color};
 	top: ${({ top }) => validCss(top!)};

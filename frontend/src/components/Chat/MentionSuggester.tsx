@@ -38,7 +38,7 @@ const MentionSuggester: React.FC<IProps> = React.forwardRef(
 				timeout={{ enter: 0, exit: 300 }}
 			>
 				{mountState => (
-					<ScMentionSuggester userList={userList} className={mountState}>
+					<S.MentionSuggester userList={userList} className={mountState}>
 						<List
 							items={userList.reduce((acc: IListItem[], currentUser: IUser) => {
 								acc.push({
@@ -52,14 +52,15 @@ const MentionSuggester: React.FC<IProps> = React.forwardRef(
 							withKeyboardNavigation
 							ref={ref!}
 						/>
-					</ScMentionSuggester>
+					</S.MentionSuggester>
 				)}
 			</Transition>
 		);
 	}
 );
 
-const ScMentionSuggester = styled('div')<{ userList: IUser[] }>`
+const S: any = {};
+S.MentionSuggester = styled('div')<{ userList: IUser[] }>`
 	position: absolute;
 	width: 100%;
 	background: white;
