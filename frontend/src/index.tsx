@@ -8,16 +8,19 @@ import { ThemeProvider } from 'styled-components';
 import { defaultTheme } from './style/theme';
 import './style/base.css';
 import { ApolloProvider as ApolloHooksProvider } from 'react-apollo-hooks';
+import { ApolloProvider as ApolloOfficialHooksProvider } from '@apollo/react-hooks';
 
 ReactDOM.render(
-	<ApolloProvider client={apolloClient}>
-		<ApolloHooksProvider client={apolloClient}>
-			<Router>
-				<ThemeProvider theme={defaultTheme}>
-					<App />
-				</ThemeProvider>
-			</Router>
-		</ApolloHooksProvider>
-	</ApolloProvider>,
+	<ApolloOfficialHooksProvider client={apolloClient}>
+		<ApolloProvider client={apolloClient}>
+			<ApolloHooksProvider client={apolloClient}>
+				<Router>
+					<ThemeProvider theme={defaultTheme}>
+						<App />
+					</ThemeProvider>
+				</Router>
+			</ApolloHooksProvider>
+		</ApolloProvider>
+	</ApolloOfficialHooksProvider>,
 	document.getElementById('reactMount')
 );

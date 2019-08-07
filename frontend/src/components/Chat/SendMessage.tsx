@@ -12,6 +12,7 @@ import { InputTrigger } from '../Shared';
 import MentionSuggester from './MentionSuggester';
 import { useApolloClient } from 'react-apollo-hooks';
 import { setMentionSuggester } from '../../apollo/actions';
+import { useLazyQuery } from '@apollo/react-hooks';
 
 const SEND_MESSAGE_MUTATION = gql`
 	mutation($chatSlug: String!, $text: String!) {
@@ -98,6 +99,9 @@ const SendMessage: React.FC<IProps> = props => {
 	const [isTyping, setIsTyping] = useState(false);
 	const client = useApolloClient();
 	const mentionSuggesterRef: Ref<any> = useRef(null);
+	const [executeUserSearch, { loading, data: userData }] = useLazyQuery(
+		SEARCH_USERS_QUERY
+	);
 
 	const {
 		values,
@@ -126,15 +130,14 @@ const SendMessage: React.FC<IProps> = props => {
 				triggerSymbol='@'
 				typeCallbackDebounce={200}
 				onType={async (data: any) => {
-					const userData = await client.query({
-						query: SEARCH_USERS_QUERY,
+					await executeUserSearch({
 						variables: {
 							displayName: data.value,
 							limit: 5
 						}
 					});
 
-					var userList = userData.data.users.userList;
+					const userList = userData.data.users.userList;
 					setMentionSuggester(!!userList.length, userList);
 				}}
 				onCancel={() => setMentionSuggester(false, [])}
