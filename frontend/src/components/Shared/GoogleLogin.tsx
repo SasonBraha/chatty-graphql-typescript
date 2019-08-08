@@ -2,11 +2,9 @@ import React from 'react';
 import styled from 'styled-components/macro';
 import ReactGoogleLogin from 'react-google-login';
 import gql from 'graphql-tag';
-import ApolloClient from 'apollo-client';
-import { withApollo } from 'react-apollo';
+import { useApolloClient } from '@apollo/react-hooks';
 
 interface IProps {
-	client?: ApolloClient<any>;
 	text: string;
 }
 
@@ -17,6 +15,7 @@ const LOGIN_WITH_GOOGLE_MUTATION = gql`
 `;
 
 const GoogleLogin: React.FC<IProps> = props => {
+	const client = useApolloClient();
 	return (
 		<ReactGoogleLogin
 			clientId={process.env.REACT_APP_GOOGLE_CLIENT_ID}
@@ -28,7 +27,7 @@ const GoogleLogin: React.FC<IProps> = props => {
 			)}
 			onFailure={() => null}
 			onSuccess={async response => {
-				const userAccessToken = await props.client!.mutate({
+				const userAccessToken = await client.mutate({
 					mutation: LOGIN_WITH_GOOGLE_MUTATION,
 					variables: {
 						//@ts-ignore
@@ -72,4 +71,4 @@ S.GoogleLogo = styled.img`
 	margin-right: 1rem;
 `;
 
-export default withApollo(GoogleLogin);
+export default GoogleLogin;

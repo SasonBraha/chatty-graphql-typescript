@@ -2,7 +2,7 @@ import React from 'react';
 import styled, { css } from 'styled-components/macro';
 import { RouteComponentProps } from 'react-router';
 import gql from 'graphql-tag';
-import { useQuery } from 'react-apollo-hooks';
+import { useQuery } from '@apollo/react-hooks';
 import formatRelative from 'date-fns/formatRelative';
 import { parseISO } from 'date-fns';
 import he from 'date-fns/locale/he';

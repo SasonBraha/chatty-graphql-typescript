@@ -10,13 +10,9 @@ const Routes: React.FC<{}> = props => {
 	return (
 		<Suspense fallback={<div>Loading...</div>}>
 			<Switch>
-				<Route
-					exact
-					path='/register'
-					render={props => <RegisterForm {...props} />}
-				/>
+				<Route exact path='/register' render={props => <RegisterForm />} />
 
-				<Route exact path='/login' render={props => <LoginForm {...props} />} />
+				<Route exact path='/login' render={props => <LoginForm />} />
 
 				<Route
 					exact

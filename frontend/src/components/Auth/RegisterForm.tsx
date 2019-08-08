@@ -1,12 +1,11 @@
 import React, { useEffect, useRef } from 'react';
 import { Button } from '../Shared';
 import { FormikProps, withFormik } from 'formik';
-import { compose, graphql } from 'react-apollo';
 import { Form, FormGroup, TextInput } from '../Shared/Form';
 import Ripple from 'react-ink';
 import gql from 'graphql-tag';
 import Recaptcha from 'react-google-recaptcha';
-
+import client from '../../apollo/client';
 const REGISTER_MUTATION = gql`
 	mutation(
 		$displayName: String!
@@ -105,39 +104,37 @@ const LoginForm = (props: FormikProps<IFormValues>) => {
 	);
 };
 
-export default compose(
-	graphql(REGISTER_MUTATION),
-	withFormik({
-		mapPropsToValues: () => ({
-			displayName: '',
-			email: '',
-			password: '',
-			captcha: ''
-		}),
-		handleSubmit: async (
-			values,
-			//@ts-ignore
-			{ props: { mutate }, setErrors }
-		) => {
-			try {
-				const registerData = await mutate({
-					variables: values
-				});
-				const {
-					data: { registerMutation: isRegistered }
-				} = registerData;
+export default withFormik({
+	mapPropsToValues: () => ({
+		displayName: '',
+		email: '',
+		password: '',
+		captcha: ''
+	}),
+	handleSubmit: async (
+		values,
+		//@ts-ignore
+		{ props: { mutate }, setErrors }
+	) => {
+		try {
+			const registerData = await client.mutate({
+				mutation: REGISTER_MUTATION,
+				variables: values
+			});
+			const {
+				data: { registerMutation: isRegistered }
+			} = registerData;
 
-				if (isRegistered) {
-					console.log('Success! Registered successfully');
-				}
-			} catch (ex) {
-				const { formValidation } = ex.graphQLErrors[0];
-				if (formValidation.captcha) {
-					console.log('אימות');
-				} else {
-					setErrors(formValidation);
-				}
+			if (isRegistered) {
+				console.log('Success! Registered successfully');
+			}
+		} catch (ex) {
+			const { formValidation } = ex.graphQLErrors[0];
+			if (formValidation.captcha) {
+				console.log('אימות');
+			} else {
+				setErrors(formValidation);
 			}
 		}
-	})
-)(LoginForm);
+	}
+})(LoginForm);

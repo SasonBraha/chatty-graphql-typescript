@@ -10,7 +10,7 @@ import Container from './Container';
 import { withRouter } from 'react-router-dom';
 import { GenericModal } from './Shared';
 import Routes from './Routes';
-import { useApolloClient, useSubscription } from 'react-apollo-hooks';
+import { useApolloClient, useSubscription } from '@apollo/react-hooks';
 import gql from 'graphql-tag';
 import { LocalStorageEnum, UserUpdatesEnum } from '../types/enums';
 import {
@@ -135,4 +135,4 @@ S.Content = styled.div`
 `;
 
 // @ts-ignore
-export default hot(withRouter(App));
+export default withRouter(App);

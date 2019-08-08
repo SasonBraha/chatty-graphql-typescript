@@ -5,7 +5,7 @@ import { IUser } from '../../types/interfaces';
 import { Link } from 'react-router-dom';
 import ApolloClient from 'apollo-client';
 import { CrudEnum } from '../../types/enums';
-import { useApolloClient, useSubscription } from 'react-apollo-hooks';
+import { useApolloClient, useSubscription } from '@apollo/react-hooks';
 import { useLocalCache } from '../Shared/Hooks';
 import { afterRender } from '../../utils';
 

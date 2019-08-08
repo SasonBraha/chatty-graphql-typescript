@@ -1,10 +1,10 @@
 import React from 'react';
 import { Button, GoogleLogin } from '../Shared';
 import { FormikProps, withFormik } from 'formik';
-import { compose, graphql } from 'react-apollo';
 import { Form, FormGroup, TextInput } from '../Shared/Form';
 import Ripple from 'react-ink';
 import gql from 'graphql-tag';
+import client from '../../apollo/client';
 
 const LOGIN_MUTATION = gql`
 	mutation($email: String!, $password: String!) {
@@ -55,28 +55,26 @@ const LoginForm = (props: FormikProps<IFormValues>) => {
 	);
 };
 
-export default compose(
-	graphql(LOGIN_MUTATION),
-	withFormik({
-		mapPropsToValues: () => ({ email: '', password: '' }),
-		handleSubmit: async (
-			values,
-			//@ts-ignore
-			{ props: { mutate }, setSubmitting, resetForm }
-		) => {
-			try {
-				const loginData = await mutate({
-					variables: values
-				});
-				const {
-					data: { login: authToken }
-				} = loginData;
+export default withFormik({
+	mapPropsToValues: () => ({ email: '', password: '' }),
+	handleSubmit: async (
+		values,
+		//@ts-ignore
+		{ props: { mutate }, setSubmitting, resetForm }
+	) => {
+		try {
+			const loginData = await client.mutate({
+				mutation: LOGIN_MUTATION,
+				variables: values
+			});
+			const {
+				data: { login: authToken }
+			} = loginData;
 
-				if (authToken) {
-					localStorage.setItem(process.env.REACT_APP_LS_AUTH_TOKEN, authToken);
-					window.location.reload();
-				}
-			} catch (ex) {}
-		}
-	})
-)(LoginForm);
+			if (authToken) {
+				localStorage.setItem(process.env.REACT_APP_LS_AUTH_TOKEN, authToken);
+				window.location.reload();
+			}
+		} catch (ex) {}
+	}
+})(LoginForm);

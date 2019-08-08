@@ -106,7 +106,6 @@ const main = async () => {
 				ex.extensions.id = errorId;
 				logger.error(ex);
 			}
-
 			return new CustomError(
 				ErrorResponse[errorMessage]
 					? ErrorResponse[errorMessage]
@@ -124,7 +123,7 @@ const main = async () => {
 	//------------------------------------//
 	const { PORT } = process.env;
 	httpServer.listen(PORT, () =>
-		console.log(`Server Started Successfully On Port ${PORT} ✈️`)
+		console.log(`Server Started Successfully On Port ${PORT} ✈`)
 	);
 
 	process

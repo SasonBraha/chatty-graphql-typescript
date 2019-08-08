@@ -4,7 +4,7 @@ import { IChat } from '../../../types/interfaces';
 import RoomsListItem from './RoomsListItem';
 import styled from 'styled-components/macro';
 import RoomsListLoader from './RoomsListLoader';
-import { useQuery, useSubscription } from 'react-apollo-hooks';
+import { useQuery, useSubscription } from '@apollo/react-hooks';
 import { setTypingUsers } from '../../../apollo/actions';
 import { useLocalCache } from '../../Shared/Hooks';
 

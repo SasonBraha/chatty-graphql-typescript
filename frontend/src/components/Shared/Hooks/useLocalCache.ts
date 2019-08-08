@@ -1,4 +1,4 @@
-import { useQuery } from 'react-apollo-hooks';
+import { useQuery } from '@apollo/react-hooks';
 import gql from 'graphql-tag';
 import { ILocalCache } from '../../../apollo/actions';
 

@@ -2,7 +2,6 @@ import React, { Ref, useRef, useState } from 'react';
 import styled from 'styled-components/macro';
 import gql from 'graphql-tag';
 import { FormikProps, withFormik } from 'formik';
-import { compose, graphql, withApollo } from 'react-apollo';
 import Icon from '../Shared/Icon';
 import { RouteComponentProps } from 'react-router';
 import { FileInput } from '../Shared/Form';
@@ -10,8 +9,9 @@ import ApolloClient from 'apollo-client';
 import { CrudEnum, KeyCodeEnum } from '../../types/enums';
 import { InputTrigger } from '../Shared';
 import MentionSuggester from './MentionSuggester';
-import { useApolloClient } from 'react-apollo-hooks';
 import { setMentionSuggester } from '../../apollo/actions';
+import { useLazyQuery, useApolloClient } from '@apollo/react-hooks';
+import client from '../../apollo/client';
 
 const SEND_MESSAGE_MUTATION = gql`
 	mutation($chatSlug: String!, $text: String!) {
@@ -59,7 +59,6 @@ interface IProps
 	extends FormikProps<IFormValues>,
 		RouteComponentProps<IMatchParams> {
 	setFilePreview: (file: File | null) => void;
-	client: ApolloClient<any>;
 }
 
 let emitTypingTimeout: ReturnType<typeof setTimeout>;
@@ -67,12 +66,13 @@ const handleChange = (
 	isTyping: boolean,
 	setIsTyping: React.Dispatch<React.SetStateAction<boolean>>,
 	props: IProps,
-	value: string
+	value: string,
+	client: ApolloClient<any>
 ) => {
 	if (isTyping) {
 		clearTimeout(emitTypingTimeout);
 		emitTypingTimeout = setTimeout(() => {
-			props.client.mutate({
+			client.mutate({
 				mutation: UPDATE_TYPING_USERS,
 				variables: {
 					chatSlug: props.match.params.chatSlug,
@@ -83,14 +83,14 @@ const handleChange = (
 		}, 450);
 	} else {
 		setIsTyping(true);
-		props.client.mutate({
+		client.mutate({
 			mutation: UPDATE_TYPING_USERS,
 			variables: {
 				chatSlug: props.match.params.chatSlug,
 				crudType: CrudEnum.UPDATE
 			}
 		});
-		handleChange(true, setIsTyping, props, value);
+		handleChange(true, setIsTyping, props, value, client);
 	}
 };
 
@@ -98,6 +98,9 @@ const SendMessage: React.FC<IProps> = props => {
 	const [isTyping, setIsTyping] = useState(false);
 	const client = useApolloClient();
 	const mentionSuggesterRef: Ref<any> = useRef(null);
+	const [executeUserSearch, { loading, data: userData }] = useLazyQuery(
+		SEARCH_USERS_QUERY
+	);
 
 	const {
 		values,
@@ -126,15 +129,16 @@ const SendMessage: React.FC<IProps> = props => {
 				triggerSymbol='@'
 				typeCallbackDebounce={200}
 				onType={async (data: any) => {
-					const userData = await client.query({
-						query: SEARCH_USERS_QUERY,
+					await executeUserSearch({
 						variables: {
 							displayName: data.value,
 							limit: 5
 						}
 					});
 
-					var userList = userData.data.users.userList;
+					//FIXME Sason - fix userData undefined value at first request
+					if (!userData) return;
+					const userList = userData.users.userList;
 					setMentionSuggester(!!userList.length, userList);
 				}}
 				onCancel={() => setMentionSuggester(false, [])}
@@ -146,7 +150,7 @@ const SendMessage: React.FC<IProps> = props => {
 					name='text'
 					onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
 						handleFormikChange(e);
-						handleChange(isTyping, setIsTyping, props, values.text);
+						handleChange(isTyping, setIsTyping, props, values.text, client);
 					}}
 					onKeyDown={(e: React.KeyboardEvent<HTMLInputElement>) => {
 						if (mentionSuggesterRef.current) {
@@ -225,35 +229,33 @@ S.InputTrigger = styled(InputTrigger)`
 	flex: 1;
 `;
 
-export default compose(
-	graphql(SEND_MESSAGE_MUTATION, { name: 'sendMessage' }),
-	graphql(UPLOAD_FILE_MUTATION, { name: 'uploadFile' }),
-	withFormik({
-		mapPropsToValues: () => ({ text: '', file: '' }),
-		handleSubmit: async (
-			values: IFormValues,
-			//@ts-ignore
-			{ props: { sendMessage, uploadFile, match, setFilePreview }, resetForm }
-		) => {
-			const newMessage = await sendMessage({
+export default withFormik({
+	mapPropsToValues: () => ({ text: '', file: '' }),
+	handleSubmit: async (
+		values: IFormValues,
+		//@ts-ignore
+		{ props: { sendMessage, uploadFile, match, setFilePreview }, resetForm }
+	) => {
+		const newMessage = await client.mutate({
+			mutation: SEND_MESSAGE_MUTATION,
+			variables: {
+				...values,
+				chatSlug: match.params.chatSlug
+			}
+		});
+
+		resetForm();
+		setFilePreview(null);
+
+		if (values.file) {
+			client.mutate({
+				mutation: UPLOAD_FILE_MUTATION,
 				variables: {
-					...values,
-					chatSlug: match.params.chatSlug
+					file: values.file,
+					chatSlug: match.params.chatSlug,
+					messageId: newMessage.data.postMessage._id
 				}
 			});
-
-			resetForm();
-			setFilePreview(null);
-
-			if (values.file) {
-				uploadFile({
-					variables: {
-						file: values.file,
-						chatSlug: match.params.chatSlug,
-						messageId: newMessage.data.postMessage._id
-					}
-				});
-			}
 		}
-	})
-)(withApollo(SendMessage));
+	}
+})(SendMessage);
