@@ -1,10 +1,8 @@
 import React, { useState } from 'react';
 import gql from 'graphql-tag';
-import { withApollo } from 'react-apollo';
 import MessagesList from './MessagesList';
 import { IChatProps } from '../Chat';
 import { IChat, IMessage } from '../../../types/interfaces';
-import ApolloClient from 'apollo-client';
 import produce from 'immer';
 import { useQuery } from '@apollo/react-hooks';
 
@@ -35,14 +33,14 @@ const MESSAGE_DATA_FRAGMENT = `
 `;
 
 const MESSAGES_LIST_QUERY = gql`
-	query($chatSlug: String!) {
-		chat(chatSlug: $chatSlug) {
-			storeMessages	
-			messages {
-				${MESSAGE_DATA_FRAGMENT}
-			}
-		}
-	}
+    query($chatSlug: String!) {
+        chat(chatSlug: $chatSlug) {
+            storeMessages
+            messages {
+                ${MESSAGE_DATA_FRAGMENT}
+            }
+        }
+    }
 `;
 
 const MESSAGES_LIST_UPDATES = gql`
@@ -52,11 +50,11 @@ const MESSAGES_LIST_UPDATES = gql`
 `;
 
 const GET_OLDER_MESSAGES = gql`
-	query($chatSlug: String!, $beforeMessageId: ID!) {
-		olderMessages(chatSlug: $chatSlug, beforeMessageId: $beforeMessageId) {
-			${MESSAGE_DATA_FRAGMENT}
-		}
-	}
+    query($chatSlug: String!, $beforeMessageId: ID!) {
+        olderMessages(chatSlug: $chatSlug, beforeMessageId: $beforeMessageId) {
+            ${MESSAGE_DATA_FRAGMENT}
+        }
+    }
 `;
 
 enum SubscriptionTypesEnum {
@@ -70,16 +68,19 @@ interface IPrev {
 	chat: IChat;
 }
 
-interface IProps extends IChatProps {
-	client: ApolloClient<any>;
-}
+interface IProps extends IChatProps {}
 
 const MessagesListData = (props: IProps) => {
 	const [isFetching, setIsFetching] = useState(false);
 	const [isMoreMessagesToFetch, setIsMoreMessagesToFetch] = useState(true);
 	const { chatSlug } = props.match.params;
 	const { data, fetchMore, subscribeToMore, loading, ...result } = useQuery(
-		MESSAGES_LIST_QUERY
+		MESSAGES_LIST_QUERY,
+		{
+			variables: {
+				chatSlug
+			}
+		}
 	);
 
 	return (
@@ -190,4 +191,4 @@ MessagesListData.defaultProps = {
 };
 
 // @ts-ignore
-export default withApollo(MessagesListData);
+export default MessagesListData;

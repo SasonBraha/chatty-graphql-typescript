@@ -28,6 +28,8 @@ const Chat = (props: IChatProps) => {
 			<S.MessagesArea>
 				<UploadPreview file={filePreview} />
 				<MessagesList {...props} />
+				{/*
+ // @ts-ignore */}
 				<SendMessage {...props} setFilePreview={setFilePreview} />
 			</S.MessagesArea>
 		</S.Chat>

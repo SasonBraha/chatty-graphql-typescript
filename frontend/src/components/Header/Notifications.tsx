@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import gql from 'graphql-tag';
-import { useApolloClient } from 'react-apollo-hooks';
+import { useApolloClient } from '@apollo/react-hooks';
 import { INotification } from '../../types/interfaces';
 import { ListItem } from '../Shared';
 import { Link } from 'react-router-dom';

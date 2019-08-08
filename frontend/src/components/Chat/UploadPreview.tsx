@@ -41,9 +41,9 @@ const UploadPreview = (props: IProps) => {
 		>
 			{mountState =>
 				props.file ? (
-					<S.ploadPreview className={mountState}>
+					<S.UploadPreview className={mountState}>
 						{renderMedia(props.file)}
-					</S.ploadPreview>
+					</S.UploadPreview>
 				) : null
 			}
 		</Transition>

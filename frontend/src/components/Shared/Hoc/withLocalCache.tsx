@@ -1,6 +1,6 @@
-import React, { Component } from 'react';
-import { Query } from 'react-apollo';
+import React from 'react';
 import gql from 'graphql-tag';
+import { useQuery } from '@apollo/react-hooks';
 
 const buildQuery = (dataToFetch: string) => gql`
     query {
@@ -13,14 +13,9 @@ const buildQuery = (dataToFetch: string) => gql`
 const withLocalCache = (dataToFetch: string) => (
 	WrappedComponent: any
 ): typeof WrappedComponent => {
-	return class ComposedComponent extends Component<any, any> {
-		render() {
-			return (
-				<Query query={buildQuery(dataToFetch)}>
-					{({ data }) => <WrappedComponent {...this.props} {...data.client} />}
-				</Query>
-			);
-		}
+	return props => {
+		const { data } = useQuery(buildQuery(dataToFetch));
+		return <WrappedComponent {...props} {...data.client} />;
 	};
 };
 export default withLocalCache;
