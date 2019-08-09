@@ -48,7 +48,6 @@ S.MessagesArea = styled.div`
 	flex-direction: column;
 	height: calc(100vh - ${props => props.theme.headerHeight});
 	position: relative;
-	overflow: hidden;
 `;
 
 export default withAuth(Chat);
