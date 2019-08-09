@@ -98,7 +98,7 @@ const SendMessage: React.FC<IProps> = props => {
 	const [isTyping, setIsTyping] = useState(false);
 	const client = useApolloClient();
 	const mentionSuggesterRef: Ref<any> = useRef(null);
-	const [executeUserSearch, { loading, data: userData }] = useLazyQuery(
+	const [executeUserSearch, { data: userData }] = useLazyQuery(
 		SEARCH_USERS_QUERY
 	);
 
@@ -221,7 +221,6 @@ S.MessageInput = styled.input`
 	box-shadow: 0 0 0.5rem rgba(0, 0, 0, 0.1);
 	font-size: 1.6rem;
 	padding: 1.6rem 4rem 1.6rem 1.6rem;
-	text-overflow: ellipsis;
 	cursor: text;
 `;
 
@@ -258,4 +257,5 @@ export default withFormik({
 			});
 		}
 	}
+	//@ts-ignore
 })(SendMessage);

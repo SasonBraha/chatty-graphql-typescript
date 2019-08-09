@@ -1,4 +1,3 @@
-import { hot } from 'react-hot-loader/root';
 import React, { useEffect, useLayoutEffect } from 'react';
 import styled from 'styled-components/macro';
 import Header from './Header';

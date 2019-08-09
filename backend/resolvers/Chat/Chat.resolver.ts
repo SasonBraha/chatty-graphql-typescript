@@ -152,12 +152,8 @@ export default class ChatResolver {
 		@Ctx('user') user: IUser,
 		@PubSub() pubSub: PubSubEngine
 	): Promise<IMessage | { _id: string }> {
-		const sanitizedText = sanitizeHtml(text, {
-			allowedTags: [],
-			allowedAttributes: {}
-		});
 		const mentionUserRegex = new RegExp('(@[\\wא-ת-_]+)', 'g');
-		const mentions = sanitizedText.match(mentionUserRegex);
+		const mentions = text.match(mentionUserRegex);
 		let userMentions: IMention[] = [];
 		let usersData: IUser[] = [];
 
@@ -171,7 +167,7 @@ export default class ChatResolver {
 				userMentions = usersData.reduce(
 					(acc: IMention[], currentUser: IUser) => {
 						const { displayName, slug, _id } = currentUser;
-						const startIndex = sanitizedText.indexOf(displayName) - 1;
+						const startIndex = text.indexOf(displayName) - 1;
 						const endIndex = startIndex + displayName.length + 1;
 
 						acc.push({
@@ -192,7 +188,7 @@ export default class ChatResolver {
 		const { _id, displayName, slug, avatar } = user;
 		const messageData = {
 			_id: preSaveId._id,
-			text: sanitizedText,
+			text,
 			chatSlug,
 			file: null,
 			createdBy: {

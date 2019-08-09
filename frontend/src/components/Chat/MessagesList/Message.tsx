@@ -268,7 +268,6 @@ S.Editable = styled(({ isMine, ...rest }) => <Editable {...rest} />)<{
 	isMine: boolean;
 }>`
 	&[contenteditable='true'] {
-		padding: 0.5rem 0;
 		background: #0268c7;
 		padding: 0.7rem;
 		border-radius: 0.3rem;

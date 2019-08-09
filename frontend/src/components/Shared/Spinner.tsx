@@ -8,6 +8,7 @@ interface IProps {
 	visible: boolean;
 }
 
+// @ts-ignore
 const Spinner = (props: IProps) => <MaterialSpinner {...props} />;
 
 export default Spinner;

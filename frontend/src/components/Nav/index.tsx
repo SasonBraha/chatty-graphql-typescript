@@ -33,6 +33,7 @@ S.Nav = styled('nav')<{ isNavOpen: boolean }>`
 	z-index: 1;
 	position: fixed;
 	box-shadow: -0.2rem 0.3rem 0.4rem rgba(0, 0, 0, 0.2);
+	backface-visibility: hidden;
 
 	transform: translateX(
 		${({ isNavOpen, theme }) => (isNavOpen ? 0 : theme.navWidth)}

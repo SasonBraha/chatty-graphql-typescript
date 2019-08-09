@@ -48,6 +48,8 @@ const Editable: React.FC<IProps> = props => {
 			className='Editable'
 			onKeyDown={(e: React.KeyboardEvent) => handleKeyDown(e, props)}
 		>
+			{/*
+ // @ts-ignore */}
 			<ContentEditable innerRef={editableRef} {...defaultEditableProps} />
 		</div>
 	);

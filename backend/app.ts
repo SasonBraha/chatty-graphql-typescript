@@ -1,3 +1,5 @@
+import sanitizer from './services/Sanitizer';
+
 require('dotenv').config({ path: './.env' });
 import 'reflect-metadata';
 import { handleSocketDisconnect } from './handlers';
@@ -50,7 +52,7 @@ const main = async () => {
 
 	// Body Parser Middleware
 	app.use(bodyParser.urlencoded({ extended: true }));
-	app.use(bodyParser.json({ limit: '10mb' }));
+	app.use(bodyParser.json({ limit: '5mb' }));
 
 	//------------------------------------//
 	//  Apollo Setup                      //
@@ -72,9 +74,11 @@ const main = async () => {
 		//@ts-ignore
 		context: async ({ req, res, connection }) => {
 			if (connection) {
+				sanitizer.incomingRequest(connection.variables);
 				const user = await getUserData(connection.context.authToken);
 				return { connection, user };
 			} else {
+				sanitizer.incomingRequest(req.body.variables);
 				const user = await getUserData(req.headers.authorization);
 				return { req, res, user };
 			}

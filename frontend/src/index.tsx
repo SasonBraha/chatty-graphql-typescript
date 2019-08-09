@@ -1,3 +1,4 @@
+import { hot } from 'react-hot-loader/root';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import App from './components/App';
@@ -8,11 +9,13 @@ import { defaultTheme } from './style/theme';
 import './style/base.css';
 import { ApolloProvider } from '@apollo/react-hooks';
 
+const HMRApp = hot(App);
+
 ReactDOM.render(
 	<ApolloProvider client={apolloClient}>
 		<Router>
 			<ThemeProvider theme={defaultTheme}>
-				<App />
+				<HMRApp />
 			</ThemeProvider>
 		</Router>
 	</ApolloProvider>,
