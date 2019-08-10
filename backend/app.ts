@@ -1,5 +1,3 @@
-import sanitizer from './services/Sanitizer';
-
 require('dotenv').config({ path: './.env' });
 import 'reflect-metadata';
 import { handleSocketDisconnect } from './handlers';
@@ -19,6 +17,7 @@ import CustomError, { ErrorResponse, ErrorTypesEnum } from './utils/errors';
 import { isJson, logger } from './utils';
 import * as uuid from 'uuid';
 import pubSub from './services/pubSub';
+import sanitizer from './services/Sanitizer';
 import './permissions';
 import './services/cache';
 

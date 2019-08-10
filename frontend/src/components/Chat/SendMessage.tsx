@@ -12,6 +12,7 @@ import MentionSuggester from './MentionSuggester';
 import { setMentionSuggester } from '../../apollo/actions';
 import { useLazyQuery, useApolloClient } from '@apollo/react-hooks';
 import client from '../../apollo/client';
+import { useTranslation } from 'react-i18next';
 
 const SEND_MESSAGE_MUTATION = gql`
 	mutation($chatSlug: String!, $text: String!) {
@@ -101,6 +102,7 @@ const SendMessage: React.FC<IProps> = props => {
 	const [executeUserSearch, { data: userData }] = useLazyQuery(
 		SEARCH_USERS_QUERY
 	);
+	const { t } = useTranslation();
 
 	const {
 		values,
@@ -174,7 +176,7 @@ const SendMessage: React.FC<IProps> = props => {
 						}
 					}}
 					onBlur={handleBlur}
-					placeholder='הכנס הודעה ולחץ Enter'
+					placeholder={t('chat.sendMessageInputPlaceholder')}
 				/>
 			</S.InputTrigger>
 

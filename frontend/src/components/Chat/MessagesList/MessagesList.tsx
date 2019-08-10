@@ -9,6 +9,7 @@ import { ApolloClient } from 'apollo-client';
 import client from '../../../apollo/client';
 import withLocalCache from '../../Shared/Hoc/withLocalCache';
 import { USER_ENTITY_FRAGMENT } from '../../../apollo/fragments';
+import { withTranslation } from 'react-i18next';
 
 interface IProps {
 	currentUser?: IUser | null;
@@ -28,6 +29,7 @@ interface IProps {
 	updateQuery: () => void;
 	refetch: () => void;
 	client: ApolloClient<any>;
+	t: any;
 }
 
 export interface IMessageCtxMenu {
@@ -203,12 +205,15 @@ class MessagesList extends Component<IProps, IState> {
 				{!loading && !chat.storeMessages && (
 					<InfoBanner
 						type='warning'
-						text='בחדר זה לא נשמרת היסטוריית ההודעות'
+						text={this.props.t('chat.roomDoesNotSaveMessages')}
 					/>
 				)}
 
 				{!loading && chat.storeMessages && !chat.messages.length && (
-					<InfoBanner type='info' text='טרם נשלחו הודעות בחדר זה' />
+					<InfoBanner
+						type='info'
+						text={this.props.t('chat.noMessagesWereSent')}
+					/>
 				)}
 
 				<Spinner
@@ -263,4 +268,5 @@ const ScMessagesList = styled.div`
 	}
 `;
 
-export default MessagesList;
+// @ts-ignore
+export default withTranslation()(MessagesList);

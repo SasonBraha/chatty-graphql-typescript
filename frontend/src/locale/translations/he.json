@@ -1,0 +1,10 @@
+{
+  "translation": {
+    "chat": {
+      "roomDoesNotSaveMessages": "בחדר זה לא נשמרת היסטוריית ההודעות",
+      "noMessagesWereSent": "טרם נשלחו הודעות בחדר זה",
+      "sendMessageInputPlaceholder": "הכנס הודעה ולחץ Enter"
+    }
+
+  }
+}

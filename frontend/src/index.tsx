@@ -8,6 +8,7 @@ import { ThemeProvider } from 'styled-components';
 import { defaultTheme } from './style/theme';
 import './style/base.css';
 import { ApolloProvider } from '@apollo/react-hooks';
+import './locale';
 
 const HMRApp = hot(App);
 
