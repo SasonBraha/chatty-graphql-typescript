@@ -2,6 +2,7 @@ import React from 'react';
 import styled from 'styled-components/macro';
 import { List } from '../Shared';
 import { useLocalCache } from '../Shared/Hooks';
+import i18n from '../../locale/i18n';
 
 interface IProps {}
 
@@ -9,7 +10,7 @@ const navItems = [
 	{
 		icon: 'icon-comments-o',
 		linkTo: '/chat',
-		text: `צ'אט`,
+		text: i18n.t('nav.chat'),
 		color: 'white',
 		withRipple: true,
 		hoverBackground: 'light'

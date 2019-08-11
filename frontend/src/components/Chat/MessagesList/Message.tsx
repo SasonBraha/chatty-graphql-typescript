@@ -11,6 +11,7 @@ import { Editable } from '../../Shared';
 import { IMessageCtxMenu } from './MessagesList';
 import reactStringReplace from 'react-string-replace';
 import { Link } from 'react-router-dom';
+import { withTranslation } from '../../Shared/Hoc';
 
 const UPDATE_MESSAGE_MUTATION = gql`
 	mutation(
@@ -37,6 +38,7 @@ interface IProps {
 	isMine: boolean;
 	setMessageCtxMenu: (ctx: IMessageCtxMenu) => void;
 	client?: ApolloClient<any>;
+	t?: any;
 }
 
 interface IState {
@@ -44,6 +46,7 @@ interface IState {
 	isEditable: boolean;
 }
 
+@withTranslation()
 class Message extends Component<IProps, IState> {
 	constructor(props: IProps) {
 		super(props);
@@ -154,7 +157,7 @@ class Message extends Component<IProps, IState> {
 				onContextMenu={this.handleContextMenu}
 			>
 				{message.isClientDeleted ? (
-					<S.Text>הודעה זו נמחקה</S.Text>
+					<S.Text>{this.props.t('chat.messageDeleted')}</S.Text>
 				) : (
 					<>
 						<S.MetaData>{message.createdBy.displayName}</S.MetaData>

@@ -3,8 +3,18 @@
     "chat": {
       "roomDoesNotSaveMessages": "בחדר זה לא נשמרת היסטוריית ההודעות",
       "noMessagesWereSent": "טרם נשלחו הודעות בחדר זה",
-      "sendMessageInputPlaceholder": "הכנס הודעה ולחץ Enter"
+      "sendMessageInputPlaceholder": "הכנס הודעה ולחץ Enter",
+      "messageDeleted": "הודעה זו נמחקה"
+    },
+    "nav": {
+      "chat": "צ'אט"
+    },
+    "profile": {
+      "registrationDate": "תאריך הרשמה:",
+      "imageAlt": "תמונת הפרופיל של {{displayName}}"
+    },
+    "global": {
+      "youMustBeLoggedInToViewThisPage": "עליך להתחבר על מנת לצפות בדף זה"
     }
-
   }
 }

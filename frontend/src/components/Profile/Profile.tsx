@@ -6,6 +6,7 @@ import { useQuery } from '@apollo/react-hooks';
 import formatRelative from 'date-fns/formatRelative';
 import { parseISO } from 'date-fns';
 import he from 'date-fns/locale/he';
+import { useTranslation } from 'react-i18next';
 
 const USER_QUERY = gql`
 	query userQuery($slug: String!) {
@@ -29,6 +30,9 @@ const Profile: React.FC<IProps> = props => {
 	const { data, loading } = useQuery(USER_QUERY, {
 		variables: { slug: userSlug }
 	});
+	const { t } = useTranslation();
+
+	// @ts-ignore
 	return loading ? (
 		<div>Loading...</div>
 	) : (
@@ -38,13 +42,15 @@ const Profile: React.FC<IProps> = props => {
 					<S.ProfileImage>
 						<img
 							src={data.user.avatar}
-							alt={`תמונת הפרופיל של ${data.user.displayName}`}
+							alt={t('profile.imageAlt', {
+								displayName: data.user.displayName
+							})}
 						/>
 					</S.ProfileImage>
 					<S.Username>{data.user.displayName}</S.Username>
 				</S.Container>
 				<S.Container row>
-					<S.Bold>תאריך הרשמה:</S.Bold>
+					<S.Bold>{t('profile.registrationDate')}</S.Bold>
 					{formatRelative(
 						parseISO((data.user.createdAt as unknown) as string),
 						new Date(),

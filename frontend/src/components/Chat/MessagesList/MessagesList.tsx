@@ -7,9 +7,8 @@ import { InfoBanner, Spinner } from '../../Shared';
 import MessageContextMenu from './MessageContextMenu';
 import { ApolloClient } from 'apollo-client';
 import client from '../../../apollo/client';
-import withLocalCache from '../../Shared/Hoc/withLocalCache';
+import { withLocalCache, withTranslation } from '../../Shared/Hoc';
 import { USER_ENTITY_FRAGMENT } from '../../../apollo/fragments';
-import { withTranslation } from 'react-i18next';
 
 interface IProps {
 	currentUser?: IUser | null;
@@ -29,7 +28,7 @@ interface IProps {
 	updateQuery: () => void;
 	refetch: () => void;
 	client: ApolloClient<any>;
-	t: any;
+	t?: any;
 }
 
 export interface IMessageCtxMenu {
@@ -47,6 +46,7 @@ interface IState {
 	messageCtxMenu: IMessageCtxMenu;
 }
 
+@withTranslation()
 @withLocalCache(`
 	currentUser {
 		${USER_ENTITY_FRAGMENT}
@@ -268,5 +268,4 @@ const ScMessagesList = styled.div`
 	}
 `;
 
-// @ts-ignore
-export default withTranslation()(MessagesList);
+export default MessagesList;

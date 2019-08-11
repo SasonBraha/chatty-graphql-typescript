@@ -4,9 +4,11 @@ import { Redirect } from 'react-router';
 import withLocalCache from './withLocalCache';
 import { USER_ENTITY_FRAGMENT } from '../../../apollo/fragments';
 import { setGenericModal } from '../../../apollo/actions';
+import { withTranslation } from './index';
 
 interface IProps {
 	currentUser: IUser | null;
+	t: any;
 }
 
 export default (WrappedComponent: any) => {
@@ -15,6 +17,7 @@ export default (WrappedComponent: any) => {
 			${USER_ENTITY_FRAGMENT}
 		}
 	`)
+	@withTranslation()
 	class ComposedComponent extends Component<IProps> {
 		componentDidMount(): void {
 			this.validateLoginState();
@@ -33,7 +36,10 @@ export default (WrappedComponent: any) => {
 		private validateLoginState = () => {
 			const { currentUser } = this.props;
 			if (!currentUser) {
-				setGenericModal('error', 'עליך להתחבר על מנת לגשת לדף זה');
+				setGenericModal(
+					'error',
+					this.props.t('global.youMustBeLoggedInToViewThisPage')
+				);
 			}
 		};
 
