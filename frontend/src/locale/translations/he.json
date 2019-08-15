@@ -4,7 +4,11 @@
       "roomDoesNotSaveMessages": "בחדר זה לא נשמרת היסטוריית ההודעות",
       "noMessagesWereSent": "טרם נשלחו הודעות בחדר זה",
       "sendMessageInputPlaceholder": "הכנס הודעה ולחץ Enter",
-      "messageDeleted": "הודעה זו נמחקה"
+      "messageDeleted": "הודעה זו נמחקה",
+      "messageCtxMenu": {
+        "edit": "ערוך",
+        "delete": "מחק"
+      }
     },
     "nav": {
       "chat": "צ'אט"
@@ -14,7 +18,10 @@
       "imageAlt": "תמונת הפרופיל של {{displayName}}"
     },
     "global": {
-      "youMustBeLoggedInToViewThisPage": "עליך להתחבר על מנת לצפות בדף זה"
+      "youMustBeLoggedInToViewThisPage": "עליך להתחבר על מנת לצפות בדף זה",
+      "errors": {
+        "expiredToken": "הייתה בעיה באימות הטוקן / פג תוקפו של הטוקן הקיים, אנא התחבר/י מחדש"
+      }
     }
   }
 }

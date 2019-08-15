@@ -12,6 +12,7 @@ import GoogleLogin from './GoogleLogin';
 import InputTrigger from './InputTrigger';
 import Scrollable from './Scrollable';
 import InfoBanner from './InfoBanner';
+import Image from './Image';
 
 export {
 	Burger,
@@ -27,5 +28,6 @@ export {
 	GoogleLogin,
 	InputTrigger,
 	Scrollable,
-	InfoBanner
+	InfoBanner,
+	Image
 };

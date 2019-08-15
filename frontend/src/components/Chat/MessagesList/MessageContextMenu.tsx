@@ -1,6 +1,7 @@
 import React from 'react';
 import { Dropdown, ListItem } from '../../Shared';
 import { IMessageCtxMenu } from './MessagesList';
+import i18n from '../../../locale';
 
 interface IProps {
 	ctx: IMessageCtxMenu;
@@ -10,14 +11,14 @@ interface IProps {
 const contextMenuOptions = (props: IProps) => [
 	{
 		icon: 'icon-bin2',
-		text: 'מחק',
+		text: i18n.t('chat.messageCtxMenu.delete'),
 		async onClick() {
 			await props.ctx.deleteMessage!();
 		}
 	},
 	{
 		icon: 'icon-pencil',
-		text: 'ערוך',
+		text: i18n.t('chat.messageCtxMenu.edit'),
 		onClick() {
 			typeof props.ctx.setEditable === 'function' &&
 				props.ctx.setEditable(true);

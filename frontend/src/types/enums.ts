@@ -1,3 +1,5 @@
+import i18n from '../locale';
+
 export enum CrudEnum {
 	DELETE = 'DELETE',
 	UPDATE = 'UPDATE'
@@ -17,7 +19,7 @@ export enum UserUpdatesEnum {
 }
 
 export enum ErrorTypesEnum {
-	INVALID_TOKEN = 'הייתה בעיה באימות הטוקן / פג תוקפו של הטוקן הקיים, אנא התחבר/י מחדש'
+	INVALID_TOKEN = i18n.t('global.errors.expiredToken') as any
 }
 
 export enum LocalStorageEnum {

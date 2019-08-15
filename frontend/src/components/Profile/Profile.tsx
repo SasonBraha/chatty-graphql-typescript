@@ -7,6 +7,7 @@ import formatRelative from 'date-fns/formatRelative';
 import { parseISO } from 'date-fns';
 import he from 'date-fns/locale/he';
 import { useTranslation } from 'react-i18next';
+import { Image } from '../Shared';
 
 const USER_QUERY = gql`
 	query userQuery($slug: String!) {
@@ -40,7 +41,7 @@ const Profile: React.FC<IProps> = props => {
 			<S.RightColumn>
 				<S.Container column>
 					<S.ProfileImage>
-						<img
+						<Image
 							src={data.user.avatar}
 							alt={t('profile.imageAlt', {
 								displayName: data.user.displayName

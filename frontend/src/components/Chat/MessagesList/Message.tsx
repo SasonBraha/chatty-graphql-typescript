@@ -12,6 +12,7 @@ import { IMessageCtxMenu } from './MessagesList';
 import reactStringReplace from 'react-string-replace';
 import { Link } from 'react-router-dom';
 import { withTranslation } from '../../Shared/Hoc';
+import { Image } from '../../Shared';
 
 const UPDATE_MESSAGE_MUTATION = gql`
 	mutation(
@@ -246,7 +247,7 @@ S.MetaData = styled('small')<{ alignLeft?: boolean }>`
 		`}
 `;
 
-S.Image = styled.img`
+S.Image = styled(Image)`
 	max-height: 32rem;
 	max-width: 100%;
 	border-radius: 0.35rem;

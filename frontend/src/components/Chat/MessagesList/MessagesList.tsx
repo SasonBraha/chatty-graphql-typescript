@@ -142,14 +142,15 @@ class MessagesList extends Component<IProps, IState> {
 
 	private onCtxTransitionEnd = () => {
 		const ctxRef = this.messageCtxMenuRef.current!;
-		ctxRef.removeEventListener('transitionend', this.onCtxTransitionEnd);
 		ctxRef.style.transition = 'all 0.15s,transform 0.17s,left 0s,top 0s';
 	};
 
 	private showMessageCtxMenu = (ctx: IMessageCtxMenu) => {
 		if (ctx.isOpen && this.state.messageCtxMenu.isOpen) {
 			const ctxRef = this.messageCtxMenuRef.current!;
-			ctxRef.addEventListener('transitionend', this.onCtxTransitionEnd);
+			ctxRef.addEventListener('transitionend', this.onCtxTransitionEnd, {
+				once: true
+			});
 			ctxRef.style.transition = 'all 0.15s,transform 0.17s';
 		}
 
