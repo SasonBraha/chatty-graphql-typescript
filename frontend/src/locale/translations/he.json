@@ -1,5 +1,13 @@
 {
   "translation": {
+    "header": {
+      "profileDropdown": {
+        "myProfile": "הפרופיל שלי",
+        "settings": "הגדרות",
+        "logout": "התנתק"
+      },
+      "authButton": "הרשמה / התחברות"
+    },
     "chat": {
       "roomDoesNotSaveMessages": "בחדר זה לא נשמרת היסטוריית ההודעות",
       "noMessagesWereSent": "טרם נשלחו הודעות בחדר זה",
@@ -21,6 +29,14 @@
       "youMustBeLoggedInToViewThisPage": "עליך להתחבר על מנת לצפות בדף זה",
       "errors": {
         "expiredToken": "הייתה בעיה באימות הטוקן / פג תוקפו של הטוקן הקיים, אנא התחבר/י מחדש"
+      },
+      "forms": {
+        "password": "סיסמה",
+        "email": "דואר אלקטרוני",
+        "displayName": "שם משתמש",
+        "login": "התחבר",
+        "register": "הירשם",
+        "loginOrRegisterWithGoogle": "התחבר / הירשם באמצעות Google"
       }
     }
   }

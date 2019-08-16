@@ -6,6 +6,7 @@ import Ripple from 'react-ink';
 import gql from 'graphql-tag';
 import Recaptcha from 'react-google-recaptcha';
 import client from '../../apollo/client';
+import { useTranslation } from 'react-i18next';
 const REGISTER_MUTATION = gql`
 	mutation(
 		$displayName: String!
@@ -41,6 +42,7 @@ const LoginForm = (props: FormikProps<IFormValues>) => {
 		handleSubmit
 	} = props;
 	let captchaRef: React.RefObject<any> = useRef();
+	const { t } = useTranslation();
 
 	useEffect(() => {
 		captchaRef.current.execute();
@@ -54,7 +56,7 @@ const LoginForm = (props: FormikProps<IFormValues>) => {
 						name='displayName'
 						value={values.displayName}
 						error={errors.displayName}
-						label='שם משתמש'
+						label={t('global.forms.displayName')}
 						onChange={handleChange}
 						onBlur={handleBlur}
 						icon='icon-user'
@@ -66,7 +68,7 @@ const LoginForm = (props: FormikProps<IFormValues>) => {
 						name='email'
 						value={values.email}
 						error={errors.email}
-						label='דואר אלקטרוני'
+						label={t('global.forms.email')}
 						onChange={handleChange}
 						onBlur={handleBlur}
 						icon='icon-envelope'
@@ -79,7 +81,7 @@ const LoginForm = (props: FormikProps<IFormValues>) => {
 						type='password'
 						value={values.password}
 						error={errors.password}
-						label='סיסמה'
+						label={t('global.forms.password')}
 						onChange={handleChange}
 						onBlur={handleBlur}
 						icon='icon-key'
@@ -87,7 +89,7 @@ const LoginForm = (props: FormikProps<IFormValues>) => {
 				</FormGroup>
 
 				<Button type='submit'>
-					התחבר
+					{t('global.forms.register')}
 					<Ripple />
 				</Button>
 			</Form>

@@ -9,6 +9,7 @@ import Notifications from './Notifications';
 import { setAuthModal, setNavState } from '../../apollo/actions';
 import { useLocalCache } from '../Shared/Hooks';
 import { USER_ENTITY_FRAGMENT } from '../../apollo/fragments';
+import i18n from '../../locale';
 
 interface IProps {}
 
@@ -16,19 +17,19 @@ const headerDropdownItems = (currentUser: IUser) => {
 	return [
 		{
 			icon: 'icon-user',
-			text: 'הפרופיל שלי',
+			text: i18n.t('header.profileDropdown.myProfile'),
 			linkTo: `/user/${currentUser!.slug}`,
 			withRipple: true
 		},
 		{
 			icon: 'icon-cog',
-			text: 'הגדרות',
+			text: i18n.t('header.profileDropdown.settings'),
 			linkTo: '/user/settings',
 			withRipple: true
 		},
 		{
 			icon: 'icon-sign-out',
-			text: 'התנתק',
+			text: i18n.t('header.profileDropdown.logout'),
 			onClick: () => {
 				localStorage.removeItem(process.env.REACT_APP_LS_AUTH_TOKEN);
 				window.location.href = '/';
@@ -55,9 +56,7 @@ const Header: React.FC<IProps> = props => {
 	return (
 		<S.Header>
 			<Burger onClick={setNavState} />
-			<S.Brand data-e2e-id='brand' to='/'>
-				Chatty
-			</S.Brand>
+			<S.Brand to='/'>Chatty</S.Brand>
 
 			{currentUser ? (
 				<S.HeaderMenu>
@@ -104,7 +103,7 @@ const Header: React.FC<IProps> = props => {
 				</S.HeaderMenu>
 			) : (
 				<S.AuthBtn onClick={() => setAuthModal(true)}>
-					הרשמה / התחברות
+					{i18n.t('header.authButton')}
 					<Ripple />
 				</S.AuthBtn>
 			)}

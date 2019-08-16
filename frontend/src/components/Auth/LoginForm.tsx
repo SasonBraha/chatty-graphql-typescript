@@ -5,6 +5,7 @@ import { Form, FormGroup, TextInput } from '../Shared/Form';
 import Ripple from 'react-ink';
 import gql from 'graphql-tag';
 import client from '../../apollo/client';
+import { useTranslation } from 'react-i18next';
 
 const LOGIN_MUTATION = gql`
 	mutation($email: String!, $password: String!) {
@@ -19,15 +20,16 @@ interface IFormValues {
 
 const LoginForm = (props: FormikProps<IFormValues>) => {
 	const { values, handleChange, handleBlur, handleSubmit } = props;
+	const { t } = useTranslation();
 	return (
 		<Form onSubmit={handleSubmit} icon={'icon-user-circle-o'} header='התחברות'>
-			<GoogleLogin text='התחבר באמצעות Google' />
+			<GoogleLogin text={t('global.forms.loginOrRegisterWithGoogle')} />
 			<FormGroup>
 				<TextInput
 					name='email'
 					value={values.email}
 					error=''
-					label='דואר אלקטרוני'
+					label={t('global.forms.email')}
 					onChange={handleChange}
 					onBlur={handleBlur}
 					icon='icon-envelope'
@@ -40,7 +42,7 @@ const LoginForm = (props: FormikProps<IFormValues>) => {
 					type='password'
 					value={values.password}
 					error=''
-					label='סיסמה'
+					label={t('global.forms.password')}
 					onChange={handleChange}
 					onBlur={handleBlur}
 					icon='icon-key'
@@ -48,7 +50,7 @@ const LoginForm = (props: FormikProps<IFormValues>) => {
 			</FormGroup>
 
 			<Button type='submit'>
-				התחבר
+				{t('global.forms.login')}
 				<Ripple />
 			</Button>
 		</Form>
