@@ -11,6 +11,7 @@
     "chat": {
       "roomDoesNotSaveMessages": "בחדר זה לא נשמרת היסטוריית ההודעות",
       "noMessagesWereSent": "טרם נשלחו הודעות בחדר זה",
+      "roomNotFound": "חדר זה לא קיים במערכת",
       "sendMessageInputPlaceholder": "הכנס הודעה ולחץ Enter",
       "messageDeleted": "הודעה זו נמחקה",
       "messageCtxMenu": {

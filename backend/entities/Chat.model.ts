@@ -1,98 +1,54 @@
-import { Document, Schema, model } from 'mongoose';
-import ObjectID = Schema.Types.ObjectId;
-import { IMessage, MessageEntity } from './Message.model';
-import { IUser, UserEntity } from './User.model';
-import { ObjectType, Field, ID } from 'type-graphql';
-import File, { IFile, FileEntity } from './File.model';
-
-export interface IChat extends Document {
-	name: string;
-	slug: string;
-	image: IFile;
-	isPrivate: boolean;
-	storeMessages: boolean;
-	moderators: Array<ObjectID> | Array<IUser>;
-	allowedUsers: Array<ObjectID> | Array<IUser>;
-	admin: ObjectID | IUser;
-	lastMessage: string;
-}
-
-const ChatSchema = new Schema(
-	{
-		name: {
-			type: String,
-			required: true,
-			trim: true
-		},
-		slug: {
-			type: String,
-			required: true,
-			trim: true
-		},
-		image: {
-			type: File
-		},
-		isPrivate: {
-			type: Boolean,
-			default: false
-		},
-		storeMessages: {
-			type: Boolean,
-			default: true
-		},
-		moderators: {
-			type: [Schema.Types.ObjectId],
-			ref: 'User'
-		},
-		allowedUsers: {
-			type: [Schema.Types.ObjectId],
-			ref: 'User'
-		},
-		admin: {
-			type: Schema.Types.ObjectId,
-			ref: 'User',
-			required: true
-		},
-		lastMessage: String
-	},
-	{ timestamps: true, collection: 'rooms' }
-);
+import { Field, ID, ObjectType } from 'type-graphql';
+import File from './File.model';
+import {
+	arrayProp as ArrayProperty,
+	prop as Property,
+	Ref,
+	Typegoose
+} from 'typegoose';
+import { ObjectId } from 'mongodb';
+import { User } from './User.model';
 
 @ObjectType()
-export class ChatEntity {
+export class Chat extends Typegoose {
 	@Field(type => ID)
-	_id: string;
+	readonly _id: ObjectId;
 
+	@Property({ required: true, trim: true })
+	@Field(type => String)
+	name!: string;
+
+	@Property({ required: true, trim: true })
+	@Field(type => String)
+	slug!: string;
+
+	@Property({ required: true })
 	@Field()
-	name: string;
+	image!: File;
 
-	@Field(() => ID)
-	slug: string;
-
-	@Field()
-	image: FileEntity;
-
-	@Field()
+	@Property({ default: false })
+	@Field(type => Boolean)
 	isPrivate: boolean;
 
-	@Field()
+	@Property({ default: true })
+	@Field(type => Boolean)
 	storeMessages: boolean;
 
-	@Field(type => [UserEntity])
-	moderators: IUser[];
+	@ArrayProperty({ itemsRef: User })
+	@Field(type => [User])
+	moderators: Ref<User>[];
 
-	@Field(type => [UserEntity])
-	allowedUsers: IUser[];
+	@ArrayProperty({ itemsRef: User })
+	@Field(type => [User])
+	allowedUsers: Ref<User>[];
 
-	@Field(type => [MessageEntity])
-	messages: IMessage;
+	@Property({ ref: User, required: true })
+	@Field(type => User)
+	createdBy: Ref<User>;
 
-	@Field(type => UserEntity)
-	admin: IUser;
-
-	@Field({ nullable: true })
+	@Property({ required: true, trim: true })
+	@Field(type => String)
 	lastMessage: string;
 }
 
-const Chat = model<IChat>('Chat', ChatSchema);
-export default Chat;
+export const ChatModel = new Chat().getModelForClass(Chat);
