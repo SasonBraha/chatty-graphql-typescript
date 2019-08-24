@@ -1,28 +1,10 @@
-import { Document, Schema } from 'mongoose';
-import { ObjectType, Field, ID, Int } from 'type-graphql';
-
-export interface IMention {
-	indices: number[];
-	displayName: string;
-	slug: string;
-	_id: string;
-}
-
-const MentionSchema = new Schema({
-	indices: {
-		type: [Number]
-	},
-	displayName: String,
-	slug: String,
-	_id: String
-});
+import { Field, ID, Int, ObjectType } from 'type-graphql';
+import { ObjectId } from 'mongodb';
 
 @ObjectType()
-export class MentionEntity {
+export class Mention {
+	@Field(type => ID) readonly _id: ObjectId;
 	@Field(type => [Int]) indices: number[];
 	@Field() displayName: string;
 	@Field() slug: string;
-	@Field() _id: string;
 }
-
-export default MentionSchema;

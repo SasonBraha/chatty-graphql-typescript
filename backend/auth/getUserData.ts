@@ -1,6 +1,6 @@
 import * as jwt from 'jsonwebtoken';
 import { ErrorTypesEnum } from '../utils/errors';
-import User, { IUser } from '../entities/User.model';
+import { User, UserModel } from '../entities/User.model';
 
 export default async (authToken: string) => {
 	try {
@@ -8,15 +8,14 @@ export default async (authToken: string) => {
 		if (!authToken.startsWith('Bearer')) {
 			throw new Error();
 		}
-
 		const isTokenValid = (await jwt.verify(
 			authToken.split(' ')[1],
 			process.env.JWT_SECRET
-		)) as IUser;
+		)) as User;
 		if (!isTokenValid) throw new Error();
 
 		const userData = isTokenValid;
-		return await User.findById(userData._id).cache({ key: userData._id });
+		return await UserModel.findById(userData._id).cache({ key: userData._id });
 	} catch (ex) {
 		throw new Error(ErrorTypesEnum.INVALID_TOKEN);
 	}

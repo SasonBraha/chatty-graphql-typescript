@@ -131,7 +131,7 @@ const main = async () => {
 
 	process
 		.on('unhandledRejection', (reason, promise) =>
-			logger.error(reason, promise)
+			logger.error(JSON.stringify(reason), promise)
 		)
 		.on('uncaughtException', ex => logger.error(ex));
 };

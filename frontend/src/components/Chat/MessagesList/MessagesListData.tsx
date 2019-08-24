@@ -5,6 +5,9 @@ import { IChatProps } from '../Chat';
 import { IChat, IMessage } from '../../../types/interfaces';
 import produce from 'immer';
 import { useQuery } from '@apollo/react-hooks';
+import { setGenericModal } from '../../../apollo/actions';
+import { useTranslation } from 'react-i18next';
+import { Redirect } from 'react-router';
 
 const MESSAGE_DATA_FRAGMENT = `
 	_id
@@ -82,6 +85,12 @@ const MessagesListData = (props: IProps) => {
 			}
 		}
 	);
+	const { t } = useTranslation();
+
+	if (result.error) {
+		// setGenericModal('error', t('chat.roomNotFound'));
+		return <Redirect to='/' />;
+	}
 
 	return (
 		<MessagesList
@@ -89,8 +98,12 @@ const MessagesListData = (props: IProps) => {
 			updateQuery={result.updateQuery as any}
 			data={{
 				chat: {
-					messages: loading ? [] : data ? data.chat.messages : [],
-					storeMessages: loading ? null : data ? data.chat.storeMessages : null
+					messages: loading ? [] : data && data.chat ? data.chat.messages : [],
+					storeMessages: loading
+						? null
+						: data && data.chat
+						? data.chat.storeMessages
+						: null
 				}
 			}}
 			loading={loading}
@@ -98,6 +111,7 @@ const MessagesListData = (props: IProps) => {
 			isFetching={isFetching}
 			isMoreMessagesToFetch={isMoreMessagesToFetch}
 			setIsMoreMessagesToFetch={setIsMoreMessagesToFetch}
+			found={!loading && data && data.chat}
 			fetchOlderMessages={(chatSlug: string, beforeMessageId: string) => {
 				setIsFetching(true);
 				fetchMore({

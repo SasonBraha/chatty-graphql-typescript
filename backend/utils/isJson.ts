@@ -7,11 +7,7 @@ const isJson = (item: any) => {
 		return false;
 	}
 
-	if (typeof item === 'object' && item !== null) {
-		return true;
-	}
-
-	return false;
+	return typeof item === 'object' && item !== null;
 };
 
 export default isJson;

@@ -29,6 +29,7 @@ interface IProps {
 	refetch: () => void;
 	client: ApolloClient<any>;
 	t?: any;
+	found: boolean;
 }
 
 export interface IMessageCtxMenu {
@@ -198,12 +199,13 @@ class MessagesList extends Component<IProps, IState> {
 			currentUser,
 			loading,
 			isFetching,
+			found,
 			data: { chat }
 		} = this.props;
 
 		return (
 			<ScMessagesList ref={this.messagesList} onScroll={this.handleScroll}>
-				{!loading && !chat.storeMessages && (
+				{!loading && found && !chat.storeMessages && (
 					<InfoBanner
 						type='warning'
 						text={this.props.t('chat.roomDoesNotSaveMessages')}

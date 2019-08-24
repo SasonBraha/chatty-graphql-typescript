@@ -1,13 +1,13 @@
 import { Field, ObjectType } from 'type-graphql';
-import { IUser, UserEntity } from '../../entities/User.model';
-import { INotification } from '../../entities/Notification.model';
+import { User } from '../../entities/User.model';
+import { Notification } from '../../entities/Notification.model';
 
 @ObjectType()
 export class SearchUsersOutput {
-	@Field(() => [UserEntity]) userList: IUser[];
+	@Field(() => [User]) userList: User[];
 	@Field() searchToken: string;
 }
 
 export interface IUserMentionedOutput {
-	notification: INotification;
+	notification: Notification;
 }

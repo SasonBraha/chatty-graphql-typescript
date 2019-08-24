@@ -1,12 +1,13 @@
 import { Request, Response } from 'express';
-import { IUser } from '../entities/User.model';
+import { User } from '../entities/User.model';
+import { ObjectId } from 'mongodb';
 
 export interface IContext {
 	req?: Request;
 	res?: Response;
-	user: IUser | null;
+	user: User | null;
 }
 
 export interface IQueryCacheOptions {
-	key?: string;
+	key?: string | ObjectId;
 }

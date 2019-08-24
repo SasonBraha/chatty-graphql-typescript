@@ -6,18 +6,33 @@ schema {
     subscription: Subscription
 }
 
-type ChatEntity {
+type Chat {
     _id: ID!
-    admin: UserEntity!
-    allowedUsers: [UserEntity!]!
-    image: FileEntity!
+    allowedUsers: [User!]!
+    createdBy: User!
+    image: File!
     isPrivate: Boolean!
-    lastMessage: String
-    messages: [MessageEntity!]!
-    moderators: [UserEntity!]!
+    lastMessage: String!
+    messages: [Message!]!
+    moderators: [User!]!
     name: String!
-    slug: ID!
+    slug: String!
     storeMessages: Boolean!
+}
+
+type CreatedBy {
+    _id: String!
+    avatar: String!
+    displayName: String!
+    slug: String!
+}
+
+type File {
+    _id: ID!
+    dimensions: FileDimensions!
+    isStored: Boolean!
+    mimeType: String
+    path: String!
 }
 
 type FileAddedOutput {
@@ -30,37 +45,30 @@ type FileDimensions {
     width: Int
 }
 
-type FileEntity {
-    dimensions: FileDimensions!
-    isStored: Boolean!
-    mimeType: String
-    path: String!
-}
-
-type MentionEntity {
-    _id: String!
+type Mention {
+    _id: ID!
     displayName: String!
     indices: [Int!]!
     slug: String!
 }
 
-type MessageEntity {
+type Message {
     _id: ID!
     chatSlug: String!
-    createdAt: DateTime!
-    createdBy: UserEntity!
+    createdBy: CreatedBy!
     creationToken: String
-    file: FileEntity
-    isClientDeleted: Boolean
+    file: File!
     text: String!
-    userMentions: [MentionEntity!]
+    userMentions: [Mention!]
 }
 
 type Mutation {
-    createChat(data: CreateChatInput!): ChatEntity!
+    changePassword(newPassword: String!, token: String): Boolean!
+    createChat(data: CreateChatInput!): Chat!
+    createRestPasswordToken(email: String!): String!
     login(data: LoginInput!): String
     loginWithGoogle(token: String!): String
-    postMessage(chatSlug: String!, text: String!): MessageEntity
+    postMessage(chatSlug: String!, text: String!): Message
     register(data: RegisterInput!): Boolean!
     updateActiveUsers(chatSlug: String!, crudType: String!): Boolean
     updateMessage(updatePayload: UpdateMessageInput!): Boolean!
@@ -68,47 +76,53 @@ type Mutation {
     uploadMessageFile(chatSlug: String!, file: Upload!, messageId: String!): Boolean!
 }
 
-type NotificationEntity {
+type Notification {
     _id: ID!
-    content: String
+    content: String!
     isRead: Boolean!
-    receiver: UserEntity!
+    receiver: User!
     ref: String!
-    sender: UserEntity!
+    sender: User!
     type: String!
 }
 
 type Query {
-    chat(chatSlug: String!): ChatEntity!
-    me: UserEntity!
-    notifications: [NotificationEntity!]!
-    olderMessages(beforeMessageId: ID!, chatSlug: String!): [MessageEntity!]
-    roomsList: [ChatEntity!]!
-    user(slug: String!): UserEntity
+    chat(chatSlug: String!): Chat!
+    me: User!
+    notifications: [Notification!]!
+    olderMessages(beforeMessageId: ID!, chatSlug: String!): [Message!]
+    roomsList: [Chat!]!
+    user(slug: String!): User
     users(displayName: String!, limit: Int): SearchUsersOutput!
+    validateResetPasswordToken(token: String!): Boolean!
 }
 
 type SearchUsersOutput {
     searchToken: String!
-    userList: [UserEntity!]!
+    userList: [User!]!
 }
 
 type Subscription {
     messagesUpdates(chatSlug: String!): String!
-    newMessage(chatSlug: String!): MessageEntity
-    subscribeToActiveUsersUpdates(chatSlug: String!): [UserEntity!]
+    newMessage(chatSlug: String!): Message
+    subscribeToActiveUsersUpdates(chatSlug: String!): [User!]
     subscribeToTypingUsersUpdates: UserTypingOutput
     userUpdates: String!
 }
 
-type UserEntity {
+type User {
     _id: ID!
     avatar: String!
     createdAt: DateTime!
-    createdChatRooms: [ChatEntity!]
+    createdChatRooms: [Chat!]
     displayName: String!
-    email: String
-    lastActivity: String!
+    email: String!
+    excludedPermissions: [String!]!
+    ipAddress: String!
+    lastActivity: DateTime!
+    notifications: [Notification!]!
+    password: String!
+    permissions: [String!]!
     role: String!
     slug: String!
     unreadNotificationsCount: Int!
@@ -117,7 +131,7 @@ type UserEntity {
 type UserTypingOutput {
     chatSlug: String!
     crudType: String!
-    user: UserEntity!
+    user: User!
 }
 
 input CreateChatInput {

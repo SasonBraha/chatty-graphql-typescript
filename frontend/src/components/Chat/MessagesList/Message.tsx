@@ -49,13 +49,10 @@ interface IState {
 
 @withTranslation()
 class Message extends Component<IProps, IState> {
-	constructor(props: IProps) {
-		super(props);
-		this.state = {
-			messageBody: this.props.message.text,
-			isEditable: false
-		};
-	}
+	state = {
+		messageBody: this.props.message.text,
+		isEditable: false
+	};
 
 	componentDidUpdate(prevProps: IProps, prevState: IState) {
 		if (prevProps.message.text !== this.props.message.text) {

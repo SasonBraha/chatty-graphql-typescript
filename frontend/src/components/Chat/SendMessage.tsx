@@ -192,6 +192,7 @@ const SendMessage: React.FC<IProps> = props => {
 };
 
 const S: any = {};
+
 S.Form = styled.form`
 	flex: 0 0;
 	display: flex;
