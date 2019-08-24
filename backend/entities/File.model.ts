@@ -1,35 +1,5 @@
-import { Schema } from 'mongoose';
-import { ObjectType, Field, ID, InputType, Int } from 'type-graphql';
-
-export interface IFile {
-	mimeType?: string;
-	path: string;
-	isStored: boolean;
-	dimensions: {
-		width?: number;
-		height?: number;
-	};
-}
-
-const File = new Schema({
-	mimeType: {
-		type: String,
-		enum: ['jpg', 'jpeg', 'png', 'gif', 'webp', 'bmp', 'mp4']
-	},
-	path: {
-		type: String,
-		required: true
-	},
-	isStored: Boolean,
-	dimensions: {
-		height: {
-			type: Number
-		},
-		width: {
-			type: Number
-		}
-	}
-});
+import { Field, ID, Int, ObjectType } from 'type-graphql';
+import { ObjectId } from 'mongodb';
 
 @ObjectType()
 class FileDimensions {
@@ -41,7 +11,10 @@ class FileDimensions {
 }
 
 @ObjectType()
-export class FileEntity {
+export class File {
+	@Field(type => ID)
+	readonly _id: ObjectId;
+
 	@Field({ nullable: true })
 	mimeType: string;
 
@@ -54,5 +27,3 @@ export class FileEntity {
 	@Field()
 	dimensions: FileDimensions;
 }
-
-export default File;

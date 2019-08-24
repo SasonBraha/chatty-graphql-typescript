@@ -9,7 +9,7 @@ import {
 	Subscription,
 	UseMiddleware
 } from 'type-graphql';
-import User, { IUser, UserEntity } from '../../entities/User.model';
+import { User, UserModel } from '../../entities/User.model';
 import { Authenticated, WithPermission } from '../../middlewares';
 import {
 	IUserMentionedOutput,
@@ -17,35 +17,36 @@ import {
 } from './user.resolver.outputs';
 import * as jwt from 'jsonwebtoken';
 import { UserPermissionTypesEnum } from '../../permissions';
-import Notification, {
-	INotification,
-	NotificationEntity
+import {
+	Notification,
+	NotificationModel
 } from '../../entities/Notification.model';
 import { SubscriptionTypesEnum } from '../../types/enums';
 
-@Resolver(UserEntity)
+@Resolver(User)
 export default class UserResolver {
 	@UseMiddleware(Authenticated)
-	@Query(returns => UserEntity)
-	me(@Ctx('user') user: IUser): IUser {
+	@Query(returns => User)
+	me(@Ctx('user') user: User): User {
 		return user;
 	}
 
-	@Query(returns => UserEntity, { nullable: true })
-	async user(@Arg('slug') slug: string, @Ctx('user') user: IUser) {
+	@Query(returns => User, { nullable: true })
+	async user(@Arg('slug') slug: string, @Ctx('user') user: User) {
 		const isTargetUserSameIsLoggedInUser = user ? user.slug === slug : false;
-		return User.findOne({ slug }).select(
+		return UserModel.findOne({ slug }).select(
 			isTargetUserSameIsLoggedInUser ? '+email' : '-email'
 		);
 	}
 
+	@UseMiddleware(Authenticated)
 	@UseMiddleware(WithPermission([UserPermissionTypesEnum.SEARCH_USERS]))
 	@Query(returns => SearchUsersOutput)
 	async users(
 		@Arg('displayName') displayName: string,
 		@Arg('limit', () => Int, { nullable: true }) limit: number
 	): Promise<SearchUsersOutput> {
-		const userList: IUser[] = await User.find({
+		const userList: User[] = await UserModel.find({
 			displayName: new RegExp(
 				displayName.replace(/[-[\]{}()*+?.,\\^$|#\s]/, '\\$&'),
 				'gi'
@@ -65,9 +66,9 @@ export default class UserResolver {
 	}
 
 	@UseMiddleware(Authenticated)
-	@Query(returns => [NotificationEntity])
-	async notifications(@Ctx('user') user: IUser): Promise<INotification[]> {
-		const notifications = await Notification.find({
+	@Query(returns => [Notification])
+	async notifications(@Ctx('user') user: User): Promise<Notification[]> {
+		const notifications = await NotificationModel.find({
 			receiver: user._id
 		})
 			.populate('sender', 'displayName slug')
@@ -84,15 +85,15 @@ export default class UserResolver {
 	})
 	userUpdates(
 		@Root() payload: IUserMentionedOutput,
-		@Ctx('user') user: IUser
+		@Ctx('user') user: User
 	): string {
 		return JSON.stringify(payload);
 	}
 
 	@UseMiddleware(Authenticated)
 	@FieldResolver(returns => Int)
-	async unreadNotificationsCount(@Root() user: IUser): Promise<number> {
-		const unreadCount = await Notification.countDocuments({
+	async unreadNotificationsCount(@Root() user: User): Promise<number> {
+		const unreadCount = await NotificationModel.countDocuments({
 			receiver: user._id,
 			isRead: false
 		});

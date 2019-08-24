@@ -1,78 +1,47 @@
-import { Document, Schema, model } from 'mongoose';
-import ObjectID = Schema.Types.ObjectId;
-import { IUser, UserEntity } from './User.model';
-import { ObjectType, Field, ID } from 'type-graphql';
-
-export interface INotification extends Document {
-	sender: IUser | ObjectID;
-	receiver: IUser | ObjectID;
-	content: string;
-	type: string;
-	ref: string;
-	isRead: boolean;
-}
-
-const NotificationSchema = new Schema(
-	{
-		sender: {
-			type: Schema.Types.ObjectId,
-			ref: 'User',
-			required: true
-		},
-		receiver: {
-			type: Schema.Types.ObjectId,
-			ref: 'User',
-			required: true
-		},
-		content: String,
-		type: {
-			type: String,
-			required: true
-		},
-		ref: {
-			type: String,
-			required: true
-		},
-		isRead: {
-			type: Boolean,
-			default: false
-		}
-	},
-	{ timestamps: true }
-);
+import { User } from './User.model';
+import { Field, ID, ObjectType } from 'type-graphql';
+import { post as Post, prop as Property, Ref, Typegoose } from 'typegoose';
+import { ObjectId } from 'mongodb';
 
 @ObjectType()
-export class NotificationEntity {
-	@Field(() => ID) _id: string;
-
-	@Field(() => UserEntity)
-	sender: IUser;
-
-	@Field(() => UserEntity)
-	receiver: IUser;
-
-	@Field({ nullable: true })
-	content: string;
-
-	@Field()
-	type: string;
-
-	@Field()
-	ref: string;
-
-	@Field()
-	isRead: boolean;
-}
-
-// @ts-ignore
-NotificationSchema.post('find', async (notifications: Array<INotification>) => {
+@Post<Notification>('find', notifications => {
 	for (let notification of notifications) {
 		if (!notification.isRead) {
 			notification.isRead = true;
-			await notification.save();
+
+			// @ts-ignore
+			notification.save();
 		}
 	}
-});
+})
+export class Notification extends Typegoose {
+	@Field(type => ID)
+	readonly _id: ObjectId;
+
+	@Field(type => User)
+	@Property({ ref: { name: 'User' }, required: true })
+	sender: Ref<User>;
+
+	@Field(type => User)
+	@Property({ ref: { name: 'User' }, required: true })
+	receiver: Ref<User>;
+
+	@Field()
+	@Property()
+	content: string;
+
+	@Field()
+	@Property({ required: true })
+	type!: string;
+
+	@Field()
+	@Property({ required: true })
+	ref: string;
+
+	@Field()
+	@Property({ default: false })
+	isRead: boolean;
+}
 
 // NotificationSchema.post('save', async (notification: INotification) => {
 //   // Check If Notifications Is New (To Prevent { Schema.post('find') } From Emitting Notification)
@@ -96,4 +65,7 @@ NotificationSchema.post('find', async (notifications: Array<INotification>) => {
 //   }
 // });
 
-export default model<INotification>('Notification', NotificationSchema);
+export const NotificationModel = new Notification().getModelForClass(
+	Notification,
+	{ schemaOptions: { timestamps: true } }
+);

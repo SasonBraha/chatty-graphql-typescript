@@ -1,10 +1,10 @@
-import { IMessage } from '../../entities/Message.model';
-import { IFile } from '../../entities/File.model';
+import { Message } from '../../entities/Message.model';
+import { File } from '../../entities/File.model';
+import { User } from '../../entities/User.model';
 import { Field, ObjectType } from 'type-graphql';
-import { UserEntity } from '../../entities/User.model';
 
 export interface IMessageCreatedOutput {
-	message: IMessage;
+	message: Message;
 	updateType: string;
 }
 
@@ -15,7 +15,7 @@ export interface IMessageDeletedOutput {
 
 export interface IMessageFileUploadedOutput {
 	messageId: string;
-	file: IFile;
+	file: File;
 	updateType: string;
 }
 
@@ -32,5 +32,5 @@ export class FileAddedOutput {
 export class UserTypingOutput {
 	@Field() chatSlug: string;
 	@Field() crudType: string;
-	@Field() user: UserEntity;
+	@Field() user: User;
 }

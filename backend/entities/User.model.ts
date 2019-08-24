@@ -12,6 +12,7 @@ import {
 } from 'typegoose';
 import { ObjectId } from 'mongodb';
 import { Chat } from './Chat.model';
+import { Notification } from './Notification.model';
 
 @ObjectType()
 @Pre<User>('save', async function(next) {
@@ -25,52 +26,50 @@ export class User extends Typegoose {
 	@Field(type => ID)
 	readonly _id: ObjectId;
 
-	@Property({ required: true, trim: true })
 	@Field()
+	@Property({ required: true, trim: true })
 	displayName!: string;
 
-	@Property({ required: true, trim: true, lowercase: true })
 	@Field()
+	@Property({ required: true, trim: true, lowercase: true })
 	email!: string;
 
-	@Property({ required: true, trim: true })
-	@Field()
-	password!: string;
+	@Property({ trim: true })
+	password: string;
 
-	@Property({ required: true, trim: true, lowercase: true })
 	@Field()
+	@Property({ required: true, trim: true, lowercase: true })
 	slug!: string;
 
-	@Property({ default: '/images/default_profile.svg' })
 	@Field()
+	@Property({ default: '/images/default_profile.svg' })
 	avatar: string;
 
-	@ArrayProperty({ itemsRef: Notification })
 	@Field(type => Notification)
+	@ArrayProperty({ itemsRef: { name: 'Notification' } })
 	notifications: Array<Ref<Notification>>;
 
-	@Property({ default: 'User' })
 	@Field()
+	@Property({ default: 'User' })
 	role: string;
 
-	@ArrayProperty({ items: String })
 	@Field(type => [String])
+	@ArrayProperty({ items: String })
 	permissions: string[];
 
-	@ArrayProperty({ items: String })
 	@Field(type => [String])
+	@ArrayProperty({ items: String })
 	excludedPermissions: string[];
 
-	@Property({ required: true, select: false })
 	@Field()
+	@Property({ required: true, select: false })
 	ipAddress!: string;
 
-	@Property({ default: new Date() })
 	@Field()
+	@Property({ default: new Date() })
 	lastActivity: Date;
 
 	@Property({ required: true, trim: true })
-	@Field()
 	jwtHandshake!: string;
 
 	@Field(type => Int)
@@ -105,4 +104,6 @@ export class User extends Typegoose {
 	}
 }
 
-export const UserModel = new User().getModelForClass(User);
+export const UserModel = new User().getModelForClass(User, {
+	schemaOptions: { timestamps: true }
+});

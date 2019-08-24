@@ -1,5 +1,5 @@
 import { Arg, Ctx, Mutation, Query, Resolver } from 'type-graphql';
-import User, { IUser, UserEntity } from '../../entities/User.model';
+import { User, UserModel } from '../../entities/User.model';
 import { LoginInput, RegisterInput } from './auth.resolver.inputs';
 import { Request } from 'express';
 import generateJWT from '../../auth/generateJWT';
@@ -11,7 +11,7 @@ import {
 import { ErrorTypesEnum } from '../../utils/errors';
 import { googleOAuthClient, mailer } from '../../services';
 
-@Resolver(UserEntity)
+@Resolver(User)
 export default class AuthResolver {
 	@Mutation(returns => Boolean)
 	async register(
@@ -29,12 +29,12 @@ export default class AuthResolver {
 			throwValidationError(errors);
 		}
 
-		await User.create({
+		await UserModel.create({
 			displayName,
 			email,
 			password,
 			slug: `${displayName}@${uuid()}`,
-			jwtId: uuid(),
+			jwtHandshake: uuid(),
 			ipAddress: req.headers['x-forwarded-for'] || req.connection.remoteAddress
 		});
 		return true;
@@ -42,7 +42,7 @@ export default class AuthResolver {
 
 	@Mutation(returns => String, { nullable: true })
 	async login(@Arg('data') { email, password }: LoginInput): Promise<string> {
-		const user = await User.findOne({ email });
+		const user = await UserModel.findOne({ email });
 		if (!user) throw new Error(ErrorTypesEnum.BAD_REQUEST);
 
 		const isPasswordMatch = await user.comparePassword(password);
@@ -62,15 +62,15 @@ export default class AuthResolver {
 		});
 		const { email, name: displayName, picture: avatar } = ticket.getPayload();
 
-		const user = await User.findOne({ email });
+		const user = await UserModel.findOne({ email });
 		const userData = user
 			? user
-			: await User.create({
+			: await UserModel.create({
 					displayName,
 					email,
 					avatar,
 					slug: `${displayName}@${uuid()}`,
-					jwtId: uuid(),
+					jwtHandshake: uuid(),
 					ipAddress:
 						req.headers['x-forwarded-for'] || req.connection.remoteAddress
 			  });
@@ -80,7 +80,7 @@ export default class AuthResolver {
 
 	@Mutation(returns => String)
 	async createRestPasswordToken(@Arg('email') email: string) {
-		const isUserExists = await User.findOne({ email });
+		const isUserExists = await UserModel.findOne({ email });
 		if (isUserExists) {
 			const restoreToken = `${uuid()}-${uuid()}`;
 			await mailer.send(
@@ -98,7 +98,7 @@ export default class AuthResolver {
 
 	@Mutation(returns => Boolean)
 	async changePassword(
-		@Ctx('user') user: IUser,
+		@Ctx('user') user: User,
 		@Arg('token', { nullable: true }) token: string,
 		@Arg('newPassword') newPassword: string
 	) {}

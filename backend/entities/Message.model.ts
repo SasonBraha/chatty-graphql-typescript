@@ -1,85 +1,67 @@
-import { Document, Schema, model } from 'mongoose';
-import File, { IFile, FileEntity } from './File.model';
-import { ObjectType, Field, ID } from 'type-graphql';
-import { UserEntity, IUser } from './User.model';
+import { File } from './File.model';
+import { Field, ID, ObjectType } from 'type-graphql';
 import * as sanitizeHtml from 'sanitize-html';
-import MentionSchema, { IMention, MentionEntity } from './Mention.model';
-
-export interface IMessage extends Document {
-	text: string;
-	file: IFile;
-	chatSlug: string;
-	createdBy: {
-		_id: string;
-		displayName: string;
-		slug: string;
-		avatar: string;
-	};
-	userMentions: IMention[];
-}
-
-const MessageSchema = new Schema(
-	{
-		text: {
-			type: String,
-			required: true,
-			trim: true
-		},
-		chatSlug: {
-			type: String,
-			required: true
-		},
-		file: {
-			type: File
-		},
-		createdBy: {
-			_id: String,
-			displayName: String,
-			slug: String,
-			avatar: String
-		},
-		userMentions: [MentionSchema]
-	},
-	{ timestamps: true }
-);
-
-// Sanitize Text
-MessageSchema.pre('save', async function(next) {
-	const message = this as IMessage;
-	if (!message.isModified('text')) return next();
-	message.text = sanitizeHtml(message.text, {
-		allowedTags: [],
-		allowedAttributes: {}
-	});
-	next();
-});
+import {
+	arrayProp as ArrayProperty,
+	pre as Pre,
+	prop as Property,
+	Typegoose
+} from 'typegoose';
+import { ObjectId } from 'mongodb';
+import { Mention } from './Mention.model';
 
 @ObjectType()
-export class MessageEntity {
-	@Field(type => ID)
-	_id: string;
+class CreatedBy {
+	@Field() readonly _id: string;
+	@Field() displayName: string;
+	@Field() slug: string;
+	@Field() avatar: string;
+}
+
+@ObjectType()
+@Pre<Message>('save', async function(next) {
+	if (this.isModified('text')) {
+		this.text = sanitizeHtml(this.text, {
+			allowedTags: [],
+			allowedAttributes: {}
+		});
+	}
+	next();
+})
+export class Message extends Typegoose {
+	@Field(type => ID, { nullable: true })
+	readonly _id: ObjectId;
 
 	@Field()
-	text: string;
+	@Property({ required: true })
+	text!: string;
 
 	@Field()
-	chatSlug: string;
+	@Property({ required: true })
+	chatSlug!: string;
+
+	@Field(type => File, { nullable: true })
+	@Property()
+	file!: File;
+
+	@Field(type => CreatedBy)
+	@Property()
+	createdBy: CreatedBy;
+
+	@Field(type => [Mention], { nullable: true })
+	@ArrayProperty({ items: Mention })
+	userMentions: Array<Mention>;
 
 	@Field({ nullable: true })
-	file: FileEntity;
+	creationToken: string;
 
-	@Field(type => UserEntity)
-	createdBy: IUser;
-
-	@Field(type => [MentionEntity], { nullable: true })
-	userMentions: IMention[];
+	@Field({ nullable: true })
+	isClientDeleted?: boolean;
 
 	@Field(type => Date)
 	createdAt: Date;
-
-	@Field({ defaultValue: false }) isClientDeleted: boolean;
-	@Field({ nullable: true }) creationToken: string;
 }
 
-const Message = model<IMessage>('Message', MessageSchema);
-export default Message;
+export const MessageModel = new Message().getModelForClass(Message, {
+	schemaOptions: { timestamps: true }
+});

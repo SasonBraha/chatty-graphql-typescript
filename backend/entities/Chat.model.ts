@@ -1,5 +1,4 @@
 import { Field, ID, ObjectType } from 'type-graphql';
-import File from './File.model';
 import {
 	arrayProp as ArrayProperty,
 	prop as Property,
@@ -8,47 +7,54 @@ import {
 } from 'typegoose';
 import { ObjectId } from 'mongodb';
 import { User } from './User.model';
+import { File } from './File.model';
+import { Message } from './Message.model';
 
 @ObjectType()
 export class Chat extends Typegoose {
 	@Field(type => ID)
 	readonly _id: ObjectId;
 
-	@Property({ required: true, trim: true })
 	@Field(type => String)
+	@Property({ required: true, trim: true })
 	name!: string;
 
-	@Property({ required: true, trim: true })
 	@Field(type => String)
+	@Property({ required: true, trim: true })
 	slug!: string;
 
-	@Property({ required: true })
 	@Field()
+	@Property({ required: true })
 	image!: File;
 
-	@Property({ default: false })
 	@Field(type => Boolean)
+	@Property({ default: false })
 	isPrivate: boolean;
 
-	@Property({ default: true })
 	@Field(type => Boolean)
+	@Property({ default: true })
 	storeMessages: boolean;
 
-	@ArrayProperty({ itemsRef: User })
 	@Field(type => [User])
+	@ArrayProperty({ itemsRef: { name: 'User' } })
 	moderators: Ref<User>[];
 
-	@ArrayProperty({ itemsRef: User })
 	@Field(type => [User])
+	@ArrayProperty({ itemsRef: { name: 'User' } })
 	allowedUsers: Ref<User>[];
 
-	@Property({ ref: User, required: true })
 	@Field(type => User)
+	@Property({ ref: { name: 'User' }, required: true })
 	createdBy: Ref<User>;
 
-	@Property({ required: true, trim: true })
 	@Field(type => String)
+	@Property({ trim: true })
 	lastMessage: string;
+
+	@Field(type => [Message])
+	messages: Array<Message>;
 }
 
-export const ChatModel = new Chat().getModelForClass(Chat);
+export const ChatModel = new Chat().getModelForClass(Chat, {
+	schemaOptions: { timestamps: true, collection: 'rooms' }
+});

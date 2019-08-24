@@ -12,14 +12,11 @@ import {
 	Subscription,
 	UseMiddleware
 } from 'type-graphql';
-import Chat, { ChatEntity, IChat } from '../../entities/Chat.model';
-import User, {
-	IUser,
-	IUserSchemaMethods,
-	UserEntity
-} from '../../entities/User.model';
-import Notification, { INotification } from '../../entities/Notification.model';
-import Message, { IMessage, MessageEntity } from '../../entities/Message.model';
+import { Chat, ChatModel } from '../../entities/Chat.model';
+import { User, UserModel } from '../../entities/User.model';
+import { NotificationModel } from '../../entities/Notification.model';
+import { Message, MessageModel } from '../../entities/Message.model';
+import { Mention } from '../../entities/Mention.model';
 import { ObjectID } from 'bson';
 import { CreateChatInput, IFileInput } from './chat.resolver.inputs';
 import activeUsersService from '../../redis/services/ActiveUsers.service';
@@ -44,20 +41,20 @@ import {
 	UserUpdatesEnum
 } from '../../types/enums';
 import * as sanitizeHtml from 'sanitize-html';
-import { IMention } from '../../entities/Mention.model';
 import { generateUserMentionedNotification } from '../../utils/notifications';
 import * as jwt from 'jsonwebtoken';
+import { Document } from 'mongoose';
 
-@Resolver(ChatEntity)
+@Resolver(Chat)
 export default class ChatResolver {
 	@UseMiddleware(Authenticated)
 	@UseMiddleware(WithPermission([ChatPermissionTypesEnum.VIEW_CHAT]))
-	@Query(returns => ChatEntity)
+	@Query(returns => Chat)
 	async chat(
 		@Arg('chatSlug') chatSlug: string,
-		@Ctx('user') user: IUser
-	): Promise<IChat> {
-		const chat = await Chat.findOne({
+		@Ctx('user') user: User
+	): Promise<Chat> {
+		const chat = await ChatModel.findOne({
 			$or: [
 				{ slug: chatSlug, isPrivate: false },
 				{
@@ -76,14 +73,14 @@ export default class ChatResolver {
 	}
 
 	@UseMiddleware(Authenticated)
-	@Query(returns => [MessageEntity], { nullable: true })
+	@Query(returns => [Message], { nullable: true })
 	async olderMessages(
 		@Arg('beforeMessageId', () => ID) beforeMessageId: string,
 		@Arg('chatSlug') chatSlug: string,
-		@Ctx('user') user: IUser
-	): Promise<IMessage[]> {
+		@Ctx('user') user: User
+	): Promise<Message[]> {
 		try {
-			const fromChat = await Chat.findOne({
+			const fromChat = await ChatModel.findOne({
 				$or: [
 					{ slug: chatSlug, isPrivate: false },
 					{
@@ -95,7 +92,7 @@ export default class ChatResolver {
 			});
 
 			if (fromChat) {
-				const olderMessages = await Message.aggregate([
+				const olderMessages = await MessageModel.aggregate([
 					{ $match: { _id: { $lt: new ObjectID(beforeMessageId) }, chatSlug } },
 					{ $sort: { createdAt: -1 } },
 					{ $limit: 20 }
@@ -110,9 +107,9 @@ export default class ChatResolver {
 	}
 
 	@UseMiddleware(Authenticated)
-	@Query(returns => [ChatEntity])
-	async roomsList(@Ctx('user') user: IUser): Promise<IChat[]> {
-		return await Chat.find({
+	@Query(returns => [Chat])
+	async roomsList(@Ctx('user') user: User): Promise<Chat[]> {
+		return await ChatModel.find({
 			$or: [
 				{ isPrivate: false },
 				{
@@ -125,12 +122,12 @@ export default class ChatResolver {
 
 	@UseMiddleware(Authenticated)
 	@UseMiddleware(WithPermission([ChatPermissionTypesEnum.CREATE_CHAT]))
-	@Mutation(returns => ChatEntity)
+	@Mutation(returns => Chat)
 	async createChat(
 		@Arg('data') { name, isPrivate, storeMessages }: CreateChatInput,
-		@Ctx('user') user: IUser
-	): Promise<IChat> {
-		return await Chat.create({
+		@Ctx('user') user: User
+	): Promise<Chat> {
+		return await ChatModel.create({
 			name,
 			image: {
 				path: '/images/default_chat.svg',
@@ -138,53 +135,50 @@ export default class ChatResolver {
 			},
 			isPrivate,
 			storeMessages,
-			admin: user._id,
-			slug: `${await translate(name)}@${uuid()}`
+			createdBy: user._id,
+			slug: `${name}@${uuid()}`
 		});
 	}
 
 	@UseMiddleware(Authenticated)
 	@UseMiddleware(withPermission([ChatPermissionTypesEnum.POST_MESSAGE]))
-	@Mutation(returns => MessageEntity, { nullable: true })
+	@Mutation(returns => Message, { nullable: true })
 	async postMessage(
 		@Arg('text') text: string,
 		@Arg('chatSlug') chatSlug: string,
-		@Ctx('user') user: IUser,
+		@Ctx('user') user: User,
 		@PubSub() pubSub: PubSubEngine
-	): Promise<IMessage | { _id: string }> {
+	): Promise<Message | { _id: string }> {
 		const mentionUserRegex = new RegExp('(@[\\wא-ת-_]+)', 'g');
 		const mentions = text.match(mentionUserRegex);
-		let userMentions: IMention[] = [];
-		let usersData: IUser[] = [];
+		let userMentions: Mention[] = [];
+		let usersData: User[] = [];
 
 		if (mentions) {
 			const usernames = mentions.map(mention => mention.slice(1));
-			usersData = await User.find({
+			usersData = await UserModel.find({
 				displayName: { $in: usernames }
 			}).select('displayName _id slug');
 
 			if (usersData.length) {
-				userMentions = usersData.reduce(
-					(acc: IMention[], currentUser: IUser) => {
-						const { displayName, slug, _id } = currentUser;
-						const startIndex = text.indexOf(displayName) - 1;
-						const endIndex = startIndex + displayName.length + 1;
+				userMentions = usersData.reduce((acc: Mention[], currentUser: User) => {
+					const { displayName, slug, _id } = currentUser;
+					const startIndex = text.indexOf(displayName) - 1;
+					const endIndex = startIndex + displayName.length + 1;
 
-						acc.push({
-							indices: [startIndex, endIndex],
-							displayName,
-							slug,
-							_id
-						});
+					acc.push({
+						indices: [startIndex, endIndex],
+						displayName,
+						slug,
+						_id
+					});
 
-						return acc;
-					},
-					[]
-				);
+					return acc;
+				}, []);
 			}
 		}
 
-		const preSaveId = new Message();
+		const preSaveId = new MessageModel();
 		const { _id, displayName, slug, avatar } = user;
 		const messageData = {
 			_id: preSaveId._id,
@@ -200,7 +194,7 @@ export default class ChatResolver {
 			userMentions
 		};
 
-		pubSub.publish(SubscriptionTypesEnum.NEW_MESSAGE, {
+		await pubSub.publish(SubscriptionTypesEnum.NEW_MESSAGE, {
 			message: {
 				...messageData,
 				createdAt: new Date(),
@@ -214,7 +208,7 @@ export default class ChatResolver {
 			chatSlug
 		});
 
-		const targetChatRoom = await Chat.findOne({
+		const targetChatRoom = await ChatModel.findOne({
 			$or: [
 				{ slug: chatSlug, isPrivate: false, storeMessages: true },
 				{
@@ -226,18 +220,18 @@ export default class ChatResolver {
 			]
 		});
 
-		let newMessage: IMessage = null;
+		let newMessage: Message = null;
 		if (targetChatRoom && targetChatRoom.storeMessages) {
-			newMessage = await Message.create(messageData);
+			newMessage = await MessageModel.create(messageData);
 			targetChatRoom.lastMessage = newMessage.text;
 			await targetChatRoom.save();
 
 			usersData.forEach(async ({ _id }) => {
 				if (user._id.toString() !== _id.toString()) {
-					const notification = await Notification.create(
+					const notification = await NotificationModel.create(
 						generateUserMentionedNotification(
-							user._id,
-							_id,
+							(user._id as unknown) as string,
+							(_id as unknown) as string,
 							`${chatSlug}/${newMessage._id}`
 						)
 					);
@@ -251,7 +245,9 @@ export default class ChatResolver {
 			});
 		}
 
-		return newMessage ? newMessage : { _id: preSaveId._id };
+		return newMessage
+			? newMessage
+			: { _id: (preSaveId._id as unknown) as string };
 	}
 
 	@UseMiddleware(Authenticated)
@@ -266,11 +262,11 @@ export default class ChatResolver {
 	@Mutation(returns => Boolean)
 	async updateMessage(
 		@Arg('updatePayload') updatePayload: UpdateMessageInput,
-		@Ctx('user') user: IUserSchemaMethods,
+		@Ctx('user') user: User & Document,
 		@PubSub() pubSub: PubSubEngine
 	): Promise<boolean> {
 		const { messageId, creationToken, crudType, chatSlug } = updatePayload;
-		const targetMessage = await Message.findOne({ _id: messageId });
+		const targetMessage = await MessageModel.findOne({ _id: messageId });
 		let isUserCreatedTargetMessage: boolean = false;
 		let shouldUpdateDB: boolean = false;
 
@@ -343,7 +339,7 @@ export default class ChatResolver {
 		@Arg('file', () => GraphQLUpload) file: IFileInput,
 		@Arg('chatSlug') chatSlug: string,
 		@Arg('messageId') messageId: string,
-		@Ctx('user') user: IUser,
+		@Ctx('user') user: User,
 		@PubSub() pubSub: PubSubEngine
 	): Promise<boolean> {
 		const fileData = await uploadFile(file, chatSlug);
@@ -355,7 +351,7 @@ export default class ChatResolver {
 			updateType: SubscriptionTypesEnum.FILE_UPLOADED
 		});
 
-		await Message.updateOne(
+		await MessageModel.updateOne(
 			{
 				_id: messageId,
 				'createdBy._id': user._id
@@ -373,10 +369,10 @@ export default class ChatResolver {
 	async updateActiveUsers(
 		@Arg('chatSlug') chatSlug: string,
 		@Arg('crudType') crudType: string,
-		@Ctx('user') user: IUser,
+		@Ctx('user') user: User,
 		@PubSub() pubSub: PubSubEngine
 	): Promise<void> {
-		let userList: IUser[] = null;
+		let userList: User[] = null;
 
 		switch (crudType) {
 			case CrudEnum.UPDATE:
@@ -401,7 +397,7 @@ export default class ChatResolver {
 	updateTypingUsers(
 		@Arg('chatSlug') chatSlug: string,
 		@Arg('crudType') crudType: string,
-		@Ctx('user') user: IUser,
+		@Ctx('user') user: User,
 		@PubSub() pubSub: PubSubEngine
 	) {
 		pubSub.publish(SubscriptionTypesEnum.UPDATE_TYPING_USERS, {
@@ -416,31 +412,31 @@ export default class ChatResolver {
 	}
 
 	@UseMiddleware(Authenticated)
-	@Subscription(returns => MessageEntity, {
+	@Subscription(returns => Message, {
 		topics: SubscriptionTypesEnum.NEW_MESSAGE,
 		defaultValue: null,
 		filter: ({ payload, args }) => payload.chatSlug === args.chatSlug
 	})
 	newMessage(
-		@Root() messagePayload: { message: IMessage },
+		@Root() messagePayload: { message: Message },
 		@Arg('chatSlug') chatSlug: string,
 		@Ctx('ctx') ctx
-	): IMessage {
+	): Message {
 		return messagePayload.message;
 	}
 
 	@UseMiddleware(Authenticated)
 	@UseMiddleware(withPermission([ChatPermissionTypesEnum.VIEW_CHAT]))
-	@Subscription(returns => [UserEntity], {
+	@Subscription(returns => [User], {
 		topics: SubscriptionTypesEnum.UPDATE_ACTIVE_USERS,
 		defaultValue: [],
 		filter: ({ payload, args }) => payload.chatSlug === args.chatSlug
 	})
 	subscribeToActiveUsersUpdates(
 		@Root()
-		payloadData: { chatSlug: string; userList: IUser[]; crudType: string },
+		payloadData: { chatSlug: string; userList: User[]; crudType: string },
 		@Arg('chatSlug') chatSlug: string
-	): IUser[] {
+	): User[] {
 		return payloadData.userList;
 	}
 
@@ -482,20 +478,20 @@ export default class ChatResolver {
 	subscribeToTypingUsersUpdates(@Root()
 	payloadData: {
 		chatSlug: string;
-		user: IUser;
+		user: User;
 		crudType: string;
 	}) {
 		return payloadData;
 	}
 
 	@FieldResolver()
-	async admin(@Root() chat: IChat): Promise<IUser> {
-		return await User.findById(chat.admin);
+	async createdBy(@Root() chat: Chat): Promise<User> {
+		return await UserModel.findById(chat.createdBy);
 	}
 
 	@FieldResolver()
-	async messages(@Root() chat: IChat): Promise<IMessage[]> {
-		const messages = await Message.find({
+	async messages(@Root() chat: Chat): Promise<Message[]> {
+		const messages = await MessageModel.find({
 			chatSlug: chat.slug
 		})
 			.limit(20)
