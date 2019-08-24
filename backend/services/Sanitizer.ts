@@ -4,7 +4,8 @@ class Sanitizer {
 	private readonly excluded: { [key: string]: boolean };
 	constructor() {
 		this.excluded = {
-			file: true
+			file: true,
+			limit: true
 		};
 	}
 

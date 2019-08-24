@@ -9,7 +9,7 @@ import {
 	Subscription,
 	UseMiddleware
 } from 'type-graphql';
-import { User, UserModel } from '../../entities/User.model';
+import { User, UserModel } from '../../entities/User';
 import { Authenticated, WithPermission } from '../../middlewares';
 import {
 	IUserMentionedOutput,
@@ -17,10 +17,7 @@ import {
 } from './user.resolver.outputs';
 import * as jwt from 'jsonwebtoken';
 import { UserPermissionTypesEnum } from '../../permissions';
-import {
-	Notification,
-	NotificationModel
-} from '../../entities/Notification.model';
+import { Notification, NotificationModel } from '../../entities/Notification';
 import { SubscriptionTypesEnum } from '../../types/enums';
 
 @Resolver(User)

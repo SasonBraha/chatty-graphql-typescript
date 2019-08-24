@@ -12,11 +12,11 @@ import {
 	Subscription,
 	UseMiddleware
 } from 'type-graphql';
-import { Chat, ChatModel } from '../../entities/Chat.model';
-import { User, UserModel } from '../../entities/User.model';
-import { NotificationModel } from '../../entities/Notification.model';
-import { Message, MessageModel } from '../../entities/Message.model';
-import { Mention } from '../../entities/Mention.model';
+import { Chat, ChatModel } from '../../entities/Chat';
+import { User, UserModel } from '../../entities/User';
+import { NotificationModel } from '../../entities/Notification';
+import { Message, MessageModel } from '../../entities/Message';
+import { Mention } from '../../entities/Mention';
 import { ObjectID } from 'bson';
 import { CreateChatInput, IFileInput } from './chat.resolver.inputs';
 import activeUsersService from '../../redis/services/ActiveUsers.service';

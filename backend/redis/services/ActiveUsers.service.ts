@@ -1,8 +1,8 @@
 import { redis, RedisCategoriesEnum } from '../../services';
-import { IUser } from '../../entities/User.model';
+import { User } from '../../entities/User';
 
 class ActiveUsersService {
-	public async getUsers(chatSlug: string): Promise<IUser[]> {
+	public async getUsers(chatSlug: string): Promise<User[]> {
 		const userList = await redis.hget(
 			RedisCategoriesEnum.ACTIVE_USERS,
 			chatSlug
@@ -11,7 +11,7 @@ class ActiveUsersService {
 	}
 
 	private async updateUserList(
-		userList: IUser[],
+		userList: User[],
 		chatSlug: string
 	): Promise<void> {
 		await redis.hset(
@@ -21,19 +21,19 @@ class ActiveUsersService {
 		);
 	}
 
-	public async addUser(chatSlug: string, userData: IUser): Promise<IUser[]> {
-		const userList: IUser[] = await this.getUsers(chatSlug);
+	public async addUser(chatSlug: string, userData: User): Promise<User[]> {
+		const userList: User[] = await this.getUsers(chatSlug);
 		userList.push({
 			_id: userData._id,
 			slug: userData.slug,
 			avatar: userData.avatar,
 			displayName: userData.displayName
-		} as IUser);
+		} as User);
 		await this.updateUserList(userList, chatSlug);
 		return userList;
 	}
 
-	public async removeUser(chatSlug: string, userData: IUser): Promise<IUser[]> {
+	public async removeUser(chatSlug: string, userData: User): Promise<User[]> {
 		const userList = await this.getUsers(chatSlug);
 		const updatedUserList = userList.filter(user => user._id != userData._id);
 		await this.updateUserList(updatedUserList, chatSlug);

@@ -13,7 +13,7 @@ class FileDimensions {
 @ObjectType()
 export class File {
 	@Field(type => ID)
-	readonly _id: ObjectId;
+	readonly _id?: ObjectId;
 
 	@Field({ nullable: true })
 	mimeType: string;

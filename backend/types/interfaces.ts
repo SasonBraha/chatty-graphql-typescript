@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import { User } from '../entities/User.model';
+import { User } from '../entities/User';
 import { ObjectId } from 'mongodb';
 
 export interface IContext {

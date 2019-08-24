@@ -3,13 +3,13 @@ import { createBufferFromStream, extractDataFromBuffer } from './index';
 import { IFileData } from './extractDataFromBuffer';
 import * as uuid from 'uuid';
 import s3 from '../../services/s3';
-import { IFile } from '../../entities/File.model';
+import { File } from '../../entities/File';
 
 const uploadFile = (
 	file: IFileInput,
 	reference: string,
 	maxFileSizeInKB: number = 5000
-): Promise<IFile> => {
+): Promise<File> => {
 	return new Promise(async (resolve, reject) => {
 		const fileBuffer: Buffer = await createBufferFromStream(file);
 		const { mimeType, dimensions }: IFileData = extractDataFromBuffer(
@@ -25,7 +25,7 @@ const uploadFile = (
 			ContentType: mimeType
 		};
 
-		const fileData: IFile = {
+		const fileData: File = {
 			mimeType,
 			path: uploadData.Key,
 			isStored: true,

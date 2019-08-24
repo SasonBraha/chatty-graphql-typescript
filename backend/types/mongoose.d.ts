@@ -1,6 +1,5 @@
 import { Document } from 'mongoose';
 import { IQueryCacheOptions } from './interfaces';
-import { ObjectId } from 'mongodb';
 
 declare module 'mongoose' {
 	interface Query<T> {

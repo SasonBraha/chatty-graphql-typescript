@@ -6,9 +6,9 @@ import {
 	Typegoose
 } from 'typegoose';
 import { ObjectId } from 'mongodb';
-import { User } from './User.model';
-import { File } from './File.model';
-import { Message } from './Message.model';
+import { User } from './User';
+import { File } from './File';
+import { Message } from './Message';
 
 @ObjectType()
 export class Chat extends Typegoose {

@@ -1,6 +1,6 @@
 import { Field, ObjectType } from 'type-graphql';
-import { User } from '../../entities/User.model';
-import { Notification } from '../../entities/Notification.model';
+import { User } from '../../entities/User';
+import { Notification } from '../../entities/Notification';
 
 @ObjectType()
 export class SearchUsersOutput {

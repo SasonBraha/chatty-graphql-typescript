@@ -1,4 +1,4 @@
-import { File } from './File.model';
+import { File } from './File';
 import { Field, ID, ObjectType } from 'type-graphql';
 import * as sanitizeHtml from 'sanitize-html';
 import {
@@ -8,7 +8,7 @@ import {
 	Typegoose
 } from 'typegoose';
 import { ObjectId } from 'mongodb';
-import { Mention } from './Mention.model';
+import { Mention } from './Mention';
 
 @ObjectType()
 class CreatedBy {

@@ -1,6 +1,7 @@
 import * as jwt from 'jsonwebtoken';
 import { ErrorTypesEnum } from '../utils/errors';
-import { User, UserModel } from '../entities/User.model';
+import { User, UserModel } from '../entities/User';
+import { ObjectId } from 'mongodb';
 
 export default async (authToken: string) => {
 	try {
@@ -15,7 +16,9 @@ export default async (authToken: string) => {
 		if (!isTokenValid) throw new Error();
 
 		const userData = isTokenValid;
-		return await UserModel.findById(userData._id).cache({ key: userData._id });
+		return await UserModel.findById(new ObjectId(userData._id)).cache({
+			key: userData._id
+		});
 	} catch (ex) {
 		throw new Error(ErrorTypesEnum.INVALID_TOKEN);
 	}

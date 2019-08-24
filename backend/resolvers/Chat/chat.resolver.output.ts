@@ -1,6 +1,6 @@
-import { Message } from '../../entities/Message.model';
-import { File } from '../../entities/File.model';
-import { User } from '../../entities/User.model';
+import { Message } from '../../entities/Message';
+import { File } from '../../entities/File';
+import { User } from '../../entities/User';
 import { Field, ObjectType } from 'type-graphql';
 
 export interface IMessageCreatedOutput {

@@ -11,8 +11,8 @@ import {
 	Typegoose
 } from 'typegoose';
 import { ObjectId } from 'mongodb';
-import { Chat } from './Chat.model';
-import { Notification } from './Notification.model';
+import { Chat } from './Chat';
+import { Notification } from './Notification';
 
 @ObjectType()
 @Pre<User>('save', async function(next) {
