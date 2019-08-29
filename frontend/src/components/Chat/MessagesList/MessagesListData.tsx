@@ -5,7 +5,6 @@ import { IChatProps } from '../Chat';
 import { IChat, IMessage } from '../../../types/interfaces';
 import produce from 'immer';
 import { useQuery } from '@apollo/react-hooks';
-import { setGenericModal } from '../../../apollo/actions';
 import { useTranslation } from 'react-i18next';
 import { Redirect } from 'react-router';
 
@@ -48,7 +47,7 @@ const MESSAGES_LIST_QUERY = gql`
 
 const MESSAGES_LIST_UPDATES = gql`
 	subscription($chatSlug: String!) {
-		messagesUpdates(chatSlug: $chatSlug)
+		onMessageUpdate(chatSlug: $chatSlug)
 	}
 `;
 
@@ -142,7 +141,7 @@ const MessagesListData = (props: IProps) => {
 					variables: { chatSlug },
 					updateQuery: (prev, { subscriptionData }) => {
 						const updatedData = JSON.parse(
-							subscriptionData.data.messagesUpdates
+							subscriptionData.data.onMessageUpdate
 						);
 						const updateType = updatedData.updateType;
 						switch (updateType) {

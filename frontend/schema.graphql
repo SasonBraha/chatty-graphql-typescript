@@ -53,11 +53,13 @@ type Mention {
 }
 
 type Message {
-    _id: ID!
+    _id: ID
     chatSlug: String!
+    createdAt: DateTime!
     createdBy: CreatedBy!
     creationToken: String
-    file: File!
+    file: File
+    isClientDeleted: Boolean
     text: String!
     userMentions: [Mention!]
 }
@@ -103,10 +105,10 @@ type SearchUsersOutput {
 }
 
 type Subscription {
-    messagesUpdates(chatSlug: String!): String!
-    newMessage(chatSlug: String!): Message
-    subscribeToActiveUsersUpdates(chatSlug: String!): [User!]
-    subscribeToTypingUsersUpdates: UserTypingOutput
+    onActiveUsersUpdate(chatSlug: String!): [User!]
+    onMessageUpdate(chatSlug: String!): String!
+    onNewMessage(chatSlug: String!): Message
+    onTypingUsersUpdate: UserTypingOutput
     userUpdates: String!
 }
 
@@ -121,7 +123,6 @@ type User {
     ipAddress: String!
     lastActivity: DateTime!
     notifications: [Notification!]!
-    password: String!
     permissions: [String!]!
     role: String!
     slug: String!

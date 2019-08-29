@@ -25,7 +25,7 @@ const ROOMS_LIST_QUERY = gql`
 
 const TYPING_USERS_SUBSCRIPTION = gql`
 	subscription {
-		subscribeToTypingUsersUpdates {
+		onTypingUsersUpdate {
 			crudType
 			chatSlug
 			user {
@@ -53,7 +53,7 @@ const RoomsList: React.FC<IProps> = props => {
 		onSubscriptionData({ subscriptionData }) {
 			const {
 				data: {
-					subscribeToTypingUsersUpdates: { chatSlug, crudType, user }
+					onTypingUsersUpdate: { chatSlug, crudType, user }
 				}
 			} = subscriptionData;
 			setTypingUsers(user, crudType, chatSlug);

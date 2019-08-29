@@ -285,7 +285,7 @@ export default class ChatResolver {
 			}
 		} else if (targetMessage) {
 			isUserCreatedTargetMessage =
-				targetMessage.createdBy._id === user._id.toString();
+				targetMessage.createdBy._id.toString() === user._id.toString();
 			shouldUpdateDB = true;
 		}
 
@@ -295,7 +295,7 @@ export default class ChatResolver {
 					user.hasPermission([ChatPermissionTypesEnum.DELETE_MESSAGE]) ||
 					isUserCreatedTargetMessage
 				) {
-					pubSub.publish(SubscriptionTypesEnum.MESSAGE_DELETED, {
+					await pubSub.publish(SubscriptionTypesEnum.MESSAGE_DELETED, {
 						messageId,
 						chatSlug: chatSlug,
 						updateType: SubscriptionTypesEnum.MESSAGE_DELETED
@@ -317,7 +317,7 @@ export default class ChatResolver {
 						allowedAttributes: {}
 					});
 
-					pubSub.publish(SubscriptionTypesEnum.MESSAGE_EDITED, {
+					await pubSub.publish(SubscriptionTypesEnum.MESSAGE_EDITED, {
 						chatSlug: chatSlug,
 						updatedText: sanitizedText,
 						updateType: SubscriptionTypesEnum.MESSAGE_EDITED,
@@ -417,7 +417,7 @@ export default class ChatResolver {
 		defaultValue: null,
 		filter: ({ payload, args }) => payload.chatSlug === args.chatSlug
 	})
-	newMessage(
+	onNewMessage(
 		@Root() messagePayload: { message: Message },
 		@Arg('chatSlug') chatSlug: string,
 		@Ctx('ctx') ctx
@@ -432,7 +432,7 @@ export default class ChatResolver {
 		defaultValue: [],
 		filter: ({ payload, args }) => payload.chatSlug === args.chatSlug
 	})
-	subscribeToActiveUsersUpdates(
+	onActiveUsersUpdate(
 		@Root()
 		payloadData: { chatSlug: string; userList: User[]; crudType: string },
 		@Arg('chatSlug') chatSlug: string
@@ -458,7 +458,7 @@ export default class ChatResolver {
 		],
 		filter: ({ payload, args }) => payload.chatSlug === args.chatSlug
 	})
-	messagesUpdates(
+	onMessageUpdate(
 		@Root()
 		subscriptionPayload:
 			| IMessageCreatedOutput
@@ -475,7 +475,7 @@ export default class ChatResolver {
 		defaultValue: null,
 		filter: ({ payload, context }) => payload.user.slug !== context.user.slug
 	})
-	subscribeToTypingUsersUpdates(@Root()
+	onTypingUsersUpdate(@Root()
 	payloadData: {
 		chatSlug: string;
 		user: User;

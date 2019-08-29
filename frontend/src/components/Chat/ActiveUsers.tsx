@@ -11,7 +11,7 @@ import { afterRender } from '../../utils';
 
 const ACTIVE_USERS_SUBSCRIPTION = gql`
 	subscription($chatSlug: String!) {
-		subscribeToActiveUsersUpdates(chatSlug: $chatSlug) {
+		onActiveUsersUpdate(chatSlug: $chatSlug) {
 			displayName
 			avatar
 			slug
@@ -51,7 +51,7 @@ const ActiveUsers: React.FC<IProps> = props => {
 	`);
 	const [previousSlug, setPreviousSlug] = useState(chatSlug);
 	const client = useApolloClient();
-	const { data = { subscribeToActiveUsersUpdates: [] } } = useSubscription(
+	const { data = { onActiveUsersUpdate: [] } } = useSubscription(
 		ACTIVE_USERS_SUBSCRIPTION,
 		{
 			variables: { chatSlug }
@@ -70,7 +70,7 @@ const ActiveUsers: React.FC<IProps> = props => {
 
 	return (
 		<S.ActiveUsers>
-			{data.subscribeToActiveUsersUpdates.map((user: IUser, i: number) => (
+			{data.onActiveUsersUpdate.map((user: IUser, i: number) => (
 				<Link to={`/user/${user.slug}`} key={i}>
 					<S.ActiveUser>
 						<S.Avatar src={user.avatar} alt={user.displayName} />
