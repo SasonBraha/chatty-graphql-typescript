@@ -1,0 +1,28 @@
+version: '3.7'
+services:
+  chatty-backend:
+    container_name: chatty-backend
+    # image: node:buster
+    build: ./
+    volumes:
+      - ./:/usr/src/chatty-backend
+    command: npm start
+    working_dir: /usr/src/chatty-backend
+    environment:
+      REDIS_URL: redis
+      MONGO_URI: mongodb
+    ports:
+      - "5000:5000"
+    links:
+      - redis
+      - mongodb
+
+  mongodb:
+    image: 'mongo:bionic'
+    ports:
+      - "27017:27017"
+
+  redis:
+    image: 'redis'
+    ports:
+      - "6379:6379"

@@ -4,6 +4,6 @@ export enum RedisCategoriesEnum {
 	ACTIVE_USERS = 'ACTIVE_USERS'
 }
 
-const redis = new Redis(process.env.REDIS_URL);
+const redis = new Redis({ host: 'redis' });
 
 export default redis;
