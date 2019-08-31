@@ -12,7 +12,7 @@ type Chat {
     createdBy: User!
     image: File!
     isPrivate: Boolean!
-    lastMessage: String!
+    lastMessage: String
     messages: [Message!]!
     moderators: [User!]!
     name: String!
@@ -30,7 +30,7 @@ type CreatedBy {
 type File {
     _id: ID!
     dimensions: FileDimensions!
-    isStored: Boolean!
+    isStoredRemotely: Boolean!
     mimeType: String
     path: String!
 }
@@ -66,7 +66,7 @@ type Message {
 
 type Mutation {
     changePassword(newPassword: String!, token: String): Boolean!
-    createChat(data: CreateChatInput!): Chat!
+    createChatRoom(data: CreateChatInput!): Chat!
     createRestPasswordToken(email: String!): String!
     login(data: LoginInput!): String
     loginWithGoogle(token: String!): String

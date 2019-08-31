@@ -20,6 +20,7 @@ import {
 import { useLocalCache } from './Shared/Hooks';
 import { USER_ENTITY_FRAGMENT } from '../apollo/fragments';
 import { RouterProps } from 'react-router';
+import { hot } from 'react-hot-loader/root';
 
 const ME_DATA_QUERY = gql`
 	query {
@@ -134,4 +135,4 @@ S.Content = styled.div`
 `;
 
 // @ts-ignore
-export default withRouter(App);
+export default withRouter(hot(App));

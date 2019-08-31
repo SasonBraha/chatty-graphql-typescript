@@ -22,7 +22,7 @@ export class File {
 	path: string;
 
 	@Field()
-	isStored: boolean;
+	isStoredRemotely: boolean;
 
 	@Field()
 	dimensions: FileDimensions;

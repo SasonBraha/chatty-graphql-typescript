@@ -123,7 +123,7 @@ export default class ChatResolver {
 	@UseMiddleware(Authenticated)
 	@UseMiddleware(WithPermission([ChatPermissionTypesEnum.CREATE_CHAT]))
 	@Mutation(returns => Chat)
-	async createChat(
+	async createChatRoom(
 		@Arg('data') { name, isPrivate, storeMessages }: CreateChatInput,
 		@Ctx('user') user: User
 	): Promise<Chat> {

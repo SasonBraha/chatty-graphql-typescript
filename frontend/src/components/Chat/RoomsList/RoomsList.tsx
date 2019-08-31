@@ -15,7 +15,6 @@ const ROOMS_LIST_QUERY = gql`
 			name
 			image {
 				path
-				isStored
 			}
 			slug
 			lastMessage

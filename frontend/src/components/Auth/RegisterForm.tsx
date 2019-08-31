@@ -32,7 +32,7 @@ interface IFormValues {
 	captcha: string;
 }
 
-const LoginForm = (props: FormikProps<IFormValues>) => {
+const RegisterForm = (props: FormikProps<IFormValues>) => {
 	const {
 		values,
 		errors,
@@ -139,4 +139,4 @@ export default withFormik({
 			}
 		}
 	}
-})(LoginForm);
+})(RegisterForm);

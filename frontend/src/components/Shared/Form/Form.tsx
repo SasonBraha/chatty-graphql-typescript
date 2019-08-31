@@ -22,7 +22,6 @@ const Form = (props: IProps) => (
 
 const S: any = {};
 S.Form = styled.form`
-	max-width: 70%;
 	margin: 0 auto;
 
 	@media (max-width: 700px) {

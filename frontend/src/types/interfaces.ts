@@ -55,7 +55,7 @@ export interface IFile {
 	__typename: string;
 	mimeType?: string;
 	path: string;
-	isStored: boolean;
+	isStoredRemotely: boolean;
 	dimensions: {
 		width: number;
 		height: number;

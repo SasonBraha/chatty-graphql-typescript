@@ -47,7 +47,7 @@ export class Chat extends Typegoose {
 	@Property({ ref: { name: 'User' }, required: true })
 	createdBy: Ref<User>;
 
-	@Field(type => String)
+	@Field(type => String, { nullable: true })
 	@Property({ trim: true })
 	lastMessage: string;
 
@@ -56,5 +56,5 @@ export class Chat extends Typegoose {
 }
 
 export const ChatModel = new Chat().getModelForClass(Chat, {
-	schemaOptions: { timestamps: true, collection: 'rooms' }
+	schemaOptions: { timestamps: true, collection: 'chatRooms' }
 });

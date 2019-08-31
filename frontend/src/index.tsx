@@ -6,17 +6,14 @@ import { BrowserRouter as Router } from 'react-router-dom';
 import apolloClient from './apollo/client';
 import { ThemeProvider } from 'styled-components';
 import { defaultTheme } from './style/theme';
-import './style/base.css';
 import { ApolloProvider } from '@apollo/react-hooks';
-import './locale';
-
-const HMRApp = hot(App);
+import './style/base.css';
 
 ReactDOM.render(
 	<ApolloProvider client={apolloClient}>
 		<Router>
 			<ThemeProvider theme={defaultTheme}>
-				<HMRApp />
+				<App />
 			</ThemeProvider>
 		</Router>
 	</ApolloProvider>,

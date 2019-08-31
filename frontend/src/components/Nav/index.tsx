@@ -17,7 +17,7 @@ const navItems = [
 	}
 ];
 
-const Nav = (props: IProps) => {
+const Nav: React.FC<IProps> = props => {
 	const { isNavOpen } = useLocalCache('isNavOpen');
 	return (
 		<S.Nav isNavOpen={isNavOpen}>

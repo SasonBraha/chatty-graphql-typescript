@@ -45,7 +45,8 @@ const wsLink = () => {
 };
 
 const httpLink = createUploadLink({
-	uri: process.env.REACT_APP_GRAPHQL_URI
+	uri: process.env.REACT_APP_GRAPHQL_URI,
+	credentials: 'same-origin'
 });
 
 const authLink = setContext((_, { headers }) => {
