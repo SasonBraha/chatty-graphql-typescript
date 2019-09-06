@@ -33,6 +33,7 @@ const main = async () => {
 			useFindAndModify: false,
 			useCreateIndex: true
 		})
+		.then(() => console.log('Connected to MongoDB Successfully'))
 		.catch(ex => {
 			throw new Error(ex);
 		});

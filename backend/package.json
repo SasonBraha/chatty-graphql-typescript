@@ -4,7 +4,7 @@
 	"description": "Chatty - Backend",
 	"main": "app.ts",
 	"scripts": {
-		"test": "echo \"Error: no test specified\" && exit 1"
+		"start": "tsnd --respawn --transpileOnly app.ts"
 	},
 	"author": "Sason Braha",
 	"license": "ISC",
@@ -38,6 +38,7 @@
 		"sanitize-html": "^1.20.1",
 		"type-graphql": "^0.17.5",
 		"typegoose": "^5.9.0",
+		"typescript": "^3.6.2",
 		"uuid": "^3.3.3",
 		"winston": "^3.2.1",
 		"winston-daily-rotate-file": "^3.10.0"
@@ -58,10 +59,5 @@
 		"@types/passport": "^1.0.1",
 		"morgan": "^1.9.1",
 		"ts-node-dev": "^1.0.0-pre.32"
-	},
-	"babelMacros": {
-		"styledComponents": {
-			"pure": true
-		}
 	}
 }
