@@ -9,7 +9,8 @@ declare global {
 			S3_SECRET_ACCESS_KEY: string;
 			S3_BUCKET: string;
 			MONGO_URI: string;
-			REDIS_URL: string;
+			REDIS_HOST: string;
+			REDIS_PORT: number;
 			BASE_URL: string;
 			GOOGLE_OAUTH_CLIENT_ID: string;
 			GOOGLE_OAUTH_CLIENT_SECRET: string;
