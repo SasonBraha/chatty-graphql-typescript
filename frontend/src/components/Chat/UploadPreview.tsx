@@ -91,7 +91,7 @@ S.UploadPreview = styled.div`
 		${S.Image}, ${S.Video} {
 			opacity: 1;
 			transform: scale(1);
-			border-radius: 0.4rem;
+			border-radius: 1.5rem;
 		}
 	}
 `;

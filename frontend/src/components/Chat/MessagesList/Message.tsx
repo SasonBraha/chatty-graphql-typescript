@@ -13,6 +13,7 @@ import reactStringReplace from 'react-string-replace';
 import { Link } from 'react-router-dom';
 import { withTranslation } from '../../Shared/Hoc';
 import { Image } from '../../Shared';
+import { getRuntimeImageDimensions } from '../../../utils';
 
 const UPDATE_MESSAGE_MUTATION = gql`
 	mutation(
@@ -45,13 +46,15 @@ interface IProps {
 interface IState {
 	messageBody: string;
 	isEditable: boolean;
+	isMediaLoaded: boolean;
 }
 
 @withTranslation()
 class Message extends Component<IProps, IState> {
 	state = {
 		messageBody: this.props.message.text,
-		isEditable: false
+		isEditable: false,
+		isMediaLoaded: false
 	};
 
 	componentDidUpdate(prevProps: IProps, prevState: IState) {
@@ -99,11 +102,33 @@ class Message extends Component<IProps, IState> {
 	renderFile = () => {
 		const { file } = this.props.message;
 		if (file) {
+			const { width, height } = file.dimensions;
+			const MAX_HEIGHT = 320;
+			const MAX_WIDTH = 480;
+			const {
+				width: runtimeWidth,
+				height: runtimeHeight
+			} = getRuntimeImageDimensions(MAX_WIDTH, MAX_HEIGHT, width, height);
+
 			return (
-				<S.Image
-					src={`${process.env.REACT_APP_S3_BUCKET_URL}/${file.path}`}
-					id={this.props.message._id}
-				/>
+				<S.MediaLoader
+					style={{
+						width: runtimeWidth,
+						height: runtimeHeight
+					}}
+					isMediaLoaded={this.state.isMediaLoaded}
+				>
+					<S.Image
+						src={`${process.env.REACT_APP_S3_BUCKET_URL}/${file.path}`}
+						id={this.props.message._id}
+						onLoad={() => {
+							console.log('loaded');
+							this.setState({
+								isMediaLoaded: true
+							});
+						}}
+					/>
+				</S.MediaLoader>
 			);
 		}
 	};
@@ -283,6 +308,34 @@ S.Editable = styled(({ isMine, ...rest }) => <Editable {...rest} />)<{
 				border: 1px dashed #767676;
 			`}
 	}
+`;
+
+S.MediaLoader = styled('div')<{ isMediaLoaded: boolean }>`
+	position: relative;
+
+	&:before {
+		content: '';
+		position: absolute;
+		top: 0;
+		left: 0;
+		width: 100%;
+		height: 100%;
+		background: white;
+		opacity: 1;
+		visibility: visible;
+		transition: 0.3s;
+		z-index: 1;
+	}
+
+	${({ isMediaLoaded }) =>
+		isMediaLoaded &&
+		css`
+			&:before {
+				opacity: 0;
+				visibility: hidden;
+				pointer-events: none;
+			}
+		`}
 `;
 
 export default Message;

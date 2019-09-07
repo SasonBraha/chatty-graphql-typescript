@@ -9,6 +9,7 @@ import { ApolloClient } from 'apollo-client';
 import client from '../../../apollo/client';
 import { withLocalCache, withTranslation } from '../../Shared/Hoc';
 import { USER_ENTITY_FRAGMENT } from '../../../apollo/fragments';
+import { afterRender } from '../../../utils';
 
 interface IProps {
 	currentUser?: IUser | null;
@@ -133,7 +134,10 @@ class MessagesList extends Component<IProps, IState> {
 				return (this.messagesList.current.scrollTop =
 					this.messagesList.current.scrollHeight - snapshot);
 			}
-			this.listEnd.current.scrollIntoView();
+
+			afterRender(() => {
+				this.listEnd.current.scrollIntoView();
+			});
 		}
 	}
 

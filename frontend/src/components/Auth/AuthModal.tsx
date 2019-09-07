@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Modal } from '../Shared';
 import LoginForm from './LoginForm';
 import RegisterForm from './RegisterForm';
@@ -19,6 +19,12 @@ const AuthModal: React.FC<IProps> = props => {
 	const [currentDisplay, setCurrentDisplay] = useState<AuthModalDisplayState>(
 		AuthModalDisplayState.login
 	);
+
+	useEffect(() => {
+		if (currentDisplay === AuthModalDisplayState.register && showAuthModal) {
+			setCurrentDisplay(AuthModalDisplayState.login);
+		}
+	}, [showAuthModal]);
 
 	return (
 		<Modal isOpen={showAuthModal}>

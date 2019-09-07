@@ -44,13 +44,16 @@ const RegisterForm = (props: FormikProps<IFormValues>) => {
 	let captchaRef: React.RefObject<any> = useRef();
 	const { t } = useTranslation();
 
-	useEffect(() => {
-		captchaRef.current.execute();
-	}, []);
-
 	return (
 		<>
-			<Form onSubmit={handleSubmit} icon={'icon-user-circle-o'} header='הרשמה'>
+			<Form
+				onSubmit={e => {
+					captchaRef.current.execute();
+					handleSubmit(e);
+				}}
+				icon={'icon-user-circle-o'}
+				header='הרשמה'
+			>
 				<FormGroup>
 					<TextInput
 						name='displayName'
