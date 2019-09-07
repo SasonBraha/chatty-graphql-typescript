@@ -18,6 +18,8 @@ services:
       - "27017:27017"
     networks:
       - app-network
+    volumes:
+      - ./db:/data/db
 
   redis:
     image: redis
