@@ -4,7 +4,7 @@
 	"description": "Chatty - Backend",
 	"main": "app.ts",
 	"scripts": {
-		"start": "tsnd --respawn --transpileOnly app.ts"
+		"start": "tsnd --respawn --transpileOnly --poll app.ts"
 	},
 	"author": "Sason Braha",
 	"license": "ISC",
