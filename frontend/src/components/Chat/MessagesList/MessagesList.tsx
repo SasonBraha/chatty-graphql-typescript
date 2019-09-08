@@ -86,7 +86,10 @@ class MessagesList extends Component<IProps, IState> {
 			prevProps,
 			this.props
 		);
-		if (newMessagesLength! - oldMessagesLength !== 1) {
+		if (
+			oldMessagesLength !== 0 &&
+			newMessagesLength! - oldMessagesLength !== 1
+		) {
 			return (
 				this.messagesList.current.scrollHeight -
 				this.messagesList.current.scrollTop

@@ -122,7 +122,6 @@ class Message extends Component<IProps, IState> {
 						src={`${process.env.REACT_APP_S3_BUCKET_URL}/${file.path}`}
 						id={this.props.message._id}
 						onLoad={() => {
-							console.log('loaded');
 							this.setState({
 								isMediaLoaded: true
 							});
@@ -297,7 +296,7 @@ S.Editable = styled(({ isMine, ...rest }) => <Editable {...rest} />)<{
 		background: #0268c7;
 		padding: 0.7rem;
 		border-radius: 0.3rem;
-		margin: 0.3rem 0;
+		margin: 1rem 0 0.7rem 0;
 		border: 1px dashed;
 		outline: none;
 
