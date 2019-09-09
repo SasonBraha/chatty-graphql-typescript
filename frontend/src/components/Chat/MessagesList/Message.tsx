@@ -105,29 +105,22 @@ class Message extends Component<IProps, IState> {
 			const { width, height } = file.dimensions;
 			const MAX_HEIGHT = 320;
 			const MAX_WIDTH = 480;
-			const {
-				width: runtimeWidth,
-				height: runtimeHeight
-			} = getRuntimeImageDimensions(MAX_WIDTH, MAX_HEIGHT, width, height);
 
 			return (
-				<S.MediaLoader
-					style={{
-						width: runtimeWidth,
-						height: runtimeHeight
+				<S.Image
+					src={`${process.env.REACT_APP_S3_BUCKET_URL}/${file.path}`}
+					id={this.props.message._id}
+					maxWidth={MAX_WIDTH}
+					maxHeight={MAX_HEIGHT}
+					naturalWidth={width}
+					naturalHeight={height}
+					onLoad={() => {
+						this.setState({
+							isMediaLoaded: true
+						});
 					}}
-					isMediaLoaded={this.state.isMediaLoaded}
-				>
-					<S.Image
-						src={`${process.env.REACT_APP_S3_BUCKET_URL}/${file.path}`}
-						id={this.props.message._id}
-						onLoad={() => {
-							this.setState({
-								isMediaLoaded: true
-							});
-						}}
-					/>
-				</S.MediaLoader>
+					lazy
+				/>
 			);
 		}
 	};
@@ -272,7 +265,7 @@ S.Image = styled(Image)`
 	max-height: 32rem;
 	max-width: 100%;
 	border-radius: 0.35rem;
-	border: 0.1rem solid ${props => props.theme.gray30};
+	box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
 	margin-top: 0.3rem;
 `;
 
