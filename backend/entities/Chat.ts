@@ -9,6 +9,7 @@ import { ObjectId } from 'mongodb';
 import { User } from './User';
 import { File } from './File';
 import { Message } from './Message';
+import { MessageConnection } from '../resolvers/Chat/chat.resolver.output';
 
 @ObjectType()
 export class Chat extends Typegoose {
@@ -51,8 +52,8 @@ export class Chat extends Typegoose {
 	@Property({ trim: true })
 	lastMessage: string;
 
-	@Field(type => [Message])
-	messages: Array<Message>;
+	@Field(type => MessageConnection)
+	messages: MessageConnection;
 }
 
 export const ChatModel = new Chat().getModelForClass(Chat, {

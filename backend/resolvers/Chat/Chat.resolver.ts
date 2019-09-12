@@ -10,7 +10,8 @@ import {
 	Resolver,
 	Root,
 	Subscription,
-	UseMiddleware
+	UseMiddleware,
+	Info
 } from 'type-graphql';
 import { Chat, ChatModel } from '../../entities/Chat';
 import { User, UserModel } from '../../entities/User';
@@ -32,6 +33,7 @@ import {
 	IMessageCreatedOutput,
 	IMessageDeletedOutput,
 	IMessageFileUploadedOutput,
+	MessageConnection,
 	UserTypingOutput
 } from './chat.resolver.output';
 import { UpdateMessageInput } from './chat.resolver.inputs';
@@ -490,13 +492,61 @@ export default class ChatResolver {
 	}
 
 	@FieldResolver()
-	async messages(@Root() chat: Chat): Promise<Message[]> {
-		const messages = await MessageModel.find({
-			chatSlug: chat.slug
-		})
-			.limit(20)
-			.sort({ createdAt: 'desc' });
+	async messages(
+		@Root() chat: Chat,
+		@Info() info: any,
+		@Arg('first', { nullable: true }) first: number,
+		@Arg('last', { nullable: true }) last: number,
+		@Arg('after', { nullable: true }) after: string,
+		@Arg('before', { nullable: true }) before: string
+	): Promise<MessageConnection> {
+		const limit = first || last || 20;
+		const cursor = new ObjectID(before || after);
+		const messages = await MessageModel.aggregate([
+			{
+				$match: {
+					_id: { [before ? '$lt' : '$gt']: cursor },
+					chatSlug: chat.slug
+				}
+			},
+			{ $sort: { createdAt: -1 } },
+			{ $limit: limit }
+		]);
 
-		return messages.reverse();
+		const edges = messages.map(message => ({
+			cursor: message._id,
+			node: message
+		}));
+		const pageInfo = {
+			async hasPreviousPage() {
+				if (messages.length < limit) return false;
+				return !!(await MessageModel.findOne({
+					_id: { [before ? '$lt' : '$gt']: cursor },
+					chatSlug: chat.slug
+				}));
+			},
+			async hasNextPage() {
+				if (messages.length < limit) return false;
+				return !!(await MessageModel.findOne({
+					_id: { [before ? '$lt' : '$gt']: messages[messages.length - 1]._id },
+					chatSlug: chat.slug
+				}));
+			}
+		};
+
+		return {
+			edges,
+			pageInfo: {
+				hasNextPage: await pageInfo.hasNextPage(),
+				hasPreviousPage: await pageInfo.hasPreviousPage()
+			}
+		};
+		// const messages = await MessageModel.find({
+		// 	chatSlug: chat.slug
+		// })
+		// 	.limit(20)
+		// 	.sort({ createdAt: 'desc' });
+		//
+		// return messages.reverse();
 	}
 }
