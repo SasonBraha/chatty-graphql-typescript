@@ -46,6 +46,7 @@ import * as sanitizeHtml from 'sanitize-html';
 import { generateUserMentionedNotification } from '../../utils/notifications';
 import * as jwt from 'jsonwebtoken';
 import { Document } from 'mongoose';
+import * as graphqlFields from 'graphql-fields';
 
 @Resolver(Chat)
 export default class ChatResolver {
@@ -500,6 +501,7 @@ export default class ChatResolver {
 		@Arg('after', { nullable: true }) after: string,
 		@Arg('before', { nullable: true }) before: string
 	): Promise<MessageConnection> {
+		const requestedFields = graphqlFields(info);
 		const limit = first || last || 20;
 		const cursor = new ObjectID(before || after);
 		const messages = await MessageModel.aggregate([
@@ -534,19 +536,22 @@ export default class ChatResolver {
 			}
 		};
 
-		return {
+		let returnValue = {
 			edges,
-			pageInfo: {
-				hasNextPage: await pageInfo.hasNextPage(),
-				hasPreviousPage: await pageInfo.hasPreviousPage()
-			}
+			pageInfo: {}
 		};
-		// const messages = await MessageModel.find({
-		// 	chatSlug: chat.slug
-		// })
-		// 	.limit(20)
-		// 	.sort({ createdAt: 'desc' });
-		//
-		// return messages.reverse();
+
+		if (requestedFields.pageInfo) {
+			const { hasNextPage, hasPreviousPage } = requestedFields.pageInfo;
+			if (hasNextPage) {
+				returnValue.pageInfo.hasNextPage = await pageInfo.hasNextPage();
+			}
+
+			if (hasPreviousPage) {
+				returnValue.pageInfo.hasPreviousPage = await pageInfo.hasPreviousPage();
+			}
+		}
+
+		return returnValue;
 	}
 }
