@@ -4,10 +4,7 @@ export enum RedisCategoriesEnum {
 	ACTIVE_USERS = 'ACTIVE_USERS'
 }
 
-const redis = new Redis({
-	host: process.env.REDIS_HOST,
-	port: process.env.REDIS_PORT
-});
+const redis = new Redis(process.env.REDIS_URI);
 redis.on('connect', () => {
 	console.log('Connected to Redis Successfully');
 });

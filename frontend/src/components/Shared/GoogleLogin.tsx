@@ -25,7 +25,9 @@ const GoogleLogin: React.FC<IProps> = props => {
 					<S.GoogleLogo src='./images/google_logo.svg' alt='google_logo' />
 				</S.GoogleLoginBtn>
 			)}
-			onFailure={() => null}
+			onFailure={(ex) => {
+				console.log('fail', ex)
+			}}
 			onSuccess={async response => {
 				const userAccessToken = await client.mutate({
 					mutation: LOGIN_WITH_GOOGLE_MUTATION,
