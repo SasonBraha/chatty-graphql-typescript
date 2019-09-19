@@ -31,7 +31,8 @@ const main = async () => {
 		.connect(process.env.MONGO_URI, {
 			useNewUrlParser: true,
 			useFindAndModify: false,
-			useCreateIndex: true
+			useCreateIndex: true,
+			useUnifiedTopology: true
 		})
 		.then(() => console.log('Connected to MongoDB Successfully'))
 		.catch(ex => {

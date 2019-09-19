@@ -61,7 +61,7 @@ export default class AuthResolver {
 			audience: process.env.GOOGLE_OAUTH_CLIENT_ID
 		});
 		const { email, name: displayName, picture: avatar } = ticket.getPayload();
-
+		console.log('here')
 		const user = await UserModel.findOne({ email });
 		const userData = user
 			? user
