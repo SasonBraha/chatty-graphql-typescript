@@ -3,10 +3,11 @@ import styled from 'styled-components/macro';
 import { LoadingShimmer } from '../../Shared';
 
 const MessagesListLoader = () => (
-	<ScMessagesListLoader randomInt={Math.round(Math.random())} />
+	<S.MessagesListLoader randomInt={Math.round(Math.random())} />
 );
 
-const ScMessagesListLoader = styled(LoadingShimmer)<{ randomInt: number }>`
+const S: any = {};
+S.MessagesListLoader = styled(LoadingShimmer)<{ randomInt: number }>`
 	box-shadow: 0 0 0.5rem rgba(0, 0, 0, 0.2);
 	width: 25rem;
 	height: 6.8rem;

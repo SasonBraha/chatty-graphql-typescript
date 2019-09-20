@@ -8,7 +8,7 @@ import Recaptcha from 'react-google-recaptcha';
 import client from '../../apollo/client';
 import { useTranslation } from 'react-i18next';
 const REGISTER_MUTATION = gql`
-	mutation(
+	mutation Register(
 		$displayName: String!
 		$email: String!
 		$password: String!

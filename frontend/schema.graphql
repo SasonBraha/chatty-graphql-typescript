@@ -13,7 +13,7 @@ type Chat {
     image: File!
     isPrivate: Boolean!
     lastMessage: String
-    messages: [Message!]!
+    messages(after: String, before: String, first: Float, last: Float): MessageConnection!
     moderators: [User!]!
     name: String!
     slug: String!
@@ -64,6 +64,16 @@ type Message {
     userMentions: [Mention!]
 }
 
+type MessageConnection {
+    edges: [MessageEdge!]!
+    pageInfo: PageInfo!
+}
+
+type MessageEdge {
+    cursor: String!
+    node: Message!
+}
+
 type Mutation {
     changePassword(newPassword: String!, token: String): Boolean!
     createChatRoom(data: CreateChatInput!): Chat!
@@ -86,6 +96,11 @@ type Notification {
     ref: String!
     sender: User!
     type: String!
+}
+
+type PageInfo {
+    hasNextPage: Boolean!
+    hasPreviousPage: Boolean!
 }
 
 type Query {

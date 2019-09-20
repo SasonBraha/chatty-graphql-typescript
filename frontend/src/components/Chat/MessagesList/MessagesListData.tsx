@@ -8,55 +8,68 @@ import { useQuery } from '@apollo/react-hooks';
 import { useTranslation } from 'react-i18next';
 import { Redirect } from 'react-router';
 
-const MESSAGE_DATA_FRAGMENT = `
-	_id
-	text
-	createdBy {
-		displayName
-		avatar
-		slug
-	}
-	file {
-		path
-		dimensions {
-			height
-			width
+const MESSAGE_ATTRIBUTES = gql`
+	fragment messageResults on Message {
+		_id
+		text
+		createdBy {
+			displayName
+			avatar
+			slug
 		}
-	}
-	isClientDeleted
-	creationToken
-	chatSlug
-	createdAt
-	userMentions {
-		displayName
-		indices
-		slug
+		file {
+			path
+			dimensions {
+				height
+				width
+			}
+		}
+		isClientDeleted
+		creationToken
+		chatSlug
+		createdAt
+		userMentions {
+			displayName
+			indices
+			slug
+		}
 	}
 `;
 
 const MESSAGES_LIST_QUERY = gql`
-    query($chatSlug: String!) {
-        chat(chatSlug: $chatSlug) {
-            storeMessages
-            messages {
-                ${MESSAGE_DATA_FRAGMENT}
-            }
-        }
-    }
+	query GetMessages($chatSlug: String!) {
+		chat(chatSlug: $chatSlug) {
+			storeMessages
+			messages(first: 20) {
+				edges {
+					cursor
+					node {
+						...messageResults
+					}
+				}
+				pageInfo {
+					hasNextPage
+					hasPreviousPage
+				}
+			}
+		}
+	}
+	${MESSAGE_ATTRIBUTES}
 `;
 
 const MESSAGES_LIST_UPDATES = gql`
-	subscription($chatSlug: String!) {
+	subscription SubscribeToMessageUpdates($chatSlug: String!) {
 		onMessageUpdate(chatSlug: $chatSlug)
 	}
 `;
 
 const GET_OLDER_MESSAGES = gql`
-    query($chatSlug: String!, $beforeMessageId: ID!) {
-        olderMessages(chatSlug: $chatSlug, beforeMessageId: $beforeMessageId) {
-            ${MESSAGE_DATA_FRAGMENT}
-        }
-    }
+	query GetOlderMessages($chatSlug: String!, $beforeMessageId: ID!) {
+		olderMessages(chatSlug: $chatSlug, beforeMessageId: $beforeMessageId) {
+			...messageResults
+		}
+	}
+	${MESSAGE_ATTRIBUTES}
 `;
 
 enum SubscriptionTypesEnum {
@@ -85,6 +98,7 @@ const MessagesListData = (props: IProps) => {
 		}
 	);
 	const { t } = useTranslation();
+	console.log(data);
 
 	if (result.error) {
 		// setGenericModal('error', t('chat.roomNotFound'));
@@ -97,7 +111,11 @@ const MessagesListData = (props: IProps) => {
 			updateQuery={result.updateQuery as any}
 			data={{
 				chat: {
-					messages: loading ? [] : data && data.chat ? data.chat.messages : [],
+					messages: loading
+						? []
+						: data && data.chat
+						? data.chat.messages.edges
+						: [],
 					storeMessages: loading
 						? null
 						: data && data.chat
@@ -146,10 +164,14 @@ const MessagesListData = (props: IProps) => {
 						const updateType = updatedData.updateType;
 						switch (updateType) {
 							case SubscriptionTypesEnum.NEW_MESSAGE:
+								console.log(updatedData);
 								return {
 									chat: {
 										...prev.chat,
-										messages: [...prev.chat.messages, updatedData.message],
+										messages: {
+											...prev.messages,
+											edges: [...prev.chat.messages.edges, updatedData.message]
+										},
 										lastMessage: updatedData.message.text
 									}
 								};
@@ -158,32 +180,31 @@ const MessagesListData = (props: IProps) => {
 							case SubscriptionTypesEnum.MESSAGE_DELETED:
 							case SubscriptionTypesEnum.MESSAGE_EDITED:
 								const targetMessageIdx =
-									prev.chat.messages.length -
+									prev.chat.messages.edges.length -
 									1 -
-									prev.chat.messages
+									prev.chat.messages.edges
 										.slice()
 										.reverse()
 										.findIndex(
-											(message: IMessage) =>
-												message._id === updatedData.messageId
+											({ node }) => node._id === updatedData.messageId
 										);
 								switch (updateType) {
 									case SubscriptionTypesEnum.FILE_UPLOADED:
-										return produce(prev, (draft: IPrev) => {
-											draft.chat.messages[targetMessageIdx].file =
+										return produce(prev, draft => {
+											draft.chat.messages.edges[targetMessageIdx].node.file =
 												updatedData.file;
 										});
 
 									case SubscriptionTypesEnum.MESSAGE_DELETED:
-										return produce(prev, (draft: IPrev) => {
-											draft.chat.messages[
+										return produce(prev, draft => {
+											draft.chat.messages.edges[
 												targetMessageIdx
-											].isClientDeleted = true;
+											].node.isClientDeleted = true;
 										});
 
 									case SubscriptionTypesEnum.MESSAGE_EDITED:
-										return produce(prev, (draft: IPrev) => {
-											draft.chat.messages[targetMessageIdx].text =
+										return produce(prev, draft => {
+											draft.chat.messages.edges[targetMessageIdx].node.text =
 												updatedData.updatedText;
 										});
 								}

@@ -10,7 +10,8 @@ import {
 	Resolver,
 	Root,
 	Subscription,
-	UseMiddleware
+	UseMiddleware,
+	Info
 } from 'type-graphql';
 import { Chat, ChatModel } from '../../entities/Chat';
 import { User, UserModel } from '../../entities/User';
@@ -23,7 +24,6 @@ import activeUsersService from '../../redis/services/ActiveUsers.service';
 import * as uuid from 'uuid';
 import { GraphQLUpload } from 'apollo-server-express';
 import { uploadFile } from '../../utils/files';
-import { translate } from '../../utils';
 import { ErrorTypesEnum } from '../../utils/errors';
 import { Authenticated, WithPermission } from '../../middlewares';
 import { ChatPermissionTypesEnum } from '../../permissions';
@@ -32,6 +32,7 @@ import {
 	IMessageCreatedOutput,
 	IMessageDeletedOutput,
 	IMessageFileUploadedOutput,
+	MessageConnection,
 	UserTypingOutput
 } from './chat.resolver.output';
 import { UpdateMessageInput } from './chat.resolver.inputs';
@@ -44,6 +45,7 @@ import * as sanitizeHtml from 'sanitize-html';
 import { generateUserMentionedNotification } from '../../utils/notifications';
 import * as jwt from 'jsonwebtoken';
 import { Document } from 'mongoose';
+import * as graphqlFields from 'graphql-fields';
 
 @Resolver(Chat)
 export default class ChatResolver {
@@ -196,13 +198,16 @@ export default class ChatResolver {
 
 		await pubSub.publish(SubscriptionTypesEnum.NEW_MESSAGE, {
 			message: {
-				...messageData,
-				createdAt: new Date(),
-				isClientDeleted: false,
-				creationToken: jwt.sign(
-					{ userId: user._id.toString(), messageId: preSaveId._id },
-					process.env.JWT_SECRET
-				)
+				cursor: messageData._id,
+				node: {
+					...messageData,
+					createdAt: new Date(),
+					isClientDeleted: false,
+					creationToken: jwt.sign(
+						{ userId: user._id.toString(), messageId: preSaveId._id },
+						process.env.JWT_SECRET
+					)
+				}
 			},
 			updateType: SubscriptionTypesEnum.NEW_MESSAGE,
 			chatSlug
@@ -490,13 +495,68 @@ export default class ChatResolver {
 	}
 
 	@FieldResolver()
-	async messages(@Root() chat: Chat): Promise<Message[]> {
-		const messages = await MessageModel.find({
-			chatSlug: chat.slug
-		})
-			.limit(20)
-			.sort({ createdAt: 'desc' });
+	async messages(
+		@Root() chat: Chat,
+		@Info() info: any,
+		@Arg('first', { nullable: true }) first: number,
+		@Arg('last', { nullable: true }) last: number,
+		@Arg('after', { nullable: true }) after: string,
+		@Arg('before', { nullable: true }) before: string
+	): Promise<MessageConnection> {
+		const requestedFields = graphqlFields(info);
+		const limit = first || last || 20;
+		const cursor = before || after ? new ObjectID(before || after) : null;
+		const messages = await MessageModel.aggregate([
+			{
+				$match: cursor
+					? {
+							_id: { [before ? '$lt' : '$gt']: cursor },
+							chatSlug: chat.slug
+					  }
+					: { chatSlug: chat.slug }
+			},
+			{ $sort: { createdAt: 1 } },
+			{ $limit: limit }
+		]);
 
-		return messages.reverse();
+		const edges = messages.map(message => ({
+			cursor: message._id,
+			node: message
+		}));
+
+		const pageInfo = {
+			async getHasPreviousPage() {
+				if (messages.length < limit) return false;
+				return !!(await MessageModel.findOne({
+					_id: { [before ? '$lt' : '$gt']: cursor },
+					chatSlug: chat.slug
+				}));
+			},
+			async getHasNextPage() {
+				if (messages.length < limit) return false;
+				return !!(await MessageModel.findOne({
+					_id: { [before ? '$lt' : '$gt']: messages[messages.length - 1]._id },
+					chatSlug: chat.slug
+				}));
+			}
+		};
+
+		let returnValue: MessageConnection = {
+			edges,
+			pageInfo: {}
+		};
+
+		if (requestedFields.pageInfo) {
+			const { hasNextPage, hasPreviousPage } = requestedFields.pageInfo;
+			if (hasNextPage) {
+				returnValue.pageInfo.hasNextPage = await pageInfo.getHasNextPage();
+			}
+
+			if (hasPreviousPage) {
+				returnValue.pageInfo.hasPreviousPage = await pageInfo.getHasPreviousPage();
+			}
+		}
+
+		return returnValue;
 	}
 }

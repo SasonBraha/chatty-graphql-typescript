@@ -32,5 +32,23 @@ export class FileAddedOutput {
 export class UserTypingOutput {
 	@Field() chatSlug: string;
 	@Field() crudType: string;
-	@Field() user: User;
+	@Field(type => User) user: User;
+}
+
+@ObjectType()
+class MessageEdge {
+	@Field() cursor: string;
+	@Field(type => Message) node: Message;
+}
+
+@ObjectType()
+class PageInfo {
+	@Field() hasNextPage?: boolean;
+	@Field() hasPreviousPage?: boolean;
+}
+
+@ObjectType()
+export class MessageConnection {
+	@Field(type => [MessageEdge]) edges: Array<MessageEdge>;
+	@Field(type => PageInfo) pageInfo: PageInfo;
 }

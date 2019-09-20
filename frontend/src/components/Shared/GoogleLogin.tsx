@@ -9,7 +9,7 @@ interface IProps {
 }
 
 const LOGIN_WITH_GOOGLE_MUTATION = gql`
-	mutation($token: String!) {
+	mutation LoginWithGoogle($token: String!) {
 		loginWithGoogle(token: $token)
 	}
 `;

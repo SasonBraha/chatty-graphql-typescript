@@ -9,7 +9,7 @@ import { setTypingUsers } from '../../../apollo/actions';
 import { useLocalCache } from '../../Shared/Hooks';
 
 const ROOMS_LIST_QUERY = gql`
-	query {
+	query GetRooms {
 		roomsList {
 			_id
 			name
@@ -23,7 +23,7 @@ const ROOMS_LIST_QUERY = gql`
 `;
 
 const TYPING_USERS_SUBSCRIPTION = gql`
-	subscription {
+	subscription SubscribeToTypingUsers {
 		onTypingUsersUpdate {
 			crudType
 			chatSlug
