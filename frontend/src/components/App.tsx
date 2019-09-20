@@ -23,7 +23,7 @@ import { RouterProps } from 'react-router';
 import { hot } from 'react-hot-loader/root';
 
 const ME_DATA_QUERY = gql`
-	query {
+	query Me {
 		me {
 			unreadNotificationsCount
 		}
@@ -31,7 +31,7 @@ const ME_DATA_QUERY = gql`
 `;
 
 const SUBSCRIBE_TO_USER_UPDATES = gql`
-	subscription {
+	subscription SubscribeToUserUpdates {
 		userUpdates
 	}
 `;

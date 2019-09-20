@@ -10,7 +10,7 @@ import { useTranslation } from 'react-i18next';
 import { Image } from '../Shared';
 
 const USER_QUERY = gql`
-	query userQuery($slug: String!) {
+	query UserQuery($slug: String!) {
 		user(slug: $slug) {
 			displayName
 			avatar

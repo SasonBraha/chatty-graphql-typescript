@@ -13,10 +13,9 @@ import reactStringReplace from 'react-string-replace';
 import { Link } from 'react-router-dom';
 import { withTranslation } from '../../Shared/Hoc';
 import { Image } from '../../Shared';
-import { getRuntimeImageDimensions } from '../../../utils';
 
 const UPDATE_MESSAGE_MUTATION = gql`
-	mutation(
+	mutation UpdateMessage(
 		$messageId: ID!
 		$crudType: String!
 		$messageText: String

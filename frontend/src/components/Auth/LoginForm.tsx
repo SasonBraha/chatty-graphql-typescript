@@ -8,7 +8,7 @@ import client from '../../apollo/client';
 import { useTranslation } from 'react-i18next';
 
 const LOGIN_MUTATION = gql`
-	mutation($email: String!, $password: String!) {
+	mutation Login($email: String!, $password: String!) {
 		login(data: { email: $email, password: $password })
 	}
 `;

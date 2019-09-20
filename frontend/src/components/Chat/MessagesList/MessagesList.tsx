@@ -19,7 +19,7 @@ interface IProps {
 	isMoreMessagesToFetch: boolean;
 	data: {
 		chat: {
-			messages: IMessage[];
+			messages: any[];
 			storeMessages: boolean;
 		};
 	};
@@ -237,11 +237,11 @@ class MessagesList extends Component<IProps, IState> {
 					? Array.from({ length: 20 }).map((_, i) => (
 							<MessagesListLoader key={i} />
 					  ))
-					: chat.messages.map(message => (
+					: chat.messages.map(({ node }) => (
 							<Message
-								message={message}
-								key={message._id}
-								isMine={currentUser!.slug === message.createdBy.slug}
+								message={node}
+								key={node._id}
+								isMine={currentUser!.slug === node.createdBy.slug}
 								setMessageCtxMenu={this.showMessageCtxMenu}
 								client={client}
 							/>
