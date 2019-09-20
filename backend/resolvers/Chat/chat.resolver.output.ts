@@ -43,8 +43,8 @@ class MessageEdge {
 
 @ObjectType()
 class PageInfo {
-	@Field() hasNextPage: boolean;
-	@Field() hasPreviousPage: boolean;
+	@Field() hasNextPage?: boolean;
+	@Field() hasPreviousPage?: boolean;
 }
 
 @ObjectType()

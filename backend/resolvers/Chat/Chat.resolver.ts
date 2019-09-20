@@ -24,7 +24,6 @@ import activeUsersService from '../../redis/services/ActiveUsers.service';
 import * as uuid from 'uuid';
 import { GraphQLUpload } from 'apollo-server-express';
 import { uploadFile } from '../../utils/files';
-import { translate } from '../../utils';
 import { ErrorTypesEnum } from '../../utils/errors';
 import { Authenticated, WithPermission } from '../../middlewares';
 import { ChatPermissionTypesEnum } from '../../permissions';
@@ -199,13 +198,16 @@ export default class ChatResolver {
 
 		await pubSub.publish(SubscriptionTypesEnum.NEW_MESSAGE, {
 			message: {
-				...messageData,
-				createdAt: new Date(),
-				isClientDeleted: false,
-				creationToken: jwt.sign(
-					{ userId: user._id.toString(), messageId: preSaveId._id },
-					process.env.JWT_SECRET
-				)
+				cursor: messageData._id,
+				node: {
+					...messageData,
+					createdAt: new Date(),
+					isClientDeleted: false,
+					creationToken: jwt.sign(
+						{ userId: user._id.toString(), messageId: preSaveId._id },
+						process.env.JWT_SECRET
+					)
+				}
 			},
 			updateType: SubscriptionTypesEnum.NEW_MESSAGE,
 			chatSlug
@@ -503,15 +505,17 @@ export default class ChatResolver {
 	): Promise<MessageConnection> {
 		const requestedFields = graphqlFields(info);
 		const limit = first || last || 20;
-		const cursor = new ObjectID(before || after);
+		const cursor = before || after ? new ObjectID(before || after) : null;
 		const messages = await MessageModel.aggregate([
 			{
-				$match: {
-					_id: { [before ? '$lt' : '$gt']: cursor },
-					chatSlug: chat.slug
-				}
+				$match: cursor
+					? {
+							_id: { [before ? '$lt' : '$gt']: cursor },
+							chatSlug: chat.slug
+					  }
+					: { chatSlug: chat.slug }
 			},
-			{ $sort: { createdAt: -1 } },
+			{ $sort: { createdAt: 1 } },
 			{ $limit: limit }
 		]);
 
@@ -519,15 +523,16 @@ export default class ChatResolver {
 			cursor: message._id,
 			node: message
 		}));
+
 		const pageInfo = {
-			async hasPreviousPage() {
+			async getHasPreviousPage() {
 				if (messages.length < limit) return false;
 				return !!(await MessageModel.findOne({
 					_id: { [before ? '$lt' : '$gt']: cursor },
 					chatSlug: chat.slug
 				}));
 			},
-			async hasNextPage() {
+			async getHasNextPage() {
 				if (messages.length < limit) return false;
 				return !!(await MessageModel.findOne({
 					_id: { [before ? '$lt' : '$gt']: messages[messages.length - 1]._id },
@@ -536,7 +541,7 @@ export default class ChatResolver {
 			}
 		};
 
-		let returnValue = {
+		let returnValue: MessageConnection = {
 			edges,
 			pageInfo: {}
 		};
@@ -544,11 +549,11 @@ export default class ChatResolver {
 		if (requestedFields.pageInfo) {
 			const { hasNextPage, hasPreviousPage } = requestedFields.pageInfo;
 			if (hasNextPage) {
-				returnValue.pageInfo.hasNextPage = await pageInfo.hasNextPage();
+				returnValue.pageInfo.hasNextPage = await pageInfo.getHasNextPage();
 			}
 
 			if (hasPreviousPage) {
-				returnValue.pageInfo.hasPreviousPage = await pageInfo.hasPreviousPage();
+				returnValue.pageInfo.hasPreviousPage = await pageInfo.getHasPreviousPage();
 			}
 		}
 

@@ -9,7 +9,7 @@ interface IProps {
 }
 
 const LOGIN_WITH_GOOGLE_MUTATION = gql`
-	mutation($token: String!) {
+	mutation LoginWithGoogle($token: String!) {
 		loginWithGoogle(token: $token)
 	}
 `;
@@ -25,8 +25,8 @@ const GoogleLogin: React.FC<IProps> = props => {
 					<S.GoogleLogo src='./images/google_logo.svg' alt='google_logo' />
 				</S.GoogleLoginBtn>
 			)}
-			onFailure={(ex) => {
-				console.log('fail', ex)
+			onFailure={ex => {
+				console.log('fail', ex);
 			}}
 			onSuccess={async response => {
 				const userAccessToken = await client.mutate({

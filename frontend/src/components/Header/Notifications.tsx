@@ -7,7 +7,7 @@ import { Link } from 'react-router-dom';
 import styled from 'styled-components/macro';
 
 const NOTIFICATIONS_QUERY = gql`
-	query {
+	query GetNotifications {
 		notifications {
 			_id
 			ref

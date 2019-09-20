@@ -15,7 +15,7 @@ import client from '../../apollo/client';
 import { useTranslation } from 'react-i18next';
 
 const SEND_MESSAGE_MUTATION = gql`
-	mutation($chatSlug: String!, $text: String!) {
+	mutation PostMessage($chatSlug: String!, $text: String!) {
 		postMessage(text: $text, chatSlug: $chatSlug) {
 			_id
 		}
@@ -23,19 +23,23 @@ const SEND_MESSAGE_MUTATION = gql`
 `;
 
 const UPLOAD_FILE_MUTATION = gql`
-	mutation($file: Upload!, $chatSlug: String!, $messageId: String!) {
+	mutation UploadMessageFile(
+		$file: Upload!
+		$chatSlug: String!
+		$messageId: String!
+	) {
 		uploadMessageFile(file: $file, chatSlug: $chatSlug, messageId: $messageId)
 	}
 `;
 
 const UPDATE_TYPING_USERS = gql`
-	mutation($chatSlug: String!, $crudType: String!) {
+	mutation UpdateTypingUsers($chatSlug: String!, $crudType: String!) {
 		updateTypingUsers(chatSlug: $chatSlug, crudType: $crudType)
 	}
 `;
 
 const SEARCH_USERS_QUERY = gql`
-	query($limit: Int, $displayName: String!) {
+	query GetUsers($limit: Int, $displayName: String!) {
 		users(displayName: $displayName, limit: $limit) {
 			searchToken
 			userList {

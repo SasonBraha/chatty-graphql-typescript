@@ -10,7 +10,7 @@ import { useLocalCache } from '../Shared/Hooks';
 import { afterRender } from '../../utils';
 
 const ACTIVE_USERS_SUBSCRIPTION = gql`
-	subscription($chatSlug: String!) {
+	subscription SubscribeToActiveUsers($chatSlug: String!) {
 		onActiveUsersUpdate(chatSlug: $chatSlug) {
 			displayName
 			avatar
@@ -20,7 +20,7 @@ const ACTIVE_USERS_SUBSCRIPTION = gql`
 `;
 
 const UPDATE_ACTIVE_USERS = gql`
-	mutation($chatSlug: String!, $crudType: String!) {
+	mutation UpdateActiveUsers($chatSlug: String!, $crudType: String!) {
 		updateActiveUsers(chatSlug: $chatSlug, crudType: $crudType)
 	}
 `;
