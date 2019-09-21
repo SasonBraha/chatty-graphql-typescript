@@ -1,0 +1,3 @@
+mutation UpdateActiveUsers($chatSlug: String!, $crudType: String!) {
+    updateActiveUsers(chatSlug: $chatSlug, crudType: $crudType)
+}

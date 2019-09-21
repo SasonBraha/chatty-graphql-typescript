@@ -1,36 +1,16 @@
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
-import gql from 'graphql-tag';
 import { IUser } from '../../types/interfaces';
 import { Link } from 'react-router-dom';
-import ApolloClient from 'apollo-client';
 import { CrudEnum } from '../../types/enums';
-import { useApolloClient, useSubscription } from '@apollo/react-hooks';
 import { useLocalCache } from '../Shared/Hooks';
 import { afterRender } from '../../utils';
-import { useActiveUsersUpdatesSubscription } from '../../__generated__/graphql';
-
-const UPDATE_ACTIVE_USERS = gql`
-	mutation UpdateActiveUsers($chatSlug: String!, $crudType: String!) {
-		updateActiveUsers(chatSlug: $chatSlug, crudType: $crudType)
-	}
-`;
+import {
+	useActiveUsersUpdatesSubscription,
+	useUpdateActiveUsersMutation
+} from '../../__generated__/graphql';
 
 interface IProps {}
-
-const updateActiveUsers = (
-	crudType: string,
-	chatSlug: string,
-	client: ApolloClient<any>
-) => {
-	client!.mutate({
-		variables: {
-			chatSlug,
-			crudType
-		},
-		mutation: UPDATE_ACTIVE_USERS
-	});
-};
 
 const ActiveUsers: React.FC<IProps> = props => {
 	const {
@@ -41,21 +21,37 @@ const ActiveUsers: React.FC<IProps> = props => {
 		}
 	`);
 	const [previousSlug, setPreviousSlug] = useState(chatSlug);
-	const client = useApolloClient();
 	const {
 		data = { onActiveUsersUpdate: [] }
 	} = useActiveUsersUpdatesSubscription({
 		variables: { chatSlug }
 	});
+	const [updateActiveUsers] = useUpdateActiveUsersMutation();
 
 	useEffect(() => {
-		updateActiveUsers(CrudEnum.DELETE, previousSlug, client);
+		updateActiveUsers({
+			variables: {
+				chatSlug: previousSlug,
+				crudType: CrudEnum.DELETE
+			}
+		});
 		afterRender(() => {
-			updateActiveUsers(CrudEnum.UPDATE, chatSlug, client);
+			updateActiveUsers({
+				variables: {
+					chatSlug: chatSlug,
+					crudType: CrudEnum.UPDATE
+				}
+			});
 		});
 		setPreviousSlug(chatSlug);
 
-		return () => updateActiveUsers(CrudEnum.DELETE, chatSlug, client);
+		return () =>
+			updateActiveUsers({
+				variables: {
+					chatSlug: chatSlug,
+					crudType: CrudEnum.DELETE
+				}
+			});
 	}, [chatSlug]);
 
 	return (

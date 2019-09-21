@@ -1,0 +1,10 @@
+subscription TypingUsersUpdates {
+    onTypingUsersUpdate {
+        crudType
+        chatSlug
+        user {
+            displayName
+            slug
+        }
+    }
+}

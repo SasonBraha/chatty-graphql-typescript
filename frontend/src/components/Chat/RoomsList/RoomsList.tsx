@@ -1,26 +1,13 @@
 import React from 'react';
-import gql from 'graphql-tag';
-import { IChat } from '../../../types/interfaces';
 import RoomsListItem from './RoomsListItem';
 import styled from 'styled-components/macro';
 import RoomsListLoader from './RoomsListLoader';
-import { useQuery, useSubscription } from '@apollo/react-hooks';
 import { setTypingUsers } from '../../../apollo/actions';
 import { useLocalCache } from '../../Shared/Hooks';
-import { useGetRoomsListQuery } from '../../../__generated__/graphql';
-
-const TYPING_USERS_SUBSCRIPTION = gql`
-	subscription SubscribeToTypingUsers {
-		onTypingUsersUpdate {
-			crudType
-			chatSlug
-			user {
-				displayName
-				slug
-			}
-		}
-	}
-`;
+import {
+	useGetRoomsListQuery,
+	useTypingUsersUpdatesSubscription
+} from '../../../__generated__/graphql';
 
 interface IProps {}
 
@@ -35,7 +22,7 @@ const RoomsList: React.FC<IProps> = props => {
 		}
 	`);
 
-	useSubscription(TYPING_USERS_SUBSCRIPTION, {
+	useTypingUsersUpdatesSubscription({
 		onSubscriptionData({ subscriptionData }) {
 			const {
 				data: {

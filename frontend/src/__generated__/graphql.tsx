@@ -332,6 +332,16 @@ export type PostMessageMutation = { __typename?: 'Mutation' } & {
 	postMessage: Maybe<{ __typename?: 'Message' } & Pick<Message, '_id'>>;
 };
 
+export type UpdateActiveUsersMutationVariables = {
+	chatSlug: Scalars['String'];
+	crudType: Scalars['String'];
+};
+
+export type UpdateActiveUsersMutation = { __typename?: 'Mutation' } & Pick<
+	Mutation,
+	'updateActiveUsers'
+>;
+
 export type GetMessagesQueryVariables = {
 	chatSlug: Scalars['String'];
 };
@@ -405,6 +415,17 @@ export type ChatMessageUpdatesSubscription = {
 	__typename?: 'Subscription';
 } & Pick<Subscription, 'onMessageUpdate'>;
 
+export type TypingUsersUpdatesSubscriptionVariables = {};
+
+export type TypingUsersUpdatesSubscription = { __typename?: 'Subscription' } & {
+	onTypingUsersUpdate: Maybe<
+		{ __typename?: 'UserTypingOutput' } & Pick<
+			UserTypingOutput,
+			'crudType' | 'chatSlug'
+		> & { user: { __typename?: 'User' } & Pick<User, 'displayName' | 'slug'> }
+	>;
+};
+
 export type UserUpdatesSubscriptionVariables = {};
 
 export type UserUpdatesSubscription = { __typename?: 'Subscription' } & Pick<
@@ -470,6 +491,37 @@ export type PostMessageMutationResult = ApolloReactCommon.MutationResult<
 export type PostMessageMutationOptions = ApolloReactCommon.BaseMutationOptions<
 	PostMessageMutation,
 	PostMessageMutationVariables
+>;
+export const UpdateActiveUsersDocument = gql`
+	mutation UpdateActiveUsers($chatSlug: String!, $crudType: String!) {
+		updateActiveUsers(chatSlug: $chatSlug, crudType: $crudType)
+	}
+`;
+export type UpdateActiveUsersMutationFn = ApolloReactCommon.MutationFunction<
+	UpdateActiveUsersMutation,
+	UpdateActiveUsersMutationVariables
+>;
+
+export function useUpdateActiveUsersMutation(
+	baseOptions?: ApolloReactHooks.MutationHookOptions<
+		UpdateActiveUsersMutation,
+		UpdateActiveUsersMutationVariables
+	>
+) {
+	return ApolloReactHooks.useMutation<
+		UpdateActiveUsersMutation,
+		UpdateActiveUsersMutationVariables
+	>(UpdateActiveUsersDocument, baseOptions);
+}
+export type UpdateActiveUsersMutationHookResult = ReturnType<
+	typeof useUpdateActiveUsersMutation
+>;
+export type UpdateActiveUsersMutationResult = ApolloReactCommon.MutationResult<
+	UpdateActiveUsersMutation
+>;
+export type UpdateActiveUsersMutationOptions = ApolloReactCommon.BaseMutationOptions<
+	UpdateActiveUsersMutation,
+	UpdateActiveUsersMutationVariables
 >;
 export const GetMessagesDocument = gql`
 	query GetMessages($chatSlug: String!) {
@@ -684,6 +736,36 @@ export type ChatMessageUpdatesSubscriptionHookResult = ReturnType<
 >;
 export type ChatMessageUpdatesSubscriptionResult = ApolloReactCommon.SubscriptionResult<
 	ChatMessageUpdatesSubscription
+>;
+export const TypingUsersUpdatesDocument = gql`
+	subscription TypingUsersUpdates {
+		onTypingUsersUpdate {
+			crudType
+			chatSlug
+			user {
+				displayName
+				slug
+			}
+		}
+	}
+`;
+
+export function useTypingUsersUpdatesSubscription(
+	baseOptions?: ApolloReactHooks.SubscriptionHookOptions<
+		TypingUsersUpdatesSubscription,
+		TypingUsersUpdatesSubscriptionVariables
+	>
+) {
+	return ApolloReactHooks.useSubscription<
+		TypingUsersUpdatesSubscription,
+		TypingUsersUpdatesSubscriptionVariables
+	>(TypingUsersUpdatesDocument, baseOptions);
+}
+export type TypingUsersUpdatesSubscriptionHookResult = ReturnType<
+	typeof useTypingUsersUpdatesSubscription
+>;
+export type TypingUsersUpdatesSubscriptionResult = ApolloReactCommon.SubscriptionResult<
+	TypingUsersUpdatesSubscription
 >;
 export const UserUpdatesDocument = gql`
 	subscription UserUpdates {
