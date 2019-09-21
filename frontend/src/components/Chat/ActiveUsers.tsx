@@ -8,16 +8,7 @@ import { CrudEnum } from '../../types/enums';
 import { useApolloClient, useSubscription } from '@apollo/react-hooks';
 import { useLocalCache } from '../Shared/Hooks';
 import { afterRender } from '../../utils';
-
-const ACTIVE_USERS_SUBSCRIPTION = gql`
-	subscription SubscribeToActiveUsers($chatSlug: String!) {
-		onActiveUsersUpdate(chatSlug: $chatSlug) {
-			displayName
-			avatar
-			slug
-		}
-	}
-`;
+import { useActiveUsersUpdatesSubscription } from '../../__generated__/graphql';
 
 const UPDATE_ACTIVE_USERS = gql`
 	mutation UpdateActiveUsers($chatSlug: String!, $crudType: String!) {
@@ -51,12 +42,11 @@ const ActiveUsers: React.FC<IProps> = props => {
 	`);
 	const [previousSlug, setPreviousSlug] = useState(chatSlug);
 	const client = useApolloClient();
-	const { data = { onActiveUsersUpdate: [] } } = useSubscription(
-		ACTIVE_USERS_SUBSCRIPTION,
-		{
-			variables: { chatSlug }
-		}
-	);
+	const {
+		data = { onActiveUsersUpdate: [] }
+	} = useActiveUsersUpdatesSubscription({
+		variables: { chatSlug }
+	});
 
 	useEffect(() => {
 		updateActiveUsers(CrudEnum.DELETE, previousSlug, client);

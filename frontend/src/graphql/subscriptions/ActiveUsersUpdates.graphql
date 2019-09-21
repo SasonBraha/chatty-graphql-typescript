@@ -1,0 +1,7 @@
+subscription ActiveUsersUpdates($chatSlug: String!) {
+    onActiveUsersUpdate(chatSlug: $chatSlug) {
+        displayName
+        avatar
+        slug
+    }
+}

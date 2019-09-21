@@ -1,0 +1,17 @@
+query GetMessages($chatSlug: String!) {
+    chat(chatSlug: $chatSlug) {
+        storeMessages
+        messages(first: 20) {
+            edges {
+                cursor
+                node {
+                    ...messageAttributes
+                }
+            }
+            pageInfo {
+                hasNextPage
+                hasPreviousPage
+            }
+        }
+    }
+}

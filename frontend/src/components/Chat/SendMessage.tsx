@@ -13,6 +13,7 @@ import { setMentionSuggester } from '../../apollo/actions';
 import { useLazyQuery, useApolloClient, useQuery } from '@apollo/react-hooks';
 import client from '../../apollo/client';
 import { useTranslation } from 'react-i18next';
+import { useGetUsersLazyQuery } from '../../__generated__/graphql';
 
 const SEND_MESSAGE_MUTATION = gql`
 	mutation PostMessage($chatSlug: String!, $text: String!) {
@@ -35,19 +36,6 @@ const UPLOAD_FILE_MUTATION = gql`
 const UPDATE_TYPING_USERS = gql`
 	mutation UpdateTypingUsers($chatSlug: String!, $crudType: String!) {
 		updateTypingUsers(chatSlug: $chatSlug, crudType: $crudType)
-	}
-`;
-
-const SEARCH_USERS_QUERY = gql`
-	query GetUsers($limit: Int, $displayName: String!) {
-		users(displayName: $displayName, limit: $limit) {
-			searchToken
-			userList {
-				displayName
-				slug
-				avatar
-			}
-		}
 	}
 `;
 
@@ -103,9 +91,7 @@ const SendMessage: React.FC<IProps> = props => {
 	const [isTyping, setIsTyping] = useState(false);
 	const client = useApolloClient();
 	const mentionSuggesterRef: Ref<any> = useRef(null);
-	const [executeUserSearch, { data: userData }] = useLazyQuery(
-		SEARCH_USERS_QUERY
-	);
+	const [executeUserSearch, { data: userData }] = useGetUsersLazyQuery();
 	const { t } = useTranslation();
 
 	const {

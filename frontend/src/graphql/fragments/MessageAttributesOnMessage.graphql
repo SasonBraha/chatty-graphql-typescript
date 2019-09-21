@@ -1,0 +1,25 @@
+fragment messageAttributes on Message {
+    _id
+    text
+    createdBy {
+        displayName
+        avatar
+        slug
+    }
+    file {
+        path
+        dimensions {
+            height
+            width
+        }
+    }
+    isClientDeleted
+    creationToken
+    chatSlug
+    createdAt
+    userMentions {
+        displayName
+        indices
+        slug
+    }
+}

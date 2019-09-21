@@ -1,0 +1,3 @@
+subscription ChatMessageUpdates($chatSlug: String!) {
+    onMessageUpdate(chatSlug: $chatSlug)
+}

@@ -1,0 +1,11 @@
+query GetRoomsList {
+    roomsList {
+        _id
+        name
+        image {
+            path
+        }
+        slug
+        lastMessage
+    }
+}

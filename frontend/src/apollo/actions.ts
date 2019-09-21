@@ -134,7 +134,7 @@ export const setTypingUsers = (
 	});
 };
 
-export const setMentionSuggester = (shouldShow: boolean, userList: IUser[]) => {
+export const setMentionSuggester = (shouldShow: boolean, userList: any) => {
 	writeData({
 		chat: {
 			mentionSuggester: {

@@ -7,20 +7,7 @@ import RoomsListLoader from './RoomsListLoader';
 import { useQuery, useSubscription } from '@apollo/react-hooks';
 import { setTypingUsers } from '../../../apollo/actions';
 import { useLocalCache } from '../../Shared/Hooks';
-
-const ROOMS_LIST_QUERY = gql`
-	query GetRooms {
-		roomsList {
-			_id
-			name
-			image {
-				path
-			}
-			slug
-			lastMessage
-		}
-	}
-`;
+import { useGetRoomsListQuery } from '../../../__generated__/graphql';
 
 const TYPING_USERS_SUBSCRIPTION = gql`
 	subscription SubscribeToTypingUsers {
@@ -38,7 +25,7 @@ const TYPING_USERS_SUBSCRIPTION = gql`
 interface IProps {}
 
 const RoomsList: React.FC<IProps> = props => {
-	const { data, loading } = useQuery(ROOMS_LIST_QUERY);
+	const { data, loading } = useGetRoomsListQuery();
 	const {
 		chat: { chatSlug, typingUsers }
 	} = useLocalCache(`
@@ -65,7 +52,7 @@ const RoomsList: React.FC<IProps> = props => {
 				? Array.from({ length: 15 }).map((_, i) => <RoomsListLoader key={i} />)
 				: data &&
 				  data.roomsList &&
-				  data.roomsList.map((room: IChat) => (
+				  data.roomsList.map(room => (
 						<RoomsListItem
 							selected={room.slug === chatSlug}
 							room={room}

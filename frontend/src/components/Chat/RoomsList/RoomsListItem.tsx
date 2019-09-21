@@ -4,9 +4,10 @@ import { Link } from 'react-router-dom';
 import { IChat, ITypingUser } from '../../../types/interfaces';
 import Ripple from 'react-ink';
 import TypingUsers from '../TypingUsers';
+import { Chat } from '../../../__generated__/graphql';
 
 interface IProps {
-	room: IChat;
+	room: any;
 	selected: boolean;
 	chatSlug: string;
 	typingUsers: ITypingUser[];

@@ -97,9 +97,6 @@ const MessagesListData = (props: IProps) => {
 			}
 		}
 	);
-	const { t } = useTranslation();
-	console.log(data);
-
 	if (result.error) {
 		// setGenericModal('error', t('chat.roomNotFound'));
 		return <Redirect to='/' />;
