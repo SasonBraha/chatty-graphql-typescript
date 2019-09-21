@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useRef } from 'react';
 import { Button } from '../Shared';
 import { FormikProps, withFormik } from 'formik';
 import { Form, FormGroup, TextInput } from '../Shared/Form';
@@ -7,6 +7,7 @@ import gql from 'graphql-tag';
 import Recaptcha from 'react-google-recaptcha';
 import client from '../../apollo/client';
 import { useTranslation } from 'react-i18next';
+
 const REGISTER_MUTATION = gql`
 	mutation Register(
 		$displayName: String!

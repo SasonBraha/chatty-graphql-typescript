@@ -362,6 +362,17 @@ export type GetMessagesQuery = { __typename?: 'Query' } & {
 		};
 };
 
+export type GetNotificationsQueryVariables = {};
+
+export type GetNotificationsQuery = { __typename?: 'Query' } & {
+	notifications: Array<
+		{ __typename?: 'Notification' } & Pick<
+			Notification,
+			'_id' | 'ref' | 'type'
+		> & { sender: { __typename?: 'User' } & Pick<User, 'displayName' | 'slug'> }
+	>;
+};
+
 export type GetRoomsListQueryVariables = {};
 
 export type GetRoomsListQuery = { __typename?: 'Query' } & {
@@ -370,6 +381,19 @@ export type GetRoomsListQuery = { __typename?: 'Query' } & {
 			Chat,
 			'_id' | 'name' | 'slug' | 'lastMessage'
 		> & { image: { __typename?: 'File' } & Pick<File, 'path'> }
+	>;
+};
+
+export type GetUserQueryVariables = {
+	slug: Scalars['String'];
+};
+
+export type GetUserQuery = { __typename?: 'Query' } & {
+	user: Maybe<
+		{ __typename?: 'User' } & Pick<
+			User,
+			'displayName' | 'avatar' | 'email' | 'createdAt'
+		>
 	>;
 };
 
@@ -572,6 +596,50 @@ export type GetMessagesQueryResult = ApolloReactCommon.QueryResult<
 	GetMessagesQuery,
 	GetMessagesQueryVariables
 >;
+export const GetNotificationsDocument = gql`
+	query GetNotifications {
+		notifications {
+			_id
+			ref
+			sender {
+				displayName
+				slug
+			}
+			type
+		}
+	}
+`;
+
+export function useGetNotificationsQuery(
+	baseOptions?: ApolloReactHooks.QueryHookOptions<
+		GetNotificationsQuery,
+		GetNotificationsQueryVariables
+	>
+) {
+	return ApolloReactHooks.useQuery<
+		GetNotificationsQuery,
+		GetNotificationsQueryVariables
+	>(GetNotificationsDocument, baseOptions);
+}
+export function useGetNotificationsLazyQuery(
+	baseOptions?: ApolloReactHooks.LazyQueryHookOptions<
+		GetNotificationsQuery,
+		GetNotificationsQueryVariables
+	>
+) {
+	return ApolloReactHooks.useLazyQuery<
+		GetNotificationsQuery,
+		GetNotificationsQueryVariables
+	>(GetNotificationsDocument, baseOptions);
+}
+
+export type GetNotificationsQueryHookResult = ReturnType<
+	typeof useGetNotificationsQuery
+>;
+export type GetNotificationsQueryResult = ApolloReactCommon.QueryResult<
+	GetNotificationsQuery,
+	GetNotificationsQueryVariables
+>;
 export const GetRoomsListDocument = gql`
 	query GetRoomsList {
 		roomsList {
@@ -615,6 +683,45 @@ export type GetRoomsListQueryHookResult = ReturnType<
 export type GetRoomsListQueryResult = ApolloReactCommon.QueryResult<
 	GetRoomsListQuery,
 	GetRoomsListQueryVariables
+>;
+export const GetUserDocument = gql`
+	query GetUser($slug: String!) {
+		user(slug: $slug) {
+			displayName
+			avatar
+			email
+			createdAt
+		}
+	}
+`;
+
+export function useGetUserQuery(
+	baseOptions?: ApolloReactHooks.QueryHookOptions<
+		GetUserQuery,
+		GetUserQueryVariables
+	>
+) {
+	return ApolloReactHooks.useQuery<GetUserQuery, GetUserQueryVariables>(
+		GetUserDocument,
+		baseOptions
+	);
+}
+export function useGetUserLazyQuery(
+	baseOptions?: ApolloReactHooks.LazyQueryHookOptions<
+		GetUserQuery,
+		GetUserQueryVariables
+	>
+) {
+	return ApolloReactHooks.useLazyQuery<GetUserQuery, GetUserQueryVariables>(
+		GetUserDocument,
+		baseOptions
+	);
+}
+
+export type GetUserQueryHookResult = ReturnType<typeof useGetUserQuery>;
+export type GetUserQueryResult = ApolloReactCommon.QueryResult<
+	GetUserQuery,
+	GetUserQueryVariables
 >;
 export const GetUsersDocument = gql`
 	query GetUsers($limit: Int, $displayName: String!) {

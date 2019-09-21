@@ -1,0 +1,8 @@
+query GetUser($slug: String!) {
+    user(slug: $slug) {
+        displayName
+        avatar
+        email
+        createdAt
+    }
+}

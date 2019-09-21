@@ -1,0 +1,11 @@
+query GetNotifications {
+    notifications {
+        _id
+        ref
+        sender {
+            displayName
+            slug
+        }
+        type
+    }
+}

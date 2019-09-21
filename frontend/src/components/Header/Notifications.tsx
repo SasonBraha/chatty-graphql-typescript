@@ -1,24 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import gql from 'graphql-tag';
-import { useApolloClient } from '@apollo/react-hooks';
 import { INotification } from '../../types/interfaces';
 import { ListItem } from '../Shared';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components/macro';
-
-const NOTIFICATIONS_QUERY = gql`
-	query GetNotifications {
-		notifications {
-			_id
-			ref
-			sender {
-				displayName
-				slug
-			}
-			type
-		}
-	}
-`;
+import { useGetNotificationsLazyQuery } from '../../__generated__/graphql';
 
 interface IProps {
 	isOpen: boolean;
@@ -49,19 +34,22 @@ const convertNotificationToListItemData = (notification: INotification) => {
 
 const Notifications: React.FC<IProps> = props => {
 	const [notifications, setNotifications] = useState([]);
-	const client = useApolloClient();
+	const [
+		execNotificationsQuery,
+		{ data, loading }
+	] = useGetNotificationsLazyQuery();
+
 	useEffect(() => {
 		if (props.isOpen && !notifications.length) {
-			client
-				.query({
-					query: NOTIFICATIONS_QUERY
-				})
-				.then(queryObject => {
-					const { data } = queryObject;
-					setNotifications([...notifications, ...data.notifications] as any);
-				});
+			execNotificationsQuery();
 		}
 	}, [props.isOpen]);
+
+	useEffect(() => {
+		if (data && !loading) {
+			setNotifications([...notifications, ...data.notifications]);
+		}
+	}, [data]);
 
 	return (
 		<ul>

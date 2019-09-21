@@ -1,24 +1,12 @@
 import React from 'react';
 import styled, { css } from 'styled-components/macro';
 import { RouteComponentProps } from 'react-router';
-import gql from 'graphql-tag';
-import { useQuery } from '@apollo/react-hooks';
 import formatRelative from 'date-fns/formatRelative';
 import { parseISO } from 'date-fns';
 import he from 'date-fns/locale/he';
 import { useTranslation } from 'react-i18next';
 import { Image } from '../Shared';
-
-const USER_QUERY = gql`
-	query UserQuery($slug: String!) {
-		user(slug: $slug) {
-			displayName
-			avatar
-			email
-			createdAt
-		}
-	}
-`;
+import { useGetUserQuery } from '../../__generated__/graphql';
 
 interface IRouteParams {
 	slug: string;
@@ -28,7 +16,7 @@ interface IProps extends RouteComponentProps<IRouteParams> {}
 
 const Profile: React.FC<IProps> = props => {
 	const userSlug = props.match.params.slug;
-	const { data, loading } = useQuery(USER_QUERY, {
+	const { data, loading } = useGetUserQuery({
 		variables: { slug: userSlug }
 	});
 	const { t } = useTranslation();

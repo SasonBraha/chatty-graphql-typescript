@@ -16,9 +16,10 @@ export interface IChatProps extends RouteComponentProps<IMatchParams> {}
 
 const Chat = (props: IChatProps) => {
 	const [filePreview, setFilePreview] = useState(null);
+	const { chatSlug } = props.match.params;
 	useEffect(() => {
-		setChatSlug(props.match.params.chatSlug);
-	}, [props.match.params.chatSlug]);
+		setChatSlug(chatSlug);
+	}, [chatSlug]);
 
 	return (
 		<S.Chat>

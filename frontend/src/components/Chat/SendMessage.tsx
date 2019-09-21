@@ -10,7 +10,7 @@ import { CrudEnum, KeyCodeEnum } from '../../types/enums';
 import { InputTrigger } from '../Shared';
 import MentionSuggester from './MentionSuggester';
 import { setMentionSuggester } from '../../apollo/actions';
-import { useLazyQuery, useApolloClient, useQuery } from '@apollo/react-hooks';
+import { useApolloClient } from '@apollo/react-hooks';
 import client from '../../apollo/client';
 import { useTranslation } from 'react-i18next';
 import { useGetUsersLazyQuery } from '../../__generated__/graphql';
