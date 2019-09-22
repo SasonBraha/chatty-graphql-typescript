@@ -4,6 +4,7 @@ documents: "src/graphql/**/*.graphql"
 generates:
   src/__generated__/graphql.tsx:
     plugins:
+      - "time"
       - "typescript"
       - "typescript-operations"
       - "typescript-react-apollo"

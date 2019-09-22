@@ -161,7 +161,6 @@ const MessagesListData = (props: IProps) => {
 						const updateType = updatedData.updateType;
 						switch (updateType) {
 							case SubscriptionTypesEnum.NEW_MESSAGE:
-								console.log(updatedData);
 								return {
 									chat: {
 										...prev.chat,
