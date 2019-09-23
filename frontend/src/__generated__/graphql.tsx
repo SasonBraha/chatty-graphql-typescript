@@ -2,7 +2,7 @@ import gql from 'graphql-tag';
 import * as ApolloReactCommon from '@apollo/react-common';
 import * as ApolloReactHooks from '@apollo/react-hooks';
 export type Maybe<T> = T | null;
-// Generated in 2019-09-22T21:48:25+03:00
+// Generated in 2019-09-23T22:28:26+03:00
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
 	ID: string;
@@ -34,8 +34,8 @@ export type Chat = {
 export type ChatMessagesArgs = {
 	before?: Maybe<Scalars['String']>;
 	after?: Maybe<Scalars['String']>;
-	last?: Maybe<Scalars['Float']>;
-	first?: Maybe<Scalars['Float']>;
+	last?: Maybe<Scalars['Int']>;
+	first?: Maybe<Scalars['Int']>;
 };
 
 export type CreateChatInput = {
@@ -345,6 +345,10 @@ export type UpdateActiveUsersMutation = { __typename?: 'Mutation' } & Pick<
 
 export type GetMessagesQueryVariables = {
 	chatSlug: Scalars['String'];
+	first?: Maybe<Scalars['Int']>;
+	last?: Maybe<Scalars['Int']>;
+	before?: Maybe<Scalars['String']>;
+	after?: Maybe<Scalars['String']>;
 };
 
 export type GetMessagesQuery = { __typename?: 'Query' } & {
@@ -549,10 +553,16 @@ export type UpdateActiveUsersMutationOptions = ApolloReactCommon.BaseMutationOpt
 	UpdateActiveUsersMutationVariables
 >;
 export const GetMessagesDocument = gql`
-	query GetMessages($chatSlug: String!) {
+	query GetMessages(
+		$chatSlug: String!
+		$first: Int
+		$last: Int
+		$before: String
+		$after: String
+	) {
 		chat(chatSlug: $chatSlug) {
 			storeMessages
-			messages(first: 20) {
+			messages(first: $first, last: $last, before: $before, after: $after) {
 				edges {
 					cursor
 					node {

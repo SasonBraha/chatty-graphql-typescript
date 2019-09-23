@@ -13,7 +13,7 @@ type Chat {
     image: File!
     isPrivate: Boolean!
     lastMessage: String
-    messages(after: String, before: String, first: Float, last: Float): MessageConnection!
+    messages(after: String, before: String, first: Int, last: Int): MessageConnection!
     moderators: [User!]!
     name: String!
     slug: String!

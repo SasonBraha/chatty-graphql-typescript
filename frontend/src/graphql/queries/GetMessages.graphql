@@ -1,7 +1,13 @@
-query GetMessages($chatSlug: String!) {
+query GetMessages(
+    $chatSlug: String!
+    $first: Int
+    $last: Int
+    $before: String
+    $after: String
+) {
     chat(chatSlug: $chatSlug) {
         storeMessages
-        messages(first: 20) {
+        messages(first: $first, last: $last, before: $before, after: $after) {
             edges {
                 cursor
                 node {

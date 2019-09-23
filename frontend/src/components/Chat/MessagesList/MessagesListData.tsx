@@ -2,74 +2,16 @@ import React, { useState } from 'react';
 import gql from 'graphql-tag';
 import MessagesList from './MessagesList';
 import { IChatProps } from '../Chat';
-import { IChat, IMessage } from '../../../types/interfaces';
+import { IChat } from '../../../types/interfaces';
 import produce from 'immer';
 import { useQuery } from '@apollo/react-hooks';
-import { useTranslation } from 'react-i18next';
 import { Redirect } from 'react-router';
-
-const MESSAGE_ATTRIBUTES = gql`
-	fragment messageResults on Message {
-		_id
-		text
-		createdBy {
-			displayName
-			avatar
-			slug
-		}
-		file {
-			path
-			dimensions {
-				height
-				width
-			}
-		}
-		isClientDeleted
-		creationToken
-		chatSlug
-		createdAt
-		userMentions {
-			displayName
-			indices
-			slug
-		}
-	}
-`;
-
-const MESSAGES_LIST_QUERY = gql`
-	query GetMessages($chatSlug: String!) {
-		chat(chatSlug: $chatSlug) {
-			storeMessages
-			messages(first: 20) {
-				edges {
-					cursor
-					node {
-						...messageResults
-					}
-				}
-				pageInfo {
-					hasNextPage
-					hasPreviousPage
-				}
-			}
-		}
-	}
-	${MESSAGE_ATTRIBUTES}
-`;
+import { useGetMessagesQuery } from '../../../__generated__/graphql';
 
 const MESSAGES_LIST_UPDATES = gql`
 	subscription SubscribeToMessageUpdates($chatSlug: String!) {
 		onMessageUpdate(chatSlug: $chatSlug)
 	}
-`;
-
-const GET_OLDER_MESSAGES = gql`
-	query GetOlderMessages($chatSlug: String!, $beforeMessageId: ID!) {
-		olderMessages(chatSlug: $chatSlug, beforeMessageId: $beforeMessageId) {
-			...messageResults
-		}
-	}
-	${MESSAGE_ATTRIBUTES}
 `;
 
 enum SubscriptionTypesEnum {
@@ -79,24 +21,24 @@ enum SubscriptionTypesEnum {
 	MESSAGE_EDITED = 'MESSAGE_EDITED'
 }
 
-interface IPrev {
-	chat: IChat;
-}
-
 interface IProps extends IChatProps {}
 
 const MessagesListData = (props: IProps) => {
 	const [isFetching, setIsFetching] = useState(false);
 	const [isMoreMessagesToFetch, setIsMoreMessagesToFetch] = useState(true);
 	const { chatSlug } = props.match.params;
-	const { data, fetchMore, subscribeToMore, loading, ...result } = useQuery(
-		MESSAGES_LIST_QUERY,
-		{
-			variables: {
-				chatSlug
-			}
+	const {
+		data,
+		fetchMore,
+		subscribeToMore,
+		loading,
+		...result
+	} = useGetMessagesQuery({
+		variables: {
+			chatSlug,
+			first: 20
 		}
-	);
+	});
 	if (result.error) {
 		// setGenericModal('error', t('chat.roomNotFound'));
 		return <Redirect to='/' />;
@@ -125,16 +67,15 @@ const MessagesListData = (props: IProps) => {
 			isFetching={isFetching}
 			isMoreMessagesToFetch={isMoreMessagesToFetch}
 			setIsMoreMessagesToFetch={setIsMoreMessagesToFetch}
-			found={!loading && data && data.chat}
+			found={!!(!loading && data && data.chat)}
 			fetchOlderMessages={(chatSlug: string, beforeMessageId: string) => {
 				setIsFetching(true);
 				fetchMore({
-					query: GET_OLDER_MESSAGES,
 					//@ts-ignore
-					variables: { chatSlug, beforeMessageId },
+					variables: { chatSlug, first: 20, before: beforeMessageId },
 					updateQuery: (prev, { fetchMoreResult }) => {
 						setIsFetching(false);
-						if (!fetchMoreResult.olderMessages.length) {
+						if (!fetchMoreResult.chat.messages.pageInfo.hasPreviousPage) {
 							setIsMoreMessagesToFetch(false);
 							return prev;
 						}
@@ -142,8 +83,8 @@ const MessagesListData = (props: IProps) => {
 							chat: {
 								...prev.chat,
 								messages: [
-									...fetchMoreResult.olderMessages.reverse(),
-									...prev.chat.messages
+									...fetchMoreResult.chat.messages.edges.reverse(),
+									...prev.chat.messages.edges
 								]
 							}
 						};
@@ -156,6 +97,7 @@ const MessagesListData = (props: IProps) => {
 					variables: { chatSlug },
 					updateQuery: (prev, { subscriptionData }) => {
 						const updatedData = JSON.parse(
+							// @ts-ignore
 							subscriptionData.data.onMessageUpdate
 						);
 						const updateType = updatedData.updateType;
@@ -165,6 +107,7 @@ const MessagesListData = (props: IProps) => {
 									chat: {
 										...prev.chat,
 										messages: {
+											// @ts-ignore
 											...prev.messages,
 											edges: [...prev.chat.messages.edges, updatedData.message]
 										},

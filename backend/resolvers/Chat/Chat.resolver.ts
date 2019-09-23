@@ -11,7 +11,8 @@ import {
 	Root,
 	Subscription,
 	UseMiddleware,
-	Info
+	Info,
+	Int
 } from 'type-graphql';
 import { Chat, ChatModel } from '../../entities/Chat';
 import { User, UserModel } from '../../entities/User';
@@ -498,8 +499,8 @@ export default class ChatResolver {
 	async messages(
 		@Root() chat: Chat,
 		@Info() info: any,
-		@Arg('first', { nullable: true }) first: number,
-		@Arg('last', { nullable: true }) last: number,
+		@Arg('first', () => Int, { nullable: true }) first: number,
+		@Arg('last', () => Int, { nullable: true }) last: number,
 		@Arg('after', { nullable: true }) after: string,
 		@Arg('before', { nullable: true }) before: string
 	): Promise<MessageConnection> {

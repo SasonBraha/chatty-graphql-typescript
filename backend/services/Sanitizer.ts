@@ -5,7 +5,9 @@ class Sanitizer {
 	constructor() {
 		this.excluded = {
 			file: true,
-			limit: true
+			limit: true,
+			first: true,
+			last: true
 		};
 	}
 
