@@ -13,7 +13,6 @@ fragment messageAttributes on Message {
             width
         }
     }
-    isClientDeleted
     creationToken
     chatSlug
     createdAt

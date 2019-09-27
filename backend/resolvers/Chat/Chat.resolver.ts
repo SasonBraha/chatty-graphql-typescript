@@ -203,7 +203,6 @@ export default class ChatResolver {
 				node: {
 					...messageData,
 					createdAt: new Date(),
-					isClientDeleted: false,
 					creationToken: jwt.sign(
 						{ userId: user._id.toString(), messageId: preSaveId._id },
 						process.env.JWT_SECRET

@@ -1,0 +1,17 @@
+mutation UpdateMessage(
+    $messageId: ID!
+    $crudType: String!
+    $messageText: String
+    $creationToken: String
+    $chatSlug: String!
+) {
+    updateMessage(
+        updatePayload: {
+            messageId: $messageId
+            crudType: $crudType
+            messageText: $messageText
+            creationToken: $creationToken
+            chatSlug: $chatSlug
+        }
+    )
+}

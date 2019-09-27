@@ -46,7 +46,6 @@ export interface IMessage {
 	};
 	createdAt: Date;
 	userMentions: IMention[];
-	isClientDeleted: boolean | null;
 	creationToken?: string;
 	chatSlug: string;
 }

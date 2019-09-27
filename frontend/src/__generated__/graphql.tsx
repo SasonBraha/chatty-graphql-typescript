@@ -1,8 +1,9 @@
 import gql from 'graphql-tag';
 import * as ApolloReactCommon from '@apollo/react-common';
+import * as ApolloReactHoc from '@apollo/react-hoc';
 import * as ApolloReactHooks from '@apollo/react-hooks';
 export type Maybe<T> = T | null;
-// Generated in 2019-09-23T22:28:26+03:00
+// Generated in 2019-09-28T00:03:11+03:00
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
 	ID: string;
@@ -95,7 +96,6 @@ export type Message = {
 	createdBy: CreatedBy;
 	userMentions?: Maybe<Array<Mention>>;
 	creationToken?: Maybe<Scalars['String']>;
-	isClientDeleted?: Maybe<Scalars['Boolean']>;
 	createdAt: Scalars['DateTime'];
 };
 
@@ -295,12 +295,7 @@ export type UserTypingOutput = {
 };
 export type MessageAttributesFragment = { __typename?: 'Message' } & Pick<
 	Message,
-	| '_id'
-	| 'text'
-	| 'isClientDeleted'
-	| 'creationToken'
-	| 'chatSlug'
-	| 'createdAt'
+	'_id' | 'text' | 'creationToken' | 'chatSlug' | 'createdAt'
 > & {
 		createdBy: { __typename?: 'CreatedBy' } & Pick<
 			CreatedBy,
@@ -424,6 +419,19 @@ export type MeQuery = { __typename?: 'Query' } & {
 	me: { __typename?: 'User' } & Pick<User, 'unreadNotificationsCount'>;
 };
 
+export type UpdateMessageMutationVariables = {
+	messageId: Scalars['ID'];
+	crudType: Scalars['String'];
+	messageText?: Maybe<Scalars['String']>;
+	creationToken?: Maybe<Scalars['String']>;
+	chatSlug: Scalars['String'];
+};
+
+export type UpdateMessageMutation = { __typename?: 'Mutation' } & Pick<
+	Mutation,
+	'updateMessage'
+>;
+
 export type ActiveUsersUpdatesSubscriptionVariables = {
 	chatSlug: Scalars['String'];
 };
@@ -477,7 +485,6 @@ export const MessageAttributesFragmentDoc = gql`
 				width
 			}
 		}
-		isClientDeleted
 		creationToken
 		chatSlug
 		createdAt
@@ -499,6 +506,29 @@ export type PostMessageMutationFn = ApolloReactCommon.MutationFunction<
 	PostMessageMutation,
 	PostMessageMutationVariables
 >;
+export type PostMessageProps<TChildProps = {}> = ApolloReactHoc.MutateProps<
+	PostMessageMutation,
+	PostMessageMutationVariables
+> &
+	TChildProps;
+export function withPostMessage<TProps, TChildProps = {}>(
+	operationOptions?: ApolloReactHoc.OperationOption<
+		TProps,
+		PostMessageMutation,
+		PostMessageMutationVariables,
+		PostMessageProps<TChildProps>
+	>
+) {
+	return ApolloReactHoc.withMutation<
+		TProps,
+		PostMessageMutation,
+		PostMessageMutationVariables,
+		PostMessageProps<TChildProps>
+	>(PostMessageDocument, {
+		alias: 'postMessage',
+		...operationOptions
+	});
+}
 
 export function usePostMessageMutation(
 	baseOptions?: ApolloReactHooks.MutationHookOptions<
@@ -530,6 +560,31 @@ export type UpdateActiveUsersMutationFn = ApolloReactCommon.MutationFunction<
 	UpdateActiveUsersMutation,
 	UpdateActiveUsersMutationVariables
 >;
+export type UpdateActiveUsersProps<
+	TChildProps = {}
+> = ApolloReactHoc.MutateProps<
+	UpdateActiveUsersMutation,
+	UpdateActiveUsersMutationVariables
+> &
+	TChildProps;
+export function withUpdateActiveUsers<TProps, TChildProps = {}>(
+	operationOptions?: ApolloReactHoc.OperationOption<
+		TProps,
+		UpdateActiveUsersMutation,
+		UpdateActiveUsersMutationVariables,
+		UpdateActiveUsersProps<TChildProps>
+	>
+) {
+	return ApolloReactHoc.withMutation<
+		TProps,
+		UpdateActiveUsersMutation,
+		UpdateActiveUsersMutationVariables,
+		UpdateActiveUsersProps<TChildProps>
+	>(UpdateActiveUsersDocument, {
+		alias: 'updateActiveUsers',
+		...operationOptions
+	});
+}
 
 export function useUpdateActiveUsersMutation(
 	baseOptions?: ApolloReactHooks.MutationHookOptions<
@@ -578,6 +633,29 @@ export const GetMessagesDocument = gql`
 	}
 	${MessageAttributesFragmentDoc}
 `;
+export type GetMessagesProps<TChildProps = {}> = ApolloReactHoc.DataProps<
+	GetMessagesQuery,
+	GetMessagesQueryVariables
+> &
+	TChildProps;
+export function withGetMessages<TProps, TChildProps = {}>(
+	operationOptions?: ApolloReactHoc.OperationOption<
+		TProps,
+		GetMessagesQuery,
+		GetMessagesQueryVariables,
+		GetMessagesProps<TChildProps>
+	>
+) {
+	return ApolloReactHoc.withQuery<
+		TProps,
+		GetMessagesQuery,
+		GetMessagesQueryVariables,
+		GetMessagesProps<TChildProps>
+	>(GetMessagesDocument, {
+		alias: 'getMessages',
+		...operationOptions
+	});
+}
 
 export function useGetMessagesQuery(
 	baseOptions?: ApolloReactHooks.QueryHookOptions<
@@ -620,6 +698,29 @@ export const GetNotificationsDocument = gql`
 		}
 	}
 `;
+export type GetNotificationsProps<TChildProps = {}> = ApolloReactHoc.DataProps<
+	GetNotificationsQuery,
+	GetNotificationsQueryVariables
+> &
+	TChildProps;
+export function withGetNotifications<TProps, TChildProps = {}>(
+	operationOptions?: ApolloReactHoc.OperationOption<
+		TProps,
+		GetNotificationsQuery,
+		GetNotificationsQueryVariables,
+		GetNotificationsProps<TChildProps>
+	>
+) {
+	return ApolloReactHoc.withQuery<
+		TProps,
+		GetNotificationsQuery,
+		GetNotificationsQueryVariables,
+		GetNotificationsProps<TChildProps>
+	>(GetNotificationsDocument, {
+		alias: 'getNotifications',
+		...operationOptions
+	});
+}
 
 export function useGetNotificationsQuery(
 	baseOptions?: ApolloReactHooks.QueryHookOptions<
@@ -664,6 +765,29 @@ export const GetRoomsListDocument = gql`
 		}
 	}
 `;
+export type GetRoomsListProps<TChildProps = {}> = ApolloReactHoc.DataProps<
+	GetRoomsListQuery,
+	GetRoomsListQueryVariables
+> &
+	TChildProps;
+export function withGetRoomsList<TProps, TChildProps = {}>(
+	operationOptions?: ApolloReactHoc.OperationOption<
+		TProps,
+		GetRoomsListQuery,
+		GetRoomsListQueryVariables,
+		GetRoomsListProps<TChildProps>
+	>
+) {
+	return ApolloReactHoc.withQuery<
+		TProps,
+		GetRoomsListQuery,
+		GetRoomsListQueryVariables,
+		GetRoomsListProps<TChildProps>
+	>(GetRoomsListDocument, {
+		alias: 'getRoomsList',
+		...operationOptions
+	});
+}
 
 export function useGetRoomsListQuery(
 	baseOptions?: ApolloReactHooks.QueryHookOptions<
@@ -705,6 +829,29 @@ export const GetUserDocument = gql`
 		}
 	}
 `;
+export type GetUserProps<TChildProps = {}> = ApolloReactHoc.DataProps<
+	GetUserQuery,
+	GetUserQueryVariables
+> &
+	TChildProps;
+export function withGetUser<TProps, TChildProps = {}>(
+	operationOptions?: ApolloReactHoc.OperationOption<
+		TProps,
+		GetUserQuery,
+		GetUserQueryVariables,
+		GetUserProps<TChildProps>
+	>
+) {
+	return ApolloReactHoc.withQuery<
+		TProps,
+		GetUserQuery,
+		GetUserQueryVariables,
+		GetUserProps<TChildProps>
+	>(GetUserDocument, {
+		alias: 'getUser',
+		...operationOptions
+	});
+}
 
 export function useGetUserQuery(
 	baseOptions?: ApolloReactHooks.QueryHookOptions<
@@ -746,6 +893,29 @@ export const GetUsersDocument = gql`
 		}
 	}
 `;
+export type GetUsersProps<TChildProps = {}> = ApolloReactHoc.DataProps<
+	GetUsersQuery,
+	GetUsersQueryVariables
+> &
+	TChildProps;
+export function withGetUsers<TProps, TChildProps = {}>(
+	operationOptions?: ApolloReactHoc.OperationOption<
+		TProps,
+		GetUsersQuery,
+		GetUsersQueryVariables,
+		GetUsersProps<TChildProps>
+	>
+) {
+	return ApolloReactHoc.withQuery<
+		TProps,
+		GetUsersQuery,
+		GetUsersQueryVariables,
+		GetUsersProps<TChildProps>
+	>(GetUsersDocument, {
+		alias: 'getUsers',
+		...operationOptions
+	});
+}
 
 export function useGetUsersQuery(
 	baseOptions?: ApolloReactHooks.QueryHookOptions<
@@ -782,6 +952,29 @@ export const MeDocument = gql`
 		}
 	}
 `;
+export type MeProps<TChildProps = {}> = ApolloReactHoc.DataProps<
+	MeQuery,
+	MeQueryVariables
+> &
+	TChildProps;
+export function withMe<TProps, TChildProps = {}>(
+	operationOptions?: ApolloReactHoc.OperationOption<
+		TProps,
+		MeQuery,
+		MeQueryVariables,
+		MeProps<TChildProps>
+	>
+) {
+	return ApolloReactHoc.withQuery<
+		TProps,
+		MeQuery,
+		MeQueryVariables,
+		MeProps<TChildProps>
+	>(MeDocument, {
+		alias: 'me',
+		...operationOptions
+	});
+}
 
 export function useMeQuery(
 	baseOptions?: ApolloReactHooks.QueryHookOptions<MeQuery, MeQueryVariables>
@@ -805,6 +998,74 @@ export type MeQueryResult = ApolloReactCommon.QueryResult<
 	MeQuery,
 	MeQueryVariables
 >;
+export const UpdateMessageDocument = gql`
+	mutation UpdateMessage(
+		$messageId: ID!
+		$crudType: String!
+		$messageText: String
+		$creationToken: String
+		$chatSlug: String!
+	) {
+		updateMessage(
+			updatePayload: {
+				messageId: $messageId
+				crudType: $crudType
+				messageText: $messageText
+				creationToken: $creationToken
+				chatSlug: $chatSlug
+			}
+		)
+	}
+`;
+export type UpdateMessageMutationFn = ApolloReactCommon.MutationFunction<
+	UpdateMessageMutation,
+	UpdateMessageMutationVariables
+>;
+export type UpdateMessageProps<TChildProps = {}> = ApolloReactHoc.MutateProps<
+	UpdateMessageMutation,
+	UpdateMessageMutationVariables
+> &
+	TChildProps;
+export function withUpdateMessage<TProps, TChildProps = {}>(
+	operationOptions?: ApolloReactHoc.OperationOption<
+		TProps,
+		UpdateMessageMutation,
+		UpdateMessageMutationVariables,
+		UpdateMessageProps<TChildProps>
+	>
+) {
+	return ApolloReactHoc.withMutation<
+		TProps,
+		UpdateMessageMutation,
+		UpdateMessageMutationVariables,
+		UpdateMessageProps<TChildProps>
+	>(UpdateMessageDocument, {
+		alias: 'updateMessage',
+		...operationOptions
+	});
+}
+
+export function useUpdateMessageMutation(
+	baseOptions?: ApolloReactHooks.MutationHookOptions<
+		UpdateMessageMutation,
+		UpdateMessageMutationVariables
+	>
+) {
+	return ApolloReactHooks.useMutation<
+		UpdateMessageMutation,
+		UpdateMessageMutationVariables
+	>(UpdateMessageDocument, baseOptions);
+}
+export type UpdateMessageMutationHookResult = ReturnType<
+	typeof useUpdateMessageMutation
+>;
+export type UpdateMessageMutationResult = ApolloReactCommon.MutationResult<
+	UpdateMessageMutation
+>;
+export type UpdateMessageMutationOptions = ApolloReactCommon.BaseMutationOptions<
+	UpdateMessageMutation,
+	UpdateMessageMutationVariables
+>;
 export const ActiveUsersUpdatesDocument = gql`
 	subscription ActiveUsersUpdates($chatSlug: String!) {
 		onActiveUsersUpdate(chatSlug: $chatSlug) {
@@ -814,6 +1075,31 @@ export const ActiveUsersUpdatesDocument = gql`
 		}
 	}
 `;
+export type ActiveUsersUpdatesProps<
+	TChildProps = {}
+> = ApolloReactHoc.DataProps<
+	ActiveUsersUpdatesSubscription,
+	ActiveUsersUpdatesSubscriptionVariables
+> &
+	TChildProps;
+export function withActiveUsersUpdates<TProps, TChildProps = {}>(
+	operationOptions?: ApolloReactHoc.OperationOption<
+		TProps,
+		ActiveUsersUpdatesSubscription,
+		ActiveUsersUpdatesSubscriptionVariables,
+		ActiveUsersUpdatesProps<TChildProps>
+	>
+) {
+	return ApolloReactHoc.withSubscription<
+		TProps,
+		ActiveUsersUpdatesSubscription,
+		ActiveUsersUpdatesSubscriptionVariables,
+		ActiveUsersUpdatesProps<TChildProps>
+	>(ActiveUsersUpdatesDocument, {
+		alias: 'activeUsersUpdates',
+		...operationOptions
+	});
+}
 
 export function useActiveUsersUpdatesSubscription(
 	baseOptions?: ApolloReactHooks.SubscriptionHookOptions<
@@ -837,6 +1123,31 @@ export const ChatMessageUpdatesDocument = gql`
 		onMessageUpdate(chatSlug: $chatSlug)
 	}
 `;
+export type ChatMessageUpdatesProps<
+	TChildProps = {}
+> = ApolloReactHoc.DataProps<
+	ChatMessageUpdatesSubscription,
+	ChatMessageUpdatesSubscriptionVariables
+> &
+	TChildProps;
+export function withChatMessageUpdates<TProps, TChildProps = {}>(
+	operationOptions?: ApolloReactHoc.OperationOption<
+		TProps,
+		ChatMessageUpdatesSubscription,
+		ChatMessageUpdatesSubscriptionVariables,
+		ChatMessageUpdatesProps<TChildProps>
+	>
+) {
+	return ApolloReactHoc.withSubscription<
+		TProps,
+		ChatMessageUpdatesSubscription,
+		ChatMessageUpdatesSubscriptionVariables,
+		ChatMessageUpdatesProps<TChildProps>
+	>(ChatMessageUpdatesDocument, {
+		alias: 'chatMessageUpdates',
+		...operationOptions
+	});
+}
 
 export function useChatMessageUpdatesSubscription(
 	baseOptions?: ApolloReactHooks.SubscriptionHookOptions<
@@ -867,6 +1178,31 @@ export const TypingUsersUpdatesDocument = gql`
 		}
 	}
 `;
+export type TypingUsersUpdatesProps<
+	TChildProps = {}
+> = ApolloReactHoc.DataProps<
+	TypingUsersUpdatesSubscription,
+	TypingUsersUpdatesSubscriptionVariables
+> &
+	TChildProps;
+export function withTypingUsersUpdates<TProps, TChildProps = {}>(
+	operationOptions?: ApolloReactHoc.OperationOption<
+		TProps,
+		TypingUsersUpdatesSubscription,
+		TypingUsersUpdatesSubscriptionVariables,
+		TypingUsersUpdatesProps<TChildProps>
+	>
+) {
+	return ApolloReactHoc.withSubscription<
+		TProps,
+		TypingUsersUpdatesSubscription,
+		TypingUsersUpdatesSubscriptionVariables,
+		TypingUsersUpdatesProps<TChildProps>
+	>(TypingUsersUpdatesDocument, {
+		alias: 'typingUsersUpdates',
+		...operationOptions
+	});
+}
 
 export function useTypingUsersUpdatesSubscription(
 	baseOptions?: ApolloReactHooks.SubscriptionHookOptions<
@@ -890,6 +1226,29 @@ export const UserUpdatesDocument = gql`
 		userUpdates
 	}
 `;
+export type UserUpdatesProps<TChildProps = {}> = ApolloReactHoc.DataProps<
+	UserUpdatesSubscription,
+	UserUpdatesSubscriptionVariables
+> &
+	TChildProps;
+export function withUserUpdates<TProps, TChildProps = {}>(
+	operationOptions?: ApolloReactHoc.OperationOption<
+		TProps,
+		UserUpdatesSubscription,
+		UserUpdatesSubscriptionVariables,
+		UserUpdatesProps<TChildProps>
+	>
+) {
+	return ApolloReactHoc.withSubscription<
+		TProps,
+		UserUpdatesSubscription,
+		UserUpdatesSubscriptionVariables,
+		UserUpdatesProps<TChildProps>
+	>(UserUpdatesDocument, {
+		alias: 'userUpdates',
+		...operationOptions
+	});
+}
 
 export function useUserUpdatesSubscription(
 	baseOptions?: ApolloReactHooks.SubscriptionHookOptions<

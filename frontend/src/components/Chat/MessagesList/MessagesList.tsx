@@ -238,12 +238,12 @@ class MessagesList extends Component<IProps, IState> {
 							<MessagesListLoader key={i} />
 					  ))
 					: chat.messages.map(({ node }) => (
+							// @ts-ignore
 							<Message
 								message={node}
 								key={node._id}
 								isMine={currentUser!.slug === node.createdBy.slug}
 								setMessageCtxMenu={this.showMessageCtxMenu}
-								client={client}
 							/>
 					  ))}
 				<div ref={this.listEnd} className='listEnd' />

@@ -55,9 +55,6 @@ export class Message extends Typegoose {
 	@Field({ nullable: true })
 	creationToken: string;
 
-	@Field({ nullable: true })
-	isClientDeleted?: boolean;
-
 	@Field(type => Date)
 	createdAt: Date;
 }

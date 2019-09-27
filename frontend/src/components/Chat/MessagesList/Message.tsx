@@ -4,48 +4,31 @@ import styled, { css } from 'styled-components/macro';
 import formatRelative from 'date-fns/formatRelative';
 import he from 'date-fns/locale/he';
 import { parseISO } from 'date-fns';
-import ApolloClient from 'apollo-client';
-import gql from 'graphql-tag';
 import { CrudEnum } from '../../../types/enums';
-import { Editable } from '../../Shared';
+import { Editable, Image } from '../../Shared';
 import { IMessageCtxMenu } from './MessagesList';
 import reactStringReplace from 'react-string-replace';
 import { Link } from 'react-router-dom';
 import { withTranslation } from '../../Shared/Hoc';
-import { Image } from '../../Shared';
+import {
+	UpdateMessageMutationFn,
+	UpdateMessageProps,
+	withUpdateMessage
+} from '../../../__generated__/graphql';
 
-const UPDATE_MESSAGE_MUTATION = gql`
-	mutation UpdateMessage(
-		$messageId: ID!
-		$crudType: String!
-		$messageText: String
-		$creationToken: String
-		$chatSlug: String!
-	) {
-		updateMessage(
-			updatePayload: {
-				messageId: $messageId
-				crudType: $crudType
-				messageText: $messageText
-				creationToken: $creationToken
-				chatSlug: $chatSlug
-			}
-		)
-	}
-`;
-
-interface IProps {
+interface IProps extends UpdateMessageProps {
 	message: IMessage;
 	isMine: boolean;
 	setMessageCtxMenu: (ctx: IMessageCtxMenu) => void;
-	client?: ApolloClient<any>;
 	t?: any;
+	updateMessage: UpdateMessageMutationFn;
 }
 
 interface IState {
 	messageBody: string;
 	isEditable: boolean;
 	isMediaLoaded: boolean;
+	isDeleted: boolean;
 }
 
 @withTranslation()
@@ -53,7 +36,8 @@ class Message extends Component<IProps, IState> {
 	state = {
 		messageBody: this.props.message.text,
 		isEditable: false,
-		isMediaLoaded: false
+		isMediaLoaded: false,
+		isDeleted: false
 	};
 
 	componentDidUpdate(prevProps: IProps, prevState: IState) {
@@ -63,15 +47,14 @@ class Message extends Component<IProps, IState> {
 	}
 
 	handleContextMenu = (e: React.MouseEvent) => {
-		if (
-			this.props.isMine &&
-			!this.props.message.isClientDeleted &&
-			!this.state.isEditable
-		) {
+		const { setMessageCtxMenu, isMine, message } = this.props;
+		const { isDeleted, isEditable } = this.state;
+		const shouldShowCustomContextMenu = isMine && !isDeleted && !isEditable;
+		if (shouldShowCustomContextMenu) {
 			e.preventDefault();
-			this.props.setMessageCtxMenu({
+			setMessageCtxMenu({
 				isOpen: true,
-				message: this.props.message,
+				message: message,
 				position: {
 					y: e.pageY - 52,
 					x: e.pageX
@@ -85,8 +68,7 @@ class Message extends Component<IProps, IState> {
 	handleEditableBlur = async () => {
 		this.setState({ isEditable: false });
 		if (this.props.message.text !== this.state.messageBody) {
-			await this.props.client!.mutate({
-				mutation: UPDATE_MESSAGE_MUTATION,
+			await this.props.updateMessage({
 				variables: {
 					messageId: this.props.message._id,
 					crudType: CrudEnum.UPDATE,
@@ -99,7 +81,7 @@ class Message extends Component<IProps, IState> {
 	};
 
 	renderFile = () => {
-		const { file } = this.props.message;
+		const { file, _id } = this.props.message;
 		if (file) {
 			const { width, height } = file.dimensions;
 			const MAX_HEIGHT = 320;
@@ -108,7 +90,7 @@ class Message extends Component<IProps, IState> {
 			return (
 				<S.Image
 					src={`${process.env.REACT_APP_S3_BUCKET_URL}/${file.path}`}
-					id={this.props.message._id}
+					id={_id}
 					maxWidth={MAX_WIDTH}
 					maxHeight={MAX_HEIGHT}
 					naturalWidth={width}
@@ -125,18 +107,20 @@ class Message extends Component<IProps, IState> {
 	};
 
 	renderText = () => {
-		const { message } = this.props;
+		const {
+			message: { userMentions, text }
+		} = this.props;
 		const { messageBody } = this.state;
 
-		if (message.userMentions && message.userMentions.length) {
+		if (userMentions && userMentions.length) {
 			const mentionRegex = new RegExp('(@[\\wא-ת-_]+)', 'g');
 			return reactStringReplace(messageBody, mentionRegex, (match, i) => {
 				const displayName = match.slice(1);
-				const userDataIndex = message.userMentions.findIndex(
+				const userDataIndex = userMentions.findIndex(
 					mention => mention.displayName === displayName
 				);
 				if (userDataIndex !== -1) {
-					const userData = message.userMentions[userDataIndex];
+					const userData = userMentions[userDataIndex];
 					return (
 						<S.Mention key={i} to={`/user/${userData.slug}`}>
 							{displayName}
@@ -146,13 +130,12 @@ class Message extends Component<IProps, IState> {
 				return match;
 			});
 		} else {
-			return message.text;
+			return text;
 		}
 	};
 
 	deleteMessage = async () => {
-		await this.props.client!.mutate({
-			mutation: UPDATE_MESSAGE_MUTATION,
+		await this.props.updateMessage({
 			variables: {
 				messageId: this.props.message!._id,
 				crudType: CrudEnum.DELETE,
@@ -160,21 +143,28 @@ class Message extends Component<IProps, IState> {
 				chatSlug: this.props.message.chatSlug
 			}
 		});
+		this.setState({
+			isDeleted: true
+		});
 	};
 
 	render() {
-		const { message, isMine } = this.props;
+		const {
+			message: { createdBy, text, createdAt },
+			isMine
+		} = this.props;
+		const { isDeleted } = this.state;
 		return (
 			<S.Message
 				isMine={isMine}
-				isClientDeleted={message.isClientDeleted}
+				isDeleted={isDeleted}
 				onContextMenu={this.handleContextMenu}
 			>
-				{message.isClientDeleted ? (
+				{isDeleted ? (
 					<S.Text>{this.props.t('chat.messageDeleted')}</S.Text>
 				) : (
 					<>
-						<S.MetaData>{message.createdBy.displayName}</S.MetaData>
+						<S.MetaData>{createdBy.displayName}</S.MetaData>
 						{this.renderFile()}
 						{this.state.isEditable ? (
 							<S.Editable
@@ -183,7 +173,7 @@ class Message extends Component<IProps, IState> {
 								}
 								onCancel={() =>
 									this.setState({
-										messageBody: message.text,
+										messageBody: text,
 										isEditable: false
 									})
 								}
@@ -198,7 +188,7 @@ class Message extends Component<IProps, IState> {
 
 						<S.MetaData alignLeft={true}>
 							{formatRelative(
-								parseISO((message.createdAt as unknown) as string),
+								parseISO((createdAt as unknown) as string),
 								new Date(),
 								{
 									locale: he
@@ -215,7 +205,7 @@ class Message extends Component<IProps, IState> {
 const S: any = {};
 S.Message = styled('div')<{
 	isMine: boolean;
-	isClientDeleted: boolean | null;
+	isDeleted: boolean;
 }>`
 	padding: 0.5rem 1rem;
 	border-radius: 0.5rem;
@@ -240,8 +230,8 @@ S.Message = styled('div')<{
 			color: white;
 		`}
 
-	${({ isClientDeleted }) =>
-		isClientDeleted &&
+	${({ isDeleted }) =>
+		isDeleted &&
 		css`
 			min-width: initial;
 			opacity: 0.6;
@@ -329,4 +319,4 @@ S.MediaLoader = styled('div')<{ isMediaLoaded: boolean }>`
 		`}
 `;
 
-export default Message;
+export default withUpdateMessage({ name: 'updateMessage' })(Message);

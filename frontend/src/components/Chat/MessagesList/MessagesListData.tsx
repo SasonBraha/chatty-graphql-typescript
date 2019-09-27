@@ -2,9 +2,7 @@ import React, { useState } from 'react';
 import gql from 'graphql-tag';
 import MessagesList from './MessagesList';
 import { IChatProps } from '../Chat';
-import { IChat } from '../../../types/interfaces';
 import produce from 'immer';
-import { useQuery } from '@apollo/react-hooks';
 import { Redirect } from 'react-router';
 import { useGetMessagesQuery } from '../../../__generated__/graphql';
 
@@ -71,7 +69,6 @@ const MessagesListData = (props: IProps) => {
 			fetchOlderMessages={(chatSlug: string, beforeMessageId: string) => {
 				setIsFetching(true);
 				fetchMore({
-					//@ts-ignore
 					variables: { chatSlug, first: 20, before: beforeMessageId },
 					updateQuery: (prev, { fetchMoreResult }) => {
 						setIsFetching(false);
@@ -97,7 +94,7 @@ const MessagesListData = (props: IProps) => {
 					variables: { chatSlug },
 					updateQuery: (prev, { subscriptionData }) => {
 						const updatedData = JSON.parse(
-							// @ts-ignore
+							//@ts-ignore
 							subscriptionData.data.onMessageUpdate
 						);
 						const updateType = updatedData.updateType;
@@ -134,12 +131,12 @@ const MessagesListData = (props: IProps) => {
 												updatedData.file;
 										});
 
-									case SubscriptionTypesEnum.MESSAGE_DELETED:
-										return produce(prev, draft => {
-											draft.chat.messages.edges[
-												targetMessageIdx
-											].node.isClientDeleted = true;
-										});
+									// case SubscriptionTypesEnum.MESSAGE_DELETED:
+									// 	return produce(prev, draft => {
+									// 		draft.chat.messages.edges[
+									// 			targetMessageIdx
+									// 		].node.isClientDeleted = true;
+									// 	});
 
 									case SubscriptionTypesEnum.MESSAGE_EDITED:
 										return produce(prev, draft => {

@@ -1,3 +1,4 @@
 import useLocalCache from './useLocalCache';
+import usePrevious from './usePrevious';
 
-export { useLocalCache };
+export { useLocalCache, usePrevious };
