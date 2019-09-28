@@ -3,17 +3,20 @@ import styled from 'styled-components/macro';
 import { Link } from 'react-router-dom';
 import { Burger, Button, Dropdown, List, Scrollable } from '../Shared';
 import Ripple from 'react-ink';
-import { IUser } from '../../types/interfaces';
 import Icon from '../Shared/Icon';
 import Notifications from './Notifications';
-import { setAuthModal, setNavState } from '../../apollo/actions';
-import { useLocalCache } from '../Shared/Hooks';
-import { USER_ENTITY_FRAGMENT } from '../../apollo/fragments';
 import i18n from '../../locale';
+import {
+	use_GetCurrentUserQuery,
+	use_GetNotificationsDataQuery,
+	use_SetAuthModalMutation,
+	use_ToggleNavStateMutation,
+	User
+} from '../../__generated__/graphql';
 
 interface IProps {}
 
-const headerDropdownItems = (currentUser: IUser) => {
+const headerDropdownItems = (currentUser: User) => {
 	return [
 		{
 			icon: 'icon-user',
@@ -44,18 +47,20 @@ const Header: React.FC<IProps> = props => {
 	const [isNotificationsDropdownOpen, setNotificationsDropdown] = useState(
 		false
 	);
-	const { currentUser, notifications } = useLocalCache(`
-		currentUser {
-			${USER_ENTITY_FRAGMENT}
+	const {
+		data: { currentUser }
+	} = use_GetCurrentUserQuery();
+	const {
+		data: {
+			notificationsData: { unreadCount }
 		}
-		notifications {
-			unreadCount
-		}
-	`);
+	} = use_GetNotificationsDataQuery();
+	const [toggleNavState] = use_ToggleNavStateMutation();
+	const [setAuthModal] = use_SetAuthModalMutation();
 
 	return (
 		<S.Header>
-			<Burger onClick={setNavState} />
+			<Burger onClick={toggleNavState} />
 			<S.Brand to='/'>Chatty</S.Brand>
 
 			{currentUser ? (
@@ -64,11 +69,9 @@ const Header: React.FC<IProps> = props => {
 						onClick={() => setNotificationsDropdown(true)}
 					>
 						<Icon icon='icon-notifications' color='white' />
-						{notifications.unreadCount ? (
+						{unreadCount ? (
 							<S.UnreadNotifications>
-								{notifications.unreadCount > 9
-									? '+9'
-									: notifications.unreadCount}
+								{unreadCount > 9 ? '+9' : unreadCount}
 							</S.UnreadNotifications>
 						) : (
 							''
@@ -97,12 +100,14 @@ const Header: React.FC<IProps> = props => {
 							isOpen={isProfileDropdownOpen}
 							resetDropdown={() => setProfileDropdown(false)}
 						>
-							<List items={headerDropdownItems(currentUser)} />
+							<List items={headerDropdownItems(currentUser as User)} />
 						</Dropdown>
 					</S.ProfileDropdown>
 				</S.HeaderMenu>
 			) : (
-				<S.AuthBtn onClick={() => setAuthModal(true)}>
+				<S.AuthBtn
+					onClick={() => setAuthModal({ variables: { isOpen: true } })}
+				>
 					{i18n.t('header.authButton')}
 					<Ripple />
 				</S.AuthBtn>

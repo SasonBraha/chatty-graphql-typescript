@@ -30,9 +30,14 @@ export enum LocalStorageEnum {
 export enum ApolloTypenameEnum {
 	client__CLIENT = 'data.client',
 	client__GENERIC_MODAL = 'data.client.genericModal',
-	client__NOTIFICATIONS = 'data.client.notifications',
 	client__CHAT_MENTION_SUGGESTER = 'data.client.chat.mentionSuggester',
 	client__CHAT = 'data.client.chat',
 	USER = 'User',
-	NOTIFICATIONS_DATA = 'NotificationsData'
+	_NOTIFICATIONS_DATA = '_NotificationsData',
+	_GENERIC_MODAL = '_GENERIC_MODAL'
+}
+
+export enum GenericModalTypesEnum {
+	SUCCESS = 'success',
+	ERROR = 'error'
 }

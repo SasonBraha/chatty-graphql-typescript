@@ -14,7 +14,10 @@ import {
 } from '../types/enums';
 import { setGenericModal } from './actions';
 import { getApolloOperationName } from '../utils';
-import { Client__GetCurrentUserDocument } from '../__generated__/graphql';
+import {
+	_GetNavStateDocument,
+	_GetNotificationsDataDocument
+} from '../__generated__/graphql';
 
 interface IDefinition {
 	kind: string;
@@ -115,9 +118,8 @@ const client = new ApolloClient({
 	cache,
 	resolvers: {
 		Mutation: {
-			updateCurrentUser(_, { user }) {
-				client.writeQuery({
-					query: Client__GetCurrentUserDocument,
+			updateCurrentUser(_, { user }, { cache }) {
+				cache.writeData({
 					data: {
 						currentUser: {
 							...user,
@@ -126,9 +128,35 @@ const client = new ApolloClient({
 					}
 				});
 			},
-			setNotificationsData(_, args, context) {
-				console.log(args);
-			}
+			setNotificationsData(_, { data: { unreadCount } }, { cache }) {
+				const { notificationsData } = cache.readQuery({
+					query: _GetNotificationsDataDocument
+				});
+				cache.writeData({
+					data: {
+						notificationsData: {
+							...notificationsData,
+							unreadCount
+						}
+					}
+				});
+			},
+			toggleNavState(_, __, { cache }) {
+				const { isNavOpen } = cache.readQuery({ query: _GetNavStateDocument });
+				cache.writeData({
+					data: {
+						isNavOpen: !isNavOpen
+					}
+				});
+			},
+			setAuthModal(_, { isOpen }) {
+				cache.writeData({
+					data: {
+						isAuthModalOpen: isOpen
+					}
+				});
+			},
+			setGenericModal(_, { data }) {}
 		}
 	}
 });

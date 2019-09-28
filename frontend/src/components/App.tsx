@@ -8,15 +8,20 @@ import Container from './Container';
 import { withRouter } from 'react-router-dom';
 import { GenericModal } from './Shared';
 import Routes from './Routes';
-import { LocalStorageEnum, UserUpdatesEnum } from '../types/enums';
+import {
+	GenericModalTypesEnum,
+	LocalStorageEnum,
+	UserUpdatesEnum
+} from '../types/enums';
 import { setGenericModal } from '../apollo/actions';
 import { RouterProps } from 'react-router';
 import { hot } from 'react-hot-loader/root';
 import {
-	useClient__GetCurrentUserQuery,
-	useClient__GetNotificationsDataQuery,
-	useClient__SetNotificationsDataMutation,
-	useClient__UpdateCurrentUserMutation,
+	use_GetCurrentUserQuery,
+	use_GetNotificationsDataQuery,
+	use_SetGenericModalMutation,
+	use_SetNotificationsDataMutation,
+	use_UpdateCurrentUserMutation,
 	useMeLazyQuery,
 	useUserUpdatesSubscription
 } from '../__generated__/graphql';
@@ -28,14 +33,15 @@ const App: React.FC<IProps> = props => {
 	const [execMeQuery, { data: meData }] = useMeLazyQuery();
 	const {
 		data: { currentUser }
-	} = useClient__GetCurrentUserQuery();
+	} = use_GetCurrentUserQuery();
 	const {
 		data: {
 			notificationsData: { unreadCount }
 		}
-	} = useClient__GetNotificationsDataQuery();
-	const [updateCurrentUser] = useClient__UpdateCurrentUserMutation();
-	const [setNotificationsData] = useClient__SetNotificationsDataMutation();
+	} = use_GetNotificationsDataQuery();
+	const [updateCurrentUser] = use_UpdateCurrentUserMutation();
+	const [setNotificationsData] = use_SetNotificationsDataMutation();
+	const [setGenericModal] = use_SetGenericModalMutation();
 	useLayoutEffect(() => {
 		const accessToken = localStorage.getItem(
 			process.env.REACT_APP_LS_AUTH_TOKEN
@@ -55,7 +61,14 @@ const App: React.FC<IProps> = props => {
 		);
 		if (onLoadMessage) {
 			const { message, type } = JSON.parse(onLoadMessage);
-			setGenericModal(type, message);
+			setGenericModal({
+				variables: {
+					data: {
+						text: message,
+						type
+					}
+				}
+			});
 			localStorage.removeItem(LocalStorageEnum.ON_LOAD_MESSAGE);
 		}
 	}, []);
@@ -68,7 +81,6 @@ const App: React.FC<IProps> = props => {
 
 	useEffect(() => {
 		if (meData) {
-			return;
 			setNotificationsData({
 				variables: {
 					data: {

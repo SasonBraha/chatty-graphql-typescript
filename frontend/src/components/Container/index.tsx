@@ -1,6 +1,7 @@
 import React, { useState, useEffect, ReactNode } from 'react';
 import styled, { css } from 'styled-components/macro';
 import { useLocalCache } from '../Shared/Hooks';
+import { use_GetNavStateQuery } from '../../__generated__/graphql';
 
 interface IProps {
 	children: ReactNode;
@@ -8,7 +9,9 @@ interface IProps {
 
 const Container: React.FC<IProps> = props => {
 	const [shouldShrink, setShouldShrink] = useState(window.innerWidth > 992);
-	const { isNavOpen } = useLocalCache(`isNavOpen`);
+	const {
+		data: { isNavOpen }
+	} = use_GetNavStateQuery();
 
 	useEffect(() => {
 		window.onresize = () => {

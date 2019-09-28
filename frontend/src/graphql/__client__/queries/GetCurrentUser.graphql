@@ -1,5 +1,0 @@
-query Client__GetCurrentUser {
-    currentUser @client {
-        ...userAttributes
-    }
-}

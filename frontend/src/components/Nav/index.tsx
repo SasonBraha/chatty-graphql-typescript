@@ -1,8 +1,8 @@
 import React from 'react';
 import styled from 'styled-components/macro';
 import { List } from '../Shared';
-import { useLocalCache } from '../Shared/Hooks';
 import i18n from '../../locale/i18n';
+import { use_GetNavStateQuery } from '../../__generated__/graphql';
 
 interface IProps {}
 
@@ -18,7 +18,9 @@ const navItems = [
 ];
 
 const Nav: React.FC<IProps> = props => {
-	const { isNavOpen } = useLocalCache('isNavOpen');
+	const {
+		data: { isNavOpen }
+	} = use_GetNavStateQuery();
 	return (
 		<S.Nav isNavOpen={isNavOpen}>
 			<List items={navItems} />

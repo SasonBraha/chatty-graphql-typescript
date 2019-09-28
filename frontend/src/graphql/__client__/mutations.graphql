@@ -1,0 +1,19 @@
+mutation _SetAuthModal($isOpen: Boolean) {
+    setAuthModal(isOpen: $isOpen) @client
+}
+
+mutation _SetNotificationsData($data: NotificationsDataInput) {
+    setNotificationsData(data: $data) @client
+}
+
+mutation _ToggleNavState($isOpen: Boolean) {
+    toggleNavState(isOpen: $isOpen) @client
+}
+
+mutation _UpdateCurrentUser($user: UserInput) {
+    updateCurrentUser(user: $user) @client
+}
+
+mutation _SetGenericModal($data: GenericModalInput) {
+    setGenericModal(data: $data)
+}

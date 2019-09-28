@@ -51,5 +51,6 @@ export default (WrappedComponent: any) => {
 			);
 		}
 	}
+
 	return ComposedComponent;
 };

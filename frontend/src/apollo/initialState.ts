@@ -5,22 +5,22 @@ export default {
 		currentUser: null,
 		notificationsData: {
 			unreadCount: 0,
-			__typename: ApolloTypenameEnum.NOTIFICATIONS_DATA
+			__typename: ApolloTypenameEnum._NOTIFICATIONS_DATA
+		},
+		isNavOpen: window.innerWidth > 992,
+		isAuthModalOpen: false,
+		genericModal: {
+			type: null,
+			show: false,
+			text: null,
+			__typename: ApolloTypenameEnum._GENERIC_MODAL
 		},
 		client: {
-			showAuthModal: false,
 			genericModal: {
 				type: null,
 				show: false,
 				text: null,
 				__typename: ApolloTypenameEnum.client__GENERIC_MODAL
-			},
-			isNavOpen: window.innerWidth > 992,
-			currentUser: null,
-			notifications: {
-				unreadCount: 0,
-				list: [],
-				__typename: ApolloTypenameEnum.client__NOTIFICATIONS
 			},
 			chat: {
 				typingUsers: '',
