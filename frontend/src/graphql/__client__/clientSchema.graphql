@@ -1,0 +1,47 @@
+directive @client on FIELD
+
+input UserInput {
+    _id: ID!
+    displayName: String!
+    slug: String!
+    avatar: String!
+    email: String!
+    role: String!
+}
+
+input NotificationsDataInput {
+    unreadCount: Int
+}
+
+input GenericModalInput {
+    type: String!,
+    show: Boolean,
+    text: String!,
+}
+
+type NotificationsData {
+    unreadCount: Int!
+    list: [Notification!]!
+}
+
+type GenericModal {
+    type: String!,
+    show: Boolean,
+    text: String!,
+}
+
+extend type Query {
+    currentUser: User,
+    notificationsData: NotificationsData
+    isNavOpen: Boolean
+    isAuthModalOpen: Boolean
+    genericModal: GenericModal
+}
+
+extend type Mutation {
+    updateCurrentUser(user: UserInput): Boolean
+    setNotificationsData(data: NotificationsDataInput): Boolean
+    toggleNavState(isOpen: Boolean): Boolean
+    setAuthModal(isOpen: Boolean): Boolean
+    setGenericModal(data: GenericModalInput): Boolean
+}

@@ -7,10 +7,11 @@ import { resetModals } from '../../apollo/actions';
 interface IProps {
 	isOpen: boolean;
 	children?: ReactNode;
+	closeFn?: () => any;
 }
 
-const Modal = (props: IProps) => {
-	const { isOpen, children } = props;
+const Modal: React.FC<IProps> = props => {
+	const { isOpen, children, closeFn } = props;
 
 	return ReactDOM.createPortal(
 		<Transition
@@ -22,8 +23,8 @@ const Modal = (props: IProps) => {
 			{mountState => (
 				<S.Overlay
 					onClick={(e: React.MouseEvent) => {
-						if (e.target === e.currentTarget) {
-							resetModals();
+						if (typeof closeFn === 'function' && e.target === e.currentTarget) {
+							closeFn();
 						}
 					}}
 					className={mountState}

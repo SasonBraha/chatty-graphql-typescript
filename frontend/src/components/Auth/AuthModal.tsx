@@ -2,8 +2,11 @@ import React, { useEffect, useState } from 'react';
 import { Modal } from '../Shared';
 import LoginForm from './LoginForm';
 import RegisterForm from './RegisterForm';
-import { useLocalCache } from '../Shared/Hooks';
 import styled, { css } from 'styled-components/macro';
+import {
+	use_GetAuthModalStateQuery,
+	use_SetAuthModalMutation
+} from '../../__generated__/graphql';
 
 enum AuthModalDisplayState {
 	login,
@@ -13,21 +16,25 @@ enum AuthModalDisplayState {
 interface IProps {}
 
 const AuthModal: React.FC<IProps> = props => {
-	const { showAuthModal } = useLocalCache(`
-		showAuthModal
-	`);
 	const [currentDisplay, setCurrentDisplay] = useState<AuthModalDisplayState>(
 		AuthModalDisplayState.login
 	);
+	const {
+		data: { isAuthModalOpen }
+	} = use_GetAuthModalStateQuery();
+	const [setAuthModal] = use_SetAuthModalMutation();
 
 	useEffect(() => {
-		if (currentDisplay === AuthModalDisplayState.register && showAuthModal) {
+		if (currentDisplay === AuthModalDisplayState.register && isAuthModalOpen) {
 			setCurrentDisplay(AuthModalDisplayState.login);
 		}
-	}, [showAuthModal]);
+	}, [isAuthModalOpen]);
 
 	return (
-		<Modal isOpen={showAuthModal}>
+		<Modal
+			isOpen={isAuthModalOpen}
+			closeFn={() => setAuthModal({ variables: { isOpen: false } })}
+		>
 			<S.ModalContentWrapper>
 				<S.ModalContent
 					style={{ transform: `translateX(${currentDisplay * 100}%)` }}

@@ -4,5 +4,6 @@ export const USER_ENTITY_FRAGMENT = `
 	slug
 	avatar
 	email
-	role
+	role,
+	__typename
 `;

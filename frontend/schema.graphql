@@ -59,7 +59,6 @@ type Message {
     createdBy: CreatedBy!
     creationToken: String
     file: File
-    isClientDeleted: Boolean
     text: String!
     userMentions: [Mention!]
 }

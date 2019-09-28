@@ -1,0 +1,27 @@
+query _GetAuthModalState {
+    isAuthModalOpen @client
+}
+
+query _GetCurrentUser {
+    currentUser @client {
+        ...userAttributes
+    }
+}
+
+query _GetNavState {
+    isNavOpen @client
+}
+
+query _GetNotificationsData {
+    notificationsData @client {
+        unreadCount
+    }
+}
+
+query _GetGenericModal {
+    genericModal @client {
+        show
+        text
+        type
+    }
+}

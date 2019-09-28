@@ -3,7 +3,7 @@ import * as ApolloReactCommon from '@apollo/react-common';
 import * as ApolloReactHoc from '@apollo/react-hoc';
 import * as ApolloReactHooks from '@apollo/react-hooks';
 export type Maybe<T> = T | null;
-// Generated in 2019-09-28T00:03:11+03:00
+// Generated in 2019-09-28T22:25:36+03:00
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
 	ID: string;
@@ -74,6 +74,19 @@ export type FileDimensions = {
 	width?: Maybe<Scalars['Int']>;
 };
 
+export type GenericModal = {
+	__typename?: 'GenericModal';
+	type: Scalars['String'];
+	show?: Maybe<Scalars['Boolean']>;
+	text: Scalars['String'];
+};
+
+export type GenericModalInput = {
+	type: Scalars['String'];
+	show?: Maybe<Scalars['Boolean']>;
+	text: Scalars['String'];
+};
+
 export type LoginInput = {
 	email: Scalars['String'];
 	password: Scalars['String'];
@@ -124,6 +137,11 @@ export type Mutation = {
 	loginWithGoogle?: Maybe<Scalars['String']>;
 	createRestPasswordToken: Scalars['String'];
 	changePassword: Scalars['Boolean'];
+	updateCurrentUser?: Maybe<Scalars['Boolean']>;
+	setNotificationsData?: Maybe<Scalars['Boolean']>;
+	toggleNavState?: Maybe<Scalars['Boolean']>;
+	setAuthModal?: Maybe<Scalars['Boolean']>;
+	setGenericModal?: Maybe<Scalars['Boolean']>;
 };
 
 export type MutationCreateChatRoomArgs = {
@@ -176,6 +194,26 @@ export type MutationChangePasswordArgs = {
 	token?: Maybe<Scalars['String']>;
 };
 
+export type MutationUpdateCurrentUserArgs = {
+	user?: Maybe<UserInput>;
+};
+
+export type MutationSetNotificationsDataArgs = {
+	data?: Maybe<NotificationsDataInput>;
+};
+
+export type MutationToggleNavStateArgs = {
+	isOpen?: Maybe<Scalars['Boolean']>;
+};
+
+export type MutationSetAuthModalArgs = {
+	isOpen?: Maybe<Scalars['Boolean']>;
+};
+
+export type MutationSetGenericModalArgs = {
+	data?: Maybe<GenericModalInput>;
+};
+
 export type Notification = {
 	__typename?: 'Notification';
 	_id: Scalars['ID'];
@@ -185,6 +223,16 @@ export type Notification = {
 	type: Scalars['String'];
 	ref: Scalars['String'];
 	isRead: Scalars['Boolean'];
+};
+
+export type NotificationsData = {
+	__typename?: 'NotificationsData';
+	unreadCount: Scalars['Int'];
+	list: Array<Notification>;
+};
+
+export type NotificationsDataInput = {
+	unreadCount?: Maybe<Scalars['Int']>;
 };
 
 export type PageInfo = {
@@ -203,6 +251,11 @@ export type Query = {
 	user?: Maybe<User>;
 	users: SearchUsersOutput;
 	notifications: Array<Notification>;
+	currentUser?: Maybe<User>;
+	notificationsData?: Maybe<NotificationsData>;
+	isNavOpen?: Maybe<Scalars['Boolean']>;
+	isAuthModalOpen?: Maybe<Scalars['Boolean']>;
+	genericModal?: Maybe<GenericModal>;
 };
 
 export type QueryChatArgs = {
@@ -287,12 +340,108 @@ export type User = {
 	createdAt: Scalars['DateTime'];
 };
 
+export type UserInput = {
+	_id: Scalars['ID'];
+	displayName: Scalars['String'];
+	slug: Scalars['String'];
+	avatar: Scalars['String'];
+	email: Scalars['String'];
+	role: Scalars['String'];
+};
+
 export type UserTypingOutput = {
 	__typename?: 'UserTypingOutput';
 	chatSlug: Scalars['String'];
 	crudType: Scalars['String'];
 	user: User;
 };
+export type _SetAuthModalMutationVariables = {
+	isOpen?: Maybe<Scalars['Boolean']>;
+};
+
+export type _SetAuthModalMutation = { __typename?: 'Mutation' } & Pick<
+	Mutation,
+	'setAuthModal'
+>;
+
+export type _SetNotificationsDataMutationVariables = {
+	data?: Maybe<NotificationsDataInput>;
+};
+
+export type _SetNotificationsDataMutation = { __typename?: 'Mutation' } & Pick<
+	Mutation,
+	'setNotificationsData'
+>;
+
+export type _ToggleNavStateMutationVariables = {
+	isOpen?: Maybe<Scalars['Boolean']>;
+};
+
+export type _ToggleNavStateMutation = { __typename?: 'Mutation' } & Pick<
+	Mutation,
+	'toggleNavState'
+>;
+
+export type _UpdateCurrentUserMutationVariables = {
+	user?: Maybe<UserInput>;
+};
+
+export type _UpdateCurrentUserMutation = { __typename?: 'Mutation' } & Pick<
+	Mutation,
+	'updateCurrentUser'
+>;
+
+export type _SetGenericModalMutationVariables = {
+	data?: Maybe<GenericModalInput>;
+};
+
+export type _SetGenericModalMutation = { __typename?: 'Mutation' } & Pick<
+	Mutation,
+	'setGenericModal'
+>;
+
+export type _GetAuthModalStateQueryVariables = {};
+
+export type _GetAuthModalStateQuery = { __typename?: 'Query' } & Pick<
+	Query,
+	'isAuthModalOpen'
+>;
+
+export type _GetCurrentUserQueryVariables = {};
+
+export type _GetCurrentUserQuery = { __typename?: 'Query' } & {
+	currentUser: Maybe<{ __typename?: 'User' } & UserAttributesFragment>;
+};
+
+export type _GetNavStateQueryVariables = {};
+
+export type _GetNavStateQuery = { __typename?: 'Query' } & Pick<
+	Query,
+	'isNavOpen'
+>;
+
+export type _GetNotificationsDataQueryVariables = {};
+
+export type _GetNotificationsDataQuery = { __typename?: 'Query' } & {
+	notificationsData: Maybe<
+		{ __typename?: 'NotificationsData' } & Pick<
+			NotificationsData,
+			'unreadCount'
+		>
+	>;
+};
+
+export type _GetGenericModalQueryVariables = {};
+
+export type _GetGenericModalQuery = { __typename?: 'Query' } & {
+	genericModal: Maybe<
+		{ __typename?: 'GenericModal' } & Pick<
+			GenericModal,
+			'show' | 'text' | 'type'
+		>
+	>;
+};
+
 export type MessageAttributesFragment = { __typename?: 'Message' } & Pick<
 	Message,
 	'_id' | 'text' | 'creationToken' | 'chatSlug' | 'createdAt'
@@ -318,6 +467,11 @@ export type MessageAttributesFragment = { __typename?: 'Message' } & Pick<
 			>
 		>;
 	};
+
+export type UserAttributesFragment = { __typename?: 'User' } & Pick<
+	User,
+	'_id' | 'displayName' | 'slug' | 'avatar' | 'email' | 'role'
+>;
 
 export type PostMessageMutationVariables = {
 	chatSlug: Scalars['String'];
@@ -495,6 +649,600 @@ export const MessageAttributesFragmentDoc = gql`
 		}
 	}
 `;
+export const UserAttributesFragmentDoc = gql`
+	fragment userAttributes on User {
+		_id
+		displayName
+		slug
+		avatar
+		email
+		role
+	}
+`;
+export const _SetAuthModalDocument = gql`
+	mutation _SetAuthModal($isOpen: Boolean) {
+		setAuthModal(isOpen: $isOpen) @client
+	}
+`;
+export type _SetAuthModalMutationFn = ApolloReactCommon.MutationFunction<
+	_SetAuthModalMutation,
+	_SetAuthModalMutationVariables
+>;
+export type _SetAuthModalProps<TChildProps = {}> = ApolloReactHoc.MutateProps<
+	_SetAuthModalMutation,
+	_SetAuthModalMutationVariables
+> &
+	TChildProps;
+export function with_SetAuthModal<TProps, TChildProps = {}>(
+	operationOptions?: ApolloReactHoc.OperationOption<
+		TProps,
+		_SetAuthModalMutation,
+		_SetAuthModalMutationVariables,
+		_SetAuthModalProps<TChildProps>
+	>
+) {
+	return ApolloReactHoc.withMutation<
+		TProps,
+		_SetAuthModalMutation,
+		_SetAuthModalMutationVariables,
+		_SetAuthModalProps<TChildProps>
+	>(_SetAuthModalDocument, {
+		alias: 'setAuthModal',
+		...operationOptions
+	});
+}
+
+export function use_SetAuthModalMutation(
+	baseOptions?: ApolloReactHooks.MutationHookOptions<
+		_SetAuthModalMutation,
+		_SetAuthModalMutationVariables
+	>
+) {
+	return ApolloReactHooks.useMutation<
+		_SetAuthModalMutation,
+		_SetAuthModalMutationVariables
+	>(_SetAuthModalDocument, baseOptions);
+}
+export type _SetAuthModalMutationHookResult = ReturnType<
+	typeof use_SetAuthModalMutation
+>;
+export type _SetAuthModalMutationResult = ApolloReactCommon.MutationResult<
+	_SetAuthModalMutation
+>;
+export type _SetAuthModalMutationOptions = ApolloReactCommon.BaseMutationOptions<
+	_SetAuthModalMutation,
+	_SetAuthModalMutationVariables
+>;
+export const _SetNotificationsDataDocument = gql`
+	mutation _SetNotificationsData($data: NotificationsDataInput) {
+		setNotificationsData(data: $data) @client
+	}
+`;
+export type _SetNotificationsDataMutationFn = ApolloReactCommon.MutationFunction<
+	_SetNotificationsDataMutation,
+	_SetNotificationsDataMutationVariables
+>;
+export type _SetNotificationsDataProps<
+	TChildProps = {}
+> = ApolloReactHoc.MutateProps<
+	_SetNotificationsDataMutation,
+	_SetNotificationsDataMutationVariables
+> &
+	TChildProps;
+export function with_SetNotificationsData<TProps, TChildProps = {}>(
+	operationOptions?: ApolloReactHoc.OperationOption<
+		TProps,
+		_SetNotificationsDataMutation,
+		_SetNotificationsDataMutationVariables,
+		_SetNotificationsDataProps<TChildProps>
+	>
+) {
+	return ApolloReactHoc.withMutation<
+		TProps,
+		_SetNotificationsDataMutation,
+		_SetNotificationsDataMutationVariables,
+		_SetNotificationsDataProps<TChildProps>
+	>(_SetNotificationsDataDocument, {
+		alias: 'setNotificationsData',
+		...operationOptions
+	});
+}
+
+export function use_SetNotificationsDataMutation(
+	baseOptions?: ApolloReactHooks.MutationHookOptions<
+		_SetNotificationsDataMutation,
+		_SetNotificationsDataMutationVariables
+	>
+) {
+	return ApolloReactHooks.useMutation<
+		_SetNotificationsDataMutation,
+		_SetNotificationsDataMutationVariables
+	>(_SetNotificationsDataDocument, baseOptions);
+}
+export type _SetNotificationsDataMutationHookResult = ReturnType<
+	typeof use_SetNotificationsDataMutation
+>;
+export type _SetNotificationsDataMutationResult = ApolloReactCommon.MutationResult<
+	_SetNotificationsDataMutation
+>;
+export type _SetNotificationsDataMutationOptions = ApolloReactCommon.BaseMutationOptions<
+	_SetNotificationsDataMutation,
+	_SetNotificationsDataMutationVariables
+>;
+export const _ToggleNavStateDocument = gql`
+	mutation _ToggleNavState($isOpen: Boolean) {
+		toggleNavState(isOpen: $isOpen) @client
+	}
+`;
+export type _ToggleNavStateMutationFn = ApolloReactCommon.MutationFunction<
+	_ToggleNavStateMutation,
+	_ToggleNavStateMutationVariables
+>;
+export type _ToggleNavStateProps<TChildProps = {}> = ApolloReactHoc.MutateProps<
+	_ToggleNavStateMutation,
+	_ToggleNavStateMutationVariables
+> &
+	TChildProps;
+export function with_ToggleNavState<TProps, TChildProps = {}>(
+	operationOptions?: ApolloReactHoc.OperationOption<
+		TProps,
+		_ToggleNavStateMutation,
+		_ToggleNavStateMutationVariables,
+		_ToggleNavStateProps<TChildProps>
+	>
+) {
+	return ApolloReactHoc.withMutation<
+		TProps,
+		_ToggleNavStateMutation,
+		_ToggleNavStateMutationVariables,
+		_ToggleNavStateProps<TChildProps>
+	>(_ToggleNavStateDocument, {
+		alias: 'toggleNavState',
+		...operationOptions
+	});
+}
+
+export function use_ToggleNavStateMutation(
+	baseOptions?: ApolloReactHooks.MutationHookOptions<
+		_ToggleNavStateMutation,
+		_ToggleNavStateMutationVariables
+	>
+) {
+	return ApolloReactHooks.useMutation<
+		_ToggleNavStateMutation,
+		_ToggleNavStateMutationVariables
+	>(_ToggleNavStateDocument, baseOptions);
+}
+export type _ToggleNavStateMutationHookResult = ReturnType<
+	typeof use_ToggleNavStateMutation
+>;
+export type _ToggleNavStateMutationResult = ApolloReactCommon.MutationResult<
+	_ToggleNavStateMutation
+>;
+export type _ToggleNavStateMutationOptions = ApolloReactCommon.BaseMutationOptions<
+	_ToggleNavStateMutation,
+	_ToggleNavStateMutationVariables
+>;
+export const _UpdateCurrentUserDocument = gql`
+	mutation _UpdateCurrentUser($user: UserInput) {
+		updateCurrentUser(user: $user) @client
+	}
+`;
+export type _UpdateCurrentUserMutationFn = ApolloReactCommon.MutationFunction<
+	_UpdateCurrentUserMutation,
+	_UpdateCurrentUserMutationVariables
+>;
+export type _UpdateCurrentUserProps<
+	TChildProps = {}
+> = ApolloReactHoc.MutateProps<
+	_UpdateCurrentUserMutation,
+	_UpdateCurrentUserMutationVariables
+> &
+	TChildProps;
+export function with_UpdateCurrentUser<TProps, TChildProps = {}>(
+	operationOptions?: ApolloReactHoc.OperationOption<
+		TProps,
+		_UpdateCurrentUserMutation,
+		_UpdateCurrentUserMutationVariables,
+		_UpdateCurrentUserProps<TChildProps>
+	>
+) {
+	return ApolloReactHoc.withMutation<
+		TProps,
+		_UpdateCurrentUserMutation,
+		_UpdateCurrentUserMutationVariables,
+		_UpdateCurrentUserProps<TChildProps>
+	>(_UpdateCurrentUserDocument, {
+		alias: 'updateCurrentUser',
+		...operationOptions
+	});
+}
+
+export function use_UpdateCurrentUserMutation(
+	baseOptions?: ApolloReactHooks.MutationHookOptions<
+		_UpdateCurrentUserMutation,
+		_UpdateCurrentUserMutationVariables
+	>
+) {
+	return ApolloReactHooks.useMutation<
+		_UpdateCurrentUserMutation,
+		_UpdateCurrentUserMutationVariables
+	>(_UpdateCurrentUserDocument, baseOptions);
+}
+export type _UpdateCurrentUserMutationHookResult = ReturnType<
+	typeof use_UpdateCurrentUserMutation
+>;
+export type _UpdateCurrentUserMutationResult = ApolloReactCommon.MutationResult<
+	_UpdateCurrentUserMutation
+>;
+export type _UpdateCurrentUserMutationOptions = ApolloReactCommon.BaseMutationOptions<
+	_UpdateCurrentUserMutation,
+	_UpdateCurrentUserMutationVariables
+>;
+export const _SetGenericModalDocument = gql`
+	mutation _SetGenericModal($data: GenericModalInput) {
+		setGenericModal(data: $data)
+	}
+`;
+export type _SetGenericModalMutationFn = ApolloReactCommon.MutationFunction<
+	_SetGenericModalMutation,
+	_SetGenericModalMutationVariables
+>;
+export type _SetGenericModalProps<
+	TChildProps = {}
+> = ApolloReactHoc.MutateProps<
+	_SetGenericModalMutation,
+	_SetGenericModalMutationVariables
+> &
+	TChildProps;
+export function with_SetGenericModal<TProps, TChildProps = {}>(
+	operationOptions?: ApolloReactHoc.OperationOption<
+		TProps,
+		_SetGenericModalMutation,
+		_SetGenericModalMutationVariables,
+		_SetGenericModalProps<TChildProps>
+	>
+) {
+	return ApolloReactHoc.withMutation<
+		TProps,
+		_SetGenericModalMutation,
+		_SetGenericModalMutationVariables,
+		_SetGenericModalProps<TChildProps>
+	>(_SetGenericModalDocument, {
+		alias: 'setGenericModal',
+		...operationOptions
+	});
+}
+
+export function use_SetGenericModalMutation(
+	baseOptions?: ApolloReactHooks.MutationHookOptions<
+		_SetGenericModalMutation,
+		_SetGenericModalMutationVariables
+	>
+) {
+	return ApolloReactHooks.useMutation<
+		_SetGenericModalMutation,
+		_SetGenericModalMutationVariables
+	>(_SetGenericModalDocument, baseOptions);
+}
+export type _SetGenericModalMutationHookResult = ReturnType<
+	typeof use_SetGenericModalMutation
+>;
+export type _SetGenericModalMutationResult = ApolloReactCommon.MutationResult<
+	_SetGenericModalMutation
+>;
+export type _SetGenericModalMutationOptions = ApolloReactCommon.BaseMutationOptions<
+	_SetGenericModalMutation,
+	_SetGenericModalMutationVariables
+>;
+export const _GetAuthModalStateDocument = gql`
+	query _GetAuthModalState {
+		isAuthModalOpen @client
+	}
+`;
+export type _GetAuthModalStateProps<
+	TChildProps = {}
+> = ApolloReactHoc.DataProps<
+	_GetAuthModalStateQuery,
+	_GetAuthModalStateQueryVariables
+> &
+	TChildProps;
+export function with_GetAuthModalState<TProps, TChildProps = {}>(
+	operationOptions?: ApolloReactHoc.OperationOption<
+		TProps,
+		_GetAuthModalStateQuery,
+		_GetAuthModalStateQueryVariables,
+		_GetAuthModalStateProps<TChildProps>
+	>
+) {
+	return ApolloReactHoc.withQuery<
+		TProps,
+		_GetAuthModalStateQuery,
+		_GetAuthModalStateQueryVariables,
+		_GetAuthModalStateProps<TChildProps>
+	>(_GetAuthModalStateDocument, {
+		alias: 'getAuthModalState',
+		...operationOptions
+	});
+}
+
+export function use_GetAuthModalStateQuery(
+	baseOptions?: ApolloReactHooks.QueryHookOptions<
+		_GetAuthModalStateQuery,
+		_GetAuthModalStateQueryVariables
+	>
+) {
+	return ApolloReactHooks.useQuery<
+		_GetAuthModalStateQuery,
+		_GetAuthModalStateQueryVariables
+	>(_GetAuthModalStateDocument, baseOptions);
+}
+export function use_GetAuthModalStateLazyQuery(
+	baseOptions?: ApolloReactHooks.LazyQueryHookOptions<
+		_GetAuthModalStateQuery,
+		_GetAuthModalStateQueryVariables
+	>
+) {
+	return ApolloReactHooks.useLazyQuery<
+		_GetAuthModalStateQuery,
+		_GetAuthModalStateQueryVariables
+	>(_GetAuthModalStateDocument, baseOptions);
+}
+
+export type _GetAuthModalStateQueryHookResult = ReturnType<
+	typeof use_GetAuthModalStateQuery
+>;
+export type _GetAuthModalStateQueryResult = ApolloReactCommon.QueryResult<
+	_GetAuthModalStateQuery,
+	_GetAuthModalStateQueryVariables
+>;
+export const _GetCurrentUserDocument = gql`
+	query _GetCurrentUser {
+		currentUser @client {
+			...userAttributes
+		}
+	}
+	${UserAttributesFragmentDoc}
+`;
+export type _GetCurrentUserProps<TChildProps = {}> = ApolloReactHoc.DataProps<
+	_GetCurrentUserQuery,
+	_GetCurrentUserQueryVariables
+> &
+	TChildProps;
+export function with_GetCurrentUser<TProps, TChildProps = {}>(
+	operationOptions?: ApolloReactHoc.OperationOption<
+		TProps,
+		_GetCurrentUserQuery,
+		_GetCurrentUserQueryVariables,
+		_GetCurrentUserProps<TChildProps>
+	>
+) {
+	return ApolloReactHoc.withQuery<
+		TProps,
+		_GetCurrentUserQuery,
+		_GetCurrentUserQueryVariables,
+		_GetCurrentUserProps<TChildProps>
+	>(_GetCurrentUserDocument, {
+		alias: 'getCurrentUser',
+		...operationOptions
+	});
+}
+
+export function use_GetCurrentUserQuery(
+	baseOptions?: ApolloReactHooks.QueryHookOptions<
+		_GetCurrentUserQuery,
+		_GetCurrentUserQueryVariables
+	>
+) {
+	return ApolloReactHooks.useQuery<
+		_GetCurrentUserQuery,
+		_GetCurrentUserQueryVariables
+	>(_GetCurrentUserDocument, baseOptions);
+}
+export function use_GetCurrentUserLazyQuery(
+	baseOptions?: ApolloReactHooks.LazyQueryHookOptions<
+		_GetCurrentUserQuery,
+		_GetCurrentUserQueryVariables
+	>
+) {
+	return ApolloReactHooks.useLazyQuery<
+		_GetCurrentUserQuery,
+		_GetCurrentUserQueryVariables
+	>(_GetCurrentUserDocument, baseOptions);
+}
+
+export type _GetCurrentUserQueryHookResult = ReturnType<
+	typeof use_GetCurrentUserQuery
+>;
+export type _GetCurrentUserQueryResult = ApolloReactCommon.QueryResult<
+	_GetCurrentUserQuery,
+	_GetCurrentUserQueryVariables
+>;
+export const _GetNavStateDocument = gql`
+	query _GetNavState {
+		isNavOpen @client
+	}
+`;
+export type _GetNavStateProps<TChildProps = {}> = ApolloReactHoc.DataProps<
+	_GetNavStateQuery,
+	_GetNavStateQueryVariables
+> &
+	TChildProps;
+export function with_GetNavState<TProps, TChildProps = {}>(
+	operationOptions?: ApolloReactHoc.OperationOption<
+		TProps,
+		_GetNavStateQuery,
+		_GetNavStateQueryVariables,
+		_GetNavStateProps<TChildProps>
+	>
+) {
+	return ApolloReactHoc.withQuery<
+		TProps,
+		_GetNavStateQuery,
+		_GetNavStateQueryVariables,
+		_GetNavStateProps<TChildProps>
+	>(_GetNavStateDocument, {
+		alias: 'getNavState',
+		...operationOptions
+	});
+}
+
+export function use_GetNavStateQuery(
+	baseOptions?: ApolloReactHooks.QueryHookOptions<
+		_GetNavStateQuery,
+		_GetNavStateQueryVariables
+	>
+) {
+	return ApolloReactHooks.useQuery<
+		_GetNavStateQuery,
+		_GetNavStateQueryVariables
+	>(_GetNavStateDocument, baseOptions);
+}
+export function use_GetNavStateLazyQuery(
+	baseOptions?: ApolloReactHooks.LazyQueryHookOptions<
+		_GetNavStateQuery,
+		_GetNavStateQueryVariables
+	>
+) {
+	return ApolloReactHooks.useLazyQuery<
+		_GetNavStateQuery,
+		_GetNavStateQueryVariables
+	>(_GetNavStateDocument, baseOptions);
+}
+
+export type _GetNavStateQueryHookResult = ReturnType<
+	typeof use_GetNavStateQuery
+>;
+export type _GetNavStateQueryResult = ApolloReactCommon.QueryResult<
+	_GetNavStateQuery,
+	_GetNavStateQueryVariables
+>;
+export const _GetNotificationsDataDocument = gql`
+	query _GetNotificationsData {
+		notificationsData @client {
+			unreadCount
+		}
+	}
+`;
+export type _GetNotificationsDataProps<
+	TChildProps = {}
+> = ApolloReactHoc.DataProps<
+	_GetNotificationsDataQuery,
+	_GetNotificationsDataQueryVariables
+> &
+	TChildProps;
+export function with_GetNotificationsData<TProps, TChildProps = {}>(
+	operationOptions?: ApolloReactHoc.OperationOption<
+		TProps,
+		_GetNotificationsDataQuery,
+		_GetNotificationsDataQueryVariables,
+		_GetNotificationsDataProps<TChildProps>
+	>
+) {
+	return ApolloReactHoc.withQuery<
+		TProps,
+		_GetNotificationsDataQuery,
+		_GetNotificationsDataQueryVariables,
+		_GetNotificationsDataProps<TChildProps>
+	>(_GetNotificationsDataDocument, {
+		alias: 'getNotificationsData',
+		...operationOptions
+	});
+}
+
+export function use_GetNotificationsDataQuery(
+	baseOptions?: ApolloReactHooks.QueryHookOptions<
+		_GetNotificationsDataQuery,
+		_GetNotificationsDataQueryVariables
+	>
+) {
+	return ApolloReactHooks.useQuery<
+		_GetNotificationsDataQuery,
+		_GetNotificationsDataQueryVariables
+	>(_GetNotificationsDataDocument, baseOptions);
+}
+export function use_GetNotificationsDataLazyQuery(
+	baseOptions?: ApolloReactHooks.LazyQueryHookOptions<
+		_GetNotificationsDataQuery,
+		_GetNotificationsDataQueryVariables
+	>
+) {
+	return ApolloReactHooks.useLazyQuery<
+		_GetNotificationsDataQuery,
+		_GetNotificationsDataQueryVariables
+	>(_GetNotificationsDataDocument, baseOptions);
+}
+
+export type _GetNotificationsDataQueryHookResult = ReturnType<
+	typeof use_GetNotificationsDataQuery
+>;
+export type _GetNotificationsDataQueryResult = ApolloReactCommon.QueryResult<
+	_GetNotificationsDataQuery,
+	_GetNotificationsDataQueryVariables
+>;
+export const _GetGenericModalDocument = gql`
+	query _GetGenericModal {
+		genericModal @client {
+			show
+			text
+			type
+		}
+	}
+`;
+export type _GetGenericModalProps<TChildProps = {}> = ApolloReactHoc.DataProps<
+	_GetGenericModalQuery,
+	_GetGenericModalQueryVariables
+> &
+	TChildProps;
+export function with_GetGenericModal<TProps, TChildProps = {}>(
+	operationOptions?: ApolloReactHoc.OperationOption<
+		TProps,
+		_GetGenericModalQuery,
+		_GetGenericModalQueryVariables,
+		_GetGenericModalProps<TChildProps>
+	>
+) {
+	return ApolloReactHoc.withQuery<
+		TProps,
+		_GetGenericModalQuery,
+		_GetGenericModalQueryVariables,
+		_GetGenericModalProps<TChildProps>
+	>(_GetGenericModalDocument, {
+		alias: 'getGenericModal',
+		...operationOptions
+	});
+}
+
+export function use_GetGenericModalQuery(
+	baseOptions?: ApolloReactHooks.QueryHookOptions<
+		_GetGenericModalQuery,
+		_GetGenericModalQueryVariables
+	>
+) {
+	return ApolloReactHooks.useQuery<
+		_GetGenericModalQuery,
+		_GetGenericModalQueryVariables
+	>(_GetGenericModalDocument, baseOptions);
+}
+export function use_GetGenericModalLazyQuery(
+	baseOptions?: ApolloReactHooks.LazyQueryHookOptions<
+		_GetGenericModalQuery,
+		_GetGenericModalQueryVariables
+	>
+) {
+	return ApolloReactHooks.useLazyQuery<
+		_GetGenericModalQuery,
+		_GetGenericModalQueryVariables
+	>(_GetGenericModalDocument, baseOptions);
+}
+
+export type _GetGenericModalQueryHookResult = ReturnType<
+	typeof use_GetGenericModalQuery
+>;
+export type _GetGenericModalQueryResult = ApolloReactCommon.QueryResult<
+	_GetGenericModalQuery,
+	_GetGenericModalQueryVariables
+>;
 export const PostMessageDocument = gql`
 	mutation PostMessage($chatSlug: String!, $text: String!) {
 		postMessage(text: $text, chatSlug: $chatSlug) {

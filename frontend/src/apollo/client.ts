@@ -4,13 +4,20 @@ import { InMemoryCache } from 'apollo-cache-inmemory';
 import { WebSocketLink } from 'apollo-link-ws';
 import { split } from 'apollo-link';
 import { getMainDefinition } from 'apollo-utilities';
-import { getOperationName } from './utils';
-import mutationsOverSocket from './mutationsOverSocket';
 import { createUploadLink } from 'apollo-upload-client';
-import initialCache from './initialCache';
+import initialState from './initialState';
 import { onError } from 'apollo-link-error';
-import { ErrorTypesEnum, LocalStorageEnum } from '../types/enums';
+import {
+	ApolloTypenameEnum,
+	ErrorTypesEnum,
+	LocalStorageEnum
+} from '../types/enums';
 import { setGenericModal } from './actions';
+import { getApolloOperationName } from '../utils';
+import {
+	_GetNavStateDocument,
+	_GetNotificationsDataDocument
+} from '../__generated__/graphql';
 
 interface IDefinition {
 	kind: string;
@@ -18,7 +25,7 @@ interface IDefinition {
 	selectionSet: any;
 }
 
-const wsLink = () => {
+const webSocketLink = () => {
 	const authToken = localStorage.getItem(process.env.REACT_APP_LS_AUTH_TOKEN);
 
 	const wsLink = new WebSocketLink({
@@ -77,13 +84,19 @@ const apolloError = onError(({ graphQLErrors, operation }: any) => {
 					break;
 
 				case 500:
-					setGenericModal('error', 'אופס! משהו השתבש');
+					setGenericModal('error', ErrorTypesEnum.SOMETHING_WENT_WRONG);
 					break;
 			}
 		});
 	}
 });
 
+const mutationsOverSocket = [
+	'postMessage',
+	'updateActiveUsers',
+	'updateTypingUsers',
+	'updateMessage'
+];
 const link = split(
 	({ query }) => {
 		const { kind, operation, selectionSet }: IDefinition = getMainDefinition(
@@ -91,23 +104,63 @@ const link = split(
 		);
 		return (
 			(kind === 'OperationDefinition' && operation === 'subscription') ||
-			mutationsOverSocket.includes(getOperationName(selectionSet))
+			mutationsOverSocket.includes(getApolloOperationName(selectionSet))
 		);
 	},
-	wsLink(),
+	webSocketLink(),
 	authLink.concat(apolloError).concat(httpLink)
 );
 
-const cache = new InMemoryCache({
-	addTypename: false
-});
+const cache = new InMemoryCache({});
 
 const client = new ApolloClient({
 	link,
 	cache,
-	resolvers: {}
+	resolvers: {
+		Mutation: {
+			updateCurrentUser(_, { user }, { cache }) {
+				cache.writeData({
+					data: {
+						currentUser: {
+							...user,
+							__typename: ApolloTypenameEnum.USER
+						}
+					}
+				});
+			},
+			setNotificationsData(_, { data: { unreadCount } }, { cache }) {
+				const { notificationsData } = cache.readQuery({
+					query: _GetNotificationsDataDocument
+				});
+				cache.writeData({
+					data: {
+						notificationsData: {
+							...notificationsData,
+							unreadCount
+						}
+					}
+				});
+			},
+			toggleNavState(_, __, { cache }) {
+				const { isNavOpen } = cache.readQuery({ query: _GetNavStateDocument });
+				cache.writeData({
+					data: {
+						isNavOpen: !isNavOpen
+					}
+				});
+			},
+			setAuthModal(_, { isOpen }) {
+				cache.writeData({
+					data: {
+						isAuthModalOpen: isOpen
+					}
+				});
+			},
+			setGenericModal(_, { data }) {}
+		}
+	}
 });
-cache.writeData(initialCache);
+cache.writeData(initialState);
 
 if (process.env.NODE_ENV === 'development') {
 	window.apolloClient = client;
