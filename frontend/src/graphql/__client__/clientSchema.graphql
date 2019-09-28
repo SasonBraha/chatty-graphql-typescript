@@ -1,0 +1,29 @@
+directive @client on FIELD
+
+input UserInput {
+    _id: ID!
+    displayName: String!
+    slug: String!
+    avatar: String!
+    email: String!
+    role: String!
+}
+
+input NotificationsDataInput {
+    unreadCount: Int
+}
+
+type NotificationsData {
+    unreadCount: Int!
+    list: [Notification!]!
+}
+
+extend type Query {
+    currentUser: User,
+    notificationsData: NotificationsData
+}
+
+extend type Mutation {
+    updateCurrentUser(user: UserInput): User
+    setNotificationsData(data: NotificationsDataInput): Boolean
+}

@@ -3,6 +3,7 @@ schema: "http://localhost:5000/graphql"
 documents: "src/graphql/**/*.graphql"
 generates:
   src/__generated__/graphql.tsx:
+    schema: src/graphql/__client__/clientSchema.graphql
     plugins:
       - "time"
       - "typescript"

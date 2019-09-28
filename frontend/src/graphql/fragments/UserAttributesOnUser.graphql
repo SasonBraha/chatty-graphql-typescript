@@ -1,0 +1,8 @@
+fragment userAttributes on User {
+    _id
+    displayName
+    slug
+    avatar
+    email
+    role
+}

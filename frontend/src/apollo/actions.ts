@@ -2,7 +2,7 @@ import client from './client';
 import gql from 'graphql-tag';
 import { INotification, ITypingUser, IUser } from '../types/interfaces';
 import { USER_ENTITY_FRAGMENT } from './fragments';
-import { CrudEnum } from '../types/enums';
+import { CrudEnum, ErrorTypesEnum } from '../types/enums';
 
 export interface ILocalCache {
 	showAuthModal: boolean;
@@ -173,7 +173,10 @@ export const resetModals = () => {
 	});
 };
 
-export const setGenericModal = (type: 'success' | 'error', text: string) => {
+export const setGenericModal = (
+	type: 'success' | 'error',
+	text: string | ErrorTypesEnum
+) => {
 	writeData({
 		genericModal: {
 			type,

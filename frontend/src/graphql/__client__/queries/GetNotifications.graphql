@@ -1,0 +1,5 @@
+query client__GetNotificationsData {
+    notificationsData @client {
+        unreadCount
+    }
+}

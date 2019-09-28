@@ -1,15 +1,12 @@
 import * as sanitizeHtml from 'sanitize-html';
 
 class Sanitizer {
-	private readonly excluded: { [key: string]: boolean };
-	constructor() {
-		this.excluded = {
-			file: true,
-			limit: true,
-			first: true,
-			last: true
-		};
-	}
+	private readonly excluded: { [key: string]: boolean } = {
+		file: true,
+		limit: true,
+		first: true,
+		last: true
+	};
 
 	public incomingRequest(variables: { [key: string]: any }) {
 		for (let key in variables) {

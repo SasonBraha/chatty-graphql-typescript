@@ -1,44 +1,45 @@
 {
-  "translation": {
-    "header": {
-      "profileDropdown": {
-        "myProfile": "הפרופיל שלי",
-        "settings": "הגדרות",
-        "logout": "התנתק"
-      },
-      "authButton": "הרשמה / התחברות"
-    },
-    "chat": {
-      "roomDoesNotSaveMessages": "בחדר זה לא נשמרת היסטוריית ההודעות",
-      "noMessagesWereSent": "טרם נשלחו הודעות בחדר זה",
-      "roomNotFound": "חדר זה לא קיים במערכת",
-      "sendMessageInputPlaceholder": "הכנס הודעה ולחץ Enter",
-      "messageDeleted": "הודעה זו נמחקה",
-      "messageCtxMenu": {
-        "edit": "ערוך",
-        "delete": "מחק"
-      }
-    },
-    "nav": {
-      "chat": "צ'אט"
-    },
-    "profile": {
-      "registrationDate": "תאריך הרשמה:",
-      "imageAlt": "תמונת הפרופיל של {{displayName}}"
-    },
-    "global": {
-      "youMustBeLoggedInToViewThisPage": "עליך להתחבר על מנת לצפות בדף זה",
-      "errors": {
-        "expiredToken": "הייתה בעיה באימות הטוקן / פג תוקפו של הטוקן הקיים, אנא התחבר/י מחדש"
-      },
-      "forms": {
-        "password": "סיסמה",
-        "email": "דואר אלקטרוני",
-        "displayName": "שם משתמש",
-        "login": "התחבר",
-        "register": "הירשם",
-        "loginOrRegisterWithGoogle": "התחבר / הירשם באמצעות Google"
-      }
-    }
-  }
+	"translation": {
+		"header": {
+			"profileDropdown": {
+				"myProfile": "הפרופיל שלי",
+				"settings": "הגדרות",
+				"logout": "התנתק"
+			},
+			"authButton": "הרשמה / התחברות"
+		},
+		"chat": {
+			"roomDoesNotSaveMessages": "בחדר זה לא נשמרת היסטוריית ההודעות",
+			"noMessagesWereSent": "טרם נשלחו הודעות בחדר זה",
+			"roomNotFound": "חדר זה לא קיים במערכת",
+			"sendMessageInputPlaceholder": "הכנס הודעה ולחץ Enter",
+			"messageDeleted": "הודעה זו נמחקה",
+			"messageCtxMenu": {
+				"edit": "ערוך",
+				"delete": "מחק"
+			}
+		},
+		"nav": {
+			"chat": "צ'אט"
+		},
+		"profile": {
+			"registrationDate": "תאריך הרשמה:",
+			"imageAlt": "תמונת הפרופיל של {{displayName}}"
+		},
+		"global": {
+			"youMustBeLoggedInToViewThisPage": "עליך להתחבר על מנת לצפות בדף זה",
+			"errors": {
+				"expiredToken": "הייתה בעיה באימות הטוקן / פג תוקפו של הטוקן הקיים, אנא התחבר/י מחדש",
+				"somethingWentWrong": "אופס! משהו השתבש"
+			},
+			"forms": {
+				"password": "סיסמה",
+				"email": "דואר אלקטרוני",
+				"displayName": "שם משתמש",
+				"login": "התחבר",
+				"register": "הירשם",
+				"loginOrRegisterWithGoogle": "התחבר / הירשם באמצעות Google"
+			}
+		}
+	}
 }

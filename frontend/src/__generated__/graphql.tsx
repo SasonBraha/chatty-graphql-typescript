@@ -3,7 +3,7 @@ import * as ApolloReactCommon from '@apollo/react-common';
 import * as ApolloReactHoc from '@apollo/react-hoc';
 import * as ApolloReactHooks from '@apollo/react-hooks';
 export type Maybe<T> = T | null;
-// Generated in 2019-09-28T00:03:11+03:00
+// Generated in 2019-09-28T20:12:11+03:00
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
 	ID: string;
@@ -124,6 +124,8 @@ export type Mutation = {
 	loginWithGoogle?: Maybe<Scalars['String']>;
 	createRestPasswordToken: Scalars['String'];
 	changePassword: Scalars['Boolean'];
+	updateCurrentUser?: Maybe<User>;
+	setNotificationsData?: Maybe<Scalars['Boolean']>;
 };
 
 export type MutationCreateChatRoomArgs = {
@@ -176,6 +178,14 @@ export type MutationChangePasswordArgs = {
 	token?: Maybe<Scalars['String']>;
 };
 
+export type MutationUpdateCurrentUserArgs = {
+	user?: Maybe<UserInput>;
+};
+
+export type MutationSetNotificationsDataArgs = {
+	data?: Maybe<NotificationsDataInput>;
+};
+
 export type Notification = {
 	__typename?: 'Notification';
 	_id: Scalars['ID'];
@@ -185,6 +195,16 @@ export type Notification = {
 	type: Scalars['String'];
 	ref: Scalars['String'];
 	isRead: Scalars['Boolean'];
+};
+
+export type NotificationsData = {
+	__typename?: 'NotificationsData';
+	unreadCount: Scalars['Int'];
+	list: Array<Notification>;
+};
+
+export type NotificationsDataInput = {
+	unreadCount?: Maybe<Scalars['Int']>;
 };
 
 export type PageInfo = {
@@ -203,6 +223,8 @@ export type Query = {
 	user?: Maybe<User>;
 	users: SearchUsersOutput;
 	notifications: Array<Notification>;
+	currentUser?: Maybe<User>;
+	notificationsData?: Maybe<NotificationsData>;
 };
 
 export type QueryChatArgs = {
@@ -287,12 +309,54 @@ export type User = {
 	createdAt: Scalars['DateTime'];
 };
 
+export type UserInput = {
+	_id: Scalars['ID'];
+	displayName: Scalars['String'];
+	slug: Scalars['String'];
+	avatar: Scalars['String'];
+	email: Scalars['String'];
+	role: Scalars['String'];
+};
+
 export type UserTypingOutput = {
 	__typename?: 'UserTypingOutput';
 	chatSlug: Scalars['String'];
 	crudType: Scalars['String'];
 	user: User;
 };
+export type Client__SetNotificationsDataMutationVariables = {
+	data?: Maybe<NotificationsDataInput>;
+};
+
+export type Client__SetNotificationsDataMutation = {
+	__typename?: 'Mutation';
+} & Pick<Mutation, 'setNotificationsData'>;
+
+export type Client__UpdateCurrentUserMutationVariables = {
+	user?: Maybe<UserInput>;
+};
+
+export type Client__UpdateCurrentUserMutation = { __typename?: 'Mutation' } & {
+	updateCurrentUser: Maybe<{ __typename?: 'User' } & Pick<User, '_id'>>;
+};
+
+export type Client__GetCurrentUserQueryVariables = {};
+
+export type Client__GetCurrentUserQuery = { __typename?: 'Query' } & {
+	currentUser: Maybe<{ __typename?: 'User' } & UserAttributesFragment>;
+};
+
+export type Client__GetNotificationsDataQueryVariables = {};
+
+export type Client__GetNotificationsDataQuery = { __typename?: 'Query' } & {
+	notificationsData: Maybe<
+		{ __typename?: 'NotificationsData' } & Pick<
+			NotificationsData,
+			'unreadCount'
+		>
+	>;
+};
+
 export type MessageAttributesFragment = { __typename?: 'Message' } & Pick<
 	Message,
 	'_id' | 'text' | 'creationToken' | 'chatSlug' | 'createdAt'
@@ -318,6 +382,11 @@ export type MessageAttributesFragment = { __typename?: 'Message' } & Pick<
 			>
 		>;
 	};
+
+export type UserAttributesFragment = { __typename?: 'User' } & Pick<
+	User,
+	'_id' | 'displayName' | 'slug' | 'avatar' | 'email' | 'role'
+>;
 
 export type PostMessageMutationVariables = {
 	chatSlug: Scalars['String'];
@@ -495,6 +564,257 @@ export const MessageAttributesFragmentDoc = gql`
 		}
 	}
 `;
+export const UserAttributesFragmentDoc = gql`
+	fragment userAttributes on User {
+		_id
+		displayName
+		slug
+		avatar
+		email
+		role
+	}
+`;
+export const Client__SetNotificationsDataDocument = gql`
+	mutation Client__SetNotificationsData($data: NotificationsDataInput) {
+		setNotificationsData(data: $data) @client
+	}
+`;
+export type Client__SetNotificationsDataMutationFn = ApolloReactCommon.MutationFunction<
+	Client__SetNotificationsDataMutation,
+	Client__SetNotificationsDataMutationVariables
+>;
+export type Client__SetNotificationsDataProps<
+	TChildProps = {}
+> = ApolloReactHoc.MutateProps<
+	Client__SetNotificationsDataMutation,
+	Client__SetNotificationsDataMutationVariables
+> &
+	TChildProps;
+export function withClient__SetNotificationsData<TProps, TChildProps = {}>(
+	operationOptions?: ApolloReactHoc.OperationOption<
+		TProps,
+		Client__SetNotificationsDataMutation,
+		Client__SetNotificationsDataMutationVariables,
+		Client__SetNotificationsDataProps<TChildProps>
+	>
+) {
+	return ApolloReactHoc.withMutation<
+		TProps,
+		Client__SetNotificationsDataMutation,
+		Client__SetNotificationsDataMutationVariables,
+		Client__SetNotificationsDataProps<TChildProps>
+	>(Client__SetNotificationsDataDocument, {
+		alias: 'clientSetNotificationsData',
+		...operationOptions
+	});
+}
+
+export function useClient__SetNotificationsDataMutation(
+	baseOptions?: ApolloReactHooks.MutationHookOptions<
+		Client__SetNotificationsDataMutation,
+		Client__SetNotificationsDataMutationVariables
+	>
+) {
+	return ApolloReactHooks.useMutation<
+		Client__SetNotificationsDataMutation,
+		Client__SetNotificationsDataMutationVariables
+	>(Client__SetNotificationsDataDocument, baseOptions);
+}
+export type Client__SetNotificationsDataMutationHookResult = ReturnType<
+	typeof useClient__SetNotificationsDataMutation
+>;
+export type Client__SetNotificationsDataMutationResult = ApolloReactCommon.MutationResult<
+	Client__SetNotificationsDataMutation
+>;
+export type Client__SetNotificationsDataMutationOptions = ApolloReactCommon.BaseMutationOptions<
+	Client__SetNotificationsDataMutation,
+	Client__SetNotificationsDataMutationVariables
+>;
+export const Client__UpdateCurrentUserDocument = gql`
+	mutation Client__UpdateCurrentUser($user: UserInput) {
+		updateCurrentUser(user: $user) @client {
+			_id
+		}
+	}
+`;
+export type Client__UpdateCurrentUserMutationFn = ApolloReactCommon.MutationFunction<
+	Client__UpdateCurrentUserMutation,
+	Client__UpdateCurrentUserMutationVariables
+>;
+export type Client__UpdateCurrentUserProps<
+	TChildProps = {}
+> = ApolloReactHoc.MutateProps<
+	Client__UpdateCurrentUserMutation,
+	Client__UpdateCurrentUserMutationVariables
+> &
+	TChildProps;
+export function withClient__UpdateCurrentUser<TProps, TChildProps = {}>(
+	operationOptions?: ApolloReactHoc.OperationOption<
+		TProps,
+		Client__UpdateCurrentUserMutation,
+		Client__UpdateCurrentUserMutationVariables,
+		Client__UpdateCurrentUserProps<TChildProps>
+	>
+) {
+	return ApolloReactHoc.withMutation<
+		TProps,
+		Client__UpdateCurrentUserMutation,
+		Client__UpdateCurrentUserMutationVariables,
+		Client__UpdateCurrentUserProps<TChildProps>
+	>(Client__UpdateCurrentUserDocument, {
+		alias: 'clientUpdateCurrentUser',
+		...operationOptions
+	});
+}
+
+export function useClient__UpdateCurrentUserMutation(
+	baseOptions?: ApolloReactHooks.MutationHookOptions<
+		Client__UpdateCurrentUserMutation,
+		Client__UpdateCurrentUserMutationVariables
+	>
+) {
+	return ApolloReactHooks.useMutation<
+		Client__UpdateCurrentUserMutation,
+		Client__UpdateCurrentUserMutationVariables
+	>(Client__UpdateCurrentUserDocument, baseOptions);
+}
+export type Client__UpdateCurrentUserMutationHookResult = ReturnType<
+	typeof useClient__UpdateCurrentUserMutation
+>;
+export type Client__UpdateCurrentUserMutationResult = ApolloReactCommon.MutationResult<
+	Client__UpdateCurrentUserMutation
+>;
+export type Client__UpdateCurrentUserMutationOptions = ApolloReactCommon.BaseMutationOptions<
+	Client__UpdateCurrentUserMutation,
+	Client__UpdateCurrentUserMutationVariables
+>;
+export const Client__GetCurrentUserDocument = gql`
+	query Client__GetCurrentUser {
+		currentUser @client {
+			...userAttributes
+		}
+	}
+	${UserAttributesFragmentDoc}
+`;
+export type Client__GetCurrentUserProps<
+	TChildProps = {}
+> = ApolloReactHoc.DataProps<
+	Client__GetCurrentUserQuery,
+	Client__GetCurrentUserQueryVariables
+> &
+	TChildProps;
+export function withClient__GetCurrentUser<TProps, TChildProps = {}>(
+	operationOptions?: ApolloReactHoc.OperationOption<
+		TProps,
+		Client__GetCurrentUserQuery,
+		Client__GetCurrentUserQueryVariables,
+		Client__GetCurrentUserProps<TChildProps>
+	>
+) {
+	return ApolloReactHoc.withQuery<
+		TProps,
+		Client__GetCurrentUserQuery,
+		Client__GetCurrentUserQueryVariables,
+		Client__GetCurrentUserProps<TChildProps>
+	>(Client__GetCurrentUserDocument, {
+		alias: 'clientGetCurrentUser',
+		...operationOptions
+	});
+}
+
+export function useClient__GetCurrentUserQuery(
+	baseOptions?: ApolloReactHooks.QueryHookOptions<
+		Client__GetCurrentUserQuery,
+		Client__GetCurrentUserQueryVariables
+	>
+) {
+	return ApolloReactHooks.useQuery<
+		Client__GetCurrentUserQuery,
+		Client__GetCurrentUserQueryVariables
+	>(Client__GetCurrentUserDocument, baseOptions);
+}
+export function useClient__GetCurrentUserLazyQuery(
+	baseOptions?: ApolloReactHooks.LazyQueryHookOptions<
+		Client__GetCurrentUserQuery,
+		Client__GetCurrentUserQueryVariables
+	>
+) {
+	return ApolloReactHooks.useLazyQuery<
+		Client__GetCurrentUserQuery,
+		Client__GetCurrentUserQueryVariables
+	>(Client__GetCurrentUserDocument, baseOptions);
+}
+
+export type Client__GetCurrentUserQueryHookResult = ReturnType<
+	typeof useClient__GetCurrentUserQuery
+>;
+export type Client__GetCurrentUserQueryResult = ApolloReactCommon.QueryResult<
+	Client__GetCurrentUserQuery,
+	Client__GetCurrentUserQueryVariables
+>;
+export const Client__GetNotificationsDataDocument = gql`
+	query client__GetNotificationsData {
+		notificationsData @client {
+			unreadCount
+		}
+	}
+`;
+export type Client__GetNotificationsDataProps<
+	TChildProps = {}
+> = ApolloReactHoc.DataProps<
+	Client__GetNotificationsDataQuery,
+	Client__GetNotificationsDataQueryVariables
+> &
+	TChildProps;
+export function withClient__GetNotificationsData<TProps, TChildProps = {}>(
+	operationOptions?: ApolloReactHoc.OperationOption<
+		TProps,
+		Client__GetNotificationsDataQuery,
+		Client__GetNotificationsDataQueryVariables,
+		Client__GetNotificationsDataProps<TChildProps>
+	>
+) {
+	return ApolloReactHoc.withQuery<
+		TProps,
+		Client__GetNotificationsDataQuery,
+		Client__GetNotificationsDataQueryVariables,
+		Client__GetNotificationsDataProps<TChildProps>
+	>(Client__GetNotificationsDataDocument, {
+		alias: 'clientGetNotificationsData',
+		...operationOptions
+	});
+}
+
+export function useClient__GetNotificationsDataQuery(
+	baseOptions?: ApolloReactHooks.QueryHookOptions<
+		Client__GetNotificationsDataQuery,
+		Client__GetNotificationsDataQueryVariables
+	>
+) {
+	return ApolloReactHooks.useQuery<
+		Client__GetNotificationsDataQuery,
+		Client__GetNotificationsDataQueryVariables
+	>(Client__GetNotificationsDataDocument, baseOptions);
+}
+export function useClient__GetNotificationsDataLazyQuery(
+	baseOptions?: ApolloReactHooks.LazyQueryHookOptions<
+		Client__GetNotificationsDataQuery,
+		Client__GetNotificationsDataQueryVariables
+	>
+) {
+	return ApolloReactHooks.useLazyQuery<
+		Client__GetNotificationsDataQuery,
+		Client__GetNotificationsDataQueryVariables
+	>(Client__GetNotificationsDataDocument, baseOptions);
+}
+
+export type Client__GetNotificationsDataQueryHookResult = ReturnType<
+	typeof useClient__GetNotificationsDataQuery
+>;
+export type Client__GetNotificationsDataQueryResult = ApolloReactCommon.QueryResult<
+	Client__GetNotificationsDataQuery,
+	Client__GetNotificationsDataQueryVariables
+>;
 export const PostMessageDocument = gql`
 	mutation PostMessage($chatSlug: String!, $text: String!) {
 		postMessage(text: $text, chatSlug: $chatSlug) {

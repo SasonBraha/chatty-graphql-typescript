@@ -1,0 +1,3 @@
+mutation Client__SetNotificationsData($data: NotificationsDataInput) {
+    setNotificationsData(data: $data) @client
+}

@@ -1,0 +1,5 @@
+mutation Client__UpdateCurrentUser($user: UserInput) {
+    updateCurrentUser(user: $user) @client {
+        _id
+    }
+}
