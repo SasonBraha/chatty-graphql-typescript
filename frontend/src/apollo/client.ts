@@ -1,6 +1,9 @@
 import { ApolloClient } from 'apollo-client';
 import { setContext } from 'apollo-link-context';
-import { InMemoryCache } from 'apollo-cache-inmemory';
+import {
+	InMemoryCache,
+	IntrospectionFragmentMatcher
+} from 'apollo-cache-inmemory';
 import { WebSocketLink } from 'apollo-link-ws';
 import { split } from 'apollo-link';
 import { getMainDefinition } from 'apollo-utilities';
@@ -14,6 +17,7 @@ import {
 import { getApolloOperationName } from '../utils';
 import { initialState, resolvers } from '../cache';
 import { setGenericModal } from '../cache/resolvers';
+import introspectionQueryResultData from '../fragmentTypes.json';
 
 interface IDefinition {
 	kind: string;
@@ -110,7 +114,10 @@ const link = split(
 	authLink.concat(apolloError).concat(httpLink)
 );
 
-const cache = new InMemoryCache({});
+const fragmentMatcher = new IntrospectionFragmentMatcher({
+	introspectionQueryResultData
+});
+const cache = new InMemoryCache({ fragmentMatcher });
 
 const client = new ApolloClient({
 	link,

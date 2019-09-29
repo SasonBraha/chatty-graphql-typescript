@@ -46,7 +46,7 @@ import {
 import * as sanitizeHtml from 'sanitize-html';
 import { generateUserMentionedNotification } from '../../utils/notifications';
 import * as jwt from 'jsonwebtoken';
-import { Document } from 'mongoose';
+import { Document, Schema } from 'mongoose';
 import * as graphqlFields from 'graphql-fields';
 
 @Resolver(Chat)
@@ -457,6 +457,7 @@ export default class ChatResolver {
 		@Root() subscriptionPayload: any,
 		@Arg('chatSlug') chatSlug: string
 	): typeof ChatUpdatesUnion {
+		console.log(subscriptionPayload.payload);
 		return subscriptionPayload.payload;
 	}
 

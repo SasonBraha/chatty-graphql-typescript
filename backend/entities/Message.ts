@@ -55,7 +55,7 @@ export class Message extends Typegoose {
 	@Field({ nullable: true })
 	creationToken: string;
 
-	@Field(type => Date)
+	@Field(type => Date, { nullable: true })
 	createdAt: Date;
 }
 
