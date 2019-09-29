@@ -2,21 +2,25 @@ import React from 'react';
 import { Modal } from '../index';
 import Icon from '../Icon';
 import styled from 'styled-components/macro';
-import { useLocalCache } from '../Hooks';
+import {
+	use_GetGenericModalQuery,
+	use_SetGenericModalMutation
+} from '../../../__generated__/graphql';
 
 interface IProps {}
 
-const ErrorModal = (props: IProps) => {
+const ErrorModal: React.FC<IProps> = props => {
 	const {
-		genericModal: { show, text }
-	} = useLocalCache(`
-		genericModal {
-			show
-			text
+		data: {
+			genericModal: { show, text }
 		}
-	`);
+	} = use_GetGenericModalQuery();
+	const [setGenericModal] = use_SetGenericModalMutation();
 	return (
-		<Modal isOpen={show}>
+		<Modal
+			isOpen={show}
+			closeFn={() => setGenericModal({ variables: { data: { show: false } } })}
+		>
 			<S.WarningIcon width={80} height={80} icon='icon-notification' />
 			<S.WarningText>{text}</S.WarningText>
 		</Modal>

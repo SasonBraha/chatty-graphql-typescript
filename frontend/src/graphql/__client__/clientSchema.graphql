@@ -14,9 +14,14 @@ input NotificationsDataInput {
 }
 
 input GenericModalInput {
-    type: String!,
+    type: String,
     show: Boolean,
-    text: String!,
+    text: String,
+}
+
+input MentionSuggesterInput {
+    show: Boolean
+    userList: [UserInput!]!
 }
 
 type NotificationsData {
@@ -25,9 +30,14 @@ type NotificationsData {
 }
 
 type GenericModal {
-    type: String!,
+    type: String,
     show: Boolean,
-    text: String!,
+    text: String,
+}
+
+type MentionSuggester {
+    show: Boolean
+    userList: [User!]!
 }
 
 extend type Query {
@@ -35,7 +45,9 @@ extend type Query {
     notificationsData: NotificationsData
     isNavOpen: Boolean
     isAuthModalOpen: Boolean
-    genericModal: GenericModal
+    genericModal: GenericModal,
+    currentChatSlug: String
+    mentionSuggester: MentionSuggester
 }
 
 extend type Mutation {
@@ -44,4 +56,6 @@ extend type Mutation {
     toggleNavState(isOpen: Boolean): Boolean
     setAuthModal(isOpen: Boolean): Boolean
     setGenericModal(data: GenericModalInput): Boolean
+    setCurrentChatSlug(slug: String): Boolean
+    setMentionSuggester(data: MentionSuggesterInput): Boolean
 }

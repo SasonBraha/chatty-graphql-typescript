@@ -5,6 +5,7 @@ import RoomsListLoader from './RoomsListLoader';
 import { setTypingUsers } from '../../../apollo/actions';
 import { useLocalCache } from '../../Shared/Hooks';
 import {
+	use_GetCurrentChatSlugQuery,
 	useGetRoomsListQuery,
 	useTypingUsersUpdatesSubscription
 } from '../../../__generated__/graphql';
@@ -14,10 +15,12 @@ interface IProps {}
 const RoomsList: React.FC<IProps> = props => {
 	const { data, loading } = useGetRoomsListQuery();
 	const {
-		chat: { chatSlug, typingUsers }
+		data: { currentChatSlug }
+	} = use_GetCurrentChatSlugQuery();
+	const {
+		chat: { typingUsers }
 	} = useLocalCache(`
 		chat {
-			chatSlug
 			typingUsers
 		}
 	`);
@@ -41,7 +44,7 @@ const RoomsList: React.FC<IProps> = props => {
 				  data.roomsList &&
 				  data.roomsList.map(room => (
 						<RoomsListItem
-							selected={room.slug === chatSlug}
+							selected={room.slug === currentChatSlug}
 							room={room}
 							key={room.slug}
 							chatSlug={room.slug}

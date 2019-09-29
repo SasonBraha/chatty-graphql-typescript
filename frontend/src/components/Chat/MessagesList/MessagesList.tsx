@@ -1,18 +1,17 @@
 import React, { Component } from 'react';
-import { IMessage, IUser } from '../../../types/interfaces';
+import { IMessage } from '../../../types/interfaces';
 import Message from './Message';
 import styled from 'styled-components/macro';
 import MessagesListLoader from './MessagesListLoader';
 import { InfoBanner, Spinner } from '../../Shared';
 import MessageContextMenu from './MessageContextMenu';
 import { ApolloClient } from 'apollo-client';
-import client from '../../../apollo/client';
-import { withLocalCache, withTranslation } from '../../Shared/Hoc';
-import { USER_ENTITY_FRAGMENT } from '../../../apollo/fragments';
+import { withTranslation } from '../../Shared/Hoc';
 import { afterRender } from '../../../utils';
+import { User } from '../../../__generated__/graphql';
 
 interface IProps {
-	currentUser?: IUser | null;
+	currentUser?: User | null;
 	loading: boolean;
 	chatSlug: string;
 	isFetching: boolean;
@@ -49,11 +48,6 @@ interface IState {
 }
 
 @withTranslation()
-@withLocalCache(`
-	currentUser {
-		${USER_ENTITY_FRAGMENT}
-	}
-`)
 class MessagesList extends Component<IProps, IState> {
 	private unsubscribeFromUpdates: any;
 	private listEnd: React.RefObject<any> = React.createRef();

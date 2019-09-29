@@ -25,3 +25,18 @@ query _GetGenericModal {
         type
     }
 }
+
+query _GetCurrentChatSlug {
+    currentChatSlug @client
+}
+
+query _GetMentionSuggester {
+    mentionSuggester @client {
+        show
+        userList {
+            displayName
+            avatar
+            slug
+        }
+    }
+}

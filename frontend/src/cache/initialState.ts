@@ -15,13 +15,13 @@ export default {
 			text: null,
 			__typename: ApolloTypenameEnum._GENERIC_MODAL
 		},
+		currentChatSlug: null,
+		mentionSuggester: {
+			show: false,
+			userList: [],
+			__typename: ApolloTypenameEnum._MENTION_SUGGESTER
+		},
 		client: {
-			genericModal: {
-				type: null,
-				show: false,
-				text: null,
-				__typename: ApolloTypenameEnum.client__GENERIC_MODAL
-			},
 			chat: {
 				typingUsers: '',
 				chatSlug: '',

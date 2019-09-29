@@ -5,19 +5,15 @@ import { WebSocketLink } from 'apollo-link-ws';
 import { split } from 'apollo-link';
 import { getMainDefinition } from 'apollo-utilities';
 import { createUploadLink } from 'apollo-upload-client';
-import initialState from './initialState';
 import { onError } from 'apollo-link-error';
 import {
-	ApolloTypenameEnum,
 	ErrorTypesEnum,
+	GenericModalTypesEnum,
 	LocalStorageEnum
 } from '../types/enums';
-import { setGenericModal } from './actions';
 import { getApolloOperationName } from '../utils';
-import {
-	_GetNavStateDocument,
-	_GetNotificationsDataDocument
-} from '../__generated__/graphql';
+import { initialState, resolvers } from '../cache';
+import { setGenericModal } from '../cache/resolvers';
 
 interface IDefinition {
 	kind: string;
@@ -77,14 +73,17 @@ const apolloError = onError(({ graphQLErrors, operation }: any) => {
 						LocalStorageEnum.ON_LOAD_MESSAGE,
 						JSON.stringify({
 							message: ErrorTypesEnum.INVALID_TOKEN,
-							type: 'error'
+							type: GenericModalTypesEnum.ERROR
 						})
 					);
 					window.location.href = '/login';
 					break;
 
 				case 500:
-					setGenericModal('error', ErrorTypesEnum.SOMETHING_WENT_WRONG);
+					setGenericModal({
+						type: GenericModalTypesEnum.ERROR,
+						text: ErrorTypesEnum.SOMETHING_WENT_WRONG
+					});
 					break;
 			}
 		});
@@ -116,49 +115,7 @@ const cache = new InMemoryCache({});
 const client = new ApolloClient({
 	link,
 	cache,
-	resolvers: {
-		Mutation: {
-			updateCurrentUser(_, { user }, { cache }) {
-				cache.writeData({
-					data: {
-						currentUser: {
-							...user,
-							__typename: ApolloTypenameEnum.USER
-						}
-					}
-				});
-			},
-			setNotificationsData(_, { data: { unreadCount } }, { cache }) {
-				const { notificationsData } = cache.readQuery({
-					query: _GetNotificationsDataDocument
-				});
-				cache.writeData({
-					data: {
-						notificationsData: {
-							...notificationsData,
-							unreadCount
-						}
-					}
-				});
-			},
-			toggleNavState(_, __, { cache }) {
-				const { isNavOpen } = cache.readQuery({ query: _GetNavStateDocument });
-				cache.writeData({
-					data: {
-						isNavOpen: !isNavOpen
-					}
-				});
-			},
-			setAuthModal(_, { isOpen }) {
-				cache.writeData({
-					data: {
-						isAuthModalOpen: isOpen
-					}
-				});
-			},
-			setGenericModal(_, { data }) {}
-		}
-	}
+	resolvers
 });
 cache.writeData(initialState);
 

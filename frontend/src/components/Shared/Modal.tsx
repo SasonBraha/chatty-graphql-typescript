@@ -2,7 +2,6 @@ import React, { ReactNode } from 'react';
 import ReactDOM from 'react-dom';
 import styled from 'styled-components';
 import Transition from 'react-transition-group/Transition';
-import { resetModals } from '../../apollo/actions';
 
 interface IProps {
 	isOpen: boolean;

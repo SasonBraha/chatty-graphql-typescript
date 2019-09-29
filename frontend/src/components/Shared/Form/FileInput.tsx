@@ -1,6 +1,10 @@
 import React from 'react';
 import styled from 'styled-components/macro';
-import { setGenericModal } from '../../../apollo/actions';
+import { GenericModalTypesEnum } from '../../../types/enums';
+import {
+	_SetGenericModalMutationFn,
+	use_SetGenericModalMutation
+} from '../../../__generated__/graphql';
 
 interface IProps {
 	maxFileSizeInKB?: number;
@@ -11,7 +15,8 @@ interface IProps {
 const validateFile = (
 	props: IProps,
 	event: React.FormEvent<HTMLInputElement>,
-	file: File
+	file: File,
+	setGenericModal: _SetGenericModalMutationFn
 ) => {
 	const resetFile = () => {
 		const fileInput = event.target as HTMLInputElement;
@@ -30,22 +35,31 @@ const validateFile = (
 		if (fileSize > maxFileSize) {
 			resetFile();
 			const isLimitOver1MB: boolean = maxFileSize >= 1024;
-			return setGenericModal(
-				'error',
-				// prettier-ignore
-				`הקובץ שנבחר גדול מדי, הגודל המירבי הניתן להעלאה הינו ${isLimitOver1MB ? Math.ceil(maxFileSize / 1024) : maxFileSize}${isLimitOver1MB ? 'MB' : 'KB'}`
-			);
+			setGenericModal({
+				variables: {
+					data: {
+						show: true,
+						type: GenericModalTypesEnum.ERROR,
+						// prettier-ignore
+						text: `הקובץ שנבחר גדול מדי, הגודל המירבי הניתן להעלאה הינו ${isLimitOver1MB ? Math.ceil(maxFileSize / 1024) : maxFileSize}${isLimitOver1MB ? 'MB' : 'KB'}`
+					}
+				}
+			});
+			return;
 		}
 
 		props.onChange(file);
 	}
 };
 
-const FileInput = (props: IProps) => {
+const FileInput: React.FC<IProps> = props => {
+	const [setGenericModal] = use_SetGenericModalMutation();
 	return (
 		<S.FileInput
 			type='file'
-			onChange={e => validateFile(props, e, e.target.files![0])}
+			onChange={e =>
+				validateFile(props, e, e.target.files![0], setGenericModal)
+			}
 			onBlur={props.onBlur}
 		/>
 	);

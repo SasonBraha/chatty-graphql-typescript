@@ -8,12 +8,7 @@ import Container from './Container';
 import { withRouter } from 'react-router-dom';
 import { GenericModal } from './Shared';
 import Routes from './Routes';
-import {
-	GenericModalTypesEnum,
-	LocalStorageEnum,
-	UserUpdatesEnum
-} from '../types/enums';
-import { setGenericModal } from '../apollo/actions';
+import { LocalStorageEnum, UserUpdatesEnum } from '../types/enums';
 import { RouterProps } from 'react-router';
 import { hot } from 'react-hot-loader/root';
 import {

@@ -88,19 +88,6 @@ function writeData(data: { [key: string]: any }) {
 	});
 }
 
-export const setNavState = () => {
-	const { isNavOpen } = getData();
-	writeData({
-		isNavOpen: !isNavOpen
-	});
-};
-
-export const setCurrentUser = (currentUser: IUser) => {
-	writeData({
-		currentUser
-	});
-};
-
 export const setChatSlug = (chatSlug: string) => {
 	writeData({
 		chat: {
@@ -141,47 +128,6 @@ export const setMentionSuggester = (shouldShow: boolean, userList: any) => {
 				shouldShow,
 				userList
 			}
-		}
-	});
-};
-
-export const setNotificationsData = (data: {
-	unreadCount?: number;
-	list?: INotification[];
-}) => {
-	const { notifications } = getData();
-	writeData({
-		notifications: {
-			...notifications,
-			...data
-		}
-	});
-};
-
-export const setAuthModal = (bool: boolean) => {
-	writeData({
-		showAuthModal: bool
-	});
-};
-
-export const resetModals = () => {
-	writeData({
-		showAuthModal: false,
-		genericModal: {
-			show: false
-		}
-	});
-};
-
-export const setGenericModal = (
-	type: 'success' | 'error',
-	text: string | ErrorTypesEnum
-) => {
-	writeData({
-		genericModal: {
-			type,
-			show: true,
-			text
 		}
 	});
 };

@@ -19,6 +19,7 @@ import * as jwt from 'jsonwebtoken';
 import { UserPermissionTypesEnum } from '../../permissions';
 import { Notification, NotificationModel } from '../../entities/Notification';
 import { SubscriptionTypesEnum } from '../../types/enums';
+import { ErrorTypesEnum } from '../../utils/errors';
 
 @Resolver(User)
 export default class UserResolver {

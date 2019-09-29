@@ -7,18 +7,19 @@ import MessagesList from './MessagesList';
 import SendMessage from './SendMessage';
 import UploadPreview from './UploadPreview';
 import { withAuth } from '../Shared/Hoc';
-import { setChatSlug } from '../../apollo/actions';
+import { use_SetCurrentChatSlugMutation } from '../../__generated__/graphql';
 
 interface IMatchParams {
 	chatSlug: string;
 }
 export interface IChatProps extends RouteComponentProps<IMatchParams> {}
 
-const Chat = (props: IChatProps) => {
+const Chat: React.FC<IChatProps> = props => {
 	const [filePreview, setFilePreview] = useState(null);
 	const { chatSlug } = props.match.params;
+	const [setCurrentChatSlug] = use_SetCurrentChatSlugMutation();
 	useEffect(() => {
-		setChatSlug(chatSlug);
+		setCurrentChatSlug({ variables: { slug: chatSlug } });
 	}, [chatSlug]);
 
 	return (

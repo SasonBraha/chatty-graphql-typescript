@@ -3,7 +3,7 @@ import * as ApolloReactCommon from '@apollo/react-common';
 import * as ApolloReactHoc from '@apollo/react-hoc';
 import * as ApolloReactHooks from '@apollo/react-hooks';
 export type Maybe<T> = T | null;
-// Generated in 2019-09-28T22:25:36+03:00
+// Generated in 2019-09-29T12:46:31+03:00
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
 	ID: string;
@@ -76,15 +76,15 @@ export type FileDimensions = {
 
 export type GenericModal = {
 	__typename?: 'GenericModal';
-	type: Scalars['String'];
+	type?: Maybe<Scalars['String']>;
 	show?: Maybe<Scalars['Boolean']>;
-	text: Scalars['String'];
+	text?: Maybe<Scalars['String']>;
 };
 
 export type GenericModalInput = {
-	type: Scalars['String'];
+	type?: Maybe<Scalars['String']>;
 	show?: Maybe<Scalars['Boolean']>;
-	text: Scalars['String'];
+	text?: Maybe<Scalars['String']>;
 };
 
 export type LoginInput = {
@@ -98,6 +98,17 @@ export type Mention = {
 	indices: Array<Scalars['Int']>;
 	displayName: Scalars['String'];
 	slug: Scalars['String'];
+};
+
+export type MentionSuggester = {
+	__typename?: 'MentionSuggester';
+	show?: Maybe<Scalars['Boolean']>;
+	userList: Array<User>;
+};
+
+export type MentionSuggesterInput = {
+	show?: Maybe<Scalars['Boolean']>;
+	userList: Array<UserInput>;
 };
 
 export type Message = {
@@ -142,6 +153,8 @@ export type Mutation = {
 	toggleNavState?: Maybe<Scalars['Boolean']>;
 	setAuthModal?: Maybe<Scalars['Boolean']>;
 	setGenericModal?: Maybe<Scalars['Boolean']>;
+	setCurrentChatSlug?: Maybe<Scalars['Boolean']>;
+	setMentionSuggester?: Maybe<Scalars['Boolean']>;
 };
 
 export type MutationCreateChatRoomArgs = {
@@ -214,6 +227,14 @@ export type MutationSetGenericModalArgs = {
 	data?: Maybe<GenericModalInput>;
 };
 
+export type MutationSetCurrentChatSlugArgs = {
+	slug?: Maybe<Scalars['String']>;
+};
+
+export type MutationSetMentionSuggesterArgs = {
+	data?: Maybe<MentionSuggesterInput>;
+};
+
 export type Notification = {
 	__typename?: 'Notification';
 	_id: Scalars['ID'];
@@ -256,6 +277,8 @@ export type Query = {
 	isNavOpen?: Maybe<Scalars['Boolean']>;
 	isAuthModalOpen?: Maybe<Scalars['Boolean']>;
 	genericModal?: Maybe<GenericModal>;
+	currentChatSlug?: Maybe<Scalars['String']>;
+	mentionSuggester?: Maybe<MentionSuggester>;
 };
 
 export type QueryChatArgs = {
@@ -400,6 +423,24 @@ export type _SetGenericModalMutation = { __typename?: 'Mutation' } & Pick<
 	'setGenericModal'
 >;
 
+export type _SetMentionSuggesterMutationVariables = {
+	data?: Maybe<MentionSuggesterInput>;
+};
+
+export type _SetMentionSuggesterMutation = { __typename?: 'Mutation' } & Pick<
+	Mutation,
+	'setMentionSuggester'
+>;
+
+export type _SetCurrentChatSlugMutationVariables = {
+	slug?: Maybe<Scalars['String']>;
+};
+
+export type _SetCurrentChatSlugMutation = { __typename?: 'Mutation' } & Pick<
+	Mutation,
+	'setCurrentChatSlug'
+>;
+
 export type _GetAuthModalStateQueryVariables = {};
 
 export type _GetAuthModalStateQuery = { __typename?: 'Query' } & Pick<
@@ -439,6 +480,28 @@ export type _GetGenericModalQuery = { __typename?: 'Query' } & {
 			GenericModal,
 			'show' | 'text' | 'type'
 		>
+	>;
+};
+
+export type _GetCurrentChatSlugQueryVariables = {};
+
+export type _GetCurrentChatSlugQuery = { __typename?: 'Query' } & Pick<
+	Query,
+	'currentChatSlug'
+>;
+
+export type _GetMentionSuggesterQueryVariables = {};
+
+export type _GetMentionSuggesterQuery = { __typename?: 'Query' } & {
+	mentionSuggester: Maybe<
+		{ __typename?: 'MentionSuggester' } & Pick<MentionSuggester, 'show'> & {
+				userList: Array<
+					{ __typename?: 'User' } & Pick<
+						User,
+						'displayName' | 'avatar' | 'slug'
+					>
+				>;
+			}
 	>;
 };
 
@@ -881,7 +944,7 @@ export type _UpdateCurrentUserMutationOptions = ApolloReactCommon.BaseMutationOp
 >;
 export const _SetGenericModalDocument = gql`
 	mutation _SetGenericModal($data: GenericModalInput) {
-		setGenericModal(data: $data)
+		setGenericModal(data: $data) @client
 	}
 `;
 export type _SetGenericModalMutationFn = ApolloReactCommon.MutationFunction<
@@ -934,6 +997,118 @@ export type _SetGenericModalMutationResult = ApolloReactCommon.MutationResult<
 export type _SetGenericModalMutationOptions = ApolloReactCommon.BaseMutationOptions<
 	_SetGenericModalMutation,
 	_SetGenericModalMutationVariables
+>;
+export const _SetMentionSuggesterDocument = gql`
+	mutation _SetMentionSuggester($data: MentionSuggesterInput) {
+		setMentionSuggester(data: $data) @client
+	}
+`;
+export type _SetMentionSuggesterMutationFn = ApolloReactCommon.MutationFunction<
+	_SetMentionSuggesterMutation,
+	_SetMentionSuggesterMutationVariables
+>;
+export type _SetMentionSuggesterProps<
+	TChildProps = {}
+> = ApolloReactHoc.MutateProps<
+	_SetMentionSuggesterMutation,
+	_SetMentionSuggesterMutationVariables
+> &
+	TChildProps;
+export function with_SetMentionSuggester<TProps, TChildProps = {}>(
+	operationOptions?: ApolloReactHoc.OperationOption<
+		TProps,
+		_SetMentionSuggesterMutation,
+		_SetMentionSuggesterMutationVariables,
+		_SetMentionSuggesterProps<TChildProps>
+	>
+) {
+	return ApolloReactHoc.withMutation<
+		TProps,
+		_SetMentionSuggesterMutation,
+		_SetMentionSuggesterMutationVariables,
+		_SetMentionSuggesterProps<TChildProps>
+	>(_SetMentionSuggesterDocument, {
+		alias: 'setMentionSuggester',
+		...operationOptions
+	});
+}
+
+export function use_SetMentionSuggesterMutation(
+	baseOptions?: ApolloReactHooks.MutationHookOptions<
+		_SetMentionSuggesterMutation,
+		_SetMentionSuggesterMutationVariables
+	>
+) {
+	return ApolloReactHooks.useMutation<
+		_SetMentionSuggesterMutation,
+		_SetMentionSuggesterMutationVariables
+	>(_SetMentionSuggesterDocument, baseOptions);
+}
+export type _SetMentionSuggesterMutationHookResult = ReturnType<
+	typeof use_SetMentionSuggesterMutation
+>;
+export type _SetMentionSuggesterMutationResult = ApolloReactCommon.MutationResult<
+	_SetMentionSuggesterMutation
+>;
+export type _SetMentionSuggesterMutationOptions = ApolloReactCommon.BaseMutationOptions<
+	_SetMentionSuggesterMutation,
+	_SetMentionSuggesterMutationVariables
+>;
+export const _SetCurrentChatSlugDocument = gql`
+	mutation _setCurrentChatSlug($slug: String) {
+		setCurrentChatSlug(slug: $slug) @client
+	}
+`;
+export type _SetCurrentChatSlugMutationFn = ApolloReactCommon.MutationFunction<
+	_SetCurrentChatSlugMutation,
+	_SetCurrentChatSlugMutationVariables
+>;
+export type _SetCurrentChatSlugProps<
+	TChildProps = {}
+> = ApolloReactHoc.MutateProps<
+	_SetCurrentChatSlugMutation,
+	_SetCurrentChatSlugMutationVariables
+> &
+	TChildProps;
+export function with_SetCurrentChatSlug<TProps, TChildProps = {}>(
+	operationOptions?: ApolloReactHoc.OperationOption<
+		TProps,
+		_SetCurrentChatSlugMutation,
+		_SetCurrentChatSlugMutationVariables,
+		_SetCurrentChatSlugProps<TChildProps>
+	>
+) {
+	return ApolloReactHoc.withMutation<
+		TProps,
+		_SetCurrentChatSlugMutation,
+		_SetCurrentChatSlugMutationVariables,
+		_SetCurrentChatSlugProps<TChildProps>
+	>(_SetCurrentChatSlugDocument, {
+		alias: 'setCurrentChatSlug',
+		...operationOptions
+	});
+}
+
+export function use_SetCurrentChatSlugMutation(
+	baseOptions?: ApolloReactHooks.MutationHookOptions<
+		_SetCurrentChatSlugMutation,
+		_SetCurrentChatSlugMutationVariables
+	>
+) {
+	return ApolloReactHooks.useMutation<
+		_SetCurrentChatSlugMutation,
+		_SetCurrentChatSlugMutationVariables
+	>(_SetCurrentChatSlugDocument, baseOptions);
+}
+export type _SetCurrentChatSlugMutationHookResult = ReturnType<
+	typeof use_SetCurrentChatSlugMutation
+>;
+export type _SetCurrentChatSlugMutationResult = ApolloReactCommon.MutationResult<
+	_SetCurrentChatSlugMutation
+>;
+export type _SetCurrentChatSlugMutationOptions = ApolloReactCommon.BaseMutationOptions<
+	_SetCurrentChatSlugMutation,
+	_SetCurrentChatSlugMutationVariables
 >;
 export const _GetAuthModalStateDocument = gql`
 	query _GetAuthModalState {
@@ -1242,6 +1417,135 @@ export type _GetGenericModalQueryHookResult = ReturnType<
 export type _GetGenericModalQueryResult = ApolloReactCommon.QueryResult<
 	_GetGenericModalQuery,
 	_GetGenericModalQueryVariables
+>;
+export const _GetCurrentChatSlugDocument = gql`
+	query _GetCurrentChatSlug {
+		currentChatSlug @client
+	}
+`;
+export type _GetCurrentChatSlugProps<
+	TChildProps = {}
+> = ApolloReactHoc.DataProps<
+	_GetCurrentChatSlugQuery,
+	_GetCurrentChatSlugQueryVariables
+> &
+	TChildProps;
+export function with_GetCurrentChatSlug<TProps, TChildProps = {}>(
+	operationOptions?: ApolloReactHoc.OperationOption<
+		TProps,
+		_GetCurrentChatSlugQuery,
+		_GetCurrentChatSlugQueryVariables,
+		_GetCurrentChatSlugProps<TChildProps>
+	>
+) {
+	return ApolloReactHoc.withQuery<
+		TProps,
+		_GetCurrentChatSlugQuery,
+		_GetCurrentChatSlugQueryVariables,
+		_GetCurrentChatSlugProps<TChildProps>
+	>(_GetCurrentChatSlugDocument, {
+		alias: 'getCurrentChatSlug',
+		...operationOptions
+	});
+}
+
+export function use_GetCurrentChatSlugQuery(
+	baseOptions?: ApolloReactHooks.QueryHookOptions<
+		_GetCurrentChatSlugQuery,
+		_GetCurrentChatSlugQueryVariables
+	>
+) {
+	return ApolloReactHooks.useQuery<
+		_GetCurrentChatSlugQuery,
+		_GetCurrentChatSlugQueryVariables
+	>(_GetCurrentChatSlugDocument, baseOptions);
+}
+export function use_GetCurrentChatSlugLazyQuery(
+	baseOptions?: ApolloReactHooks.LazyQueryHookOptions<
+		_GetCurrentChatSlugQuery,
+		_GetCurrentChatSlugQueryVariables
+	>
+) {
+	return ApolloReactHooks.useLazyQuery<
+		_GetCurrentChatSlugQuery,
+		_GetCurrentChatSlugQueryVariables
+	>(_GetCurrentChatSlugDocument, baseOptions);
+}
+
+export type _GetCurrentChatSlugQueryHookResult = ReturnType<
+	typeof use_GetCurrentChatSlugQuery
+>;
+export type _GetCurrentChatSlugQueryResult = ApolloReactCommon.QueryResult<
+	_GetCurrentChatSlugQuery,
+	_GetCurrentChatSlugQueryVariables
+>;
+export const _GetMentionSuggesterDocument = gql`
+	query _GetMentionSuggester {
+		mentionSuggester @client {
+			show
+			userList {
+				displayName
+				avatar
+				slug
+			}
+		}
+	}
+`;
+export type _GetMentionSuggesterProps<
+	TChildProps = {}
+> = ApolloReactHoc.DataProps<
+	_GetMentionSuggesterQuery,
+	_GetMentionSuggesterQueryVariables
+> &
+	TChildProps;
+export function with_GetMentionSuggester<TProps, TChildProps = {}>(
+	operationOptions?: ApolloReactHoc.OperationOption<
+		TProps,
+		_GetMentionSuggesterQuery,
+		_GetMentionSuggesterQueryVariables,
+		_GetMentionSuggesterProps<TChildProps>
+	>
+) {
+	return ApolloReactHoc.withQuery<
+		TProps,
+		_GetMentionSuggesterQuery,
+		_GetMentionSuggesterQueryVariables,
+		_GetMentionSuggesterProps<TChildProps>
+	>(_GetMentionSuggesterDocument, {
+		alias: 'getMentionSuggester',
+		...operationOptions
+	});
+}
+
+export function use_GetMentionSuggesterQuery(
+	baseOptions?: ApolloReactHooks.QueryHookOptions<
+		_GetMentionSuggesterQuery,
+		_GetMentionSuggesterQueryVariables
+	>
+) {
+	return ApolloReactHooks.useQuery<
+		_GetMentionSuggesterQuery,
+		_GetMentionSuggesterQueryVariables
+	>(_GetMentionSuggesterDocument, baseOptions);
+}
+export function use_GetMentionSuggesterLazyQuery(
+	baseOptions?: ApolloReactHooks.LazyQueryHookOptions<
+		_GetMentionSuggesterQuery,
+		_GetMentionSuggesterQueryVariables
+	>
+) {
+	return ApolloReactHooks.useLazyQuery<
+		_GetMentionSuggesterQuery,
+		_GetMentionSuggesterQueryVariables
+	>(_GetMentionSuggesterDocument, baseOptions);
+}
+
+export type _GetMentionSuggesterQueryHookResult = ReturnType<
+	typeof use_GetMentionSuggesterQuery
+>;
+export type _GetMentionSuggesterQueryResult = ApolloReactCommon.QueryResult<
+	_GetMentionSuggesterQuery,
+	_GetMentionSuggesterQueryVariables
 >;
 export const PostMessageDocument = gql`
 	mutation PostMessage($chatSlug: String!, $text: String!) {

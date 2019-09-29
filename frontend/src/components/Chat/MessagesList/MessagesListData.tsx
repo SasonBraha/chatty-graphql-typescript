@@ -4,7 +4,11 @@ import MessagesList from './MessagesList';
 import { IChatProps } from '../Chat';
 import produce from 'immer';
 import { Redirect } from 'react-router';
-import { useGetMessagesQuery } from '../../../__generated__/graphql';
+import {
+	use_GetCurrentUserQuery,
+	useGetMessagesQuery,
+	User
+} from '../../../__generated__/graphql';
 
 const MESSAGES_LIST_UPDATES = gql`
 	subscription SubscribeToMessageUpdates($chatSlug: String!) {
@@ -25,6 +29,9 @@ const MessagesListData = (props: IProps) => {
 	const [isFetching, setIsFetching] = useState(false);
 	const [isMoreMessagesToFetch, setIsMoreMessagesToFetch] = useState(true);
 	const { chatSlug } = props.match.params;
+	const {
+		data: { currentUser }
+	} = use_GetCurrentUserQuery();
 	const {
 		data,
 		fetchMore,
@@ -66,6 +73,7 @@ const MessagesListData = (props: IProps) => {
 			isMoreMessagesToFetch={isMoreMessagesToFetch}
 			setIsMoreMessagesToFetch={setIsMoreMessagesToFetch}
 			found={!!(!loading && data && data.chat)}
+			currentUser={currentUser as User}
 			fetchOlderMessages={(chatSlug: string, beforeMessageId: string) => {
 				setIsFetching(true);
 				fetchMore({

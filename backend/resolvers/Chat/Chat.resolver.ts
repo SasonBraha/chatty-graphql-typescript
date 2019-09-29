@@ -50,6 +50,7 @@ import { generateUserMentionedNotification } from '../../utils/notifications';
 import * as jwt from 'jsonwebtoken';
 import { Document } from 'mongoose';
 import * as graphqlFields from 'graphql-fields';
+import { ApolloTypesEnum } from '../../types/enums';
 
 @Resolver(Chat)
 export default class ChatResolver {
@@ -206,11 +207,17 @@ export default class ChatResolver {
 				node: {
 					...messageData,
 					createdAt: new Date(),
+					createdBy: {
+						...messageData.createdBy,
+						__typename: ApolloTypesEnum.MESSAGE_CREATED_BY
+					},
 					creationToken: jwt.sign(
 						{ userId: user._id.toString(), messageId: preSaveId._id },
 						process.env.JWT_SECRET
-					)
-				}
+					),
+					__typename: ApolloTypesEnum.MESSAGE
+				},
+				__typename: ApolloTypesEnum.MESSAGE_EDGE
 			},
 			updateType: SubscriptionTypesEnum.NEW_MESSAGE,
 			chatSlug

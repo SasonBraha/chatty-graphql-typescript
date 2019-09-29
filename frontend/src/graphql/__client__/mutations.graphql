@@ -15,5 +15,13 @@ mutation _UpdateCurrentUser($user: UserInput) {
 }
 
 mutation _SetGenericModal($data: GenericModalInput) {
-    setGenericModal(data: $data)
+    setGenericModal(data: $data) @client
+}
+
+mutation _SetMentionSuggester($data: MentionSuggesterInput) {
+    setMentionSuggester(data: $data) @client
+}
+
+mutation _setCurrentChatSlug($slug: String) {
+    setCurrentChatSlug(slug: $slug) @client
 }
