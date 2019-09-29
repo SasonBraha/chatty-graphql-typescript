@@ -34,9 +34,7 @@ import { Authenticated, WithPermission } from '../../middlewares';
 import { ChatPermissionTypesEnum } from '../../permissions';
 import withPermission from '../../middlewares/WithPermission';
 import {
-	IMessageCreatedOutput,
-	IMessageDeletedOutput,
-	IMessageFileUploadedOutput,
+	ChatUpdatesUnion,
 	MessageConnection,
 	UserTypingOutput
 } from './chat.resolver.output';
@@ -50,7 +48,6 @@ import { generateUserMentionedNotification } from '../../utils/notifications';
 import * as jwt from 'jsonwebtoken';
 import { Document } from 'mongoose';
 import * as graphqlFields from 'graphql-fields';
-import { ApolloTypesEnum } from '../../types/enums';
 
 @Resolver(Chat)
 export default class ChatResolver {
@@ -202,24 +199,21 @@ export default class ChatResolver {
 		};
 
 		await pubSub.publish(SubscriptionTypesEnum.NEW_MESSAGE, {
-			message: {
-				cursor: messageData._id,
-				node: {
-					...messageData,
-					createdAt: new Date(),
-					createdBy: {
-						...messageData.createdBy,
-						__typename: ApolloTypesEnum.MESSAGE_CREATED_BY
-					},
-					creationToken: jwt.sign(
-						{ userId: user._id.toString(), messageId: preSaveId._id },
-						process.env.JWT_SECRET
-					),
-					__typename: ApolloTypesEnum.MESSAGE
+			payload: {
+				message: {
+					cursor: messageData._id,
+					node: {
+						...messageData,
+						createdAt: new Date(),
+						creationToken: jwt.sign(
+							{ userId: user._id.toString(), messageId: preSaveId._id },
+							process.env.JWT_SECRET
+						),
+						file: null
+					}
 				},
-				__typename: ApolloTypesEnum.MESSAGE_EDGE
+				updateType: SubscriptionTypesEnum.NEW_MESSAGE
 			},
-			updateType: SubscriptionTypesEnum.NEW_MESSAGE,
 			chatSlug
 		});
 
@@ -427,20 +421,6 @@ export default class ChatResolver {
 	}
 
 	@UseMiddleware(Authenticated)
-	@Subscription(returns => Message, {
-		topics: SubscriptionTypesEnum.NEW_MESSAGE,
-		defaultValue: null,
-		filter: ({ payload, args }) => payload.chatSlug === args.chatSlug
-	})
-	onNewMessage(
-		@Root() messagePayload: { message: Message },
-		@Arg('chatSlug') chatSlug: string,
-		@Ctx('ctx') ctx
-	): Message {
-		return messagePayload.message;
-	}
-
-	@UseMiddleware(Authenticated)
 	@UseMiddleware(withPermission([ChatPermissionTypesEnum.VIEW_CHAT]))
 	@Subscription(returns => [User], {
 		topics: SubscriptionTypesEnum.UPDATE_ACTIVE_USERS,
@@ -464,7 +444,7 @@ export default class ChatResolver {
 			ChatPermissionTypesEnum.DELETE_MESSAGE
 		])
 	)
-	@Subscription(returns => String, {
+	@Subscription(returns => ChatUpdatesUnion, {
 		topics: [
 			SubscriptionTypesEnum.NEW_MESSAGE,
 			SubscriptionTypesEnum.FILE_UPLOADED,
@@ -474,14 +454,10 @@ export default class ChatResolver {
 		filter: ({ payload, args }) => payload.chatSlug === args.chatSlug
 	})
 	onMessageUpdate(
-		@Root()
-		subscriptionPayload:
-			| IMessageCreatedOutput
-			| IMessageDeletedOutput
-			| IMessageFileUploadedOutput,
+		@Root() subscriptionPayload: any,
 		@Arg('chatSlug') chatSlug: string
-	): string {
-		return JSON.stringify(subscriptionPayload);
+	): typeof ChatUpdatesUnion {
+		return subscriptionPayload.payload;
 	}
 
 	@UseMiddleware(Authenticated)

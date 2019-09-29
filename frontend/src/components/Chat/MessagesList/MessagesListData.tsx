@@ -12,7 +12,36 @@ import {
 
 const MESSAGES_LIST_UPDATES = gql`
 	subscription SubscribeToMessageUpdates($chatSlug: String!) {
-		onMessageUpdate(chatSlug: $chatSlug)
+		onMessageUpdate(chatSlug: $chatSlug) {
+			... on FileUploadedOutput {
+				file {
+					dimensions {
+						height
+						width
+					}
+					path
+				}
+			}
+
+			... on MessageDeletedOutput {
+				messageId
+				updateType
+			}
+
+			... on NewMessageOutput {
+				message {
+					cursor
+					node {
+						text
+						creationToken
+						file {
+							path
+						}
+					}
+				}
+				updateType
+			}
+		}
 	}
 `;
 
@@ -101,6 +130,9 @@ const MessagesListData = (props: IProps) => {
 					document: MESSAGES_LIST_UPDATES,
 					variables: { chatSlug },
 					updateQuery: (prev, { subscriptionData }) => {
+						console.log(subscriptionData);
+						return;
+
 						const updatedData = JSON.parse(
 							//@ts-ignore
 							subscriptionData.data.onMessageUpdate
@@ -108,6 +140,7 @@ const MessagesListData = (props: IProps) => {
 						const updateType = updatedData.updateType;
 						switch (updateType) {
 							case SubscriptionTypesEnum.NEW_MESSAGE:
+								console.log(updatedData.message);
 								return {
 									chat: {
 										...prev.chat,

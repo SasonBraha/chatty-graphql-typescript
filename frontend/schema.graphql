@@ -6,6 +6,8 @@ schema {
     subscription: Subscription
 }
 
+union ChatUpdates = FileUploadedOutput | MessageDeletedOutput | NewMessageOutput
+
 type Chat {
     _id: ID!
     allowedUsers: [User!]!
@@ -45,6 +47,12 @@ type FileDimensions {
     width: Int
 }
 
+type FileUploadedOutput {
+    file: File!
+    messageId: ID!
+    updateType: String!
+}
+
 type Mention {
     _id: ID!
     displayName: String!
@@ -65,7 +73,12 @@ type Message {
 
 type MessageConnection {
     edges: [MessageEdge!]!
-    pageInfo: PageInfo!
+    pageInfo: PageInfo
+}
+
+type MessageDeletedOutput {
+    messageId: ID!
+    updateType: String!
 }
 
 type MessageEdge {
@@ -85,6 +98,11 @@ type Mutation {
     updateMessage(updatePayload: UpdateMessageInput!): Boolean!
     updateTypingUsers(chatSlug: String!, crudType: String!): Boolean
     uploadMessageFile(chatSlug: String!, file: Upload!, messageId: String!): Boolean!
+}
+
+type NewMessageOutput {
+    message: MessageEdge!
+    updateType: String!
 }
 
 type Notification {
@@ -120,8 +138,7 @@ type SearchUsersOutput {
 
 type Subscription {
     onActiveUsersUpdate(chatSlug: String!): [User!]
-    onMessageUpdate(chatSlug: String!): String!
-    onNewMessage(chatSlug: String!): Message
+    onMessageUpdate(chatSlug: String!): ChatUpdates!
     onTypingUsersUpdate: UserTypingOutput
     userUpdates: String!
 }
