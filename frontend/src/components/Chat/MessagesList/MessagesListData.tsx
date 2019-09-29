@@ -1,52 +1,14 @@
-import React, { useEffect, useState } from 'react';
-import gql from 'graphql-tag';
+import React, { useState } from 'react';
 import MessagesList from './MessagesList';
 import { IChatProps } from '../Chat';
 import produce from 'immer';
-import { Redirect } from 'react-router';
 import {
-	useChatRoomUpdatesSubscription,
+	GetMessagesDocument,
 	use_GetCurrentUserQuery,
+	useChatRoomUpdatesSubscription,
 	useGetMessagesQuery,
-	User,
-	GetMessagesDocument
+	User
 } from '../../../__generated__/graphql';
-import { on } from 'cluster';
-
-const MESSAGES_LIST_UPDATES = gql`
-	subscription SubscribeToMessageUpdates($chatSlug: String!) {
-		onMessageUpdate(chatSlug: $chatSlug) {
-			... on FileUploadedOutput {
-				file {
-					dimensions {
-						height
-						width
-					}
-					path
-				}
-			}
-
-			... on MessageDeletedOutput {
-				messageId
-				updateType
-			}
-
-			... on NewMessageOutput {
-				message {
-					cursor
-					node {
-						text
-						creationToken
-						file {
-							path
-						}
-					}
-				}
-				updateType
-			}
-		}
-	}
-`;
 
 enum SubscriptionTypesEnum {
 	NEW_MESSAGE = 'NEW_MESSAGE',
