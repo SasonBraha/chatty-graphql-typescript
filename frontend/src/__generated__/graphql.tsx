@@ -3,7 +3,7 @@ import * as ApolloReactCommon from '@apollo/react-common';
 import * as ApolloReactHoc from '@apollo/react-hoc';
 import * as ApolloReactHooks from '@apollo/react-hooks';
 export type Maybe<T> = T | null;
-// Generated in 2019-09-29T12:46:31+03:00
+// Generated in 2019-09-29T23:17:57+03:00
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
 	ID: string;
@@ -39,6 +39,11 @@ export type ChatMessagesArgs = {
 	first?: Maybe<Scalars['Int']>;
 };
 
+export type ChatUpdates =
+	| NewMessageOutput
+	| MessageDeletedOutput
+	| FileUploadedOutput;
+
 export type CreateChatInput = {
 	name: Scalars['String'];
 	isPrivate: Scalars['Boolean'];
@@ -72,6 +77,13 @@ export type FileDimensions = {
 	__typename?: 'FileDimensions';
 	height?: Maybe<Scalars['Int']>;
 	width?: Maybe<Scalars['Int']>;
+};
+
+export type FileUploadedOutput = {
+	__typename?: 'FileUploadedOutput';
+	messageId: Scalars['ID'];
+	file: File;
+	updateType: Scalars['String'];
 };
 
 export type GenericModal = {
@@ -126,7 +138,13 @@ export type Message = {
 export type MessageConnection = {
 	__typename?: 'MessageConnection';
 	edges: Array<MessageEdge>;
-	pageInfo: PageInfo;
+	pageInfo?: Maybe<PageInfo>;
+};
+
+export type MessageDeletedOutput = {
+	__typename?: 'MessageDeletedOutput';
+	messageId: Scalars['ID'];
+	updateType: Scalars['String'];
 };
 
 export type MessageEdge = {
@@ -235,6 +253,12 @@ export type MutationSetMentionSuggesterArgs = {
 	data?: Maybe<MentionSuggesterInput>;
 };
 
+export type NewMessageOutput = {
+	__typename?: 'NewMessageOutput';
+	message: MessageEdge;
+	updateType: Scalars['String'];
+};
+
 export type Notification = {
 	__typename?: 'Notification';
 	_id: Scalars['ID'];
@@ -318,15 +342,10 @@ export type SearchUsersOutput = {
 
 export type Subscription = {
 	__typename?: 'Subscription';
-	onNewMessage?: Maybe<Message>;
 	onActiveUsersUpdate?: Maybe<Array<User>>;
-	onMessageUpdate: Scalars['String'];
+	onMessageUpdate: ChatUpdates;
 	onTypingUsersUpdate?: Maybe<UserTypingOutput>;
 	userUpdates: Scalars['String'];
-};
-
-export type SubscriptionOnNewMessageArgs = {
-	chatSlug: Scalars['String'];
 };
 
 export type SubscriptionOnActiveUsersUpdateArgs = {
@@ -571,9 +590,11 @@ export type GetMessagesQuery = { __typename?: 'Query' } & {
 							node: { __typename?: 'Message' } & MessageAttributesFragment;
 						}
 				>;
-				pageInfo: { __typename?: 'PageInfo' } & Pick<
-					PageInfo,
-					'hasNextPage' | 'hasPreviousPage'
+				pageInfo: Maybe<
+					{ __typename?: 'PageInfo' } & Pick<
+						PageInfo,
+						'hasNextPage' | 'hasPreviousPage'
+					>
 				>;
 			};
 		};
@@ -661,13 +682,34 @@ export type ActiveUsersUpdatesSubscription = { __typename?: 'Subscription' } & {
 	>;
 };
 
-export type ChatMessageUpdatesSubscriptionVariables = {
+export type ChatRoomUpdatesSubscriptionVariables = {
 	chatSlug: Scalars['String'];
 };
 
-export type ChatMessageUpdatesSubscription = {
-	__typename?: 'Subscription';
-} & Pick<Subscription, 'onMessageUpdate'>;
+export type ChatRoomUpdatesSubscription = { __typename?: 'Subscription' } & {
+	onMessageUpdate:
+		| ({ __typename?: 'NewMessageOutput' } & Pick<
+				NewMessageOutput,
+				'updateType'
+		  > & {
+					message: { __typename?: 'MessageEdge' } & Pick<
+						MessageEdge,
+						'cursor'
+					> & { node: { __typename?: 'Message' } & MessageAttributesFragment };
+				})
+		| ({ __typename?: 'MessageDeletedOutput' } & Pick<
+				MessageDeletedOutput,
+				'messageId' | 'updateType'
+		  >)
+		| ({ __typename?: 'FileUploadedOutput' } & {
+				file: { __typename?: 'File' } & Pick<File, 'path'> & {
+						dimensions: { __typename?: 'FileDimensions' } & Pick<
+							FileDimensions,
+							'height' | 'width'
+						>;
+					};
+		  });
+};
 
 export type TypingUsersUpdatesSubscriptionVariables = {};
 
@@ -2170,53 +2212,75 @@ export type ActiveUsersUpdatesSubscriptionHookResult = ReturnType<
 export type ActiveUsersUpdatesSubscriptionResult = ApolloReactCommon.SubscriptionResult<
 	ActiveUsersUpdatesSubscription
 >;
-export const ChatMessageUpdatesDocument = gql`
-	subscription ChatMessageUpdates($chatSlug: String!) {
-		onMessageUpdate(chatSlug: $chatSlug)
+export const ChatRoomUpdatesDocument = gql`
+	subscription ChatRoomUpdates($chatSlug: String!) {
+		onMessageUpdate(chatSlug: $chatSlug) {
+			... on FileUploadedOutput {
+				file {
+					dimensions {
+						height
+						width
+					}
+					path
+				}
+			}
+			... on MessageDeletedOutput {
+				messageId
+				updateType
+			}
+			... on NewMessageOutput {
+				message {
+					cursor
+					node {
+						...messageAttributes
+					}
+				}
+				updateType
+			}
+		}
 	}
+	${MessageAttributesFragmentDoc}
 `;
-export type ChatMessageUpdatesProps<
-	TChildProps = {}
-> = ApolloReactHoc.DataProps<
-	ChatMessageUpdatesSubscription,
-	ChatMessageUpdatesSubscriptionVariables
+export type ChatRoomUpdatesProps<TChildProps = {}> = ApolloReactHoc.DataProps<
+	ChatRoomUpdatesSubscription,
+	ChatRoomUpdatesSubscriptionVariables
 > &
 	TChildProps;
-export function withChatMessageUpdates<TProps, TChildProps = {}>(
+export function withChatRoomUpdates<TProps, TChildProps = {}>(
 	operationOptions?: ApolloReactHoc.OperationOption<
 		TProps,
-		ChatMessageUpdatesSubscription,
-		ChatMessageUpdatesSubscriptionVariables,
-		ChatMessageUpdatesProps<TChildProps>
+		ChatRoomUpdatesSubscription,
+		ChatRoomUpdatesSubscriptionVariables,
+		ChatRoomUpdatesProps<TChildProps>
 	>
 ) {
 	return ApolloReactHoc.withSubscription<
 		TProps,
-		ChatMessageUpdatesSubscription,
-		ChatMessageUpdatesSubscriptionVariables,
-		ChatMessageUpdatesProps<TChildProps>
-	>(ChatMessageUpdatesDocument, {
-		alias: 'chatMessageUpdates',
+		ChatRoomUpdatesSubscription,
+		ChatRoomUpdatesSubscriptionVariables,
+		ChatRoomUpdatesProps<TChildProps>
+	>(ChatRoomUpdatesDocument, {
+		alias: 'chatRoomUpdates',
 		...operationOptions
 	});
 }
 
-export function useChatMessageUpdatesSubscription(
+export function useChatRoomUpdatesSubscription(
 	baseOptions?: ApolloReactHooks.SubscriptionHookOptions<
-		ChatMessageUpdatesSubscription,
-		ChatMessageUpdatesSubscriptionVariables
+		ChatRoomUpdatesSubscription,
+		ChatRoomUpdatesSubscriptionVariables
 	>
 ) {
 	return ApolloReactHooks.useSubscription<
-		ChatMessageUpdatesSubscription,
-		ChatMessageUpdatesSubscriptionVariables
-	>(ChatMessageUpdatesDocument, baseOptions);
+		ChatRoomUpdatesSubscription,
+		ChatRoomUpdatesSubscriptionVariables
+	>(ChatRoomUpdatesDocument, baseOptions);
 }
-export type ChatMessageUpdatesSubscriptionHookResult = ReturnType<
-	typeof useChatMessageUpdatesSubscription
+export type ChatRoomUpdatesSubscriptionHookResult = ReturnType<
+	typeof useChatRoomUpdatesSubscription
 >;
-export type ChatMessageUpdatesSubscriptionResult = ApolloReactCommon.SubscriptionResult<
-	ChatMessageUpdatesSubscription
+export type ChatRoomUpdatesSubscriptionResult = ApolloReactCommon.SubscriptionResult<
+	ChatRoomUpdatesSubscription
 >;
 export const TypingUsersUpdatesDocument = gql`
 	subscription TypingUsersUpdates {

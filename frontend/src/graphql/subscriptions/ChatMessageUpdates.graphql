@@ -1,3 +1,28 @@
-subscription ChatMessageUpdates($chatSlug: String!) {
-    onMessageUpdate(chatSlug: $chatSlug)
+subscription ChatRoomUpdates($chatSlug: String!) {
+    onMessageUpdate(chatSlug: $chatSlug) {
+        ... on FileUploadedOutput {
+            file {
+                dimensions {
+                    height
+                    width
+                }
+                path
+            }
+        }
+
+        ... on MessageDeletedOutput {
+            messageId
+            updateType
+        }
+
+        ... on NewMessageOutput {
+            message {
+                cursor
+                node {
+                    ...messageAttributes
+                }
+            }
+            updateType
+        }
+    }
 }

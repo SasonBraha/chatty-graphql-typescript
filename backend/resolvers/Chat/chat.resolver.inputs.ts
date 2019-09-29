@@ -4,9 +4,7 @@ import { Stream } from 'stream';
 @InputType()
 export class CreateChatInput {
 	@Field() name: string;
-
 	@Field() isPrivate: boolean;
-
 	@Field() storeMessages: boolean;
 }
 
