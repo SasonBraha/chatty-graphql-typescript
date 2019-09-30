@@ -22,13 +22,13 @@ interface IProps extends UpdateMessageProps {
 	setMessageCtxMenu: (ctx: IMessageCtxMenu) => void;
 	t?: any;
 	updateMessage: UpdateMessageMutationFn;
+	isDeleted: boolean;
 }
 
 interface IState {
 	messageBody: string;
 	isEditable: boolean;
 	isMediaLoaded: boolean;
-	isDeleted: boolean;
 }
 
 @withTranslation()
@@ -36,8 +36,7 @@ class Message extends Component<IProps, IState> {
 	state = {
 		messageBody: this.props.message.text,
 		isEditable: false,
-		isMediaLoaded: false,
-		isDeleted: false
+		isMediaLoaded: false
 	};
 
 	componentDidUpdate(prevProps: IProps, prevState: IState) {
@@ -47,8 +46,8 @@ class Message extends Component<IProps, IState> {
 	}
 
 	handleContextMenu = (e: React.MouseEvent) => {
-		const { setMessageCtxMenu, isMine, message } = this.props;
-		const { isDeleted, isEditable } = this.state;
+		const { setMessageCtxMenu, isMine, message, isDeleted } = this.props;
+		const { isEditable } = this.state;
 		const shouldShowCustomContextMenu = isMine && !isDeleted && !isEditable;
 		if (shouldShowCustomContextMenu) {
 			e.preventDefault();
@@ -143,9 +142,6 @@ class Message extends Component<IProps, IState> {
 				chatSlug: this.props.message.chatSlug
 			}
 		});
-		this.setState({
-			isDeleted: true
-		});
 	};
 
 	render() {
@@ -153,7 +149,7 @@ class Message extends Component<IProps, IState> {
 			message: { createdBy, text, createdAt },
 			isMine
 		} = this.props;
-		const { isDeleted } = this.state;
+		const { isDeleted } = this.props;
 		return (
 			<S.Message
 				isMine={isMine}

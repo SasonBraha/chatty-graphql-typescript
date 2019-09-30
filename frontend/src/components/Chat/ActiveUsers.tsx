@@ -3,9 +3,9 @@ import styled from 'styled-components';
 import { IUser } from '../../types/interfaces';
 import { Link } from 'react-router-dom';
 import { CrudEnum } from '../../types/enums';
-import { useLocalCache } from '../Shared/Hooks';
 import { afterRender } from '../../utils';
 import {
+	use_GetCurrentChatSlugQuery,
 	useActiveUsersUpdatesSubscription,
 	useUpdateActiveUsersMutation
 } from '../../__generated__/graphql';
@@ -14,12 +14,8 @@ interface IProps {}
 
 const ActiveUsers: React.FC<IProps> = props => {
 	const {
-		chat: { chatSlug }
-	} = useLocalCache(`
-		chat {
-			chatSlug 
-		}
-	`);
+		data: { currentChatSlug: chatSlug }
+	} = use_GetCurrentChatSlugQuery();
 	const [previousSlug, setPreviousSlug] = useState(chatSlug);
 	const {
 		data = { onActiveUsersUpdate: [] }

@@ -460,6 +460,7 @@ export default class ChatResolver {
 		@Root() subscriptionPayload: any,
 		@Arg('chatSlug') chatSlug: string
 	): typeof ChatUpdatesUnion {
+		// FIXME Sason - Figure out why apollo converts createdAt(Date type) to null in { NEW_MESSAGE } response
 		return subscriptionPayload.payload;
 	}
 

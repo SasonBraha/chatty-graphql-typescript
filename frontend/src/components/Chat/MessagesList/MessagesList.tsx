@@ -22,7 +22,6 @@ interface IProps {
 			storeMessages: boolean;
 		};
 	};
-	subscribeToUpdates: (chatSlug: string) => void;
 	fetchOlderMessages: (chatSlug: string, beforeMessageId: string) => void;
 	setIsMoreMessagesToFetch: (value: boolean) => void;
 	updateQuery: () => void;
@@ -30,6 +29,7 @@ interface IProps {
 	client: ApolloClient<any>;
 	t?: any;
 	found: boolean;
+	deletedMessages: { [key: string]: boolean };
 }
 
 export interface IMessageCtxMenu {
@@ -49,7 +49,6 @@ interface IState {
 
 @withTranslation()
 class MessagesList extends Component<IProps, IState> {
-	private unsubscribeFromUpdates: any;
 	private listEnd: React.RefObject<any> = React.createRef();
 	private messagesList: React.RefObject<any> = React.createRef();
 	private messageCtxMenuRef: React.RefObject<HTMLElement> = React.createRef();
@@ -67,12 +66,6 @@ class MessagesList extends Component<IProps, IState> {
 				}
 			}
 		};
-	}
-
-	componentDidMount() {
-		this.unsubscribeFromUpdates = this.props.subscribeToUpdates(
-			this.props.chatSlug
-		);
 	}
 
 	getSnapshotBeforeUpdate(prevProps: IProps) {
@@ -109,6 +102,7 @@ class MessagesList extends Component<IProps, IState> {
 			this.state.messageCtxMenu.position!.y !==
 				nextState.messageCtxMenu.position!.y
 		);
+		// return true;
 	}
 
 	componentDidUpdate(prevProps: IProps, _: any, snapshot: number) {
@@ -131,10 +125,6 @@ class MessagesList extends Component<IProps, IState> {
 				this.listEnd.current.scrollIntoView();
 			});
 		}
-	}
-
-	componentWillUnmount() {
-		this.unsubscribeFromUpdates();
 	}
 
 	private onCtxTransitionEnd = () => {
@@ -196,6 +186,7 @@ class MessagesList extends Component<IProps, IState> {
 			loading,
 			isFetching,
 			found,
+			deletedMessages,
 			data: { chat }
 		} = this.props;
 
@@ -231,6 +222,7 @@ class MessagesList extends Component<IProps, IState> {
 							<Message
 								message={node}
 								key={node._id}
+								isDeleted={!!deletedMessages[node._id]}
 								isMine={currentUser!.slug === node.createdBy.slug}
 								setMessageCtxMenu={this.showMessageCtxMenu}
 							/>
