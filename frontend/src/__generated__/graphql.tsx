@@ -3,7 +3,7 @@ import * as ApolloReactCommon from '@apollo/react-common';
 import * as ApolloReactHoc from '@apollo/react-hoc';
 import * as ApolloReactHooks from '@apollo/react-hooks';
 export type Maybe<T> = T | null;
-// Generated in 2019-09-29T23:17:57+03:00
+// Generated in 2019-09-30T17:18:49+03:00
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
 	ID: string;
@@ -42,6 +42,7 @@ export type ChatMessagesArgs = {
 export type ChatUpdates =
 	| NewMessageOutput
 	| MessageDeletedOutput
+	| MessageEditedOutput
 	| FileUploadedOutput;
 
 export type CreateChatInput = {
@@ -132,7 +133,7 @@ export type Message = {
 	createdBy: CreatedBy;
 	userMentions?: Maybe<Array<Mention>>;
 	creationToken?: Maybe<Scalars['String']>;
-	createdAt: Scalars['DateTime'];
+	createdAt?: Maybe<Scalars['DateTime']>;
 };
 
 export type MessageConnection = {
@@ -151,6 +152,13 @@ export type MessageEdge = {
 	__typename?: 'MessageEdge';
 	cursor: Scalars['String'];
 	node: Message;
+};
+
+export type MessageEditedOutput = {
+	__typename?: 'MessageEditedOutput';
+	messageId: Scalars['ID'];
+	updatedText: Scalars['String'];
+	updateType: Scalars['String'];
 };
 
 export type Mutation = {
@@ -701,14 +709,21 @@ export type ChatRoomUpdatesSubscription = { __typename?: 'Subscription' } & {
 				MessageDeletedOutput,
 				'messageId' | 'updateType'
 		  >)
-		| ({ __typename?: 'FileUploadedOutput' } & {
-				file: { __typename?: 'File' } & Pick<File, 'path'> & {
-						dimensions: { __typename?: 'FileDimensions' } & Pick<
-							FileDimensions,
-							'height' | 'width'
-						>;
-					};
-		  });
+		| ({ __typename?: 'MessageEditedOutput' } & Pick<
+				MessageEditedOutput,
+				'messageId' | 'updateType' | 'updatedText'
+		  >)
+		| ({ __typename?: 'FileUploadedOutput' } & Pick<
+				FileUploadedOutput,
+				'updateType'
+		  > & {
+					file: { __typename?: 'File' } & Pick<File, 'path'> & {
+							dimensions: { __typename?: 'FileDimensions' } & Pick<
+								FileDimensions,
+								'height' | 'width'
+							>;
+						};
+				});
 };
 
 export type TypingUsersUpdatesSubscriptionVariables = {};
@@ -2223,6 +2238,7 @@ export const ChatRoomUpdatesDocument = gql`
 					}
 					path
 				}
+				updateType
 			}
 			... on MessageDeletedOutput {
 				messageId
@@ -2236,6 +2252,11 @@ export const ChatRoomUpdatesDocument = gql`
 					}
 				}
 				updateType
+			}
+			... on MessageEditedOutput {
+				messageId
+				updateType
+				updatedText
 			}
 		}
 	}

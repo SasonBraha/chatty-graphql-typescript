@@ -8,6 +8,7 @@ subscription ChatRoomUpdates($chatSlug: String!) {
                 }
                 path
             }
+            updateType
         }
 
         ... on MessageDeletedOutput {
@@ -23,6 +24,12 @@ subscription ChatRoomUpdates($chatSlug: String!) {
                 }
             }
             updateType
+        }
+
+        ... on MessageEditedOutput {
+            messageId
+            updateType
+            updatedText
         }
     }
 }

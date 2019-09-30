@@ -76,12 +76,34 @@ class FileUploadedOutput {
 	@Field() updateType: string;
 }
 
+@ObjectType()
+class MessageEditedOutput {
+	@Field(type => ID) messageId: string;
+	@Field() updatedText: string;
+	@Field() updateType: string;
+}
+
 export const ChatUpdatesUnion = createUnionType({
 	name: 'ChatUpdates',
-	types: [NewMessageOutput, MessageDeletedOutput, FileUploadedOutput],
+	types: [
+		NewMessageOutput,
+		MessageDeletedOutput,
+		MessageEditedOutput,
+		FileUploadedOutput
+	],
 	resolveType(value) {
-		if (value.updateType === SubscriptionTypesEnum.NEW_MESSAGE) {
-			return NewMessageOutput;
+		switch (value.updateType) {
+			case SubscriptionTypesEnum.NEW_MESSAGE:
+				return NewMessageOutput;
+
+			case SubscriptionTypesEnum.FILE_UPLOADED:
+				return FileUploadedOutput;
+
+			case SubscriptionTypesEnum.MESSAGE_DELETED:
+				return MessageDeletedOutput;
+
+			case SubscriptionTypesEnum.MESSAGE_EDITED:
+				return MessageEditedOutput;
 		}
 	}
 });

@@ -6,7 +6,7 @@ schema {
     subscription: Subscription
 }
 
-union ChatUpdates = FileUploadedOutput | MessageDeletedOutput | NewMessageOutput
+union ChatUpdates = FileUploadedOutput | MessageDeletedOutput | MessageEditedOutput | NewMessageOutput
 
 type Chat {
     _id: ID!
@@ -63,7 +63,7 @@ type Mention {
 type Message {
     _id: ID
     chatSlug: String!
-    createdAt: DateTime!
+    createdAt: DateTime
     createdBy: CreatedBy!
     creationToken: String
     file: File
@@ -84,6 +84,12 @@ type MessageDeletedOutput {
 type MessageEdge {
     cursor: String!
     node: Message!
+}
+
+type MessageEditedOutput {
+    messageId: ID!
+    updateType: String!
+    updatedText: String!
 }
 
 type Mutation {

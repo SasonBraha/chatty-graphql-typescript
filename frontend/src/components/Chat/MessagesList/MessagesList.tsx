@@ -118,12 +118,7 @@ class MessagesList extends Component<IProps, IState> {
 		);
 
 		if (isRoomChanged) {
-			this.unsubscribeFromUpdates();
 			this.props.setIsMoreMessagesToFetch(true);
-			this.unsubscribeFromUpdates = this.props.subscribeToUpdates(
-				this.props.chatSlug
-			);
-			this.props.refetch();
 		}
 
 		if (isMessagesUpdated) {

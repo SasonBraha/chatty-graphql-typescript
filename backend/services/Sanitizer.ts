@@ -16,7 +16,7 @@ class Sanitizer {
 		}
 	}
 
-	public html(text: any): string {
+	public html(text: string): string {
 		return sanitizeHtml(text, {
 			allowedTags: [],
 			allowedAttributes: {}

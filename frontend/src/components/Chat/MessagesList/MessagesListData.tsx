@@ -1,9 +1,10 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import MessagesList from './MessagesList';
 import { IChatProps } from '../Chat';
 import produce from 'immer';
 import {
 	GetMessagesDocument,
+	NewMessageOutput,
 	use_GetCurrentUserQuery,
 	useChatRoomUpdatesSubscription,
 	useGetMessagesQuery,
@@ -34,27 +35,44 @@ const MessagesListData = (props: IProps) => {
 				data: { onMessageUpdate }
 			}
 		}) {
-			// @ts-ignore
-			const { updateType, ...rest } = onMessageUpdate;
+			const { updateType } = onMessageUpdate;
+			const query = {
+				query: GetMessagesDocument,
+				variables: { first: 20, chatSlug }
+			};
+			const prevData = client.readQuery(query);
 			switch (updateType) {
 				case SubscriptionTypesEnum.NEW_MESSAGE:
-					// @ts-ignore
-					const newMessage = rest.message;
-					const prevMessages = client.readQuery({
-						query: GetMessagesDocument,
-						variables: { chatSlug, first: 20 }
-					});
-					const updatedMessages = produce(prevMessages, draft => {
+					const { message } = onMessageUpdate as NewMessageOutput;
+					const newMessage = {
+						...message,
+						node: {
+							...message.node,
+							// FIXME Sason - Figure out why apollo converts createdAt(Date type) to null in response
+							createdAt: new Date().toISOString()
+						}
+					};
+					const updatedMessages = produce(prevData, draft => {
 						draft.chat.messages.edges.push(newMessage);
 					});
-					client.writeData({
+					client.writeQuery({
+						...query,
 						data: {
 							...updatedMessages
 						}
 					});
 					break;
+
+				case SubscriptionTypesEnum.MESSAGE_DELETED:
+					console.log(onMessageUpdate);
+					break;
+
+				case SubscriptionTypesEnum.MESSAGE_EDITED:
+					console.log(onMessageUpdate);
+
+				case SubscriptionTypesEnum.FILE_UPLOADED:
+					console.log(onMessageUpdate);
 			}
-			console.log(updateType, rest);
 		}
 	});
 	const {
@@ -64,6 +82,7 @@ const MessagesListData = (props: IProps) => {
 		loading,
 		...result
 	} = useGetMessagesQuery({
+		fetchPolicy: 'network-only',
 		variables: {
 			chatSlug,
 			first: 20
@@ -105,15 +124,15 @@ const MessagesListData = (props: IProps) => {
 							setIsMoreMessagesToFetch(false);
 							return prev;
 						}
-						return {
-							chat: {
-								...prev.chat,
-								messages: [
-									...fetchMoreResult.chat.messages.edges.reverse(),
-									...prev.chat.messages.edges
-								]
-							}
-						};
+						// return {
+						// 	chat: {
+						// 		...prev.chat,
+						// 		messages: [
+						// 			...fetchMoreResult.chat.messages.edges.reverse(),
+						// 			...prev.chat.messages.edges
+						// 		]
+						// 	}
+						// };
 					}
 				});
 			}}

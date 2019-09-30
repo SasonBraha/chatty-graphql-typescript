@@ -67,7 +67,8 @@
 		"test": "react-scripts test",
 		"eject": "react-scripts eject",
 		"gen": "graphql-codegen --config codegen.yml",
-		"fetch-fragment-types": "node ./schemaQuery.js"
+		"fetch-fragment-types": "node ./schemaQuery.js",
+		"apollo-generate-all": "graphql-codegen --config codegen.yml && node ./schemaQuery.js"
 	},
 	"eslintConfig": {
 		"extends": "react-app"

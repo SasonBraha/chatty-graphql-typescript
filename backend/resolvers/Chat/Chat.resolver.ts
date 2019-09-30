@@ -48,6 +48,7 @@ import { generateUserMentionedNotification } from '../../utils/notifications';
 import * as jwt from 'jsonwebtoken';
 import { Document, Schema } from 'mongoose';
 import * as graphqlFields from 'graphql-fields';
+import sanitizer from '../../services/Sanitizer';
 
 @Resolver(Chat)
 export default class ChatResolver {
@@ -204,7 +205,7 @@ export default class ChatResolver {
 					cursor: messageData._id,
 					node: {
 						...messageData,
-						createdAt: new Date(),
+						createdAt: new Date().toISOString(),
 						creationToken: jwt.sign(
 							{ userId: user._id.toString(), messageId: preSaveId._id },
 							process.env.JWT_SECRET
@@ -305,9 +306,11 @@ export default class ChatResolver {
 					isUserCreatedTargetMessage
 				) {
 					await pubSub.publish(SubscriptionTypesEnum.MESSAGE_DELETED, {
-						messageId,
-						chatSlug: chatSlug,
-						updateType: SubscriptionTypesEnum.MESSAGE_DELETED
+						payload: {
+							updateType: SubscriptionTypesEnum.MESSAGE_DELETED,
+							messageId
+						},
+						chatSlug: chatSlug
 					});
 
 					if (shouldUpdateDB) {
@@ -321,16 +324,14 @@ export default class ChatResolver {
 					user.hasPermission([ChatPermissionTypesEnum.EDIT_MESSAGE]) ||
 					isUserCreatedTargetMessage
 				) {
-					const sanitizedText = sanitizeHtml(updatePayload.messageText, {
-						allowedTags: [],
-						allowedAttributes: {}
-					});
-
+					const sanitizedText = sanitizer.html(updatePayload.messageText);
 					await pubSub.publish(SubscriptionTypesEnum.MESSAGE_EDITED, {
-						chatSlug: chatSlug,
-						updatedText: sanitizedText,
-						updateType: SubscriptionTypesEnum.MESSAGE_EDITED,
-						messageId
+						payload: {
+							updatedText: sanitizedText,
+							updateType: SubscriptionTypesEnum.MESSAGE_EDITED,
+							messageId
+						},
+						chatSlug: chatSlug
 					});
 
 					if (shouldUpdateDB) {
@@ -354,10 +355,12 @@ export default class ChatResolver {
 		const fileData = await uploadFile(file, chatSlug);
 
 		pubSub.publish(SubscriptionTypesEnum.FILE_UPLOADED, {
-			chatSlug,
-			messageId,
-			file: fileData,
-			updateType: SubscriptionTypesEnum.FILE_UPLOADED
+			payload: {
+				messageId,
+				file: fileData,
+				updateType: SubscriptionTypesEnum.FILE_UPLOADED
+			},
+			chatSlug
 		});
 
 		await MessageModel.updateOne(
@@ -457,7 +460,6 @@ export default class ChatResolver {
 		@Root() subscriptionPayload: any,
 		@Arg('chatSlug') chatSlug: string
 	): typeof ChatUpdatesUnion {
-		console.log(subscriptionPayload.payload);
 		return subscriptionPayload.payload;
 	}
 
