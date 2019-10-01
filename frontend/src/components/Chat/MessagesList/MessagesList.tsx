@@ -8,7 +8,7 @@ import MessageContextMenu from './MessageContextMenu';
 import { ApolloClient } from 'apollo-client';
 import { withTranslation } from '../../Shared/Hoc';
 import { afterRender } from '../../../utils';
-import { User } from '../../../__generated__/graphql';
+import { MessageEdge, User } from '../../../__generated__/graphql';
 
 interface IProps {
 	currentUser?: User | null;
@@ -16,12 +16,6 @@ interface IProps {
 	chatSlug: string;
 	isFetching: boolean;
 	isMoreMessagesToFetch: boolean;
-	data: {
-		chat: {
-			messages: any[];
-			storeMessages: boolean;
-		};
-	};
 	fetchOlderMessages: (chatSlug: string, beforeMessageId: string) => void;
 	setIsMoreMessagesToFetch: (value: boolean) => void;
 	updateQuery: () => void;
@@ -30,6 +24,8 @@ interface IProps {
 	t?: any;
 	found: boolean;
 	deletedMessages: { [key: string]: boolean };
+	messages: MessageEdge[];
+	storeMessages: boolean;
 }
 
 export interface IMessageCtxMenu {
@@ -86,6 +82,7 @@ class MessagesList extends Component<IProps, IState> {
 	}
 
 	shouldComponentUpdate(nextProps: IProps, nextState: IState): boolean {
+		// console.log('it wants');
 		// const { isMessagesUpdated, isRoomChanged } = this.extractRequiredData(
 		// 	this.props,
 		// 	nextProps
@@ -106,6 +103,7 @@ class MessagesList extends Component<IProps, IState> {
 	}
 
 	componentDidUpdate(prevProps: IProps, _: any, snapshot: number) {
+		console.log('and it did');
 		const { isRoomChanged, isMessagesUpdated } = this.extractRequiredData(
 			prevProps,
 			this.props
@@ -145,40 +143,47 @@ class MessagesList extends Component<IProps, IState> {
 	};
 
 	private handleScroll = (e: React.UIEvent<HTMLDivElement>) => {
-		const { isFetching, isMoreMessagesToFetch } = this.props;
+		const {
+			isFetching,
+			isMoreMessagesToFetch,
+			messages,
+			loading,
+			fetchOlderMessages,
+			chatSlug
+		} = this.props;
 		if (
 			e.currentTarget.scrollTop < this.shouldFetchThreshold &&
 			!isFetching &&
 			isMoreMessagesToFetch &&
-			this.props.data.chat.messages.length &&
-			!this.props.loading
+			messages.length &&
+			!loading
 		) {
-			this.props.fetchOlderMessages(
-				this.props.chatSlug,
-				this.props.data.chat.messages[0]._id
-			);
+			fetchOlderMessages(chatSlug, messages[0].node._id);
 		}
 
 		if (this.state.messageCtxMenu.isOpen) {
-			this.setState({
-				messageCtxMenu: { ...this.state.messageCtxMenu, isOpen: false }
-			});
+			this.closeMessageContextMenu();
 		}
 	};
 
 	private extractRequiredData(prevProps: IProps, nextProps?: IProps) {
 		return {
-			oldMessagesLength: prevProps.data.chat.messages.length,
-			newMessagesLength: nextProps ? nextProps.data.chat.messages.length : null,
+			oldMessagesLength: prevProps.messages.length,
+			newMessagesLength: nextProps ? nextProps.messages.length : null,
 			isMessagesUpdated: nextProps
-				? prevProps.data.chat.messages.length !==
-				  nextProps.data.chat.messages.length
+				? prevProps.messages.length !== nextProps.messages.length
 				: null,
 			isRoomChanged: nextProps
 				? prevProps.chatSlug !== nextProps.chatSlug
 				: null
 		};
 	}
+
+	closeMessageContextMenu = () => {
+		this.setState({
+			messageCtxMenu: { ...this.state.messageCtxMenu, isOpen: false }
+		});
+	};
 
 	render() {
 		const {
@@ -187,19 +192,20 @@ class MessagesList extends Component<IProps, IState> {
 			isFetching,
 			found,
 			deletedMessages,
-			data: { chat }
+			storeMessages,
+			messages
 		} = this.props;
 
 		return (
 			<ScMessagesList ref={this.messagesList} onScroll={this.handleScroll}>
-				{!loading && found && !chat.storeMessages && (
+				{!loading && found && !storeMessages && (
 					<InfoBanner
 						type='warning'
 						text={this.props.t('chat.roomDoesNotSaveMessages')}
 					/>
 				)}
 
-				{!loading && chat.storeMessages && !chat.messages.length && (
+				{!loading && storeMessages && !messages.length && (
 					<InfoBanner
 						type='info'
 						text={this.props.t('chat.noMessagesWereSent')}
@@ -217,7 +223,7 @@ class MessagesList extends Component<IProps, IState> {
 					? Array.from({ length: 20 }).map((_, i) => (
 							<MessagesListLoader key={i} />
 					  ))
-					: chat.messages.map(({ node }) => (
+					: messages.map(({ node }) => (
 							// @ts-ignore
 							<Message
 								message={node}
@@ -231,11 +237,7 @@ class MessagesList extends Component<IProps, IState> {
 				<MessageContextMenu
 					ctx={this.state.messageCtxMenu}
 					ref={this.messageCtxMenuRef}
-					closeMenu={() =>
-						this.setState({
-							messageCtxMenu: { ...this.state.messageCtxMenu, isOpen: false }
-						})
-					}
+					closeMenu={this.closeMessageContextMenu}
 				/>
 			</ScMessagesList>
 		);

@@ -29,7 +29,7 @@ const contextMenuOptions = (props: IProps) => [
 const MessageContextMenu = React.forwardRef(
 	(props: IProps, ref: React.Ref<any>) => (
 		<Dropdown
-			resetDropdown={() => props.closeMenu()}
+			resetDropdown={props.closeMenu}
 			isOpen={props.ctx.isOpen}
 			left={props.ctx.position!.x}
 			top={props.ctx.position!.y}

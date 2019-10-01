@@ -6,6 +6,7 @@ import {
 	FileUploadedOutput,
 	GetMessagesDocument,
 	MessageDeletedOutput,
+	MessageEdge,
 	MessageEditedOutput,
 	NewMessageOutput,
 	use_GetCurrentUserQuery,
@@ -23,7 +24,7 @@ enum SubscriptionTypesEnum {
 
 interface IProps extends IChatProps {}
 
-const MessagesListData = (props: IProps) => {
+const MessagesListData: React.FC<IProps> = props => {
 	const [isFetching, setIsFetching] = useState(false);
 	const [isMoreMessagesToFetch, setIsMoreMessagesToFetch] = useState(true);
 	const [deletedMessages, setDeletedMessages] = useState<{
@@ -126,20 +127,8 @@ const MessagesListData = (props: IProps) => {
 		<MessagesList
 			{...result}
 			updateQuery={result.updateQuery as any}
-			data={{
-				chat: {
-					messages: loading
-						? []
-						: data && data.chat
-						? data.chat.messages.edges
-						: [],
-					storeMessages: loading
-						? null
-						: data && data.chat
-						? data.chat.storeMessages
-						: null
-				}
-			}}
+			messages={loading ? [] : (data.chat.messages.edges as MessageEdge[])}
+			storeMessages={loading ? false : data.chat.storeMessages}
 			deletedMessages={deletedMessages}
 			loading={loading}
 			chatSlug={chatSlug}
@@ -174,13 +163,4 @@ const MessagesListData = (props: IProps) => {
 	);
 };
 
-MessagesListData.defaultProps = {
-	data: {
-		chat: {
-			messages: []
-		}
-	}
-};
-
-// @ts-ignore
 export default MessagesListData;

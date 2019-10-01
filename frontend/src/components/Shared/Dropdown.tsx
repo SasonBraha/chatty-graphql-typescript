@@ -18,9 +18,11 @@ const Dropdown = React.forwardRef((props: IProps, ref: Ref<any>) => {
 	const { isOpen } = props;
 
 	useEffect(() => {
-		isOpen
-			? document.body.addEventListener('click', props.resetDropdown)
-			: document.body.removeEventListener('click', props.resetDropdown);
+		if (isOpen) {
+			document.body.addEventListener('click', props.resetDropdown, {
+				once: true
+			});
+		}
 	}, [isOpen]);
 
 	return (
