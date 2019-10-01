@@ -3,8 +3,10 @@ import MessagesList from './MessagesList';
 import { IChatProps } from '../Chat';
 import produce from 'immer';
 import {
+	FileUploadedOutput,
 	GetMessagesDocument,
 	MessageDeletedOutput,
+	MessageEditedOutput,
 	NewMessageOutput,
 	use_GetCurrentUserQuery,
 	useChatRoomUpdatesSubscription,
@@ -31,7 +33,14 @@ const MessagesListData = (props: IProps) => {
 	const {
 		data: { currentUser }
 	} = use_GetCurrentUserQuery();
-	const {} = useChatRoomUpdatesSubscription({
+	const { data, fetchMore, loading, ...result } = useGetMessagesQuery({
+		fetchPolicy: 'network-only',
+		variables: {
+			chatSlug,
+			first: 20
+		}
+	});
+	const _ = useChatRoomUpdatesSubscription({
 		variables: { chatSlug },
 		onSubscriptionData({
 			client,
@@ -45,7 +54,6 @@ const MessagesListData = (props: IProps) => {
 				variables: { first: 20, chatSlug }
 			};
 			const prevData = client.readQuery(query);
-			console.log(prevData);
 			switch (updateType) {
 				case SubscriptionTypesEnum.NEW_MESSAGE:
 					const { message } = onMessageUpdate as NewMessageOutput;
@@ -68,25 +76,49 @@ const MessagesListData = (props: IProps) => {
 					});
 					break;
 
-				case SubscriptionTypesEnum.MESSAGE_DELETED:
+				case SubscriptionTypesEnum.MESSAGE_DELETED: {
 					const { messageId } = onMessageUpdate as MessageDeletedOutput;
 					setDeletedMessages({
 						...deletedMessages,
 						[messageId]: true
 					});
 					break;
+				}
+
 				case SubscriptionTypesEnum.MESSAGE_EDITED:
-				case SubscriptionTypesEnum.FILE_UPLOADED:
-					console.log(onMessageUpdate);
-					break;
+				case SubscriptionTypesEnum.FILE_UPLOADED: {
+					const { messageId } = onMessageUpdate as
+						| MessageEditedOutput
+						| FileUploadedOutput;
+					const targetMessageIndex = prevData.chat.messages.edges.findIndex(
+						({ cursor }) => cursor === messageId
+					);
+					let updatedMessages = null;
+
+					if (updateType === SubscriptionTypesEnum.MESSAGE_EDITED) {
+						updatedMessages = produce(prevData, draft => {
+							draft.chat.messages.edges[
+								targetMessageIndex
+							].node.text = (onMessageUpdate as MessageEditedOutput).updatedText;
+						});
+					}
+
+					if (updateType === SubscriptionTypesEnum.FILE_UPLOADED) {
+						updatedMessages = produce(prevData, draft => {
+							draft.chat.messages.edges[
+								targetMessageIndex
+							].node.file = (onMessageUpdate as FileUploadedOutput).file;
+						});
+					}
+
+					client.writeQuery({
+						...query,
+						data: {
+							...updatedMessages
+						}
+					});
+				}
 			}
-		}
-	});
-	const { data, fetchMore, loading, ...result } = useGetMessagesQuery({
-		fetchPolicy: 'network-only',
-		variables: {
-			chatSlug,
-			first: 20
 		}
 	});
 
@@ -138,71 +170,6 @@ const MessagesListData = (props: IProps) => {
 					}
 				});
 			}}
-			// subscribeToUpdates={
-			// 	(chatSlug: string) => () => null
-			// 	subscribeToMore({
-			// 		document: MESSAGES_LIST_UPDATES,
-			// 		variables: { chatSlug },
-			// 		updateQuery: (prev, { subscriptionData }) => {
-			// 			console.log(subscriptionData);
-			// 			return;
-			//
-			// 			const updatedData = JSON.parse(
-			// 				//@ts-ignore
-			// 				subscriptionData.data.onMessageUpdate
-			// 			);
-			// 			const updateType = updatedData.updateType;
-			// 			switch (updateType) {
-			// 				case SubscriptionTypesEnum.NEW_MESSAGE:
-			// 					console.log(updatedData.message);
-			// 					return {
-			// 						chat: {
-			// 							...prev.chat,
-			// 							messages: {
-			// 								// @ts-ignore
-			// 								...prev.messages,
-			// 								edges: [...prev.chat.messages.edges, updatedData.message]
-			// 							},
-			// 							lastMessage: updatedData.message.text
-			// 						}
-			// 					};
-			//
-			// 				case SubscriptionTypesEnum.FILE_UPLOADED:
-			// 				case SubscriptionTypesEnum.MESSAGE_DELETED:
-			// 				case SubscriptionTypesEnum.MESSAGE_EDITED:
-			// 					const targetMessageIdx =
-			// 						prev.chat.messages.edges.length -
-			// 						1 -
-			// 						prev.chat.messages.edges
-			// 							.slice()
-			// 							.reverse()
-			// 							.findIndex(
-			// 								({ node }) => node._id === updatedData.messageId
-			// 							);
-			// 					switch (updateType) {
-			// 						case SubscriptionTypesEnum.FILE_UPLOADED:
-			// 							return produce(prev, draft => {
-			// 								draft.chat.messages.edges[targetMessageIdx].node.file =
-			// 									updatedData.file;
-			// 							});
-			//
-			// 						// case SubscriptionTypesEnum.MESSAGE_DELETED:
-			// 						// 	return produce(prev, draft => {
-			// 						// 		draft.chat.messages.edges[
-			// 						// 			targetMessageIdx
-			// 						// 		].node.isClientDeleted = true;
-			// 						// 	});
-			//
-			// 						case SubscriptionTypesEnum.MESSAGE_EDITED:
-			// 							return produce(prev, draft => {
-			// 								draft.chat.messages.edges[targetMessageIdx].node.text =
-			// 									updatedData.updatedText;
-			// 							});
-			// 					}
-			// 			}
-			// 		}
-			// 	})
-			// }
 		/>
 	);
 };

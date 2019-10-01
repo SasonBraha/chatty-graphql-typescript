@@ -3,7 +3,7 @@ import * as ApolloReactCommon from '@apollo/react-common';
 import * as ApolloReactHoc from '@apollo/react-hoc';
 import * as ApolloReactHooks from '@apollo/react-hooks';
 export type Maybe<T> = T | null;
-// Generated in 2019-09-30T17:18:49+03:00
+// Generated in 2019-10-01T09:12:53+03:00
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
 	ID: string;
@@ -715,7 +715,7 @@ export type ChatRoomUpdatesSubscription = { __typename?: 'Subscription' } & {
 		  >)
 		| ({ __typename?: 'FileUploadedOutput' } & Pick<
 				FileUploadedOutput,
-				'updateType'
+				'updateType' | 'messageId'
 		  > & {
 					file: { __typename?: 'File' } & Pick<File, 'path'> & {
 							dimensions: { __typename?: 'FileDimensions' } & Pick<
@@ -2239,6 +2239,7 @@ export const ChatRoomUpdatesDocument = gql`
 					path
 				}
 				updateType
+				messageId
 			}
 			... on MessageDeletedOutput {
 				messageId

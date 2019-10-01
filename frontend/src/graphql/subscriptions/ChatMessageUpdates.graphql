@@ -9,6 +9,7 @@ subscription ChatRoomUpdates($chatSlug: String!) {
                 path
             }
             updateType
+            messageId
         }
 
         ... on MessageDeletedOutput {

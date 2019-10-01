@@ -86,23 +86,23 @@ class MessagesList extends Component<IProps, IState> {
 	}
 
 	shouldComponentUpdate(nextProps: IProps, nextState: IState): boolean {
-		const { isMessagesUpdated, isRoomChanged } = this.extractRequiredData(
-			this.props,
-			nextProps
-		);
-
-		return (
-			isMessagesUpdated! ||
-			isRoomChanged! ||
-			this.props.isMoreMessagesToFetch !== nextProps.isMoreMessagesToFetch ||
-			this.props.updateQuery !== nextProps.updateQuery ||
-			this.state.messageCtxMenu.isOpen !== nextState.messageCtxMenu.isOpen ||
-			this.state.messageCtxMenu.position!.x !==
-				nextState.messageCtxMenu.position!.x ||
-			this.state.messageCtxMenu.position!.y !==
-				nextState.messageCtxMenu.position!.y
-		);
-		// return true;
+		// const { isMessagesUpdated, isRoomChanged } = this.extractRequiredData(
+		// 	this.props,
+		// 	nextProps
+		// );
+		//
+		// return (
+		// 	isMessagesUpdated! ||
+		// 	isRoomChanged! ||
+		// 	this.props.isMoreMessagesToFetch !== nextProps.isMoreMessagesToFetch ||
+		// 	this.props.updateQuery !== nextProps.updateQuery ||
+		// 	this.state.messageCtxMenu.isOpen !== nextState.messageCtxMenu.isOpen ||
+		// 	this.state.messageCtxMenu.position!.x !==
+		// 		nextState.messageCtxMenu.position!.x ||
+		// 	this.state.messageCtxMenu.position!.y !==
+		// 		nextState.messageCtxMenu.position!.y
+		// );
+		return true;
 	}
 
 	componentDidUpdate(prevProps: IProps, _: any, snapshot: number) {
