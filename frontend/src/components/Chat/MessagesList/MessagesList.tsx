@@ -1,9 +1,9 @@
-import React, { Component } from 'react';
+import React, { Component, createRef, RefObject } from 'react';
 import { IMessage } from '../../../types/interfaces';
 import Message from './Message';
 import styled from 'styled-components/macro';
 import MessagesListLoader from './MessagesListLoader';
-import { InfoBanner, Spinner } from '../../Shared';
+import { InfoBanner, Scrollable, Spinner } from '../../Shared';
 import MessageContextMenu from './MessageContextMenu';
 import { ApolloClient } from 'apollo-client';
 import { withTranslation } from '../../Shared/Hoc';
@@ -16,7 +16,7 @@ interface IProps {
 	chatSlug: string;
 	isFetching: boolean;
 	isMoreMessagesToFetch: boolean;
-	fetchOlderMessages: (chatSlug: string, beforeMessageId: string) => void;
+	fetchOlderMessages: (cursor: string) => void;
 	setIsMoreMessagesToFetch: (value: boolean) => void;
 	updateQuery: () => void;
 	refetch: () => void;
@@ -45,10 +45,9 @@ interface IState {
 
 @withTranslation()
 class MessagesList extends Component<IProps, IState> {
-	private listEnd: React.RefObject<any> = React.createRef();
-	private messagesList: React.RefObject<any> = React.createRef();
-	private messageCtxMenuRef: React.RefObject<HTMLElement> = React.createRef();
-	private shouldFetchThreshold: number = 250;
+	private listEnd: RefObject<HTMLDivElement> = createRef();
+	private messagesList: RefObject<HTMLDivElement> = createRef();
+	private messageCtxMenuRef: RefObject<HTMLElement> = createRef();
 
 	constructor(props: IProps) {
 		super(props);
@@ -65,7 +64,7 @@ class MessagesList extends Component<IProps, IState> {
 	}
 
 	getSnapshotBeforeUpdate(prevProps: IProps) {
-		const { oldMessagesLength, newMessagesLength } = this.extractRequiredData(
+		const { oldMessagesLength, newMessagesLength } = this.reduceUpdateData(
 			prevProps,
 			this.props
 		);
@@ -81,30 +80,9 @@ class MessagesList extends Component<IProps, IState> {
 		return null;
 	}
 
-	shouldComponentUpdate(nextProps: IProps, nextState: IState): boolean {
-		// console.log('it wants');
-		// const { isMessagesUpdated, isRoomChanged } = this.extractRequiredData(
-		// 	this.props,
-		// 	nextProps
-		// );
-		//
-		// return (
-		// 	isMessagesUpdated! ||
-		// 	isRoomChanged! ||
-		// 	this.props.isMoreMessagesToFetch !== nextProps.isMoreMessagesToFetch ||
-		// 	this.props.updateQuery !== nextProps.updateQuery ||
-		// 	this.state.messageCtxMenu.isOpen !== nextState.messageCtxMenu.isOpen ||
-		// 	this.state.messageCtxMenu.position!.x !==
-		// 		nextState.messageCtxMenu.position!.x ||
-		// 	this.state.messageCtxMenu.position!.y !==
-		// 		nextState.messageCtxMenu.position!.y
-		// );
-		return true;
-	}
-
 	componentDidUpdate(prevProps: IProps, _: any, snapshot: number) {
 		console.log('and it did');
-		const { isRoomChanged, isMessagesUpdated } = this.extractRequiredData(
+		const { isRoomChanged, isMessagesUpdated } = this.reduceUpdateData(
 			prevProps,
 			this.props
 		);
@@ -125,12 +103,12 @@ class MessagesList extends Component<IProps, IState> {
 		}
 	}
 
-	private onCtxTransitionEnd = () => {
+	onCtxTransitionEnd = () => {
 		const ctxRef = this.messageCtxMenuRef.current!;
 		ctxRef.style.transition = 'all 0.15s,transform 0.17s,left 0s,top 0s';
 	};
 
-	private showMessageCtxMenu = (ctx: IMessageCtxMenu) => {
+	showMessageCtxMenu = (ctx: IMessageCtxMenu) => {
 		if (ctx.isOpen && this.state.messageCtxMenu.isOpen) {
 			const ctxRef = this.messageCtxMenuRef.current!;
 			ctxRef.addEventListener('transitionend', this.onCtxTransitionEnd, {
@@ -142,31 +120,26 @@ class MessagesList extends Component<IProps, IState> {
 		this.setState({ messageCtxMenu: ctx });
 	};
 
-	private handleScroll = (e: React.UIEvent<HTMLDivElement>) => {
+	handleReachTop = () => {
 		const {
 			isFetching,
-			isMoreMessagesToFetch,
-			messages,
 			loading,
 			fetchOlderMessages,
-			chatSlug
+			isMoreMessagesToFetch,
+			messages
 		} = this.props;
-		if (
-			e.currentTarget.scrollTop < this.shouldFetchThreshold &&
-			!isFetching &&
-			isMoreMessagesToFetch &&
-			messages.length &&
-			!loading
-		) {
-			fetchOlderMessages(chatSlug, messages[0].node._id);
+		if (!isFetching && !loading && isMoreMessagesToFetch) {
+			fetchOlderMessages(messages[0].cursor);
 		}
+	};
 
+	handleScroll = () => {
 		if (this.state.messageCtxMenu.isOpen) {
 			this.closeMessageContextMenu();
 		}
 	};
 
-	private extractRequiredData(prevProps: IProps, nextProps?: IProps) {
+	reduceUpdateData(prevProps: IProps, nextProps?: IProps) {
 		return {
 			oldMessagesLength: prevProps.messages.length,
 			newMessagesLength: nextProps ? nextProps.messages.length : null,
@@ -197,7 +170,12 @@ class MessagesList extends Component<IProps, IState> {
 		} = this.props;
 
 		return (
-			<ScMessagesList ref={this.messagesList} onScroll={this.handleScroll}>
+			<S.Scrollable
+				ref={this.messagesList}
+				whileScrolling={this.handleScroll}
+				onReachTop={this.handleReachTop}
+				offsetToCallback={100}
+			>
 				{!loading && found && !storeMessages && (
 					<InfoBanner
 						type='warning'
@@ -233,18 +211,19 @@ class MessagesList extends Component<IProps, IState> {
 								setMessageCtxMenu={this.showMessageCtxMenu}
 							/>
 					  ))}
-				<div ref={this.listEnd} className='listEnd' />
+				<S.ListEnd ref={this.listEnd} />
 				<MessageContextMenu
 					ctx={this.state.messageCtxMenu}
 					ref={this.messageCtxMenuRef}
 					closeMenu={this.closeMessageContextMenu}
 				/>
-			</ScMessagesList>
+			</S.Scrollable>
 		);
 	}
 }
 
-const ScMessagesList = styled.div`
+const S: any = {};
+S.Scrollable = styled(Scrollable)`
 	flex: 1;
 	background: ${props => props.theme.gray30};
 	overflow-y: auto;
@@ -260,5 +239,7 @@ const ScMessagesList = styled.div`
 		padding-bottom: 1rem;
 	}
 `;
+
+S.ListEnd = styled.div``;
 
 export default MessagesList;

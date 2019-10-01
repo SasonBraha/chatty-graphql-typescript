@@ -1,5 +1,5 @@
-import React, { ReactNode, useRef } from 'react';
-import styled from 'styled-components';
+import React, { ReactNode, Ref, useRef } from 'react';
+import styled from 'styled-components/macro';
 
 interface IProps {
 	onReachBottom?: () => any | void;
@@ -12,16 +12,16 @@ interface IProps {
 	className?: string;
 }
 
-const Scrollable: React.FC<IProps> = props => {
+const Scrollable = React.forwardRef((props: IProps, ref: Ref<any>) => {
 	const {
 		onReachBottom,
 		onReachTop,
 		whileScrolling,
 		offsetToCallback = 0,
 		reachBottomDebounce = 0,
-		reachTopDebounce = 0
+		reachTopDebounce = 0,
+		className
 	} = props;
-	const scrollableRef: any = useRef();
 	let reachTopTimeout: ReturnType<typeof setTimeout>;
 	let reachBottomTimeout: ReturnType<typeof setTimeout>;
 	return (
@@ -55,12 +55,13 @@ const Scrollable: React.FC<IProps> = props => {
 					}
 				}
 			}}
-			ref={scrollableRef}
+			ref={ref}
+			className={className}
 		>
 			{props.children}
 		</S.Scrollable>
 	);
-};
+});
 
 const S: any = {};
 S.Scrollable = styled.div`

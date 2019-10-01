@@ -137,25 +137,25 @@ const MessagesListData: React.FC<IProps> = props => {
 			setIsMoreMessagesToFetch={setIsMoreMessagesToFetch}
 			found={!!(!loading && data && data.chat)}
 			currentUser={currentUser as User}
-			fetchOlderMessages={(chatSlug: string, beforeMessageId: string) => {
+			fetchOlderMessages={(cursor: string) => {
 				setIsFetching(true);
 				fetchMore({
-					variables: { chatSlug, first: 20, before: beforeMessageId },
+					variables: { chatSlug, first: 20, before: cursor },
 					updateQuery: (prev, { fetchMoreResult }) => {
 						setIsFetching(false);
 						if (!fetchMoreResult.chat.messages.pageInfo.hasPreviousPage) {
 							setIsMoreMessagesToFetch(false);
 							return prev;
 						}
-						// return {
-						// 	chat: {
-						// 		...prev.chat,
-						// 		messages: [
-						// 			...fetchMoreResult.chat.messages.edges.reverse(),
-						// 			...prev.chat.messages.edges
-						// 		]
-						// 	}
-						// };
+						return {
+							chat: {
+								...prev.chat,
+								messages: [
+									...fetchMoreResult.chat.messages.edges.reverse(),
+									...prev.chat.messages.edges
+								]
+							}
+						};
 					}
 				});
 			}}
@@ -163,4 +163,4 @@ const MessagesListData: React.FC<IProps> = props => {
 	);
 };
 
-export default MessagesListData;
+export default React.memo(MessagesListData);
