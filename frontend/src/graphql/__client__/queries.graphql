@@ -40,3 +40,9 @@ query _GetMentionSuggester {
         }
     }
 }
+
+query _GetTypingUsers($chatSlug: String!) {
+    chat(chatSlug: $chatSlug) @client {
+        typingUsers @client
+    }
+}

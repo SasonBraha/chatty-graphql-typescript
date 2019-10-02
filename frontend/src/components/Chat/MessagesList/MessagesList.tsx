@@ -18,8 +18,6 @@ interface IProps {
 	isMoreMessagesToFetch: boolean;
 	fetchOlderMessages: (cursor: string) => void;
 	setIsMoreMessagesToFetch: (value: boolean) => void;
-	updateQuery: () => void;
-	refetch: () => void;
 	client: ApolloClient<any>;
 	t?: any;
 	found: boolean;
@@ -81,7 +79,6 @@ class MessagesList extends Component<IProps, IState> {
 	}
 
 	componentDidUpdate(prevProps: IProps, _: any, snapshot: number) {
-		console.log('and it did');
 		const { isRoomChanged, isMessagesUpdated } = this.reduceUpdateData(
 			prevProps,
 			this.props

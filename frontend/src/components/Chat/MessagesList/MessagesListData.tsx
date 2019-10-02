@@ -122,11 +122,9 @@ const MessagesListData: React.FC<IProps> = props => {
 			}
 		}
 	});
-
 	return (
 		<MessagesList
 			{...result}
-			updateQuery={result.updateQuery as any}
 			messages={loading ? [] : (data.chat.messages.edges as MessageEdge[])}
 			storeMessages={loading ? false : data.chat.storeMessages}
 			deletedMessages={deletedMessages}

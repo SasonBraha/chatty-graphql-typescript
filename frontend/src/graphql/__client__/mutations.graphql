@@ -22,6 +22,10 @@ mutation _SetMentionSuggester($data: MentionSuggesterInput) {
     setMentionSuggester(data: $data) @client
 }
 
-mutation _setCurrentChatSlug($slug: String) {
+mutation _SetCurrentChatSlug($slug: String) {
     setCurrentChatSlug(slug: $slug) @client
+}
+
+mutation _SetTypingUsers($chatSlug: String!, $displayName: String!, $crudType: String!) {
+    setTypingUsers(chatSlug: $chatSlug, displayName: $displayName, crudType: $crudType) @client
 }

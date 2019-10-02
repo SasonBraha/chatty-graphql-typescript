@@ -7,7 +7,6 @@ query GetMessages(
 ) {
     chat(chatSlug: $chatSlug) {
         storeMessages
-
         messages(first: $first, last: $last, before: $before, after: $after) {
             edges {
                 cursor

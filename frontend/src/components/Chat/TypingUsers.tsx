@@ -7,7 +7,6 @@ interface IProps {
 	chatSlug: string;
 }
 
-// prettier-ignore
 const renderTypingUsers = (typingUsers: ITypingUser[]) => {
 	if (typingUsers) {
 		const typingUsersLength: number = typingUsers.length;
@@ -28,22 +27,12 @@ const renderTypingUsers = (typingUsers: ITypingUser[]) => {
 			}
 		}
 	}
-
 };
 
+let typingUsers = [];
 const TypingUsers = (props: IProps) => {
-	const {
-		chat: { typingUsers }
-	} = useLocalCache(`
-		chat { 
-			typingUsers 
-		}
-	`);
-
 	return (
-		<div className={props.className}>
-			{renderTypingUsers(typingUsers[props.chatSlug])}
-		</div>
+		<div className={props.className}>{renderTypingUsers(typingUsers)}</div>
 	);
 };
 

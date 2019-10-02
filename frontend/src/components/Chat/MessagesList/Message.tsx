@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 import { IMessage } from '../../../types/interfaces';
 import styled, { css } from 'styled-components/macro';
 import formatRelative from 'date-fns/formatRelative';
@@ -32,7 +32,7 @@ interface IState {
 }
 
 @withTranslation()
-class Message extends Component<IProps, IState> {
+class Message extends PureComponent<IProps, IState> {
 	state = {
 		messageBody: this.props.message.text,
 		isEditable: false,

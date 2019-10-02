@@ -1,16 +1,23 @@
-import { ApolloTypenameEnum } from '../types/enums';
+import { ApolloTypenameEnum, CrudEnum } from '../types/enums';
 import {
 	_GetGenericModalDocument,
 	_GetNavStateDocument,
-	_GetNotificationsDataDocument
+	_GetNotificationsDataDocument,
+	_GetTypingUsersDocument
 } from '../__generated__/graphql';
 import client from '../apollo/client';
+import produce from 'immer';
 
 export const setGenericModal = data => {
 	client.writeData({ data: { genericModal: data } });
 };
 
 export default {
+	Query: {
+		chat: () => {
+			console.log('here');
+		}
+	},
 	Mutation: {
 		updateCurrentUser(_, { user }, { cache }) {
 			cache.writeData({
@@ -65,6 +72,32 @@ export default {
 					currentChatSlug: slug
 				}
 			});
+		},
+		setTypingUsers(_, { crudType, chatSlug, displayName }, { cache }) {
+			const query = {
+				query: _GetTypingUsersDocument,
+				variables: { chatSlug }
+			};
+			const prevData = cache.readQuery(query);
+			const { typingUsers } = prevData.chat;
+			const updatedData = produce(prevData, draft => {
+				draft.chat.typingUsers =
+					crudType === CrudEnum.UPDATE
+						? [...typingUsers, displayName]
+						: typingUsers.filter(_displayName => _displayName !== displayName);
+			});
+			cache.writeQuery({
+				...query,
+				data: {
+					...updatedData
+				}
+			});
+		}
+	},
+	Chat: {
+		typingUsers: (root, __, { cache }) => {
+			console.log(root);
+			return [];
 		}
 	}
 };

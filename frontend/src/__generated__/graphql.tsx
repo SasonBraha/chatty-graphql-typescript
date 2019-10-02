@@ -3,7 +3,7 @@ import * as ApolloReactCommon from '@apollo/react-common';
 import * as ApolloReactHoc from '@apollo/react-hoc';
 import * as ApolloReactHooks from '@apollo/react-hooks';
 export type Maybe<T> = T | null;
-// Generated in 2019-10-01T09:12:53+03:00
+// Generated in 2019-10-02T22:47:33+03:00
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
 	ID: string;
@@ -30,6 +30,7 @@ export type Chat = {
 	createdBy: User;
 	lastMessage?: Maybe<Scalars['String']>;
 	messages: MessageConnection;
+	typingUsers: Array<Scalars['String']>;
 };
 
 export type ChatMessagesArgs = {
@@ -181,6 +182,7 @@ export type Mutation = {
 	setGenericModal?: Maybe<Scalars['Boolean']>;
 	setCurrentChatSlug?: Maybe<Scalars['Boolean']>;
 	setMentionSuggester?: Maybe<Scalars['Boolean']>;
+	setTypingUsers?: Maybe<Scalars['Boolean']>;
 };
 
 export type MutationCreateChatRoomArgs = {
@@ -259,6 +261,12 @@ export type MutationSetCurrentChatSlugArgs = {
 
 export type MutationSetMentionSuggesterArgs = {
 	data?: Maybe<MentionSuggesterInput>;
+};
+
+export type MutationSetTypingUsersArgs = {
+	chatSlug: Scalars['String'];
+	displayName: Scalars['String'];
+	crudType: Scalars['String'];
 };
 
 export type NewMessageOutput = {
@@ -468,6 +476,17 @@ export type _SetCurrentChatSlugMutation = { __typename?: 'Mutation' } & Pick<
 	'setCurrentChatSlug'
 >;
 
+export type _SetTypingUsersMutationVariables = {
+	chatSlug: Scalars['String'];
+	displayName: Scalars['String'];
+	crudType: Scalars['String'];
+};
+
+export type _SetTypingUsersMutation = { __typename?: 'Mutation' } & Pick<
+	Mutation,
+	'setTypingUsers'
+>;
+
 export type _GetAuthModalStateQueryVariables = {};
 
 export type _GetAuthModalStateQuery = { __typename?: 'Query' } & Pick<
@@ -530,6 +549,14 @@ export type _GetMentionSuggesterQuery = { __typename?: 'Query' } & {
 				>;
 			}
 	>;
+};
+
+export type _GetTypingUsersQueryVariables = {
+	chatSlug: Scalars['String'];
+};
+
+export type _GetTypingUsersQuery = { __typename?: 'Query' } & {
+	chat: { __typename?: 'Chat' } & Pick<Chat, 'typingUsers'>;
 };
 
 export type MessageAttributesFragment = { __typename?: 'Message' } & Pick<
@@ -1112,7 +1139,7 @@ export type _SetMentionSuggesterMutationOptions = ApolloReactCommon.BaseMutation
 	_SetMentionSuggesterMutationVariables
 >;
 export const _SetCurrentChatSlugDocument = gql`
-	mutation _setCurrentChatSlug($slug: String) {
+	mutation _SetCurrentChatSlug($slug: String) {
 		setCurrentChatSlug(slug: $slug) @client
 	}
 `;
@@ -1166,6 +1193,68 @@ export type _SetCurrentChatSlugMutationResult = ApolloReactCommon.MutationResult
 export type _SetCurrentChatSlugMutationOptions = ApolloReactCommon.BaseMutationOptions<
 	_SetCurrentChatSlugMutation,
 	_SetCurrentChatSlugMutationVariables
+>;
+export const _SetTypingUsersDocument = gql`
+	mutation _SetTypingUsers(
+		$chatSlug: String!
+		$displayName: String!
+		$crudType: String!
+	) {
+		setTypingUsers(
+			chatSlug: $chatSlug
+			displayName: $displayName
+			crudType: $crudType
+		) @client
+	}
+`;
+export type _SetTypingUsersMutationFn = ApolloReactCommon.MutationFunction<
+	_SetTypingUsersMutation,
+	_SetTypingUsersMutationVariables
+>;
+export type _SetTypingUsersProps<TChildProps = {}> = ApolloReactHoc.MutateProps<
+	_SetTypingUsersMutation,
+	_SetTypingUsersMutationVariables
+> &
+	TChildProps;
+export function with_SetTypingUsers<TProps, TChildProps = {}>(
+	operationOptions?: ApolloReactHoc.OperationOption<
+		TProps,
+		_SetTypingUsersMutation,
+		_SetTypingUsersMutationVariables,
+		_SetTypingUsersProps<TChildProps>
+	>
+) {
+	return ApolloReactHoc.withMutation<
+		TProps,
+		_SetTypingUsersMutation,
+		_SetTypingUsersMutationVariables,
+		_SetTypingUsersProps<TChildProps>
+	>(_SetTypingUsersDocument, {
+		alias: 'setTypingUsers',
+		...operationOptions
+	});
+}
+
+export function use_SetTypingUsersMutation(
+	baseOptions?: ApolloReactHooks.MutationHookOptions<
+		_SetTypingUsersMutation,
+		_SetTypingUsersMutationVariables
+	>
+) {
+	return ApolloReactHooks.useMutation<
+		_SetTypingUsersMutation,
+		_SetTypingUsersMutationVariables
+	>(_SetTypingUsersDocument, baseOptions);
+}
+export type _SetTypingUsersMutationHookResult = ReturnType<
+	typeof use_SetTypingUsersMutation
+>;
+export type _SetTypingUsersMutationResult = ApolloReactCommon.MutationResult<
+	_SetTypingUsersMutation
+>;
+export type _SetTypingUsersMutationOptions = ApolloReactCommon.BaseMutationOptions<
+	_SetTypingUsersMutation,
+	_SetTypingUsersMutationVariables
 >;
 export const _GetAuthModalStateDocument = gql`
 	query _GetAuthModalState {
@@ -1603,6 +1692,67 @@ export type _GetMentionSuggesterQueryHookResult = ReturnType<
 export type _GetMentionSuggesterQueryResult = ApolloReactCommon.QueryResult<
 	_GetMentionSuggesterQuery,
 	_GetMentionSuggesterQueryVariables
+>;
+export const _GetTypingUsersDocument = gql`
+	query _GetTypingUsers($chatSlug: String!) {
+		chat(chatSlug: $chatSlug) @client {
+			typingUsers @client
+		}
+	}
+`;
+export type _GetTypingUsersProps<TChildProps = {}> = ApolloReactHoc.DataProps<
+	_GetTypingUsersQuery,
+	_GetTypingUsersQueryVariables
+> &
+	TChildProps;
+export function with_GetTypingUsers<TProps, TChildProps = {}>(
+	operationOptions?: ApolloReactHoc.OperationOption<
+		TProps,
+		_GetTypingUsersQuery,
+		_GetTypingUsersQueryVariables,
+		_GetTypingUsersProps<TChildProps>
+	>
+) {
+	return ApolloReactHoc.withQuery<
+		TProps,
+		_GetTypingUsersQuery,
+		_GetTypingUsersQueryVariables,
+		_GetTypingUsersProps<TChildProps>
+	>(_GetTypingUsersDocument, {
+		alias: 'getTypingUsers',
+		...operationOptions
+	});
+}
+
+export function use_GetTypingUsersQuery(
+	baseOptions?: ApolloReactHooks.QueryHookOptions<
+		_GetTypingUsersQuery,
+		_GetTypingUsersQueryVariables
+	>
+) {
+	return ApolloReactHooks.useQuery<
+		_GetTypingUsersQuery,
+		_GetTypingUsersQueryVariables
+	>(_GetTypingUsersDocument, baseOptions);
+}
+export function use_GetTypingUsersLazyQuery(
+	baseOptions?: ApolloReactHooks.LazyQueryHookOptions<
+		_GetTypingUsersQuery,
+		_GetTypingUsersQueryVariables
+	>
+) {
+	return ApolloReactHooks.useLazyQuery<
+		_GetTypingUsersQuery,
+		_GetTypingUsersQueryVariables
+	>(_GetTypingUsersDocument, baseOptions);
+}
+
+export type _GetTypingUsersQueryHookResult = ReturnType<
+	typeof use_GetTypingUsersQuery
+>;
+export type _GetTypingUsersQueryResult = ApolloReactCommon.QueryResult<
+	_GetTypingUsersQuery,
+	_GetTypingUsersQueryVariables
 >;
 export const PostMessageDocument = gql`
 	mutation PostMessage($chatSlug: String!, $text: String!) {

@@ -2,10 +2,9 @@ import React from 'react';
 import RoomsListItem from './RoomsListItem';
 import styled from 'styled-components/macro';
 import RoomsListLoader from './RoomsListLoader';
-import { setTypingUsers } from '../../../apollo/actions';
-import { useLocalCache } from '../../Shared/Hooks';
 import {
 	use_GetCurrentChatSlugQuery,
+	use_SetTypingUsersMutation,
 	useGetRoomsListQuery,
 	useTypingUsersUpdatesSubscription
 } from '../../../__generated__/graphql';
@@ -17,22 +16,26 @@ const RoomsList: React.FC<IProps> = props => {
 	const {
 		data: { currentChatSlug }
 	} = use_GetCurrentChatSlugQuery();
-	const {
-		chat: { typingUsers }
-	} = useLocalCache(`
-		chat {
-			typingUsers
-		}
-	`);
+	const [setTypingUsers] = use_SetTypingUsersMutation();
 
 	useTypingUsersUpdatesSubscription({
 		onSubscriptionData({ subscriptionData }) {
 			const {
 				data: {
-					onTypingUsersUpdate: { chatSlug, crudType, user }
+					onTypingUsersUpdate: {
+						chatSlug,
+						crudType,
+						user: { displayName }
+					}
 				}
 			} = subscriptionData;
-			setTypingUsers(user, crudType, chatSlug);
+			setTypingUsers({
+				variables: {
+					chatSlug,
+					crudType,
+					displayName
+				}
+			});
 		}
 	});
 
@@ -40,15 +43,12 @@ const RoomsList: React.FC<IProps> = props => {
 		<S.RoomsList>
 			{loading
 				? Array.from({ length: 15 }).map((_, i) => <RoomsListLoader key={i} />)
-				: data &&
-				  data.roomsList &&
-				  data.roomsList.map(room => (
+				: data.roomsList.map(room => (
 						<RoomsListItem
 							selected={room.slug === currentChatSlug}
 							room={room}
 							key={room.slug}
 							chatSlug={room.slug}
-							typingUsers={typingUsers[room.slug] ? typingUsers[room.slug] : []}
 						/>
 				  ))}
 		</S.RoomsList>

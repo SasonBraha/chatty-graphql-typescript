@@ -50,6 +50,7 @@ extend type Query {
     mentionSuggester: MentionSuggester
 }
 
+# Boolean is used for the return type without "!", this functions return null.
 extend type Mutation {
     updateCurrentUser(user: UserInput): Boolean
     setNotificationsData(data: NotificationsDataInput): Boolean
@@ -58,4 +59,9 @@ extend type Mutation {
     setGenericModal(data: GenericModalInput): Boolean
     setCurrentChatSlug(slug: String): Boolean
     setMentionSuggester(data: MentionSuggesterInput): Boolean
+    setTypingUsers(chatSlug: String!, displayName: String!, crudType: String!): Boolean
+}
+
+extend type Chat {
+    typingUsers: [String!]!
 }

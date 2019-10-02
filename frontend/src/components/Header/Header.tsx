@@ -33,7 +33,7 @@ const headerDropdownItems = (currentUser: User) => {
 		{
 			icon: 'icon-sign-out',
 			text: i18n.t('header.profileDropdown.logout'),
-			onClick: () => {
+			onClick() {
 				localStorage.removeItem(process.env.REACT_APP_LS_AUTH_TOKEN);
 				window.location.href = '/';
 			},

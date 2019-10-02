@@ -4,29 +4,40 @@ import { Link } from 'react-router-dom';
 import { ITypingUser } from '../../../types/interfaces';
 import Ripple from 'react-ink';
 import TypingUsers from '../TypingUsers';
+import { use_GetTypingUsersQuery } from '../../../__generated__/graphql';
 
 interface IProps {
 	room: any;
 	selected: boolean;
 	chatSlug: string;
-	typingUsers: ITypingUser[];
 }
 
-const RoomsListItem = ({ room, selected, chatSlug, typingUsers }: IProps) => (
-	<S.RoomsListItem selected={selected} to={`/chat/${room.slug}`}>
-		<S.Image src={room.image.path} alt={room.name} />
+const RoomsListItem = ({ room, selected, chatSlug }: IProps) => {
+	console.log(chatSlug);
+	const { data, loading } = use_GetTypingUsersQuery({
+		variables: {
+			chatSlug
+		}
+	});
 
-		<S.RoomData>
-			<S.RoomName>{room.name}</S.RoomName>
-			<S.LastMessage shouldHide={typingUsers.length > 0}>
-				{room.lastMessage}
-			</S.LastMessage>
-			<S.TypingUsers chatSlug={chatSlug} />
-		</S.RoomData>
+	console.log(data);
 
-		<Ripple />
-	</S.RoomsListItem>
-);
+	return (
+		<S.RoomsListItem selected={selected} to={`/chat/${room.slug}`}>
+			<S.Image src={room.image.path} alt={room.name} />
+
+			<S.RoomData>
+				<S.RoomName>{room.name}</S.RoomName>
+				<S.LastMessage shouldHide={[].length > 0}>
+					{room.lastMessage}
+				</S.LastMessage>
+				<S.TypingUsers></S.TypingUsers>
+			</S.RoomData>
+
+			<Ripple />
+		</S.RoomsListItem>
+	);
+};
 
 const S: any = {};
 S.RoomsListItem = styled(Link)<{ selected: boolean }>`
@@ -79,7 +90,7 @@ S.LastMessage = styled('div')<{ shouldHide: boolean }>`
 		`}
 `;
 
-S.TypingUsers = styled(TypingUsers)`
+S.TypingUsers = styled.p`
 	color: ${props => props.theme.gray20};
 	font-size: 1.4rem;
 	overflow: hidden;
