@@ -4,6 +4,7 @@ import getIndexAfterKeyboardEvent from './getIndexAfterKeyboardEvent';
 import afterRender from './afterRender';
 import getRuntimeImageDimensions from './getRuntimeImageDimensions';
 import getApolloOperationName from './getApolloOperationName';
+import invoke from './envoke';
 
 export {
 	validCss,
@@ -11,5 +12,6 @@ export {
 	getIndexAfterKeyboardEvent,
 	afterRender,
 	getRuntimeImageDimensions,
-	getApolloOperationName
+	getApolloOperationName,
+	invoke
 };

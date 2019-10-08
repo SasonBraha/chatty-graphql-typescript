@@ -83,14 +83,7 @@ const Header: React.FC<IProps> = props => {
 							width={400}
 							height={200}
 						>
-							<Scrollable
-								onReachBottom={() => {
-									//TODO - FETCH MORE NOTIFICATIONS
-								}}
-								offsetToCallback={20}
-							>
-								<Notifications isOpen={isNotificationsDropdownOpen} />
-							</Scrollable>
+							<Notifications isOpen={isNotificationsDropdownOpen} />
 						</Dropdown>
 					</S.NotificationsDropdown>
 

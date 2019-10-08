@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { INotification } from '../../types/interfaces';
-import { ListItem } from '../Shared';
+import { ListItem, Scrollable } from '../Shared';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components/macro';
 import { useGetNotificationsLazyQuery } from '../../__generated__/graphql';
+import { useTranslation } from 'react-i18next';
+import Spinner from '../Shared/Spinner';
 
 interface IProps {
 	isOpen: boolean;
@@ -32,12 +34,14 @@ const convertNotificationToListItemData = (notification: INotification) => {
 	}
 };
 
+//@ts-ignore
 const Notifications: React.FC<IProps> = props => {
 	const [notifications, setNotifications] = useState([]);
 	const [
 		execNotificationsQuery,
 		{ data, loading }
 	] = useGetNotificationsLazyQuery();
+	const { t } = useTranslation();
 
 	useEffect(() => {
 		if (props.isOpen && !notifications.length) {
@@ -52,19 +56,40 @@ const Notifications: React.FC<IProps> = props => {
 	}, [data]);
 
 	return (
-		<ul>
-			{notifications.map((notification: INotification) => (
-				<ListItem
-					key={notification._id}
-					{...convertNotificationToListItemData(notification)}
-					withRipple
-				/>
-			))}
-		</ul>
+		<S.Wrapper
+			onReachBottom={() => {
+				//TODO - FETCH MORE NOTIFICATIONS
+			}}
+			offsetToCallback={20}
+		>
+			{loading ? (
+				<Spinner size={35} spinnerColor={'#0079ea'} spinnerWidth={3} visible />
+			) : (
+				<ul>
+					{notifications.length
+						? notifications.map((notification: INotification) => (
+								<ListItem
+									key={notification._id}
+									{...convertNotificationToListItemData(notification)}
+									withRipple
+								/>
+						  ))
+						: t('header.noNotificationsFound')}
+				</ul>
+			)}
+		</S.Wrapper>
 	);
 };
 
 const S: any = {};
+S.Wrapper = styled(Scrollable)`
+	height: 100%;
+	width: 100%;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+`;
+
 S.Username = styled(Link)`
 	font-weight: bold;
 	margin: 0 0.5rem;

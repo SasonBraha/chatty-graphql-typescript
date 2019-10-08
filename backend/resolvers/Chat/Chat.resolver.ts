@@ -43,10 +43,9 @@ import {
 	SubscriptionTypesEnum,
 	UserUpdatesEnum
 } from '../../types/enums';
-import * as sanitizeHtml from 'sanitize-html';
 import { generateUserMentionedNotification } from '../../utils/notifications';
 import * as jwt from 'jsonwebtoken';
-import { Document, Schema } from 'mongoose';
+import { Document } from 'mongoose';
 import * as graphqlFields from 'graphql-fields';
 import sanitizer from '../../services/Sanitizer';
 
@@ -500,12 +499,12 @@ export default class ChatResolver {
 			{
 				$match: cursor
 					? {
-							_id: { [before ? '$lt' : '$gt']: cursor },
+							_id: { [before ? '$gt' : '$lt']: cursor },
 							chatSlug: chat.slug
 					  }
 					: { chatSlug: chat.slug }
 			},
-			{ $sort: { createdAt: 1 } },
+			{ $sort: { createdAt: -1 } },
 			{ $limit: limit }
 		]);
 
@@ -532,7 +531,7 @@ export default class ChatResolver {
 		};
 
 		let returnValue: MessageConnection = {
-			edges,
+			edges: edges.reverse(),
 			pageInfo: {}
 		};
 

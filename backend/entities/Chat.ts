@@ -8,7 +8,6 @@ import {
 import { ObjectId } from 'mongodb';
 import { User } from './User';
 import { File } from './File';
-import { Message } from './Message';
 import { MessageConnection } from '../resolvers/Chat/chat.resolver.output';
 
 @ObjectType()

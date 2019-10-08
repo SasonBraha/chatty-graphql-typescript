@@ -6,7 +6,8 @@
 				"settings": "הגדרות",
 				"logout": "התנתק"
 			},
-			"authButton": "הרשמה / התחברות"
+			"authButton": "הרשמה / התחברות",
+			"noNotificationsFound": "אין התראות חדשות"
 		},
 		"chat": {
 			"roomDoesNotSaveMessages": "בחדר זה לא נשמרת היסטוריית ההודעות",
