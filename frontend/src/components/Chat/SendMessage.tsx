@@ -9,11 +9,14 @@ import ApolloClient from 'apollo-client';
 import { CrudEnum, KeyCodeEnum } from '../../types/enums';
 import { InputTrigger } from '../Shared';
 import MentionSuggester from './MentionSuggester';
-import { setMentionSuggester } from '../../apollo/actions';
 import { useApolloClient } from '@apollo/react-hooks';
 import client from '../../apollo/client';
 import { useTranslation } from 'react-i18next';
-import { useGetUsersLazyQuery } from '../../__generated__/graphql';
+import {
+	use_SetMentionSuggesterMutation,
+	useGetUsersLazyQuery,
+	UserInput
+} from '../../__generated__/graphql';
 
 const SEND_MESSAGE_MUTATION = gql`
 	mutation PostMessage($chatSlug: String!, $text: String!) {
@@ -93,6 +96,7 @@ const SendMessage: React.FC<IProps> = props => {
 	const mentionSuggesterRef: Ref<any> = useRef(null);
 	const [executeUserSearch, { data: userData }] = useGetUsersLazyQuery();
 	const { t } = useTranslation();
+	const [setMentionSuggester] = use_SetMentionSuggesterMutation();
 
 	const {
 		values,
@@ -131,9 +135,25 @@ const SendMessage: React.FC<IProps> = props => {
 					//FIXME Sason - fix userData undefined value at first request
 					if (!userData) return;
 					const userList = userData.users.userList;
-					setMentionSuggester(!!userList.length, userList);
+					setMentionSuggester({
+						variables: {
+							data: {
+								show: userList.length > 0,
+								userList: userList as UserInput[]
+							}
+						}
+					});
 				}}
-				onCancel={() => setMentionSuggester(false, [])}
+				onCancel={() => {
+					setMentionSuggester({
+						variables: {
+							data: {
+								userList: [],
+								show: false
+							}
+						}
+					});
+				}}
 			>
 				<S.MessageInput
 					autoComplete='off'
@@ -173,7 +193,14 @@ const SendMessage: React.FC<IProps> = props => {
 			<MentionSuggester
 				onSelect={(text: string) => {
 					setFieldValue('text', `${values.text}${text}`);
-					setMentionSuggester(false, []);
+					setMentionSuggester({
+						variables: {
+							data: {
+								userList: [],
+								show: false
+							}
+						}
+					});
 				}}
 				ref={mentionSuggesterRef}
 			/>

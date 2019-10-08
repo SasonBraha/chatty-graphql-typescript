@@ -133,4 +133,4 @@ S.Content = styled.div`
 `;
 
 // @ts-ignore
-export default withRouter(hot(App));
+export default withRouter(App);

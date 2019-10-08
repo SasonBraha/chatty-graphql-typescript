@@ -1,6 +1,7 @@
 import { ApolloTypenameEnum, CrudEnum } from '../types/enums';
 import {
 	_GetGenericModalDocument,
+	_GetMentionSuggesterDocument,
 	_GetNavStateDocument,
 	_GetNotificationsDataDocument,
 	_GetTypingUsersDocument
@@ -14,8 +15,30 @@ export const setGenericModal = data => {
 
 export default {
 	Query: {
-		chat: () => {
-			console.log('here');
+		chat: (_, args, { cache }) => {
+			let result = null;
+			const query = {
+				query: _GetTypingUsersDocument,
+				variables: { ...args }
+			};
+
+			try {
+				result = cache.readQuery(query);
+			} catch (ex) {
+				cache.writeQuery({
+					...query,
+					data: {
+						chat: {
+							typingUsers: [],
+							__typename: ApolloTypenameEnum.CHAT
+						}
+					}
+				});
+
+				result = cache.readQuery(query);
+			}
+
+			return result;
 		}
 	},
 	Mutation: {
@@ -78,7 +101,8 @@ export default {
 				query: _GetTypingUsersDocument,
 				variables: { chatSlug }
 			};
-			const prevData = cache.readQuery(query);
+			let prevData = cache.readQuery(query);
+
 			const { typingUsers } = prevData.chat;
 			const updatedData = produce(prevData, draft => {
 				draft.chat.typingUsers =
@@ -86,18 +110,24 @@ export default {
 						? [...typingUsers, displayName]
 						: typingUsers.filter(_displayName => _displayName !== displayName);
 			});
+
 			cache.writeQuery({
 				...query,
 				data: {
 					...updatedData
 				}
 			});
-		}
-	},
-	Chat: {
-		typingUsers: (root, __, { cache }) => {
-			console.log(root);
-			return [];
+		},
+		setMentionSuggester(_, { data }, { cache }) {
+			cache.writeQuery({
+				query: _GetMentionSuggesterDocument,
+				data: {
+					mentionSuggester: {
+						...data,
+						__typename: ApolloTypenameEnum._MENTION_SUGGESTER
+					}
+				}
+			});
 		}
 	}
 };

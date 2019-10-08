@@ -1,6 +1,5 @@
 import React, { useState, useEffect, ReactNode } from 'react';
 import styled, { css } from 'styled-components/macro';
-import { useLocalCache } from '../Shared/Hooks';
 import { use_GetNavStateQuery } from '../../__generated__/graphql';
 
 interface IProps {

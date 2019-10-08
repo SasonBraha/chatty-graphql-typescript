@@ -4,7 +4,7 @@ import styled, { css } from 'styled-components/macro';
 import { List } from '../Shared';
 import { IUser } from '../../types/interfaces';
 import { IListItem } from '../Shared/List/List';
-import { useLocalCache } from '../Shared/Hooks';
+import { use_GetMentionSuggesterQuery } from '../../__generated__/graphql';
 
 interface IProps {
 	onSelect?: (value: string) => any | void;
@@ -14,25 +14,14 @@ interface IProps {
 const MentionSuggester: React.FC<IProps> = React.forwardRef(
 	(props: IProps, ref: Ref<any>) => {
 		const {
-			chat: {
-				mentionSuggester: { shouldShow, userList }
+			data: {
+				mentionSuggester: { userList, show }
 			}
-		} = useLocalCache(`
-		chat {
-			mentionSuggester {
-				shouldShow
-				userList {
-					displayName
-					slug
-					avatar
-				}
-			}
-		}	
-	`);
+		} = use_GetMentionSuggesterQuery();
 
 		return (
 			<Transition
-				in={shouldShow}
+				in={show}
 				mountOnEnter
 				unmountOnExit
 				timeout={{ enter: 0, exit: 300 }}

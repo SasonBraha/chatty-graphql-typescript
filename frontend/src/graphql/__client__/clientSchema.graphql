@@ -50,7 +50,7 @@ extend type Query {
     mentionSuggester: MentionSuggester
 }
 
-# Boolean is used for the return type without "!", this functions return null.
+# Boolean is used for the return type without "!", the resolvers return void.
 extend type Mutation {
     updateCurrentUser(user: UserInput): Boolean
     setNotificationsData(data: NotificationsDataInput): Boolean

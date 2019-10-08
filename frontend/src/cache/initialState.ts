@@ -20,19 +20,6 @@ export default {
 			show: false,
 			userList: [],
 			__typename: ApolloTypenameEnum._MENTION_SUGGESTER
-		},
-		client: {
-			chat: {
-				typingUsers: '',
-				chatSlug: '',
-				mentionSuggester: {
-					shouldShow: false,
-					userList: [],
-					__typename: ApolloTypenameEnum.client__CHAT_MENTION_SUGGESTER
-				},
-				__typename: ApolloTypenameEnum.client__CHAT
-			},
-			__typename: ApolloTypenameEnum.client__CLIENT
 		}
 	}
 };

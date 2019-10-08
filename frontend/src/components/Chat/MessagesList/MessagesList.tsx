@@ -208,7 +208,7 @@ class MessagesList extends Component<IProps, IState> {
 								setMessageCtxMenu={this.showMessageCtxMenu}
 							/>
 					  ))}
-				<S.ListEnd ref={this.listEnd} />
+				<div className='listEnd' ref={this.listEnd} />
 				<MessageContextMenu
 					ctx={this.state.messageCtxMenu}
 					ref={this.messageCtxMenuRef}
@@ -236,7 +236,5 @@ S.Scrollable = styled(Scrollable)`
 		padding-bottom: 1rem;
 	}
 `;
-
-S.ListEnd = styled.div``;
 
 export default MessagesList;

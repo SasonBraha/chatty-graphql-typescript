@@ -32,6 +32,7 @@ export enum ApolloTypenameEnum {
 	client__CHAT_MENTION_SUGGESTER = 'data.client.chat.mentionSuggester',
 	client__CHAT = 'data.client.chat',
 	USER = 'User',
+	CHAT = 'Chat',
 	_NOTIFICATIONS_DATA = '_NotificationsData',
 	_GENERIC_MODAL = '_GENERIC_MODAL',
 	_MENTION_SUGGESTER = '_MENTION_SUGGESTER'

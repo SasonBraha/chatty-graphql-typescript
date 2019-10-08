@@ -18,7 +18,6 @@ import { getApolloOperationName } from '../utils';
 import { initialState, resolvers } from '../cache';
 import { setGenericModal } from '../cache/resolvers';
 import introspectionQueryResultData from '../fragmentTypes.json';
-import gql from 'graphql-tag';
 
 interface IDefinition {
 	kind: string;

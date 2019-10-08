@@ -1,4 +1,4 @@
-import React, { ReactNode, Ref, useRef } from 'react';
+import React, { ReactNode, Ref } from 'react';
 import styled from 'styled-components/macro';
 
 interface IProps {
