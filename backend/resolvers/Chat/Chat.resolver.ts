@@ -77,40 +77,6 @@ export default class ChatResolver {
 	}
 
 	@UseMiddleware(Authenticated)
-	@Query(returns => [Message], { nullable: true })
-	async olderMessages(
-		@Arg('beforeMessageId', () => ID) beforeMessageId: string,
-		@Arg('chatSlug') chatSlug: string,
-		@Ctx('user') user: User
-	): Promise<Message[]> {
-		try {
-			const fromChat = await ChatModel.findOne({
-				$or: [
-					{ slug: chatSlug, isPrivate: false },
-					{
-						slug: chatSlug,
-						isPrivate: true,
-						allowedUsers: user._id
-					}
-				]
-			});
-
-			if (fromChat) {
-				const olderMessages = await MessageModel.aggregate([
-					{ $match: { _id: { $lt: new ObjectID(beforeMessageId) }, chatSlug } },
-					{ $sort: { createdAt: -1 } },
-					{ $limit: 20 }
-				]);
-				return olderMessages;
-			} else {
-				throw new Error(ErrorTypesEnum.NOT_FOUND);
-			}
-		} catch (ex) {
-			throw new Error(ErrorTypesEnum.INTERNAL_SERVER_ERROR);
-		}
-	}
-
-	@UseMiddleware(Authenticated)
 	@Query(returns => [Chat])
 	async roomsList(@Ctx('user') user: User): Promise<Chat[]> {
 		return await ChatModel.find({
@@ -121,7 +87,7 @@ export default class ChatResolver {
 					allowedUsers: user._id
 				}
 			]
-		});
+		}).sort({ updatedAt: -1 });
 	}
 
 	@UseMiddleware(Authenticated)

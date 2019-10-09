@@ -28,9 +28,6 @@ export enum LocalStorageEnum {
 }
 
 export enum ApolloTypenameEnum {
-	client__CLIENT = 'data.client',
-	client__CHAT_MENTION_SUGGESTER = 'data.client.chat.mentionSuggester',
-	client__CHAT = 'data.client.chat',
 	USER = 'User',
 	CHAT = 'Chat',
 	_NOTIFICATIONS_DATA = '_NotificationsData',

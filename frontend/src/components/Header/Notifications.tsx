@@ -34,7 +34,6 @@ const convertNotificationToListItemData = (notification: INotification) => {
 	}
 };
 
-//@ts-ignore
 const Notifications: React.FC<IProps> = props => {
 	const [notifications, setNotifications] = useState([]);
 	const [
@@ -47,13 +46,13 @@ const Notifications: React.FC<IProps> = props => {
 		if (props.isOpen && !notifications.length) {
 			execNotificationsQuery();
 		}
-	}, [props.isOpen]);
+	}, [props.isOpen, notifications]);
 
 	useEffect(() => {
 		if (data && !loading) {
 			setNotifications([...notifications, ...data.notifications]);
 		}
-	}, [data]);
+	}, [data, loading]);
 
 	return (
 		<S.Wrapper
@@ -65,7 +64,7 @@ const Notifications: React.FC<IProps> = props => {
 			{loading ? (
 				<Spinner size={35} spinnerColor={'#0079ea'} spinnerWidth={3} visible />
 			) : (
-				<ul>
+				<S.List>
 					{notifications.length
 						? notifications.map((notification: INotification) => (
 								<ListItem
@@ -75,7 +74,7 @@ const Notifications: React.FC<IProps> = props => {
 								/>
 						  ))
 						: t('header.noNotificationsFound')}
-				</ul>
+				</S.List>
 			)}
 		</S.Wrapper>
 	);
@@ -88,6 +87,11 @@ S.Wrapper = styled(Scrollable)`
 	display: flex;
 	justify-content: center;
 	align-items: center;
+`;
+
+S.List = styled.ul`
+	width: 100%;
+	height: 100%;
 `;
 
 S.Username = styled(Link)`

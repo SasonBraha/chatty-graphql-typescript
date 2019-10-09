@@ -9,20 +9,19 @@ import {
 	validateRegistrationInput
 } from '../../utils/validation';
 import { ErrorTypesEnum } from '../../utils/errors';
-import { googleOAuthClient, mailer } from '../../services';
+import { googleOAuthClient, JWT, mailer } from '../../services';
 
 @Resolver(User)
 export default class AuthResolver {
 	@Mutation(returns => Boolean)
 	async register(
-		@Arg('data') { displayName, email, password, captcha }: RegisterInput,
+		@Arg('data') registerInput: RegisterInput,
 		@Ctx('req') req: Request
 	): Promise<boolean> {
+		const { captcha, ...rest } = registerInput;
 		const { isValid, errors } = await validateRegistrationInput({
-			displayName,
-			email,
-			password,
-			captcha
+			captcha,
+			...rest
 		});
 
 		if (!isValid) {
@@ -30,10 +29,8 @@ export default class AuthResolver {
 		}
 
 		await UserModel.create({
-			displayName,
-			email,
-			password,
-			slug: `${displayName}@${uuid()}`,
+			...rest,
+			slug: `${rest.displayName}@${uuid()}`,
 			jwtHandshake: uuid(),
 			ipAddress: req.headers['x-forwarded-for'] || req.connection.remoteAddress
 		});
@@ -48,7 +45,7 @@ export default class AuthResolver {
 		const isPasswordMatch = await user.comparePassword(password);
 		if (!isPasswordMatch) throw new Error(ErrorTypesEnum.BAD_REQUEST);
 
-		return generateJWT(user);
+		return await JWT.generateToken(user.toJSON(), true, '10d');
 	}
 
 	@Mutation(returns => String, { nullable: true })
@@ -61,7 +58,6 @@ export default class AuthResolver {
 			audience: process.env.GOOGLE_OAUTH_CLIENT_ID
 		});
 		const { email, name: displayName, picture: avatar } = ticket.getPayload();
-		console.log('here')
 		const user = await UserModel.findOne({ email });
 		const userData = user
 			? user
@@ -75,7 +71,7 @@ export default class AuthResolver {
 						req.headers['x-forwarded-for'] || req.connection.remoteAddress
 			  });
 
-		return generateJWT(userData);
+		return await JWT.generateToken(userData.toJSON(), true, '10d');
 	}
 
 	@Mutation(returns => String)
