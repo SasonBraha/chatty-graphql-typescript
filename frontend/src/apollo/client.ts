@@ -33,7 +33,7 @@ const webSocketLink = () => {
 		options: {
 			reconnect: true,
 			connectionParams: () => ({
-				authToken: authToken ? `Bearer ${authToken}` : null,
+				authToken: authToken || '',
 				fromUrl: window.location.href
 			})
 		}
@@ -61,7 +61,7 @@ const authLink = setContext((_, { headers }) => {
 	return {
 		headers: {
 			...headers,
-			authorization: token ? `Bearer ${token}` : ''
+			authorization: token || ''
 		}
 	};
 });

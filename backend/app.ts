@@ -1,4 +1,5 @@
 require('dotenv').config({ path: './.env' });
+import { JWT } from './services';
 import 'reflect-metadata';
 import { handleSocketDisconnect } from './handlers';
 import * as http from 'http';
@@ -8,7 +9,6 @@ import * as helmet from 'helmet';
 import * as cors from 'cors';
 import * as mongoose from 'mongoose';
 import * as morgan from 'morgan';
-import getUserData from './auth/getUserData';
 import { buildSchema } from 'type-graphql';
 import { AuthResolver, ChatResolver, UserResolver } from './resolvers';
 import * as bodyParser from 'body-parser';
@@ -20,6 +20,7 @@ import pubSub from './services/pubSub';
 import sanitizer from './services/Sanitizer';
 import './permissions';
 import './services/cache';
+import { User, UserModel } from './entities/User';
 
 const main = async () => {
 	const app = express();
@@ -60,7 +61,6 @@ const main = async () => {
 	//------------------------------------//
 	const schema = await buildSchema({
 		resolvers: [AuthResolver, ChatResolver, UserResolver],
-		validate: false,
 		pubSub
 	});
 
@@ -74,15 +74,26 @@ const main = async () => {
 		},
 		//@ts-ignore
 		context: async ({ req, res, connection }) => {
-			if (connection) {
-				sanitizer.incomingRequest(connection.variables);
-				const user = await getUserData(connection.context.authToken);
-				return { connection, user };
-			} else {
-				sanitizer.incomingRequest(req.body.variables);
-				const user = await getUserData(req.headers.authorization);
-				return { req, res, user };
+			let user = await JWT.validateTokenAndGetPayload<User>(
+				connection ? connection.context.authToken : req.headers.authorization,
+				true
+			);
+			sanitizer.incomingRequest(
+				connection ? connection.variables : req.body.variables
+			);
+
+			if (user) {
+				user = await UserModel.findOne({ email: user.email }).cache({
+					key: user._id
+				});
 			}
+
+			return {
+				connection,
+				user,
+				req,
+				res
+			};
 		},
 		formatError(ex: GraphQLError): any {
 			const errorMessage = ex.originalError
