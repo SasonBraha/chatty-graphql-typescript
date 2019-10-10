@@ -9,6 +9,7 @@ import { ObjectId } from 'mongodb';
 import { User } from './User';
 import { File } from './File';
 import { MessageConnection } from '../resolvers/Chat/chat.resolver.output';
+import { Document } from 'mongoose';
 
 @ObjectType()
 export class Chat extends Typegoose {
@@ -58,3 +59,10 @@ export class Chat extends Typegoose {
 export const ChatModel = new Chat().getModelForClass(Chat, {
 	schemaOptions: { timestamps: true, collection: 'chatRooms' }
 });
+
+export class ChatController {
+	static async createRoom(data: Partial<Chat>): Promise<Chat & Document> {
+		const newChatRoom = await ChatModel.create({ ...data });
+		return newChatRoom;
+	}
+}

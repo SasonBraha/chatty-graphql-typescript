@@ -1,5 +1,5 @@
 import { Arg, Ctx, Mutation, Query, Resolver } from 'type-graphql';
-import { User, UserModel } from '../../entities/User';
+import { User, UserController, UserModel } from '../../entities/User';
 import { LoginInput, RegisterInput } from './auth.resolver.inputs';
 import { Request } from 'express';
 import * as uuid from 'uuid';
@@ -27,12 +27,12 @@ export default class AuthResolver {
 			throwValidationError(errors);
 		}
 
-		await UserModel.create({
-			...rest,
-			slug: `${rest.displayName}@${uuid()}`,
-			jwtHandshake: uuid(),
-			ipAddress: req.headers['x-forwarded-for'] || req.connection.remoteAddress
-		});
+		await UserController.createUser(
+			{
+				...rest
+			},
+			req
+		);
 		return true;
 	}
 
@@ -60,15 +60,7 @@ export default class AuthResolver {
 		const user = await UserModel.findOne({ email });
 		const userData = user
 			? user
-			: await UserModel.create({
-					displayName,
-					email,
-					avatar,
-					slug: `${displayName}@${uuid()}`,
-					jwtHandshake: uuid(),
-					ipAddress:
-						req.headers['x-forwarded-for'] || req.connection.remoteAddress
-			  });
+			: await UserController.createUser({ displayName, email, avatar }, req);
 
 		return await JWT.generateToken(userData.toJSON(), true, '10d');
 	}

@@ -4,10 +4,10 @@ import { ObjectId } from 'mongodb';
 @ObjectType()
 class FileDimensions {
 	@Field(type => Int, { nullable: true })
-	height: number;
+	height?: number;
 
 	@Field(type => Int, { nullable: true })
-	width: number;
+	width?: number;
 }
 
 @ObjectType()

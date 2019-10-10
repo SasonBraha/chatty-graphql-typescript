@@ -125,7 +125,7 @@ class MessagesList extends Component<IProps, IState> {
 			isMoreMessagesToFetch,
 			messages
 		} = this.props;
-		if (!isFetching && !loading && isMoreMessagesToFetch) {
+		if (!isFetching && !loading && isMoreMessagesToFetch && messages.length) {
 			fetchOlderMessages(messages[0].cursor);
 		}
 	};

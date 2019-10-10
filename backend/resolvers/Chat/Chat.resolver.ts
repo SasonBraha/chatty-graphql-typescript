@@ -14,7 +14,7 @@ import {
 	Subscription,
 	UseMiddleware
 } from 'type-graphql';
-import { Chat, ChatModel } from '../../entities/Chat';
+import { Chat, ChatController, ChatModel } from '../../entities/Chat';
 import { User, UserModel } from '../../entities/User';
 import { NotificationModel } from '../../entities/Notification';
 import { Message, MessageModel } from '../../entities/Message';
@@ -48,6 +48,8 @@ import * as jwt from 'jsonwebtoken';
 import { Document } from 'mongoose';
 import * as graphqlFields from 'graphql-fields';
 import sanitizer from '../../services/Sanitizer';
+import shortid = require('shortid');
+import { Ref } from '@hasezoey/typegoose';
 
 @Resolver(Chat)
 export default class ChatResolver {
@@ -97,16 +99,18 @@ export default class ChatResolver {
 		@Arg('data') { name, isPrivate, storeMessages }: CreateChatInput,
 		@Ctx('user') user: User
 	): Promise<Chat> {
-		return await ChatModel.create({
+		return await ChatController.createRoom({
 			name,
 			image: {
 				path: '/images/default_chat.svg',
-				isStored: false
+				isStoredRemotely: false,
+				mimeType: 'svg',
+				dimensions: {}
 			},
 			isPrivate,
 			storeMessages,
-			createdBy: user._id,
-			slug: `${name}@${uuid()}`
+			createdBy: (user._id as unknown) as Ref<User>,
+			slug: `${name}@${shortid.generate()}`
 		});
 	}
 

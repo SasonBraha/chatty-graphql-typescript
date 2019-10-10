@@ -30,7 +30,6 @@ class JWT {
 		if (isBearer) {
 			if (!token.startsWith('Bearer'))
 				throw new Error(ErrorTypesEnum.INVALID_TOKEN);
-			console.log(token);
 			token = isBearer ? token.split(' ')[1] : token;
 		}
 

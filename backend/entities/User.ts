@@ -13,6 +13,10 @@ import {
 import { ObjectId } from 'mongodb';
 import { Chat } from './Chat';
 import { Notification } from './Notification';
+import * as shortid from 'shortid';
+import { Request } from 'express';
+import { Document } from 'mongoose';
+import * as uuid from 'uuid';
 
 @ObjectType()
 @Pre<User>('save', async function(next) {
@@ -107,3 +111,25 @@ export class User extends Typegoose {
 export const UserModel = new User().getModelForClass(User, {
 	schemaOptions: { timestamps: true }
 });
+
+export class UserController {
+	static async createUser(
+		data: Partial<User>,
+		request: Request
+	): Promise<User & Document> {
+		try {
+			const newUser = await UserModel.create({
+				...data,
+				slug: `${data.displayName}@${shortid.generate()}`,
+				ipAddress:
+					request.headers['x-forwarded-for'] ||
+					request.connection.remoteAddress,
+				jwtHandshake: uuid()
+			});
+
+			return newUser;
+		} catch (ex) {
+			throw new Error(ex);
+		}
+	}
+}
