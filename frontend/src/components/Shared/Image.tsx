@@ -48,6 +48,8 @@ const Image: React.FC<IProps> = props => {
 			<S.Image
 				{...rest}
 				loading={lazy ? 'lazy' : ''}
+				width={runtimeWidth}
+				height={runtimeHeight}
 				onLoad={() => setImageLoaded(true)}
 			/>
 		</S.ImageLoader>

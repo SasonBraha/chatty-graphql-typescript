@@ -12,56 +12,61 @@ interface IProps {
 	className?: string;
 }
 
-const Scrollable = React.forwardRef((props: IProps, ref: Ref<any>) => {
-	const {
-		onReachBottom,
-		onReachTop,
-		whileScrolling,
-		offsetToCallback = 0,
-		reachBottomDebounce = 0,
-		reachTopDebounce = 0,
-		className
-	} = props;
-	let reachTopTimeout: ReturnType<typeof setTimeout>;
-	let reachBottomTimeout: ReturnType<typeof setTimeout>;
-	return (
-		<S.Scrollable
-			onScroll={e => {
-				const target = e.target as HTMLDivElement;
-				if (typeof whileScrolling === 'function') {
-					whileScrolling();
-				}
-
-				if (typeof onReachBottom === 'function') {
-					const isReachedOffset =
-						target.scrollHeight - offsetToCallback <=
-						target.scrollTop + target.clientHeight;
-					const isReachedBottom =
-						target.scrollHeight === target.scrollTop + target.clientHeight;
-
-					if (isReachedBottom || isReachedOffset) {
-						clearTimeout(reachBottomTimeout);
-						reachBottomTimeout = setTimeout(onReachBottom, reachBottomDebounce);
+const Scrollable = React.forwardRef(
+	(props: IProps, ref: Ref<HTMLDivElement>) => {
+		const {
+			onReachBottom,
+			onReachTop,
+			whileScrolling,
+			offsetToCallback = 0,
+			reachBottomDebounce = 0,
+			reachTopDebounce = 0,
+			className
+		} = props;
+		let reachTopTimeout: ReturnType<typeof setTimeout>;
+		let reachBottomTimeout: ReturnType<typeof setTimeout>;
+		return (
+			<S.Scrollable
+				onScroll={e => {
+					const target = e.target as HTMLDivElement;
+					if (typeof whileScrolling === 'function') {
+						whileScrolling();
 					}
-				}
 
-				if (typeof onReachTop === 'function') {
-					const isReachedOffset = target.scrollTop < offsetToCallback;
-					const isReachedTop = target.scrollTop === 0;
+					if (typeof onReachBottom === 'function') {
+						const isReachedOffset =
+							target.scrollHeight - offsetToCallback <=
+							target.scrollTop + target.clientHeight;
+						const isReachedBottom =
+							target.scrollHeight === target.scrollTop + target.clientHeight;
 
-					if (isReachedOffset || isReachedTop) {
-						clearTimeout(reachTopTimeout);
-						reachTopTimeout = setTimeout(onReachTop, reachTopDebounce);
+						if (isReachedBottom || isReachedOffset) {
+							clearTimeout(reachBottomTimeout);
+							reachBottomTimeout = setTimeout(
+								onReachBottom,
+								reachBottomDebounce
+							);
+						}
 					}
-				}
-			}}
-			ref={ref}
-			className={className}
-		>
-			{props.children}
-		</S.Scrollable>
-	);
-});
+
+					if (typeof onReachTop === 'function') {
+						const isReachedOffset = target.scrollTop < offsetToCallback;
+						const isReachedTop = target.scrollTop === 0;
+
+						if (isReachedOffset || isReachedTop) {
+							clearTimeout(reachTopTimeout);
+							reachTopTimeout = setTimeout(onReachTop, reachTopDebounce);
+						}
+					}
+				}}
+				ref={ref}
+				className={className}
+			>
+				{props.children}
+			</S.Scrollable>
+		);
+	}
+);
 
 const S: any = {};
 S.Scrollable = styled.div`

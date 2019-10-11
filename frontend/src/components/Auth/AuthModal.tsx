@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Modal } from '../Shared';
 import LoginForm from './LoginForm';
 import RegisterForm from './RegisterForm';
-import styled, { css } from 'styled-components/macro';
+import styled from 'styled-components/macro';
 import {
 	use_GetAuthModalStateQuery,
 	use_SetAuthModalMutation

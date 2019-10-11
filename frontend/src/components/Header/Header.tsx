@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import styled from 'styled-components/macro';
 import { Link } from 'react-router-dom';
-import { Burger, Button, Dropdown, List, Scrollable } from '../Shared';
+import { Burger, Button, Dropdown, List } from '../Shared';
 import Ripple from 'react-ink';
 import Icon from '../Shared/Icon';
 import Notifications from './Notifications';

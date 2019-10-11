@@ -1,3 +1,5 @@
+import shortid = require('shortid');
+
 require('dotenv').config({ path: './.env' });
 import { JWT } from './services';
 import 'reflect-metadata';
@@ -99,7 +101,7 @@ const main = async () => {
 			const errorMessage = ex.originalError
 				? ex.originalError.message
 				: ex.message;
-			const errorId = uuid();
+			const errorId = shortid.generate();
 
 			if (isJson(errorMessage)) {
 				const parsedError = JSON.parse(errorMessage);

@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { Button } from '../Shared';
 import { FormikProps, withFormik } from 'formik';
 import { Form, FormGroup, TextInput } from '../Shared/Form';
@@ -45,11 +45,14 @@ const RegisterForm = (props: FormikProps<IFormValues>) => {
 	let captchaRef: React.RefObject<any> = useRef();
 	const { t } = useTranslation();
 
+	useEffect(() => {
+		captchaRef.current.execute();
+	}, []);
+
 	return (
 		<>
 			<Form
 				onSubmit={e => {
-					captchaRef.current.execute();
 					handleSubmit(e);
 				}}
 				icon={'icon-user-circle-o'}
@@ -135,7 +138,9 @@ export default withFormik({
 				console.log('Success! Registered successfully');
 			}
 		} catch (ex) {
+			console.log(ex);
 			const { formValidation } = ex.graphQLErrors[0];
+			console.log(formValidation);
 			if (formValidation.captcha) {
 				console.log('אימות');
 			} else {

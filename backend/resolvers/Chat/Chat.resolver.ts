@@ -2,7 +2,6 @@ import {
 	Arg,
 	Ctx,
 	FieldResolver,
-	ID,
 	Info,
 	Int,
 	Mutation,
@@ -26,7 +25,6 @@ import {
 	UpdateMessageInput
 } from './chat.resolver.inputs';
 import activeUsersService from '../../redis/services/ActiveUsers.service';
-import * as uuid from 'uuid';
 import { GraphQLUpload } from 'apollo-server-express';
 import { uploadFile } from '../../utils/files';
 import { ErrorTypesEnum } from '../../utils/errors';
@@ -44,12 +42,12 @@ import {
 	UserUpdatesEnum
 } from '../../types/enums';
 import { generateUserMentionedNotification } from '../../utils/notifications';
-import * as jwt from 'jsonwebtoken';
 import { Document } from 'mongoose';
 import * as graphqlFields from 'graphql-fields';
 import sanitizer from '../../services/Sanitizer';
 import shortid = require('shortid');
 import { Ref } from '@hasezoey/typegoose';
+import { JWT } from '../../services';
 
 @Resolver(Chat)
 export default class ChatResolver {
@@ -175,9 +173,10 @@ export default class ChatResolver {
 					node: {
 						...messageData,
 						createdAt: new Date().toISOString(),
-						creationToken: jwt.sign(
+						creationToken: await JWT.generateToken(
 							{ userId: user._id.toString(), messageId: preSaveId._id },
-							process.env.JWT_SECRET
+							false,
+							'20h'
 						),
 						file: null
 					}
@@ -250,11 +249,10 @@ export default class ChatResolver {
 		let shouldUpdateDB: boolean = false;
 
 		if (!targetMessage && creationToken) {
-			// @ts-ignore
-			const creationTokenData: { userId; messageId } = await jwt.verify(
-				creationToken,
-				process.env.JWT_SECRET
-			);
+			const creationTokenData: {
+				userId;
+				messageId;
+			} = await JWT.validateTokenAndGetPayload(creationToken, false);
 
 			if (creationTokenData) {
 				isUserCreatedTargetMessage =
