@@ -31,7 +31,8 @@
 			"youMustBeLoggedInToViewThisPage": "עליך להתחבר על מנת לצפות בדף זה",
 			"errors": {
 				"expiredToken": "הייתה בעיה באימות הטוקן / פג תוקפו של הטוקן הקיים, אנא התחבר/י מחדש",
-				"somethingWentWrong": "אופס! משהו השתבש"
+				"somethingWentWrong": "אופס! משהו השתבש",
+				"fileSizeLimitExceeded": "הקובץ שנבחר גדול מדי, הגודל המירבי הניתן להלעאה הינו {{maxFileSize}}"
 			},
 			"forms": {
 				"password": "סיסמה",

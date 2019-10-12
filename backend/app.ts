@@ -74,7 +74,7 @@ const main = async () => {
 				handleSocketDisconnect(_ws, context);
 			}
 		},
-		//@ts-ignore
+
 		context: async ({ req, res, connection }) => {
 			let user = await JWT.validateTokenAndGetPayload<User>(
 				connection ? connection.context.authToken : req.headers.authorization,

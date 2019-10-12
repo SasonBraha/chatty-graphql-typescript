@@ -21,7 +21,6 @@ const Profile: React.FC<IProps> = props => {
 	});
 	const { t } = useTranslation();
 
-	// @ts-ignore
 	return loading ? (
 		<div>Loading...</div>
 	) : (

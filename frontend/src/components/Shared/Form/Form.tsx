@@ -8,7 +8,7 @@ interface IProps {
 	onSubmit: (event: React.FormEvent<HTMLFormElement>) => void;
 }
 
-const Form = (props: IProps) => (
+const Form: React.FC<IProps> = props => (
 	<S.Form onSubmit={props.onSubmit} noValidate>
 		<S.FormHeader>
 			<S.FormHeaderIcon>

@@ -5,7 +5,7 @@ interface IProps {
 	children: ReactNode;
 }
 
-const FormGroup = (props: IProps) => (
+const FormGroup: React.FC<IProps> = props => (
 	<S.FormGroup>{props.children}</S.FormGroup>
 );
 

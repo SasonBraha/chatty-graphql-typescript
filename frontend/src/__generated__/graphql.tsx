@@ -3,7 +3,8 @@ import * as ApolloReactCommon from '@apollo/react-common';
 import * as ApolloReactHoc from '@apollo/react-hoc';
 import * as ApolloReactHooks from '@apollo/react-hooks';
 export type Maybe<T> = T | null;
-// Generated in 2019-10-02T22:47:33+03:00
+// Generated in 2019-10-12T09:23:45+03:00
+
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
 	ID: string;
@@ -127,7 +128,7 @@ export type MentionSuggesterInput = {
 
 export type Message = {
 	__typename?: 'Message';
-	_id?: Maybe<Scalars['ID']>;
+	_id: Scalars['ID'];
 	text: Scalars['String'];
 	chatSlug: Scalars['String'];
 	file?: Maybe<File>;
@@ -305,7 +306,6 @@ export type PageInfo = {
 export type Query = {
 	__typename?: 'Query';
 	chat: Chat;
-	olderMessages?: Maybe<Array<Message>>;
 	roomsList: Array<Chat>;
 	validateResetPasswordToken: Scalars['Boolean'];
 	me: User;
@@ -323,11 +323,6 @@ export type Query = {
 
 export type QueryChatArgs = {
 	chatSlug: Scalars['String'];
-};
-
-export type QueryOlderMessagesArgs = {
-	chatSlug: Scalars['String'];
-	beforeMessageId: Scalars['ID'];
 };
 
 export type QueryValidateResetPasswordTokenArgs = {
@@ -413,6 +408,7 @@ export type UserTypingOutput = {
 	crudType: Scalars['String'];
 	user: User;
 };
+
 export type _SetAuthModalMutationVariables = {
 	isOpen?: Maybe<Scalars['Boolean']>;
 };
@@ -770,6 +766,7 @@ export type UserUpdatesSubscription = { __typename?: 'Subscription' } & Pick<
 	Subscription,
 	'userUpdates'
 >;
+
 export const MessageAttributesFragmentDoc = gql`
 	fragment messageAttributes on Message {
 		_id
@@ -839,6 +836,23 @@ export function with_SetAuthModal<TProps, TChildProps = {}>(
 	});
 }
 
+/**
+ * __use_SetAuthModalMutation__
+ *
+ * To run a mutation, you first call `use_SetAuthModalMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `use_SetAuthModalMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [setAuthModalMutation, { data, loading, error }] = use_SetAuthModalMutation({
+ *   variables: {
+ *      isOpen: // value for 'isOpen'
+ *   },
+ * });
+ */
 export function use_SetAuthModalMutation(
 	baseOptions?: ApolloReactHooks.MutationHookOptions<
 		_SetAuthModalMutation,
@@ -895,6 +909,23 @@ export function with_SetNotificationsData<TProps, TChildProps = {}>(
 	});
 }
 
+/**
+ * __use_SetNotificationsDataMutation__
+ *
+ * To run a mutation, you first call `use_SetNotificationsDataMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `use_SetNotificationsDataMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [setNotificationsDataMutation, { data, loading, error }] = use_SetNotificationsDataMutation({
+ *   variables: {
+ *      data: // value for 'data'
+ *   },
+ * });
+ */
 export function use_SetNotificationsDataMutation(
 	baseOptions?: ApolloReactHooks.MutationHookOptions<
 		_SetNotificationsDataMutation,
@@ -949,6 +980,23 @@ export function with_ToggleNavState<TProps, TChildProps = {}>(
 	});
 }
 
+/**
+ * __use_ToggleNavStateMutation__
+ *
+ * To run a mutation, you first call `use_ToggleNavStateMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `use_ToggleNavStateMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [toggleNavStateMutation, { data, loading, error }] = use_ToggleNavStateMutation({
+ *   variables: {
+ *      isOpen: // value for 'isOpen'
+ *   },
+ * });
+ */
 export function use_ToggleNavStateMutation(
 	baseOptions?: ApolloReactHooks.MutationHookOptions<
 		_ToggleNavStateMutation,
@@ -1005,6 +1053,23 @@ export function with_UpdateCurrentUser<TProps, TChildProps = {}>(
 	});
 }
 
+/**
+ * __use_UpdateCurrentUserMutation__
+ *
+ * To run a mutation, you first call `use_UpdateCurrentUserMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `use_UpdateCurrentUserMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateCurrentUserMutation, { data, loading, error }] = use_UpdateCurrentUserMutation({
+ *   variables: {
+ *      user: // value for 'user'
+ *   },
+ * });
+ */
 export function use_UpdateCurrentUserMutation(
 	baseOptions?: ApolloReactHooks.MutationHookOptions<
 		_UpdateCurrentUserMutation,
@@ -1061,6 +1126,23 @@ export function with_SetGenericModal<TProps, TChildProps = {}>(
 	});
 }
 
+/**
+ * __use_SetGenericModalMutation__
+ *
+ * To run a mutation, you first call `use_SetGenericModalMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `use_SetGenericModalMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [setGenericModalMutation, { data, loading, error }] = use_SetGenericModalMutation({
+ *   variables: {
+ *      data: // value for 'data'
+ *   },
+ * });
+ */
 export function use_SetGenericModalMutation(
 	baseOptions?: ApolloReactHooks.MutationHookOptions<
 		_SetGenericModalMutation,
@@ -1117,6 +1199,23 @@ export function with_SetMentionSuggester<TProps, TChildProps = {}>(
 	});
 }
 
+/**
+ * __use_SetMentionSuggesterMutation__
+ *
+ * To run a mutation, you first call `use_SetMentionSuggesterMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `use_SetMentionSuggesterMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [setMentionSuggesterMutation, { data, loading, error }] = use_SetMentionSuggesterMutation({
+ *   variables: {
+ *      data: // value for 'data'
+ *   },
+ * });
+ */
 export function use_SetMentionSuggesterMutation(
 	baseOptions?: ApolloReactHooks.MutationHookOptions<
 		_SetMentionSuggesterMutation,
@@ -1173,6 +1272,23 @@ export function with_SetCurrentChatSlug<TProps, TChildProps = {}>(
 	});
 }
 
+/**
+ * __use_SetCurrentChatSlugMutation__
+ *
+ * To run a mutation, you first call `use_SetCurrentChatSlugMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `use_SetCurrentChatSlugMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [setCurrentChatSlugMutation, { data, loading, error }] = use_SetCurrentChatSlugMutation({
+ *   variables: {
+ *      slug: // value for 'slug'
+ *   },
+ * });
+ */
 export function use_SetCurrentChatSlugMutation(
 	baseOptions?: ApolloReactHooks.MutationHookOptions<
 		_SetCurrentChatSlugMutation,
@@ -1235,6 +1351,25 @@ export function with_SetTypingUsers<TProps, TChildProps = {}>(
 	});
 }
 
+/**
+ * __use_SetTypingUsersMutation__
+ *
+ * To run a mutation, you first call `use_SetTypingUsersMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `use_SetTypingUsersMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [setTypingUsersMutation, { data, loading, error }] = use_SetTypingUsersMutation({
+ *   variables: {
+ *      chatSlug: // value for 'chatSlug'
+ *      displayName: // value for 'displayName'
+ *      crudType: // value for 'crudType'
+ *   },
+ * });
+ */
 export function use_SetTypingUsersMutation(
 	baseOptions?: ApolloReactHooks.MutationHookOptions<
 		_SetTypingUsersMutation,
@@ -1287,6 +1422,21 @@ export function with_GetAuthModalState<TProps, TChildProps = {}>(
 	});
 }
 
+/**
+ * __use_GetAuthModalStateQuery__
+ *
+ * To run a query within a React component, call `use_GetAuthModalStateQuery` and pass it any options that fit your needs.
+ * When your component renders, `use_GetAuthModalStateQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = use_GetAuthModalStateQuery({
+ *   variables: {
+ *   },
+ * });
+ */
 export function use_GetAuthModalStateQuery(
 	baseOptions?: ApolloReactHooks.QueryHookOptions<
 		_GetAuthModalStateQuery,
@@ -1309,9 +1459,11 @@ export function use_GetAuthModalStateLazyQuery(
 		_GetAuthModalStateQueryVariables
 	>(_GetAuthModalStateDocument, baseOptions);
 }
-
 export type _GetAuthModalStateQueryHookResult = ReturnType<
 	typeof use_GetAuthModalStateQuery
+>;
+export type _GetAuthModalStateLazyQueryHookResult = ReturnType<
+	typeof use_GetAuthModalStateLazyQuery
 >;
 export type _GetAuthModalStateQueryResult = ApolloReactCommon.QueryResult<
 	_GetAuthModalStateQuery,
@@ -1349,6 +1501,21 @@ export function with_GetCurrentUser<TProps, TChildProps = {}>(
 	});
 }
 
+/**
+ * __use_GetCurrentUserQuery__
+ *
+ * To run a query within a React component, call `use_GetCurrentUserQuery` and pass it any options that fit your needs.
+ * When your component renders, `use_GetCurrentUserQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = use_GetCurrentUserQuery({
+ *   variables: {
+ *   },
+ * });
+ */
 export function use_GetCurrentUserQuery(
 	baseOptions?: ApolloReactHooks.QueryHookOptions<
 		_GetCurrentUserQuery,
@@ -1371,9 +1538,11 @@ export function use_GetCurrentUserLazyQuery(
 		_GetCurrentUserQueryVariables
 	>(_GetCurrentUserDocument, baseOptions);
 }
-
 export type _GetCurrentUserQueryHookResult = ReturnType<
 	typeof use_GetCurrentUserQuery
+>;
+export type _GetCurrentUserLazyQueryHookResult = ReturnType<
+	typeof use_GetCurrentUserLazyQuery
 >;
 export type _GetCurrentUserQueryResult = ApolloReactCommon.QueryResult<
 	_GetCurrentUserQuery,
@@ -1408,6 +1577,21 @@ export function with_GetNavState<TProps, TChildProps = {}>(
 	});
 }
 
+/**
+ * __use_GetNavStateQuery__
+ *
+ * To run a query within a React component, call `use_GetNavStateQuery` and pass it any options that fit your needs.
+ * When your component renders, `use_GetNavStateQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = use_GetNavStateQuery({
+ *   variables: {
+ *   },
+ * });
+ */
 export function use_GetNavStateQuery(
 	baseOptions?: ApolloReactHooks.QueryHookOptions<
 		_GetNavStateQuery,
@@ -1430,9 +1614,11 @@ export function use_GetNavStateLazyQuery(
 		_GetNavStateQueryVariables
 	>(_GetNavStateDocument, baseOptions);
 }
-
 export type _GetNavStateQueryHookResult = ReturnType<
 	typeof use_GetNavStateQuery
+>;
+export type _GetNavStateLazyQueryHookResult = ReturnType<
+	typeof use_GetNavStateLazyQuery
 >;
 export type _GetNavStateQueryResult = ApolloReactCommon.QueryResult<
 	_GetNavStateQuery,
@@ -1471,6 +1657,21 @@ export function with_GetNotificationsData<TProps, TChildProps = {}>(
 	});
 }
 
+/**
+ * __use_GetNotificationsDataQuery__
+ *
+ * To run a query within a React component, call `use_GetNotificationsDataQuery` and pass it any options that fit your needs.
+ * When your component renders, `use_GetNotificationsDataQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = use_GetNotificationsDataQuery({
+ *   variables: {
+ *   },
+ * });
+ */
 export function use_GetNotificationsDataQuery(
 	baseOptions?: ApolloReactHooks.QueryHookOptions<
 		_GetNotificationsDataQuery,
@@ -1493,9 +1694,11 @@ export function use_GetNotificationsDataLazyQuery(
 		_GetNotificationsDataQueryVariables
 	>(_GetNotificationsDataDocument, baseOptions);
 }
-
 export type _GetNotificationsDataQueryHookResult = ReturnType<
 	typeof use_GetNotificationsDataQuery
+>;
+export type _GetNotificationsDataLazyQueryHookResult = ReturnType<
+	typeof use_GetNotificationsDataLazyQuery
 >;
 export type _GetNotificationsDataQueryResult = ApolloReactCommon.QueryResult<
 	_GetNotificationsDataQuery,
@@ -1534,6 +1737,21 @@ export function with_GetGenericModal<TProps, TChildProps = {}>(
 	});
 }
 
+/**
+ * __use_GetGenericModalQuery__
+ *
+ * To run a query within a React component, call `use_GetGenericModalQuery` and pass it any options that fit your needs.
+ * When your component renders, `use_GetGenericModalQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = use_GetGenericModalQuery({
+ *   variables: {
+ *   },
+ * });
+ */
 export function use_GetGenericModalQuery(
 	baseOptions?: ApolloReactHooks.QueryHookOptions<
 		_GetGenericModalQuery,
@@ -1556,9 +1774,11 @@ export function use_GetGenericModalLazyQuery(
 		_GetGenericModalQueryVariables
 	>(_GetGenericModalDocument, baseOptions);
 }
-
 export type _GetGenericModalQueryHookResult = ReturnType<
 	typeof use_GetGenericModalQuery
+>;
+export type _GetGenericModalLazyQueryHookResult = ReturnType<
+	typeof use_GetGenericModalLazyQuery
 >;
 export type _GetGenericModalQueryResult = ApolloReactCommon.QueryResult<
 	_GetGenericModalQuery,
@@ -1595,6 +1815,21 @@ export function with_GetCurrentChatSlug<TProps, TChildProps = {}>(
 	});
 }
 
+/**
+ * __use_GetCurrentChatSlugQuery__
+ *
+ * To run a query within a React component, call `use_GetCurrentChatSlugQuery` and pass it any options that fit your needs.
+ * When your component renders, `use_GetCurrentChatSlugQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = use_GetCurrentChatSlugQuery({
+ *   variables: {
+ *   },
+ * });
+ */
 export function use_GetCurrentChatSlugQuery(
 	baseOptions?: ApolloReactHooks.QueryHookOptions<
 		_GetCurrentChatSlugQuery,
@@ -1617,9 +1852,11 @@ export function use_GetCurrentChatSlugLazyQuery(
 		_GetCurrentChatSlugQueryVariables
 	>(_GetCurrentChatSlugDocument, baseOptions);
 }
-
 export type _GetCurrentChatSlugQueryHookResult = ReturnType<
 	typeof use_GetCurrentChatSlugQuery
+>;
+export type _GetCurrentChatSlugLazyQueryHookResult = ReturnType<
+	typeof use_GetCurrentChatSlugLazyQuery
 >;
 export type _GetCurrentChatSlugQueryResult = ApolloReactCommon.QueryResult<
 	_GetCurrentChatSlugQuery,
@@ -1663,6 +1900,21 @@ export function with_GetMentionSuggester<TProps, TChildProps = {}>(
 	});
 }
 
+/**
+ * __use_GetMentionSuggesterQuery__
+ *
+ * To run a query within a React component, call `use_GetMentionSuggesterQuery` and pass it any options that fit your needs.
+ * When your component renders, `use_GetMentionSuggesterQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = use_GetMentionSuggesterQuery({
+ *   variables: {
+ *   },
+ * });
+ */
 export function use_GetMentionSuggesterQuery(
 	baseOptions?: ApolloReactHooks.QueryHookOptions<
 		_GetMentionSuggesterQuery,
@@ -1685,9 +1937,11 @@ export function use_GetMentionSuggesterLazyQuery(
 		_GetMentionSuggesterQueryVariables
 	>(_GetMentionSuggesterDocument, baseOptions);
 }
-
 export type _GetMentionSuggesterQueryHookResult = ReturnType<
 	typeof use_GetMentionSuggesterQuery
+>;
+export type _GetMentionSuggesterLazyQueryHookResult = ReturnType<
+	typeof use_GetMentionSuggesterLazyQuery
 >;
 export type _GetMentionSuggesterQueryResult = ApolloReactCommon.QueryResult<
 	_GetMentionSuggesterQuery,
@@ -1724,6 +1978,22 @@ export function with_GetTypingUsers<TProps, TChildProps = {}>(
 	});
 }
 
+/**
+ * __use_GetTypingUsersQuery__
+ *
+ * To run a query within a React component, call `use_GetTypingUsersQuery` and pass it any options that fit your needs.
+ * When your component renders, `use_GetTypingUsersQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = use_GetTypingUsersQuery({
+ *   variables: {
+ *      chatSlug: // value for 'chatSlug'
+ *   },
+ * });
+ */
 export function use_GetTypingUsersQuery(
 	baseOptions?: ApolloReactHooks.QueryHookOptions<
 		_GetTypingUsersQuery,
@@ -1746,9 +2016,11 @@ export function use_GetTypingUsersLazyQuery(
 		_GetTypingUsersQueryVariables
 	>(_GetTypingUsersDocument, baseOptions);
 }
-
 export type _GetTypingUsersQueryHookResult = ReturnType<
 	typeof use_GetTypingUsersQuery
+>;
+export type _GetTypingUsersLazyQueryHookResult = ReturnType<
+	typeof use_GetTypingUsersLazyQuery
 >;
 export type _GetTypingUsersQueryResult = ApolloReactCommon.QueryResult<
 	_GetTypingUsersQuery,
@@ -1789,6 +2061,24 @@ export function withPostMessage<TProps, TChildProps = {}>(
 	});
 }
 
+/**
+ * __usePostMessageMutation__
+ *
+ * To run a mutation, you first call `usePostMessageMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `usePostMessageMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [postMessageMutation, { data, loading, error }] = usePostMessageMutation({
+ *   variables: {
+ *      chatSlug: // value for 'chatSlug'
+ *      text: // value for 'text'
+ *   },
+ * });
+ */
 export function usePostMessageMutation(
 	baseOptions?: ApolloReactHooks.MutationHookOptions<
 		PostMessageMutation,
@@ -1845,6 +2135,24 @@ export function withUpdateActiveUsers<TProps, TChildProps = {}>(
 	});
 }
 
+/**
+ * __useUpdateActiveUsersMutation__
+ *
+ * To run a mutation, you first call `useUpdateActiveUsersMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateActiveUsersMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateActiveUsersMutation, { data, loading, error }] = useUpdateActiveUsersMutation({
+ *   variables: {
+ *      chatSlug: // value for 'chatSlug'
+ *      crudType: // value for 'crudType'
+ *   },
+ * });
+ */
 export function useUpdateActiveUsersMutation(
 	baseOptions?: ApolloReactHooks.MutationHookOptions<
 		UpdateActiveUsersMutation,
@@ -1916,6 +2224,26 @@ export function withGetMessages<TProps, TChildProps = {}>(
 	});
 }
 
+/**
+ * __useGetMessagesQuery__
+ *
+ * To run a query within a React component, call `useGetMessagesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetMessagesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetMessagesQuery({
+ *   variables: {
+ *      chatSlug: // value for 'chatSlug'
+ *      first: // value for 'first'
+ *      last: // value for 'last'
+ *      before: // value for 'before'
+ *      after: // value for 'after'
+ *   },
+ * });
+ */
 export function useGetMessagesQuery(
 	baseOptions?: ApolloReactHooks.QueryHookOptions<
 		GetMessagesQuery,
@@ -1938,8 +2266,10 @@ export function useGetMessagesLazyQuery(
 		GetMessagesQueryVariables
 	>(GetMessagesDocument, baseOptions);
 }
-
 export type GetMessagesQueryHookResult = ReturnType<typeof useGetMessagesQuery>;
+export type GetMessagesLazyQueryHookResult = ReturnType<
+	typeof useGetMessagesLazyQuery
+>;
 export type GetMessagesQueryResult = ApolloReactCommon.QueryResult<
 	GetMessagesQuery,
 	GetMessagesQueryVariables
@@ -1981,6 +2311,21 @@ export function withGetNotifications<TProps, TChildProps = {}>(
 	});
 }
 
+/**
+ * __useGetNotificationsQuery__
+ *
+ * To run a query within a React component, call `useGetNotificationsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetNotificationsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetNotificationsQuery({
+ *   variables: {
+ *   },
+ * });
+ */
 export function useGetNotificationsQuery(
 	baseOptions?: ApolloReactHooks.QueryHookOptions<
 		GetNotificationsQuery,
@@ -2003,9 +2348,11 @@ export function useGetNotificationsLazyQuery(
 		GetNotificationsQueryVariables
 	>(GetNotificationsDocument, baseOptions);
 }
-
 export type GetNotificationsQueryHookResult = ReturnType<
 	typeof useGetNotificationsQuery
+>;
+export type GetNotificationsLazyQueryHookResult = ReturnType<
+	typeof useGetNotificationsLazyQuery
 >;
 export type GetNotificationsQueryResult = ApolloReactCommon.QueryResult<
 	GetNotificationsQuery,
@@ -2048,6 +2395,21 @@ export function withGetRoomsList<TProps, TChildProps = {}>(
 	});
 }
 
+/**
+ * __useGetRoomsListQuery__
+ *
+ * To run a query within a React component, call `useGetRoomsListQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetRoomsListQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetRoomsListQuery({
+ *   variables: {
+ *   },
+ * });
+ */
 export function useGetRoomsListQuery(
 	baseOptions?: ApolloReactHooks.QueryHookOptions<
 		GetRoomsListQuery,
@@ -2070,9 +2432,11 @@ export function useGetRoomsListLazyQuery(
 		GetRoomsListQueryVariables
 	>(GetRoomsListDocument, baseOptions);
 }
-
 export type GetRoomsListQueryHookResult = ReturnType<
 	typeof useGetRoomsListQuery
+>;
+export type GetRoomsListLazyQueryHookResult = ReturnType<
+	typeof useGetRoomsListLazyQuery
 >;
 export type GetRoomsListQueryResult = ApolloReactCommon.QueryResult<
 	GetRoomsListQuery,
@@ -2112,6 +2476,22 @@ export function withGetUser<TProps, TChildProps = {}>(
 	});
 }
 
+/**
+ * __useGetUserQuery__
+ *
+ * To run a query within a React component, call `useGetUserQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetUserQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetUserQuery({
+ *   variables: {
+ *      slug: // value for 'slug'
+ *   },
+ * });
+ */
 export function useGetUserQuery(
 	baseOptions?: ApolloReactHooks.QueryHookOptions<
 		GetUserQuery,
@@ -2134,8 +2514,8 @@ export function useGetUserLazyQuery(
 		baseOptions
 	);
 }
-
 export type GetUserQueryHookResult = ReturnType<typeof useGetUserQuery>;
+export type GetUserLazyQueryHookResult = ReturnType<typeof useGetUserLazyQuery>;
 export type GetUserQueryResult = ApolloReactCommon.QueryResult<
 	GetUserQuery,
 	GetUserQueryVariables
@@ -2176,6 +2556,23 @@ export function withGetUsers<TProps, TChildProps = {}>(
 	});
 }
 
+/**
+ * __useGetUsersQuery__
+ *
+ * To run a query within a React component, call `useGetUsersQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetUsersQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetUsersQuery({
+ *   variables: {
+ *      limit: // value for 'limit'
+ *      displayName: // value for 'displayName'
+ *   },
+ * });
+ */
 export function useGetUsersQuery(
 	baseOptions?: ApolloReactHooks.QueryHookOptions<
 		GetUsersQuery,
@@ -2198,8 +2595,10 @@ export function useGetUsersLazyQuery(
 		baseOptions
 	);
 }
-
 export type GetUsersQueryHookResult = ReturnType<typeof useGetUsersQuery>;
+export type GetUsersLazyQueryHookResult = ReturnType<
+	typeof useGetUsersLazyQuery
+>;
 export type GetUsersQueryResult = ApolloReactCommon.QueryResult<
 	GetUsersQuery,
 	GetUsersQueryVariables
@@ -2235,6 +2634,21 @@ export function withMe<TProps, TChildProps = {}>(
 	});
 }
 
+/**
+ * __useMeQuery__
+ *
+ * To run a query within a React component, call `useMeQuery` and pass it any options that fit your needs.
+ * When your component renders, `useMeQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useMeQuery({
+ *   variables: {
+ *   },
+ * });
+ */
 export function useMeQuery(
 	baseOptions?: ApolloReactHooks.QueryHookOptions<MeQuery, MeQueryVariables>
 ) {
@@ -2251,8 +2665,8 @@ export function useMeLazyQuery(
 		baseOptions
 	);
 }
-
 export type MeQueryHookResult = ReturnType<typeof useMeQuery>;
+export type MeLazyQueryHookResult = ReturnType<typeof useMeLazyQuery>;
 export type MeQueryResult = ApolloReactCommon.QueryResult<
 	MeQuery,
 	MeQueryVariables
@@ -2304,6 +2718,27 @@ export function withUpdateMessage<TProps, TChildProps = {}>(
 	});
 }
 
+/**
+ * __useUpdateMessageMutation__
+ *
+ * To run a mutation, you first call `useUpdateMessageMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateMessageMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateMessageMutation, { data, loading, error }] = useUpdateMessageMutation({
+ *   variables: {
+ *      messageId: // value for 'messageId'
+ *      crudType: // value for 'crudType'
+ *      messageText: // value for 'messageText'
+ *      creationToken: // value for 'creationToken'
+ *      chatSlug: // value for 'chatSlug'
+ *   },
+ * });
+ */
 export function useUpdateMessageMutation(
 	baseOptions?: ApolloReactHooks.MutationHookOptions<
 		UpdateMessageMutation,
@@ -2360,6 +2795,22 @@ export function withActiveUsersUpdates<TProps, TChildProps = {}>(
 	});
 }
 
+/**
+ * __useActiveUsersUpdatesSubscription__
+ *
+ * To run a query within a React component, call `useActiveUsersUpdatesSubscription` and pass it any options that fit your needs.
+ * When your component renders, `useActiveUsersUpdatesSubscription` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the subscription, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useActiveUsersUpdatesSubscription({
+ *   variables: {
+ *      chatSlug: // value for 'chatSlug'
+ *   },
+ * });
+ */
 export function useActiveUsersUpdatesSubscription(
 	baseOptions?: ApolloReactHooks.SubscriptionHookOptions<
 		ActiveUsersUpdatesSubscription,
@@ -2437,6 +2888,22 @@ export function withChatRoomUpdates<TProps, TChildProps = {}>(
 	});
 }
 
+/**
+ * __useChatRoomUpdatesSubscription__
+ *
+ * To run a query within a React component, call `useChatRoomUpdatesSubscription` and pass it any options that fit your needs.
+ * When your component renders, `useChatRoomUpdatesSubscription` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the subscription, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useChatRoomUpdatesSubscription({
+ *   variables: {
+ *      chatSlug: // value for 'chatSlug'
+ *   },
+ * });
+ */
 export function useChatRoomUpdatesSubscription(
 	baseOptions?: ApolloReactHooks.SubscriptionHookOptions<
 		ChatRoomUpdatesSubscription,
@@ -2492,6 +2959,21 @@ export function withTypingUsersUpdates<TProps, TChildProps = {}>(
 	});
 }
 
+/**
+ * __useTypingUsersUpdatesSubscription__
+ *
+ * To run a query within a React component, call `useTypingUsersUpdatesSubscription` and pass it any options that fit your needs.
+ * When your component renders, `useTypingUsersUpdatesSubscription` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the subscription, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useTypingUsersUpdatesSubscription({
+ *   variables: {
+ *   },
+ * });
+ */
 export function useTypingUsersUpdatesSubscription(
 	baseOptions?: ApolloReactHooks.SubscriptionHookOptions<
 		TypingUsersUpdatesSubscription,
@@ -2538,6 +3020,21 @@ export function withUserUpdates<TProps, TChildProps = {}>(
 	});
 }
 
+/**
+ * __useUserUpdatesSubscription__
+ *
+ * To run a query within a React component, call `useUserUpdatesSubscription` and pass it any options that fit your needs.
+ * When your component renders, `useUserUpdatesSubscription` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the subscription, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useUserUpdatesSubscription({
+ *   variables: {
+ *   },
+ * });
+ */
 export function useUserUpdatesSubscription(
 	baseOptions?: ApolloReactHooks.SubscriptionHookOptions<
 		UserUpdatesSubscription,

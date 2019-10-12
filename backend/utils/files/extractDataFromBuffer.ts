@@ -14,11 +14,10 @@ export default (file: Buffer, maxFileSizeInKB: number): IFileData => {
 	const allowedVideoTypes: string[] = ['mp4'];
 	const allowedFileExtensions = [...allowedImageTypes, ...allowedVideoTypes];
 
-	// @ts-ignore
 	const fileSizeInKB: number = Math.floor(
 		Buffer.byteLength(file, 'utf8') / 1024
 	);
-	// @ts-ignore
+
 	// const { ext: fileExtension, mime: mimeType } = fileType(file); // For other files other than images
 	const { type: mimeType, height, width } = sizeOf(file);
 

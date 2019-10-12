@@ -29,7 +29,7 @@ class CreatedBy {
 	next();
 })
 export class Message extends Typegoose {
-	@Field(type => ID, { nullable: true })
+	@Field(type => ID)
 	readonly _id: ObjectId;
 
 	@Field()

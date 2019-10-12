@@ -315,4 +315,4 @@ S.MediaLoader = styled('div')<{ isMediaLoaded: boolean }>`
 		`}
 `;
 
-export default withUpdateMessage({ name: 'updateMessage' })(Message);
+export default withUpdateMessage<IProps>({ name: 'updateMessage' })(Message);

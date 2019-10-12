@@ -1,4 +1,4 @@
-import React, { Ref, useRef, useState } from 'react';
+import React, { Ref, useEffect, useRef, useState } from 'react';
 import styled from 'styled-components/macro';
 import gql from 'graphql-tag';
 import { FormikProps, withFormik } from 'formik';
@@ -94,9 +94,26 @@ const SendMessage: React.FC<IProps> = props => {
 	const [isTyping, setIsTyping] = useState(false);
 	const client = useApolloClient();
 	const mentionSuggesterRef: Ref<any> = useRef(null);
-	const [executeUserSearch, { data: userData }] = useGetUsersLazyQuery();
+	const [
+		executeUserSearch,
+		{ data: userData, loading }
+	] = useGetUsersLazyQuery();
 	const { t } = useTranslation();
 	const [setMentionSuggester] = use_SetMentionSuggesterMutation();
+
+	useEffect(() => {
+		if (!loading && userData) {
+			const { userList } = userData.users;
+			setMentionSuggester({
+				variables: {
+					data: {
+						show: userList.length > 0,
+						userList: userList as UserInput[]
+					}
+				}
+			});
+		}
+	}, [userData, loading]);
 
 	const {
 		values,
@@ -124,23 +141,11 @@ const SendMessage: React.FC<IProps> = props => {
 			<S.InputTrigger
 				triggerSymbol='@'
 				typeCallbackDebounce={200}
-				onType={async (data: any) => {
-					await executeUserSearch({
+				onType={data => {
+					executeUserSearch({
 						variables: {
 							displayName: data.value,
 							limit: 5
-						}
-					});
-
-					//FIXME Sason - fix userData undefined value at first request
-					if (!userData) return;
-					const userList = userData.users.userList;
-					setMentionSuggester({
-						variables: {
-							data: {
-								show: userList.length > 0,
-								userList: userList as UserInput[]
-							}
 						}
 					});
 				}}
@@ -277,5 +282,4 @@ export default withFormik({
 			});
 		}
 	}
-	//@ts-ignore
 })(SendMessage);

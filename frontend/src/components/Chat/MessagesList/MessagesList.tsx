@@ -201,7 +201,7 @@ class MessagesList extends Component<IProps, IState> {
 					: messages.map(({ node }) => (
 							// @ts-ignore
 							<Message
-								message={node}
+								message={node as IMessage}
 								key={node._id}
 								isDeleted={!!deletedMessages[node._id]}
 								isMine={currentUser!.slug === node.createdBy.slug}

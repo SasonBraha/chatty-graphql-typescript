@@ -5,6 +5,7 @@ import {
 	_SetGenericModalMutationFn,
 	use_SetGenericModalMutation
 } from '../../../__generated__/graphql';
+import i18n from '../../../locale';
 
 interface IProps {
 	maxFileSizeInKB?: number;
@@ -34,14 +35,16 @@ const validateFile = (
 
 		if (fileSize > maxFileSize) {
 			resetFile();
-			const isLimitOver1MB: boolean = maxFileSize >= 1024;
+			const isLimitOver1MB = maxFileSize >= 1024;
 			setGenericModal({
 				variables: {
 					data: {
 						show: true,
 						type: GenericModalTypesEnum.ERROR,
-						// prettier-ignore
-						text: `הקובץ שנבחר גדול מדי, הגודל המירבי הניתן להעלאה הינו ${isLimitOver1MB ? Math.ceil(maxFileSize / 1024) : maxFileSize}${isLimitOver1MB ? 'MB' : 'KB'}`
+						text: i18n.t('global.errors.fileSizeLimitExceeded', {
+							// prettier-ignore
+							maxFileSize: `${isLimitOver1MB ? Math.ceil(maxFileSize / 1024) : maxFileSize}${isLimitOver1MB ? 'MB' : 'KB'}`
+						})
 					}
 				}
 			});

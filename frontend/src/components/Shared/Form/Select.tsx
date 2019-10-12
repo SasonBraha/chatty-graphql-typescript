@@ -6,7 +6,7 @@ interface IProps {
 	children: ReactNode;
 }
 
-const Select = (props: IProps) => (
+const Select: React.FC<IProps> = props => (
 	<FormGroup>
 		<S.Select>{props.children}</S.Select>
 	</FormGroup>

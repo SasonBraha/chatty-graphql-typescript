@@ -8,7 +8,6 @@ interface IProps {
 	visible: boolean;
 }
 
-// @ts-ignore
-const Spinner = (props: IProps) => <MaterialSpinner {...props} />;
+const Spinner: React.FC<IProps> = props => <MaterialSpinner {...props} />;
 
 export default Spinner;

@@ -4,6 +4,7 @@ import { IFileData } from './extractDataFromBuffer';
 import * as uuid from 'uuid';
 import s3 from '../../services/s3';
 import { File } from '../../entities/File';
+import shortid = require('shortid');
 
 const uploadFile = (
 	file: IFileInput,
@@ -18,7 +19,7 @@ const uploadFile = (
 		);
 
 		const uploadData = {
-			Key: `${reference}/${uuid()}.${mimeType}`,
+			Key: `${reference}/${shortid.generate()}.${mimeType}`,
 			Bucket: process.env.S3_BUCKET,
 			Body: fileBuffer,
 			ContentEncoding: 'base64',
@@ -28,7 +29,7 @@ const uploadFile = (
 		const fileData: File = {
 			mimeType,
 			path: uploadData.Key,
-			isStored: true,
+			isStoredRemotely: true,
 			dimensions
 		};
 

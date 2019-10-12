@@ -13,7 +13,7 @@ interface IProps {
 	onBlur: (event: React.FormEvent<HTMLInputElement>) => void;
 }
 
-const TextInput = (props: IProps) => (
+const TextInput: React.FC<IProps> = props => (
 	<FormGroup>
 		<S.Input id={props.name} {...props} required />
 		<S.InputError>{props.error}</S.InputError>
