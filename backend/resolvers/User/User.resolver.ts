@@ -15,7 +15,6 @@ import {
 	IUserMentionedOutput,
 	SearchUsersOutput
 } from './user.resolver.outputs';
-import * as jwt from 'jsonwebtoken';
 import { UserPermissionTypesEnum } from '../../permissions';
 import { Notification, NotificationModel } from '../../entities/Notification';
 import { SubscriptionTypesEnum } from '../../types/enums';
@@ -29,11 +28,9 @@ export default class UserResolver {
 	}
 
 	@Query(returns => User, { nullable: true })
-	async user(@Arg('slug') slug: string, @Ctx('user') user: User) {
-		const isTargetUserSameIsLoggedInUser = user ? user.slug === slug : false;
-		return UserModel.findOne({ slug }).select(
-			isTargetUserSameIsLoggedInUser ? '+email' : '-email'
-		);
+	async user(@Arg('slug') slug: string) {
+		const user = await UserModel.findOne({ slug }).lean();
+		return user;
 	}
 
 	@UseMiddleware(Authenticated)
@@ -50,15 +47,8 @@ export default class UserResolver {
 			)
 		}).limit(limit ? limit : 20);
 
-		const searchToken = await jwt.sign(
-			{ userIds: userList.map(({ _id }) => _id) },
-			process.env.JWT_SECRET,
-			{ expiresIn: '7m' }
-		);
-
 		return {
-			userList,
-			searchToken
+			userList
 		};
 	}
 
@@ -95,5 +85,13 @@ export default class UserResolver {
 			isRead: false
 		});
 		return unreadCount;
+	}
+
+	@FieldResolver(returns => String, { nullable: true })
+	email(@Root() user: User, @Ctx('user') currentUser: User): string {
+		if (currentUser && currentUser.slug === user.slug) {
+			return user.email;
+		}
+		return null;
 	}
 }

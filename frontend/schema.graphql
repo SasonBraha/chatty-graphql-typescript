@@ -61,7 +61,7 @@ type Mention {
 }
 
 type Message {
-    _id: ID
+    _id: ID!
     chatSlug: String!
     createdAt: DateTime
     createdBy: CreatedBy!
@@ -130,7 +130,6 @@ type Query {
     chat(chatSlug: String!): Chat!
     me: User!
     notifications: [Notification!]!
-    olderMessages(beforeMessageId: ID!, chatSlug: String!): [Message!]
     roomsList: [Chat!]!
     user(slug: String!): User
     users(displayName: String!, limit: Int): SearchUsersOutput!
@@ -138,7 +137,6 @@ type Query {
 }
 
 type SearchUsersOutput {
-    searchToken: String!
     userList: [User!]!
 }
 
@@ -155,7 +153,7 @@ type User {
     createdAt: DateTime!
     createdChatRooms: [Chat!]
     displayName: String!
-    email: String!
+    email: String
     excludedPermissions: [String!]!
     ipAddress: String!
     lastActivity: DateTime!

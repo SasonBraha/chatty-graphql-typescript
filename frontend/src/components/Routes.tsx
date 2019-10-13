@@ -22,11 +22,7 @@ const Routes: React.FC<{}> = props => {
 					render={props => <Register {...(props as any)} />}
 				/>
 
-				<Route
-					exact
-					path='/chat/:chatSlug'
-					render={props => <Chat {...(props as any)} />}
-				/>
+				<Route path='/chat' render={props => <Chat {...(props as any)} />} />
 
 				<Route
 					exact

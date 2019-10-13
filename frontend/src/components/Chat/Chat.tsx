@@ -1,39 +1,20 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import RoomsList from './RoomsList';
 import styled from 'styled-components/macro';
-import { RouteComponentProps } from 'react-router';
-import ActiveUsers from './ActiveUsers';
-import MessagesList from './MessagesList';
-import SendMessage from './SendMessage';
-import UploadPreview from './UploadPreview';
+import { Route, RouteComponentProps } from 'react-router';
 import { withAuth } from '../Shared/Hoc';
-import { use_SetCurrentChatSlugMutation } from '../../__generated__/graphql';
+import ActiveArea from './ActiveArea';
 
-interface IMatchParams {
-	chatSlug: string;
-}
-export interface IChatProps extends RouteComponentProps<IMatchParams> {}
-
-const Chat: React.FC<IChatProps> = props => {
-	const [filePreview, setFilePreview] = useState(null);
-	const { chatSlug } = props.match.params;
-	const [setCurrentChatSlug] = use_SetCurrentChatSlugMutation();
-	useEffect(() => {
-		setCurrentChatSlug({ variables: { slug: chatSlug } });
-	}, [chatSlug]);
-
+interface IProps extends RouteComponentProps {}
+const Chat: React.FC<IProps> = props => {
 	return (
 		<S.Chat>
 			<RoomsList />
-			<ActiveUsers />
-
-			<S.MessagesArea>
-				<UploadPreview file={filePreview} />
-				<MessagesList {...props} />
-				{/*
- // @ts-ignore */}
-				<SendMessage {...props} setFilePreview={setFilePreview} />
-			</S.MessagesArea>
+			<Route
+				exact
+				path={`${props.match.path}/:chatSlug`}
+				component={ActiveArea}
+			/>
 		</S.Chat>
 	);
 };
@@ -45,11 +26,6 @@ S.Chat = styled.div`
 	height: 100%;
 `;
 
-S.MessagesArea = styled.div`
-	display: flex;
-	flex-direction: column;
-	height: calc(100vh - ${props => props.theme.headerHeight});
-	position: relative;
-`;
+S.MessagesArea = styled.div``;
 
 export default withAuth(Chat);

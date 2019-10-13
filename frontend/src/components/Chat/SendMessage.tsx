@@ -142,6 +142,7 @@ const SendMessage: React.FC<IProps> = props => {
 				triggerSymbol='@'
 				typeCallbackDebounce={200}
 				onType={data => {
+					console.log(data);
 					executeUserSearch({
 						variables: {
 							displayName: data.value,
@@ -197,6 +198,7 @@ const SendMessage: React.FC<IProps> = props => {
 
 			<MentionSuggester
 				onSelect={(text: string) => {
+					console.log(text);
 					setFieldValue('text', `${values.text}${text}`);
 					setMentionSuggester({
 						variables: {

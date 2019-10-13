@@ -1,6 +1,5 @@
 query GetUsers($limit: Int, $displayName: String!) {
     users(displayName: $displayName, limit: $limit) {
-        searchToken
         userList {
             displayName
             slug

@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import MessagesList from './MessagesList';
-import { IChatProps } from '../Chat';
 import produce from 'immer';
 import {
 	FileUploadedOutput,
@@ -14,6 +13,7 @@ import {
 	useGetMessagesQuery,
 	User
 } from '../../../__generated__/graphql';
+import { IChatActiveAreaProps } from '../ActiveArea';
 
 enum SubscriptionTypesEnum {
 	NEW_MESSAGE = 'NEW_MESSAGE',
@@ -22,7 +22,7 @@ enum SubscriptionTypesEnum {
 	MESSAGE_EDITED = 'MESSAGE_EDITED'
 }
 
-interface IProps extends IChatProps {}
+interface IProps extends IChatActiveAreaProps {}
 
 const MessagesListData: React.FC<IProps> = props => {
 	const [isFetching, setIsFetching] = useState(false);

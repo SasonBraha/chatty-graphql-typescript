@@ -3,7 +3,7 @@ import * as ApolloReactCommon from '@apollo/react-common';
 import * as ApolloReactHoc from '@apollo/react-hoc';
 import * as ApolloReactHooks from '@apollo/react-hooks';
 export type Maybe<T> = T | null;
-// Generated in 2019-10-12T09:23:45+03:00
+// Generated in 2019-10-13T09:50:09+03:00
 
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
@@ -348,7 +348,6 @@ export type RegisterInput = {
 export type SearchUsersOutput = {
 	__typename?: 'SearchUsersOutput';
 	userList: Array<User>;
-	searchToken: Scalars['String'];
 };
 
 export type Subscription = {
@@ -379,7 +378,7 @@ export type User = {
 	__typename?: 'User';
 	_id: Scalars['ID'];
 	displayName: Scalars['String'];
-	email: Scalars['String'];
+	email?: Maybe<Scalars['String']>;
 	slug: Scalars['String'];
 	avatar: Scalars['String'];
 	notifications: Array<Notification>;
@@ -672,14 +671,11 @@ export type GetUsersQueryVariables = {
 };
 
 export type GetUsersQuery = { __typename?: 'Query' } & {
-	users: { __typename?: 'SearchUsersOutput' } & Pick<
-		SearchUsersOutput,
-		'searchToken'
-	> & {
-			userList: Array<
-				{ __typename?: 'User' } & Pick<User, 'displayName' | 'slug' | 'avatar'>
-			>;
-		};
+	users: { __typename?: 'SearchUsersOutput' } & {
+		userList: Array<
+			{ __typename?: 'User' } & Pick<User, 'displayName' | 'slug' | 'avatar'>
+		>;
+	};
 };
 
 export type MeQueryVariables = {};
@@ -2523,7 +2519,6 @@ export type GetUserQueryResult = ApolloReactCommon.QueryResult<
 export const GetUsersDocument = gql`
 	query GetUsers($limit: Int, $displayName: String!) {
 		users(displayName: $displayName, limit: $limit) {
-			searchToken
 			userList {
 				displayName
 				slug

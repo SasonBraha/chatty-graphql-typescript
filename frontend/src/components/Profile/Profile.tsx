@@ -36,6 +36,7 @@ const Profile: React.FC<IProps> = props => {
 						/>
 					</S.ProfileImage>
 					<S.Username>{data.user.displayName}</S.Username>
+					<S.Email>{data.user.email}</S.Email>
 				</S.Container>
 				<S.Container row>
 					<S.Bold>{t('profile.registrationDate')}</S.Bold>
@@ -98,6 +99,9 @@ S.ProfileImage = styled.figure`
 S.Username = styled.p`
 	font-weight: bold;
 `;
+
+S.Email = styled.p``;
+
 S.LeftColumn = styled.div`
 	flex: 1;
 `;
