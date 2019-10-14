@@ -34,10 +34,7 @@ export class User extends Typegoose {
 	@Property({ required: true, trim: true })
 	displayName!: string;
 
-	/*
-	 * Email is a nullable field because we don't send the email in the response
-	 * if the request not came from the same user/not logged in user/user has no permission to see emails
-	 * */
+	// Email will be set to `null` on unauthorized requests.
 	@Field({ nullable: true })
 	@Property({ required: true, trim: true, lowercase: true })
 	email!: string;

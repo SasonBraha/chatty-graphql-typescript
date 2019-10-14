@@ -1,5 +1,6 @@
 import React, { lazy, Suspense } from 'react';
 import { Route, Switch } from 'react-router';
+import ProgressBar from './ProgressBar';
 
 const Profile = lazy(() => import('./Profile'));
 const Chat = lazy(() => import('./Chat'));
@@ -8,7 +9,7 @@ const Register = lazy(() => import('./Auth/RegisterForm'));
 
 const Routes: React.FC<{}> = props => {
 	return (
-		<Suspense fallback={<div>Loading...</div>}>
+		<Suspense fallback={<ProgressBar />}>
 			<Switch>
 				<Route
 					exact

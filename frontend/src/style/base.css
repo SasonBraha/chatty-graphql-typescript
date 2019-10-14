@@ -31,3 +31,7 @@ input,
 button {
 	font-family: inherit;
 }
+
+#nprogress .spinner {
+	display: none;
+}
