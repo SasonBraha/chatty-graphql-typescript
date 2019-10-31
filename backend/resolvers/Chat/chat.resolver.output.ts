@@ -3,6 +3,7 @@ import { File } from '../../entities/File';
 import { User } from '../../entities/User';
 import { createUnionType, Field, ID, ObjectType } from 'type-graphql';
 import { SubscriptionTypesEnum } from '../../types/enums';
+import { PageInfo } from '../SharedResolvers';
 
 export interface IMessageCreatedOutput {
 	message: Message;
@@ -40,12 +41,6 @@ export class UserTypingOutput {
 class MessageEdge {
 	@Field() cursor: string;
 	@Field(type => Message) node: Message;
-}
-
-@ObjectType()
-class PageInfo {
-	@Field() hasNextPage?: boolean;
-	@Field() hasPreviousPage?: boolean;
 }
 
 @ObjectType()

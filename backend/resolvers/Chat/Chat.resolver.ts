@@ -43,7 +43,6 @@ import {
 } from '../../types/enums';
 import { generateUserMentionedNotification } from '../../utils/notifications';
 import { Document } from 'mongoose';
-import * as graphqlFields from 'graphql-fields';
 import sanitizer from '../../services/Sanitizer';
 import shortid = require('shortid');
 import { Ref } from '@hasezoey/typegoose';
@@ -454,13 +453,11 @@ export default class ChatResolver {
 	@FieldResolver()
 	async messages(
 		@Root() chat: Chat,
-		@Info() info: any,
 		@Arg('first', () => Int, { nullable: true }) first: number,
 		@Arg('last', () => Int, { nullable: true }) last: number,
 		@Arg('after', { nullable: true }) after: string,
 		@Arg('before', { nullable: true }) before: string
 	): Promise<MessageConnection> {
-		const requestedFields = graphqlFields(info);
 		const limit = first || last || 20;
 		const cursor = before || after ? new ObjectID(before || after) : null;
 		const messages = await MessageModel.aggregate([
@@ -481,39 +478,33 @@ export default class ChatResolver {
 			node: message
 		}));
 
-		const pageInfo = {
-			async getHasPreviousPage() {
-				if (messages.length < limit) return false;
-				return !!(await MessageModel.findOne({
-					_id: { [before ? '$lt' : '$gt']: cursor },
-					chatSlug: chat.slug
-				}));
-			},
-			async getHasNextPage() {
-				if (messages.length < limit) return false;
-				return !!(await MessageModel.findOne({
-					_id: { [before ? '$lt' : '$gt']: messages[messages.length - 1]._id },
-					chatSlug: chat.slug
-				}));
-			}
-		};
-
-		let returnValue: MessageConnection = {
+		return {
 			edges: edges.reverse(),
-			pageInfo: {}
+			pageInfo: {
+				// @ts-ignore
+				async hasNextPage() {
+					if (messages.length < limit) return false;
+					return Boolean(
+						await MessageModel.findOne({
+							_id: {
+								[before ? '$lt' : '$gt']: messages[messages.length - 1]._id
+							},
+							chatSlug: chat.slug
+						})
+					);
+				},
+
+				// @ts-ignore
+				async hasPreviousPage() {
+					if (messages.length < limit) return false;
+					return Boolean(
+						await MessageModel.findOne({
+							_id: { [before ? '$lt' : '$gt']: cursor },
+							chatSlug: chat.slug
+						})
+					);
+				}
+			}
 		};
-
-		if (requestedFields.pageInfo) {
-			const { hasNextPage, hasPreviousPage } = requestedFields.pageInfo;
-			if (hasNextPage) {
-				returnValue.pageInfo.hasNextPage = await pageInfo.getHasNextPage();
-			}
-
-			if (hasPreviousPage) {
-				returnValue.pageInfo.hasPreviousPage = await pageInfo.getHasPreviousPage();
-			}
-		}
-
-		return returnValue;
 	}
 }

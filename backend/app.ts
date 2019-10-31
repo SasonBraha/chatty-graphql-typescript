@@ -1,8 +1,7 @@
-import shortid = require('shortid');
-
 require('dotenv').config({ path: './.env' });
-import { JWT } from './services';
 import 'reflect-metadata';
+import { JWT } from './services';
+import shortid = require('shortid');
 import { handleSocketDisconnect } from './handlers';
 import * as http from 'http';
 import { ApolloServer } from 'apollo-server-express';
@@ -12,12 +11,11 @@ import * as cors from 'cors';
 import * as mongoose from 'mongoose';
 import * as morgan from 'morgan';
 import { buildSchema } from 'type-graphql';
-import { AuthResolver, ChatResolver, UserResolver } from './resolvers';
+import resolvers from './resolvers';
 import * as bodyParser from 'body-parser';
 import { GraphQLError } from 'graphql';
 import CustomError, { ErrorResponse, ErrorTypesEnum } from './utils/errors';
 import { isJson, logger } from './utils';
-import * as uuid from 'uuid';
 import pubSub from './services/pubSub';
 import sanitizer from './services/Sanitizer';
 import './permissions';
@@ -62,7 +60,7 @@ const main = async () => {
 	//  Apollo Setup                      //
 	//------------------------------------//
 	const schema = await buildSchema({
-		resolvers: [AuthResolver, ChatResolver, UserResolver],
+		resolvers,
 		pubSub
 	});
 

@@ -21,6 +21,10 @@ const ActiveArea: React.FC<IChatActiveAreaProps> = props => {
 		setCurrentChatSlug({ variables: { slug: chatSlug } });
 	}, [chatSlug]);
 
+	useEffect(() => {
+		return () => setCurrentChatSlug({ variables: { slug: '' } });
+	}, []);
+
 	return (
 		<>
 			<ActiveUsers />
