@@ -1,13 +1,10 @@
 import { ErrorTypesEnum } from '../utils/errors';
 import * as jwt from 'jsonwebtoken';
-
-interface IPlainObject {
-	[key: string]: any;
-}
+import { IDynamicObject } from '../../frontend/src/types/interfaces';
 
 class JWT {
 	static async generateToken(
-		payload: IPlainObject,
+		payload: IDynamicObject,
 		asBearer: boolean,
 		expiresIn: string
 	): Promise<string> {

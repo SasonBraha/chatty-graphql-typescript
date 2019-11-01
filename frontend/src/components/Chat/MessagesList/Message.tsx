@@ -1,5 +1,4 @@
 import React, { PureComponent } from 'react';
-import { IMessage } from '../../../types/interfaces';
 import styled, { css } from 'styled-components/macro';
 import formatRelative from 'date-fns/formatRelative';
 import he from 'date-fns/locale/he';
@@ -13,11 +12,12 @@ import { withTranslation } from '../../Shared/Hoc';
 import {
 	UpdateMessageMutationFn,
 	UpdateMessageProps,
-	withUpdateMessage
+	withUpdateMessage,
+	Message as MessageType
 } from '../../../__generated__/graphql';
 
 interface IProps extends UpdateMessageProps {
-	message: IMessage;
+	message: MessageType;
 	isMine: boolean;
 	setMessageCtxMenu: (ctx: IMessageCtxMenu) => void;
 	t?: any;
@@ -218,11 +218,11 @@ S.Message = styled('div')<{
 		margin-top: 1.3rem;
 	}
 
-	${({ isMine }) =>
+	${({ isMine, theme }) =>
 		isMine &&
 		css`
 			align-self: flex-start;
-			background: ${props => props.theme.ownMessageBackground};
+			background: ${theme.ownMessageBackground};
 			color: white;
 		`}
 

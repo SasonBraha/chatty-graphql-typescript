@@ -2,9 +2,11 @@ import React, { Ref } from 'react';
 import { Transition } from 'react-transition-group';
 import styled, { css } from 'styled-components/macro';
 import { List } from '../Shared';
-import { IUser } from '../../types/interfaces';
 import { IListItem } from '../Shared/List/List';
-import { use_GetMentionSuggesterQuery } from '../../__generated__/graphql';
+import {
+	use_GetMentionSuggesterQuery,
+	User
+} from '../../__generated__/graphql';
 
 interface IProps {
 	onSelect?: (value: string) => any | void;
@@ -29,7 +31,7 @@ const MentionSuggester: React.FC<IProps> = React.forwardRef(
 				{mountState => (
 					<S.MentionSuggester userList={userList} className={mountState}>
 						<List
-							items={userList.reduce((acc: IListItem[], currentUser: IUser) => {
+							items={userList.reduce((acc: IListItem[], currentUser: User) => {
 								acc.push({
 									image: currentUser.avatar,
 									color: 'black',
@@ -49,7 +51,7 @@ const MentionSuggester: React.FC<IProps> = React.forwardRef(
 );
 
 const S: any = {};
-S.MentionSuggester = styled('div')<{ userList: IUser[] }>`
+S.MentionSuggester = styled('div')<{ userList: User[] }>`
 	position: absolute;
 	width: 100%;
 	background: white;

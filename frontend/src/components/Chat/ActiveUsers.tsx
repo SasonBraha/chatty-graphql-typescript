@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
-import { IUser } from '../../types/interfaces';
 import { Link } from 'react-router-dom';
 import { CrudEnum } from '../../types/enums';
 import { afterRender } from '../../utils';
 import {
 	use_GetCurrentChatSlugQuery,
 	useActiveUsersUpdatesSubscription,
+	User,
 	useUpdateActiveUsersMutation
 } from '../../__generated__/graphql';
 
@@ -52,7 +52,7 @@ const ActiveUsers: React.FC<IProps> = props => {
 
 	return (
 		<S.ActiveUsers>
-			{data.onActiveUsersUpdate.map((user: IUser, i: number) => (
+			{data.onActiveUsersUpdate.map((user: User, i: number) => (
 				<Link to={`/user/${user.slug}`} key={i}>
 					<S.ActiveUser>
 						<S.Avatar src={user.avatar} alt={user.displayName} />

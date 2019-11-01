@@ -55,11 +55,11 @@ S.RoomsListItem = styled(Link)<{ selected: boolean }>`
 		background: ${props => props.theme.activeUsersBackground};
 	}
 
-	${({ selected }) =>
+	${({ selected, theme }) =>
 		selected &&
 		css`
-			border-right: 0.5rem solid ${props => props.theme.ownMessageBackground};
-			background: ${props => props.theme.activeUsersBackground};
+			border-right: 0.5rem solid ${theme.ownMessageBackground};
+			background: ${theme.activeUsersBackground};
 		`}
 `;
 

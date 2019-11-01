@@ -1,6 +1,4 @@
 import React, { Component, createRef, RefObject } from 'react';
-import { IMessage } from '../../../types/interfaces';
-import Message from './Message';
 import styled from 'styled-components/macro';
 import MessagesListLoader from './MessagesListLoader';
 import { InfoBanner, Scrollable, Spinner } from '../../Shared';
@@ -8,7 +6,12 @@ import MessageContextMenu from './MessageContextMenu';
 import { ApolloClient } from 'apollo-client';
 import { withTranslation } from '../../Shared/Hoc';
 import { afterRender } from '../../../utils';
-import { MessageEdge, User } from '../../../__generated__/graphql';
+import {
+	MessageEdge,
+	User,
+	Message as MessageType
+} from '../../../__generated__/graphql';
+import Message from './Message';
 
 interface IProps {
 	currentUser?: User | null;
@@ -28,7 +31,7 @@ interface IProps {
 
 export interface IMessageCtxMenu {
 	isOpen: boolean;
-	message?: IMessage | null;
+	message?: MessageType | null;
 	position?: {
 		x: number;
 		y: number;
@@ -198,16 +201,25 @@ class MessagesList extends Component<IProps, IState> {
 					? Array.from({ length: 20 }).map((_, i) => (
 							<MessagesListLoader key={i} />
 					  ))
-					: messages.map(({ node }) => (
-							// @ts-ignore
-							<Message
-								message={node as IMessage}
-								key={node._id}
-								isDeleted={!!deletedMessages[node._id]}
-								isMine={currentUser!.slug === node.createdBy.slug}
-								setMessageCtxMenu={this.showMessageCtxMenu}
-							/>
-					  ))}
+					: messages.map(({ node }) => {
+							console.log(currentUser);
+							console.log({
+								current: currentUser.slug,
+								node: node.createdBy.slug,
+								isEqual: currentUser.slug === node.createdBy.slug
+							});
+
+							return (
+								// @ts-ignore
+								<Message
+									message={node as MessageType}
+									key={node._id}
+									isDeleted={!!deletedMessages[node._id]}
+									isMine={currentUser!.slug == node.createdBy.slug}
+									setMessageCtxMenu={this.showMessageCtxMenu}
+								/>
+							);
+					  })}
 				<div className='listEnd' ref={this.listEnd} />
 				<MessageContextMenu
 					ctx={this.state.messageCtxMenu}

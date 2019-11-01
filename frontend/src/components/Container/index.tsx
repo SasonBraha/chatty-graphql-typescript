@@ -40,12 +40,12 @@ S.Container = styled('main')<{
 	will-change: width;
 	height: calc(100vh - ${props => props.theme.headerHeight});
 
-	${({ navOpen, shouldShrink }) =>
+	${({ navOpen, shouldShrink, theme }) =>
 		navOpen &&
 		shouldShrink &&
 		css`
-			transform: translateX(calc(-1 * ${props => props.theme.navWidth}));
-			width: calc(100% - ${props => props.theme.navWidth});
+			transform: translateX(calc(-1 * ${theme.navWidth}));
+			width: calc(100% - ${theme.navWidth});
 		`};
 `;
 

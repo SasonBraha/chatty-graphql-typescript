@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import { INotification } from '../../types/interfaces';
 import { ListItem, Scrollable } from '../Shared';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components/macro';
-import { useGetNotificationsLazyQuery } from '../../__generated__/graphql';
+import {
+	Notification,
+	useGetNotificationsLazyQuery
+} from '../../__generated__/graphql';
 import { useTranslation } from 'react-i18next';
 import Spinner from '../Shared/Spinner';
 
@@ -15,7 +17,7 @@ enum NotificationTypesEnum {
 	USER_MENTION = 'USER_MENTION'
 }
 
-const convertNotificationToListItemData = (notification: INotification) => {
+const convertNotificationToListItemData = (notification: Notification) => {
 	switch (notification.type) {
 		case NotificationTypesEnum.USER_MENTION:
 			return {
@@ -66,7 +68,7 @@ const Notifications: React.FC<IProps> = props => {
 			) : (
 				<S.List>
 					{notifications.length
-						? notifications.map((notification: INotification) => (
+						? notifications.map((notification: Notification) => (
 								<ListItem
 									key={notification._id}
 									{...convertNotificationToListItemData(notification)}

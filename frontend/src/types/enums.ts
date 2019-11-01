@@ -30,7 +30,7 @@ export enum LocalStorageEnum {
 export enum ApolloTypenameEnum {
 	USER = 'User',
 	CHAT = 'Chat',
-	_NOTIFICATIONS_DATA = '_NotificationsData',
+	_NOTIFICATIONS_DATA = '_NOTIFICATIONS_DATA',
 	_GENERIC_MODAL = '_GENERIC_MODAL',
 	_MENTION_SUGGESTER = '_MENTION_SUGGESTER'
 }
