@@ -135,9 +135,9 @@ const MessagesListData: React.FC<IProps> = props => {
 			setIsMoreMessagesToFetch={setIsMoreMessagesToFetch}
 			found={!!(!loading && data && data.chat)}
 			currentUser={currentUser as User}
-			fetchOlderMessages={(cursor: string) => {
+			fetchOlderMessages={async (cursor: string) => {
 				setIsFetching(true);
-				fetchMore({
+				await fetchMore({
 					variables: { chatSlug, first: 20, before: cursor },
 					updateQuery: (prev, { fetchMoreResult }) => {
 						setIsFetching(false);

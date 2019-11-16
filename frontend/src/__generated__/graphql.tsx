@@ -3,7 +3,7 @@ import * as ApolloReactCommon from '@apollo/react-common';
 import * as ApolloReactHoc from '@apollo/react-hoc';
 import * as ApolloReactHooks from '@apollo/react-hooks';
 export type Maybe<T> = T | null;
-// Generated in 2019-10-13T09:50:09+03:00
+// Generated in 2019-11-15T09:58:36+02:00
 
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
@@ -163,6 +163,7 @@ export type MessageEditedOutput = {
 	updateType: Scalars['String'];
 };
 
+/** Boolean is used for the return type without "!", the resolvers return void. */
 export type Mutation = {
 	__typename?: 'Mutation';
 	createChatRoom: Chat;
@@ -186,84 +187,103 @@ export type Mutation = {
 	setTypingUsers?: Maybe<Scalars['Boolean']>;
 };
 
+/** Boolean is used for the return type without "!", the resolvers return void. */
 export type MutationCreateChatRoomArgs = {
 	data: CreateChatInput;
 };
 
+/** Boolean is used for the return type without "!", the resolvers return void. */
 export type MutationPostMessageArgs = {
 	chatSlug: Scalars['String'];
 	text: Scalars['String'];
 };
 
+/** Boolean is used for the return type without "!", the resolvers return void. */
 export type MutationUpdateMessageArgs = {
 	updatePayload: UpdateMessageInput;
 };
 
+/** Boolean is used for the return type without "!", the resolvers return void. */
 export type MutationUploadMessageFileArgs = {
 	messageId: Scalars['String'];
 	chatSlug: Scalars['String'];
 	file: Scalars['Upload'];
 };
 
+/** Boolean is used for the return type without "!", the resolvers return void. */
 export type MutationUpdateActiveUsersArgs = {
 	crudType: Scalars['String'];
 	chatSlug: Scalars['String'];
 };
 
+/** Boolean is used for the return type without "!", the resolvers return void. */
 export type MutationUpdateTypingUsersArgs = {
 	crudType: Scalars['String'];
 	chatSlug: Scalars['String'];
 };
 
+/** Boolean is used for the return type without "!", the resolvers return void. */
 export type MutationRegisterArgs = {
 	data: RegisterInput;
 };
 
+/** Boolean is used for the return type without "!", the resolvers return void. */
 export type MutationLoginArgs = {
 	data: LoginInput;
 };
 
+/** Boolean is used for the return type without "!", the resolvers return void. */
 export type MutationLoginWithGoogleArgs = {
 	token: Scalars['String'];
 };
 
+/** Boolean is used for the return type without "!", the resolvers return void. */
 export type MutationCreateRestPasswordTokenArgs = {
 	email: Scalars['String'];
 };
 
+/** Boolean is used for the return type without "!", the resolvers return void. */
 export type MutationChangePasswordArgs = {
 	newPassword: Scalars['String'];
 	token?: Maybe<Scalars['String']>;
 };
 
+/** Boolean is used for the return type without "!", the resolvers return void. */
 export type MutationUpdateCurrentUserArgs = {
 	user?: Maybe<UserInput>;
 };
 
+/** Boolean is used for the return type without "!", the resolvers return void. */
 export type MutationSetNotificationsDataArgs = {
 	data?: Maybe<NotificationsDataInput>;
 };
 
+/** Boolean is used for the return type without "!", the resolvers return void. */
 export type MutationToggleNavStateArgs = {
 	isOpen?: Maybe<Scalars['Boolean']>;
 };
 
+/** Boolean is used for the return type without "!", the resolvers return void. */
 export type MutationSetAuthModalArgs = {
 	isOpen?: Maybe<Scalars['Boolean']>;
 };
 
+/** Boolean is used for the return type without "!", the resolvers return void. */
 export type MutationSetGenericModalArgs = {
 	data?: Maybe<GenericModalInput>;
 };
 
+/** Boolean is used for the return type without "!", the resolvers return void. */
 export type MutationSetCurrentChatSlugArgs = {
 	slug?: Maybe<Scalars['String']>;
 };
 
+/** Boolean is used for the return type without "!", the resolvers return void. */
 export type MutationSetMentionSuggesterArgs = {
 	data?: Maybe<MentionSuggesterInput>;
 };
 
+/** Boolean is used for the return type without "!", the resolvers return void. */
 export type MutationSetTypingUsersArgs = {
 	chatSlug: Scalars['String'];
 	displayName: Scalars['String'];
@@ -583,6 +603,15 @@ export type MessageAttributesFragment = { __typename?: 'Message' } & Pick<
 export type UserAttributesFragment = { __typename?: 'User' } & Pick<
 	User,
 	'_id' | 'displayName' | 'slug' | 'avatar' | 'email' | 'role'
+>;
+
+export type LoginWithGoogleMutationVariables = {
+	token: Scalars['String'];
+};
+
+export type LoginWithGoogleMutation = { __typename?: 'Mutation' } & Pick<
+	Mutation,
+	'loginWithGoogle'
 >;
 
 export type PostMessageMutationVariables = {
@@ -2021,6 +2050,77 @@ export type _GetTypingUsersLazyQueryHookResult = ReturnType<
 export type _GetTypingUsersQueryResult = ApolloReactCommon.QueryResult<
 	_GetTypingUsersQuery,
 	_GetTypingUsersQueryVariables
+>;
+export const LoginWithGoogleDocument = gql`
+	mutation LoginWithGoogle($token: String!) {
+		loginWithGoogle(token: $token)
+	}
+`;
+export type LoginWithGoogleMutationFn = ApolloReactCommon.MutationFunction<
+	LoginWithGoogleMutation,
+	LoginWithGoogleMutationVariables
+>;
+export type LoginWithGoogleProps<TChildProps = {}> = ApolloReactHoc.MutateProps<
+	LoginWithGoogleMutation,
+	LoginWithGoogleMutationVariables
+> &
+	TChildProps;
+export function withLoginWithGoogle<TProps, TChildProps = {}>(
+	operationOptions?: ApolloReactHoc.OperationOption<
+		TProps,
+		LoginWithGoogleMutation,
+		LoginWithGoogleMutationVariables,
+		LoginWithGoogleProps<TChildProps>
+	>
+) {
+	return ApolloReactHoc.withMutation<
+		TProps,
+		LoginWithGoogleMutation,
+		LoginWithGoogleMutationVariables,
+		LoginWithGoogleProps<TChildProps>
+	>(LoginWithGoogleDocument, {
+		alias: 'loginWithGoogle',
+		...operationOptions
+	});
+}
+
+/**
+ * __useLoginWithGoogleMutation__
+ *
+ * To run a mutation, you first call `useLoginWithGoogleMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useLoginWithGoogleMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [loginWithGoogleMutation, { data, loading, error }] = useLoginWithGoogleMutation({
+ *   variables: {
+ *      token: // value for 'token'
+ *   },
+ * });
+ */
+export function useLoginWithGoogleMutation(
+	baseOptions?: ApolloReactHooks.MutationHookOptions<
+		LoginWithGoogleMutation,
+		LoginWithGoogleMutationVariables
+	>
+) {
+	return ApolloReactHooks.useMutation<
+		LoginWithGoogleMutation,
+		LoginWithGoogleMutationVariables
+	>(LoginWithGoogleDocument, baseOptions);
+}
+export type LoginWithGoogleMutationHookResult = ReturnType<
+	typeof useLoginWithGoogleMutation
+>;
+export type LoginWithGoogleMutationResult = ApolloReactCommon.MutationResult<
+	LoginWithGoogleMutation
+>;
+export type LoginWithGoogleMutationOptions = ApolloReactCommon.BaseMutationOptions<
+	LoginWithGoogleMutation,
+	LoginWithGoogleMutationVariables
 >;
 export const PostMessageDocument = gql`
 	mutation PostMessage($chatSlug: String!, $text: String!) {

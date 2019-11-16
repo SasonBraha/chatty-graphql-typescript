@@ -41,11 +41,10 @@ S.FormHeader = styled.header`
 	&::after {
 		content: '';
 		display: block;
-		margin: 1.5rem auto 0 auto;
+		margin: 1.5rem auto 3.3rem auto;
 		width: 73%;
 		height: 0.2rem;
 		background: var(--main-color);
-		margin-bottom: 3.3rem;
 	}
 `;
 
@@ -55,8 +54,7 @@ S.FormHeaderIcon = styled.svg`
 	color: currentColor;
 	display: block;
 	fill: currentColor;
-	margin: 0 auto;
-	margin-bottom: 5px;
+	margin: 0 auto 5px auto;
 `;
 
 export default Form;

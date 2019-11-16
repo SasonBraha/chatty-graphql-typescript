@@ -46,4 +46,5 @@ S.ActiveArea = styled.div`
 	height: calc(100vh - ${props => props.theme.headerHeight});
 	position: relative;
 `;
+
 export default ActiveArea;

@@ -18,7 +18,7 @@ const RoomsList: React.FC<IProps> = props => {
 	} = use_GetCurrentChatSlugQuery();
 	const [setTypingUsers] = use_SetTypingUsersMutation();
 
-	useTypingUsersUpdatesSubscription({
+	const _ = useTypingUsersUpdatesSubscription({
 		onSubscriptionData({ subscriptionData }) {
 			const {
 				data: {

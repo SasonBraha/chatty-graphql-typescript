@@ -1,21 +1,14 @@
 import React from 'react';
 import styled from 'styled-components/macro';
-import ReactGoogleLogin from 'react-google-login';
-import gql from 'graphql-tag';
-import { useApolloClient } from '@apollo/react-hooks';
+import ReactGoogleLogin, { GoogleLoginResponse } from 'react-google-login';
+import { useLoginWithGoogleMutation } from '../../__generated__/graphql';
 
 interface IProps {
 	text: string;
 }
 
-const LOGIN_WITH_GOOGLE_MUTATION = gql`
-	mutation LoginWithGoogle($token: String!) {
-		loginWithGoogle(token: $token)
-	}
-`;
-
 const GoogleLogin: React.FC<IProps> = props => {
-	const client = useApolloClient();
+	const [loginMutation] = useLoginWithGoogleMutation();
 	return (
 		<ReactGoogleLogin
 			clientId={process.env.REACT_APP_GOOGLE_CLIENT_ID}
@@ -25,21 +18,17 @@ const GoogleLogin: React.FC<IProps> = props => {
 					<S.GoogleLogo src='./images/google_logo.svg' alt='google_logo' />
 				</S.GoogleLoginBtn>
 			)}
-			onFailure={ex => {
-				console.log('fail', ex);
-			}}
-			onSuccess={async response => {
-				const userAccessToken = await client.mutate({
-					mutation: LOGIN_WITH_GOOGLE_MUTATION,
+			onFailure={console.log}
+			onSuccess={async (response: GoogleLoginResponse) => {
+				const { data } = await loginMutation({
 					variables: {
-						//@ts-ignore
-						token: response.Zi.id_token
+						token: response.getAuthResponse().id_token
 					}
 				});
 
 				localStorage.setItem(
 					process.env.REACT_APP_LS_AUTH_TOKEN,
-					userAccessToken.data.loginWithGoogle
+					data.loginWithGoogle
 				);
 				window.location.href = '/';
 			}}
