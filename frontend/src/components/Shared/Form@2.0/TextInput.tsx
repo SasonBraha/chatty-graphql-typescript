@@ -43,9 +43,9 @@ const TextInput: React.FC<IProps> = props => {
 
 const S: any = {};
 S.Container = styled.div`
-	padding: 0 1rem;
 	display: flex;
 	flex-direction: column;
+	margin-bottom: 1rem;
 `;
 
 S.LabelAndRequiredContainer = styled.div`

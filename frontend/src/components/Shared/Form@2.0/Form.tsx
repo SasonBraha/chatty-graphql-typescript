@@ -13,12 +13,11 @@ interface IProps extends FormikConfig<any> {
 
 const Form: React.FC<IProps> = props => {
 	return (
-		<Formik
-			{...props}
-			render={(formikProps: FormikProps<FormikValues>) => (
+		<Formik {...props}>
+			{(formikProps: FormikProps<FormikValues>) => (
 				<FormikForm noValidate>{props.children}</FormikForm>
 			)}
-		/>
+		</Formik>
 	);
 };
 
