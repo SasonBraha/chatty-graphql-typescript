@@ -1,18 +1,18 @@
 import React, { lazy, Suspense } from 'react';
 import { Route, Switch } from 'react-router';
 import ProgressBar from './ProgressBar';
-import { Form } from './Shared/Form@2.0';
 
 const Profile = lazy(() => import('./Profile'));
 const Chat = lazy(() => import('./Chat'));
 const Login = lazy(() => import('./Auth/LoginForm'));
 const Register = lazy(() => import('./Auth/RegisterForm'));
+const Auth = lazy(() => import('./Auth'));
 
 const Routes: React.FC<{}> = props => {
 	return (
 		<Suspense fallback={<ProgressBar />}>
 			<Switch>
-				<Route exact path='/' component={Form} />
+				<Route exact path='/auth' component={Auth} />
 
 				<Route
 					exact

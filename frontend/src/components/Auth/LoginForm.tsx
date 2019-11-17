@@ -1,28 +1,12 @@
 import React from 'react';
 import { Button, GoogleLogin } from '../Shared';
-import { FormikProps, withFormik } from 'formik';
-// import { Form, FormGroup, TextInput } from '../Shared/Form';
-import Ripple from 'react-ink';
-import gql from 'graphql-tag';
-import client from '../../apollo/client';
 import { useTranslation } from 'react-i18next';
 import { Form, TextInput } from '../Shared/Form@2.0';
 import styled from 'styled-components';
 
-const LOGIN_MUTATION = gql`
-	mutation Login($email: String!, $password: String!) {
-		login(data: { email: $email, password: $password })
-	}
-`;
-
-interface IFormValues {
-	email: string;
-	password: string;
-}
-
 interface IProps {}
 
-const _LoginForm: React.FC<IProps> = props => {
+const LoginForm: React.FC<IProps> = props => {
 	const { t } = useTranslation();
 
 	return (
@@ -78,4 +62,4 @@ S.ForgotAndSubmitContainer = styled.div`
 
 S.ForgotPassword = styled.small``;
 
-export default _LoginForm;
+export default LoginForm;

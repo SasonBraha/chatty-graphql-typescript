@@ -25,7 +25,7 @@ Button.defaultProps = {
 };
 
 const S: any = {};
-S.Button = styled.div`
+S.Button = styled.button`
 	background: ${({ theme }) => theme.lightBlue};
 	outline: none;
 	border: none;
