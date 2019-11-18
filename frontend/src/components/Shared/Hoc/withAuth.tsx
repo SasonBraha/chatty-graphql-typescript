@@ -30,7 +30,7 @@ const withAuth = (WrappedComponent: any) => {
 		return currentUser ? (
 			<WrappedComponent {...props} />
 		) : (
-			<Redirect to='/login' />
+			<Redirect to='/auth' />
 		);
 	};
 };

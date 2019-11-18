@@ -5,6 +5,7 @@ import afterRender from './afterRender';
 import getRuntimeImageDimensions from './getRuntimeImageDimensions';
 import getApolloOperationName from './getApolloOperationName';
 import invoke from './envoke';
+import generateUniqueId from './generateUniqueId';
 
 export {
 	validCss,
@@ -13,5 +14,6 @@ export {
 	afterRender,
 	getRuntimeImageDimensions,
 	getApolloOperationName,
-	invoke
+	invoke,
+	generateUniqueId
 };
