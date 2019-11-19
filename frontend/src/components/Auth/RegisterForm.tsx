@@ -2,7 +2,7 @@ import React, { useRef } from 'react';
 import { Button } from '../Shared';
 import { Form, TextInput } from '../Shared/Form@2.0';
 import { useTranslation } from 'react-i18next';
-import styled from 'styled-components';
+import styled from 'styled-components/macro';
 
 interface IProps {}
 const RegisterForm: React.FC<IProps> = () => {

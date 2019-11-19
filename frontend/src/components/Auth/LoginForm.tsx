@@ -60,6 +60,9 @@ S.ForgotAndSubmitContainer = styled.div`
 	overflow: hidden;
 `;
 
-S.ForgotPassword = styled.small``;
+S.ForgotPassword = styled.small`
+	text-decoration: underline;
+	cursor: pointer;
+`;
 
 export default LoginForm;
