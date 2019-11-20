@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
 import styled from 'styled-components/macro';
 import { Link } from 'react-router-dom';
-import { Burger, Button, Dropdown, List } from '../Shared';
-import Ripple from 'react-ink';
+import { Burger, Dropdown, List } from '../Shared';
 import Icon from '../Shared/Icon';
 import Notifications from './Notifications';
 import i18n from '../../locale';
@@ -97,14 +96,7 @@ const Header: React.FC<IProps> = props => {
 						</Dropdown>
 					</S.ProfileDropdown>
 				</S.HeaderMenu>
-			) : (
-				<S.AuthBtn
-					onClick={() => setAuthModal({ variables: { isOpen: true } })}
-				>
-					{i18n.t('header.authButton')}
-					<Ripple />
-				</S.AuthBtn>
-			)}
+			) : null}
 		</S.Header>
 	);
 };
@@ -133,10 +125,6 @@ S.Brand = styled(Link)`
 	left: 50%;
 	top: 50%;
 	transform: translate(-50%, -50%);
-`;
-
-S.AuthBtn = styled(Button)`
-	margin-left: 3px;
 `;
 
 S.HeaderMenu = styled.div`

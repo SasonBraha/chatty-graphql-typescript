@@ -3,8 +3,9 @@ import { Button, GoogleLogin } from '../Shared';
 import { useTranslation } from 'react-i18next';
 import { Form, TextInput } from '../Shared/Form@2.0';
 import styled from 'styled-components';
+import { ICaptchaProps } from './Auth';
 
-interface IProps {}
+interface IProps extends ICaptchaProps {}
 
 const LoginForm: React.FC<IProps> = props => {
 	const { t } = useTranslation();

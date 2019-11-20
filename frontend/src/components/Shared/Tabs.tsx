@@ -3,7 +3,7 @@ import styled from 'styled-components/macro';
 
 interface IProps {
 	categories: Array<string>;
-	onIndexChange?: () => any;
+	onIndexChange?: (index: number) => any;
 }
 
 const Tabs: React.FC<IProps> = props => {
@@ -13,13 +13,25 @@ const Tabs: React.FC<IProps> = props => {
 		<S.Container>
 			<S.CategoriesContainer>
 				{props.categories.map((category, index) => (
-					<S.Category key={index}>{category}</S.Category>
+					<S.Category
+						onClick={() => {
+							typeof props.onIndexChange == 'function' &&
+								props.onIndexChange(index);
+							setIndex(index);
+						}}
+						key={index}
+					>
+						{category}
+					</S.Category>
 				))}
 			</S.CategoriesContainer>
 
 			<S.SliderLine>
 				<S.SlideIndicator
-					width={(index / (props.categories.length - 1)) * 100}
+					style={{
+						width: `${100 / props.categories.length}%`,
+						marginRight: `${(index * 100) / props.categories.length}%`
+					}}
 				></S.SlideIndicator>
 			</S.SliderLine>
 		</S.Container>
@@ -27,7 +39,9 @@ const Tabs: React.FC<IProps> = props => {
 };
 
 const S: any = {};
-S.Container = styled.div``;
+S.Container = styled.div`
+	width: 100%;
+`;
 
 S.CategoriesContainer = styled.div`
 	display: flex;
@@ -35,19 +49,26 @@ S.CategoriesContainer = styled.div`
 	justify-content: space-between;
 `;
 
-S.Category = styled.div``;
+S.Category = styled.div`
+	cursor: pointer;
+	flex: 1;
+	text-align: center;
+	user-select: none;
+`;
 
 S.SliderLine = styled.div`
 	width: 100%;
-	height: 6px;
+	height: 1px;
+	position: relative;
+	background: ${props => props.theme.gray30};
 `;
 
 S.SlideIndicator = styled.div`
 	position: absolute;
 	right: 0;
-	height: 100%;
-	width: ${({ width }: { width: number }) => width}%;
-	background: red;
+	height: 200%;
+	transition: 0.2s;
+	background: ${props => props.theme.lightBlue};
 `;
 
 export default Tabs;

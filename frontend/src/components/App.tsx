@@ -1,7 +1,6 @@
 import React, { useEffect, useLayoutEffect } from 'react';
 import styled from 'styled-components/macro';
 import Header from './Header';
-import AuthModal from './Auth/AuthModal';
 import jwtDecode from 'jwt-decode';
 import Nav from './Nav';
 import Container from './Container';
@@ -116,7 +115,6 @@ const App: React.FC<IProps> = props => {
 				</S.Content>
 			</S.App>
 
-			<AuthModal />
 			<GenericModal />
 		</>
 	);

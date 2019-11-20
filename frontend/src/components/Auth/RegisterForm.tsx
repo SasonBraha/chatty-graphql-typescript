@@ -3,11 +3,11 @@ import { Button } from '../Shared';
 import { Form, TextInput } from '../Shared/Form@2.0';
 import { useTranslation } from 'react-i18next';
 import styled from 'styled-components/macro';
+import { ICaptchaProps } from './Auth';
 
-interface IProps {}
-const RegisterForm: React.FC<IProps> = () => {
+interface IProps extends ICaptchaProps {}
+const RegisterForm: React.FC<IProps> = props => {
 	const { t } = useTranslation();
-	const captchaRef: React.RefObject<any> = useRef();
 
 	return (
 		<S.Container>
@@ -15,10 +15,9 @@ const RegisterForm: React.FC<IProps> = () => {
 				initialValues={{
 					displayName: '',
 					email: '',
-					password: '',
-					captcha: ''
+					password: ''
 				}}
-				onSubmit={args => {
+				onSubmit={async args => {
 					console.log(args);
 				}}
 			>
@@ -26,6 +25,7 @@ const RegisterForm: React.FC<IProps> = () => {
 					name='displayName'
 					label={t('global.forms.displayName')}
 					icon='icon-user'
+					required
 				/>
 
 				<TextInput
@@ -49,31 +49,6 @@ const RegisterForm: React.FC<IProps> = () => {
 		</S.Container>
 	);
 };
-
-{
-	/*<Recaptcha*/
-}
-{
-	/*	ref={captchaRef}*/
-}
-{
-	/*	sitekey={process.env.REACT_APP_GOOGLE_RECAPTCHA_SITE_KEY}*/
-}
-{
-	/*	size='invisible'*/
-}
-{
-	/*	onChange={() => {*/
-}
-{
-	/*		setFieldValue('captcha', captchaRef.current!.getValue());*/
-}
-{
-	/*	}}*/
-}
-{
-	/*/>*/
-}
 
 const S: any = {};
 S.Container = styled.div`

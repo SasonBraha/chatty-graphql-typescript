@@ -1,39 +1,76 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import styled from 'styled-components/macro';
 import LoginForm from './LoginForm';
-import { RegisterForm } from './index';
+import RegisterForm from './RegisterForm';
 import { useTransition, animated } from 'react-spring';
 import { Tabs } from '../Shared';
+import Recaptcha from 'react-google-recaptcha';
+
+enum AuthScreens {
+	LOGIN,
+	REGISTER
+}
 
 interface IProps {}
+
+export interface ICaptchaProps {
+	execCaptcha: () => Promise<any>;
+	captchaRef: React.RefObject<any>;
+}
+
 const Auth: React.FC<IProps> = props => {
 	const [showRegister, setShowRegister] = useState(false);
+	const captchaRef: React.RefObject<any> = useRef();
 
 	const transitions = useTransition(showRegister, null, {
-		from: { position: 'absolute', opacity: 0, width: '100%' },
-		enter: { opacity: 1 },
-		leave: { opacity: 0 }
+		from: { opacity: 0, width: '100%' },
+		enter: { opacity: 1, width: '100%' },
+		leave: { opacity: 0, width: '100%', position: 'absolute' }
 	});
+
+	const execCaptcha = async () => {
+		captchaRef.current.execute();
+	};
 
 	return (
 		<S.Container>
 			<S.RightColumn>
+				<S.TabsContainer>
+					<Tabs
+						categories={['התחברות', 'הרשמה']}
+						onIndexChange={index => {
+							setShowRegister(index === AuthScreens.REGISTER);
+						}}
+					/>
+				</S.TabsContainer>
+
 				<S.FormsContainer>
-					<Tabs categories={['Login', 'Register']} />
 					{transitions.map(({ item: showRegister, key, props }) =>
 						showRegister ? (
 							<animated.div key={key} style={props}>
-								<RegisterForm />
+								<RegisterForm
+									execCaptcha={execCaptcha}
+									captchaRef={captchaRef}
+								/>
 							</animated.div>
 						) : (
 							<animated.div key={key} style={props}>
-								<LoginForm />
+								<LoginForm execCaptcha={execCaptcha} captchaRef={captchaRef} />
 							</animated.div>
 						)
 					)}
 				</S.FormsContainer>
 			</S.RightColumn>
 			<S.LeftColumn>Chatty</S.LeftColumn>
+
+			{/*<Recaptcha*/}
+			{/*	ref={captchaRef}*/}
+			{/*	sitekey={process.env.REACT_APP_GOOGLE_RECAPTCHA_SITE_KEY}*/}
+			{/*	size='invisible'*/}
+			{/*	onChange={() => {*/}
+			{/*		console.log(captchaRef.current!.getValue());*/}
+			{/*	}}*/}
+			{/*/>*/}
 		</S.Container>
 	);
 };
@@ -61,16 +98,22 @@ S.RightColumn = styled.div`
 	display: flex;
 	justify-content: center;
 	align-items: center;
+	flex-direction: column;
+`;
+
+S.TabsContainer = styled.div`
+	max-width: 23rem;
+	width: 100%;
 `;
 
 S.FormsContainer = styled.div`
 	width: 100%;
-	height: 100%;
 	display: flex;
 	justify-content: center;
 	align-items: center;
 	max-width: 46rem;
 	position: relative;
+	min-height: 24rem;
 `;
 
 export default Auth;
