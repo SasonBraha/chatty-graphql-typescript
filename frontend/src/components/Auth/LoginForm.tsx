@@ -1,82 +1,69 @@
 import React from 'react';
 import { Button, GoogleLogin } from '../Shared';
-import { FormikProps, withFormik } from 'formik';
-import { Form, FormGroup, TextInput } from '../Shared/Form';
-import Ripple from 'react-ink';
-import gql from 'graphql-tag';
-import client from '../../apollo/client';
 import { useTranslation } from 'react-i18next';
+import { Form, TextInput } from '../Shared/Form@2.0';
+import styled from 'styled-components';
+import { ICaptchaProps } from './Auth';
 
-const LOGIN_MUTATION = gql`
-	mutation Login($email: String!, $password: String!) {
-		login(data: { email: $email, password: $password })
-	}
-`;
+interface IProps extends ICaptchaProps {}
 
-interface IFormValues {
-	email: string;
-	password: string;
-}
-
-const LoginForm = (props: FormikProps<IFormValues>) => {
-	const { values, handleChange, handleBlur, handleSubmit } = props;
+const LoginForm: React.FC<IProps> = props => {
 	const { t } = useTranslation();
+
 	return (
-		<Form onSubmit={handleSubmit} icon={'icon-user-circle-o'} header='התחברות'>
+		<S.Container>
 			<GoogleLogin text={t('global.forms.loginOrRegisterWithGoogle')} />
-			<FormGroup>
+			<Form
+				initialValues={{
+					email: '',
+					password: ''
+				}}
+				onSubmit={args => {
+					console.log(args);
+				}}
+			>
 				<TextInput
 					name='email'
-					value={values.email}
-					error=''
+					type='email'
 					label={t('global.forms.email')}
-					onChange={handleChange}
-					onBlur={handleBlur}
 					icon='icon-envelope'
+					required
 				/>
-			</FormGroup>
 
-			<FormGroup>
 				<TextInput
 					name='password'
 					type='password'
-					value={values.password}
-					error=''
 					label={t('global.forms.password')}
-					onChange={handleChange}
-					onBlur={handleBlur}
 					icon='icon-key'
+					required
 				/>
-			</FormGroup>
 
-			<Button type='submit'>
-				{t('global.forms.login')}
-				<Ripple />
-			</Button>
-		</Form>
+				<S.ForgotAndSubmitContainer>
+					<S.ForgotPassword>שכחת סיסמה?</S.ForgotPassword>
+					<Button text={t('global.forms.login')} type='submit' />
+				</S.ForgotAndSubmitContainer>
+			</Form>
+		</S.Container>
 	);
 };
 
-export default withFormik({
-	mapPropsToValues: () => ({ email: '', password: '' }),
-	handleSubmit: async (
-		values,
-		//@ts-ignore
-		{ props: { mutate }, setSubmitting, resetForm }
-	) => {
-		try {
-			const loginData = await client.mutate({
-				mutation: LOGIN_MUTATION,
-				variables: values
-			});
-			const {
-				data: { login: authToken }
-			} = loginData;
+const S: any = {};
+S.Container = styled.div`
+	max-width: 700px;
+	align-self: center;
+`;
 
-			if (authToken) {
-				localStorage.setItem(process.env.REACT_APP_LS_AUTH_TOKEN, authToken);
-				window.location.reload();
-			}
-		} catch (ex) {}
-	}
-})(LoginForm);
+S.ForgotAndSubmitContainer = styled.div`
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	margin-top: 1rem;
+	overflow: hidden;
+`;
+
+S.ForgotPassword = styled.small`
+	text-decoration: underline;
+	cursor: pointer;
+`;
+
+export default LoginForm;

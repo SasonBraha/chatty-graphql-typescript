@@ -202,20 +202,13 @@ class MessagesList extends Component<IProps, IState> {
 							<MessagesListLoader key={i} />
 					  ))
 					: messages.map(({ node }) => {
-							console.log(currentUser);
-							console.log({
-								current: currentUser.slug,
-								node: node.createdBy.slug,
-								isEqual: currentUser.slug === node.createdBy.slug
-							});
-
 							return (
 								// @ts-ignore
 								<Message
 									message={node as MessageType}
 									key={node._id}
-									isDeleted={!!deletedMessages[node._id]}
-									isMine={currentUser!.slug == node.createdBy.slug}
+									isDeleted={Boolean(deletedMessages[node._id])}
+									isMine={currentUser!.slug === node.createdBy.slug}
 									setMessageCtxMenu={this.showMessageCtxMenu}
 								/>
 							);

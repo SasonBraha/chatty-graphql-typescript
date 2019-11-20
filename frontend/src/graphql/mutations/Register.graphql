@@ -1,0 +1,15 @@
+mutation Register(
+    $displayName: String!
+    $email: String!
+    $password: String!
+    $captcha: String!
+) {
+    register(
+        data: {
+            displayName: $displayName
+            email: $email
+            password: $password
+            captcha: $captcha
+        }
+    )
+}

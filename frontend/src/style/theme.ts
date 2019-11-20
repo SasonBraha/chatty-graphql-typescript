@@ -14,7 +14,8 @@ const defaultTheme: DefaultTheme = {
 	success: '#28A745',
 	error: '#DC3545',
 	warning: '#ff9503',
-	info: '#007bff'
+	info: '#007bff',
+	lightBlue: '#0196FD'
 };
 
 export { defaultTheme };

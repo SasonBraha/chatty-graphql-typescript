@@ -2,7 +2,6 @@ import {
 	Arg,
 	Ctx,
 	FieldResolver,
-	Info,
 	Int,
 	Mutation,
 	PubSub,
@@ -44,9 +43,9 @@ import {
 import { generateUserMentionedNotification } from '../../utils/notifications';
 import { Document } from 'mongoose';
 import sanitizer from '../../services/Sanitizer';
-import shortid = require('shortid');
 import { Ref } from '@hasezoey/typegoose';
 import { JWT } from '../../services';
+import shortid = require('shortid');
 
 @Resolver(Chat)
 export default class ChatResolver {

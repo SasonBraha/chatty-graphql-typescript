@@ -13,6 +13,7 @@ import InputTrigger from './InputTrigger';
 import Scrollable from './Scrollable';
 import InfoBanner from './InfoBanner';
 import Image from './Image';
+import Tabs from './Tabs';
 
 export {
 	Burger,
@@ -29,5 +30,6 @@ export {
 	InputTrigger,
 	Scrollable,
 	InfoBanner,
-	Image
+	Image,
+	Tabs
 };

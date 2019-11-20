@@ -1,7 +1,6 @@
 import { IFileInput } from '../../resolvers/Chat/Chat.resolver.inputs';
 import { createBufferFromStream, extractDataFromBuffer } from './index';
 import { IFileData } from './extractDataFromBuffer';
-import * as uuid from 'uuid';
 import s3 from '../../services/s3';
 import { File } from '../../entities/File';
 import shortid = require('shortid');

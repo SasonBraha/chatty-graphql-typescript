@@ -1,21 +1,40 @@
-import styled from 'styled-components/macro';
+import React from 'react';
+import styled from 'styled-components';
+import Ripple from 'react-ink';
+
+interface IProps {
+	type?: string;
+	text?: string;
+	children?: React.ReactNode;
+	icon?: string;
+	showRipple?: boolean;
+}
+
+const Button: React.FC<IProps> = props => {
+	const { children, text, type, icon, showRipple } = props;
+	return (
+		<S.Button type={type}>
+			{children ? children : text} {showRipple && <Ripple />}
+		</S.Button>
+	);
+};
+
+Button.defaultProps = {
+	type: 'button',
+	showRipple: true
+};
 
 const S: any = {};
 S.Button = styled.button`
-	border: none;
+	background: ${({ theme }) => theme.lightBlue};
 	outline: none;
-	border-radius: 0.5rem;
-	transition: 0.3s;
-	cursor: pointer;
-	background: transparent;
-	padding: 1rem 2rem;
+	border: none;
+	padding: 0.7rem 2rem;
 	color: white;
-	font-size: 1.6rem;
+	cursor: pointer;
+	border-radius: 0.3rem;
 	position: relative;
-
-	&:hover {
-		background: rgba(255, 255, 255, 0.15);
-	}
+	user-select: none;
 `;
 
-export default S.Button;
+export default Button;

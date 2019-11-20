@@ -3,7 +3,7 @@ import * as jwt from 'jsonwebtoken';
 import { IDynamicObject } from '../../frontend/src/types/interfaces';
 
 class JWT {
-	static async generateToken(
+	public static async generateToken(
 		payload: IDynamicObject,
 		asBearer: boolean,
 		expiresIn: string
@@ -19,7 +19,7 @@ class JWT {
 		}
 	}
 
-	static async validateTokenAndGetPayload<T>(
+	public static async validateTokenAndGetPayload<T>(
 		token: string,
 		isBearer?: boolean
 	): Promise<T | null> {
