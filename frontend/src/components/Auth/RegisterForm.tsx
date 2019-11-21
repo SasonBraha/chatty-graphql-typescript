@@ -8,6 +8,7 @@ import { ICaptchaProps } from './Auth';
 interface IProps extends ICaptchaProps {}
 const RegisterForm: React.FC<IProps> = props => {
 	const { t } = useTranslation();
+	const { isExecutingMutation } = props;
 
 	return (
 		<S.Container>
@@ -44,7 +45,11 @@ const RegisterForm: React.FC<IProps> = props => {
 					required
 				/>
 
-				<Button text={t('global.forms.register')} type='submit' />
+				<Button
+					text={t('global.forms.register')}
+					type='submit'
+					loading={isExecutingMutation}
+				/>
 			</Form>
 		</S.Container>
 	);

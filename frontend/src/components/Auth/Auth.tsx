@@ -19,12 +19,13 @@ interface IProps {}
 
 export interface ICaptchaProps {
 	execCaptcha: (formValues: { [key: string]: string }) => void;
+	isExecutingMutation: boolean;
 }
 
 const Auth: React.FC<IProps> = props => {
 	const [showRegister, setShowRegister] = useState(false);
 	const [formValues, setFormValues] = useState({});
-	const [isExecRequest, setExecRequest] = useState(false);
+	const [isExecutingMutation, setExecutingMutation] = useState(false);
 	const captchaRef: React.RefObject<any> = useRef();
 	const [loginMutation] = useLoginMutation();
 	const [registerMutation] = useRegisterMutation();
@@ -37,9 +38,13 @@ const Auth: React.FC<IProps> = props => {
 
 	const execCaptcha = formValues => {
 		setFormValues(formValues);
-		setExecRequest(true);
+		setExecutingMutation(true);
 		captchaRef.current.execute();
 	};
+
+	useEffect(() => {
+		captchaRef.current.reset();
+	}, []);
 
 	return (
 		<S.Container>
@@ -57,11 +62,17 @@ const Auth: React.FC<IProps> = props => {
 					{transitions.map(({ item: showRegister, key, props }) =>
 						showRegister ? (
 							<animated.div key={key} style={props}>
-								<RegisterForm execCaptcha={execCaptcha} />
+								<RegisterForm
+									isExecutingMutation={isExecutingMutation}
+									execCaptcha={execCaptcha}
+								/>
 							</animated.div>
 						) : (
 							<animated.div key={key} style={props}>
-								<LoginForm execCaptcha={execCaptcha} />
+								<LoginForm
+									isExecutingMutation={isExecutingMutation}
+									execCaptcha={execCaptcha}
+								/>
 							</animated.div>
 						)
 					)}
@@ -74,23 +85,29 @@ const Auth: React.FC<IProps> = props => {
 				sitekey={process.env.REACT_APP_GOOGLE_RECAPTCHA_SITE_KEY}
 				size='invisible'
 				onChange={async () => {
-					const captcha = captchaRef.current!.getValue();
-					if (showRegister) {
-						await registerMutation({
-							// @ts-ignore
-							variables: {
-								...formValues,
-								captcha
-							}
-						});
-						setShowRegister(false);
-					} else {
-						loginMutation({
-							// @ts-ignore
-							variables: {
-								...formValues
-							}
-						});
+					try {
+						const captcha = captchaRef.current!.getValue();
+						if (showRegister) {
+							await registerMutation({
+								// @ts-ignore
+								variables: {
+									...formValues,
+									captcha
+								}
+							});
+							setShowRegister(false);
+						} else {
+							loginMutation({
+								// @ts-ignore
+								variables: {
+									...formValues
+								}
+							});
+						}
+					} catch (ex) {
+					} finally {
+						console.log('asdasd');
+						setExecutingMutation(false);
 					}
 				}}
 			/>

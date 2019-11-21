@@ -10,7 +10,7 @@ interface IProps extends ICaptchaProps {}
 
 const LoginForm: React.FC<IProps> = props => {
 	const { t } = useTranslation();
-	const [execLogin] = useLoginMutation();
+	const { isExecutingMutation } = props;
 
 	return (
 		<S.Container>
@@ -42,7 +42,11 @@ const LoginForm: React.FC<IProps> = props => {
 
 				<S.ForgotAndSubmitContainer>
 					<S.ForgotPassword>שכחת סיסמה?</S.ForgotPassword>
-					<Button text={t('global.forms.login')} type='submit' />
+					<Button
+						text={t('global.forms.login')}
+						type='submit'
+						loading={isExecutingMutation}
+					/>
 				</S.ForgotAndSubmitContainer>
 			</Form>
 		</S.Container>

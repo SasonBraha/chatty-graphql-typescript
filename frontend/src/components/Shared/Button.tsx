@@ -1,6 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import Ripple from 'react-ink';
+import Spinner from './Spinner';
 
 interface IProps {
 	type?: string;
@@ -8,13 +9,25 @@ interface IProps {
 	children?: React.ReactNode;
 	icon?: string;
 	showRipple?: boolean;
+	loading?: boolean;
 }
 
 const Button: React.FC<IProps> = props => {
-	const { children, text, type, icon, showRipple } = props;
+	const { children, text, type, icon, showRipple, loading } = props;
 	return (
-		<S.Button type={type}>
-			{children ? children : text} {showRipple && <Ripple />}
+		<S.Button disabled={loading} type={type}>
+			{children ? children : text}
+			{showRipple && <Ripple />}
+			{loading && (
+				<S.SpinnerContainer>
+					<Spinner
+						size={13}
+						spinnerColor='white'
+						spinnerWidth={2}
+						visible={true}
+					/>
+				</S.SpinnerContainer>
+			)}
 		</S.Button>
 	);
 };
@@ -35,6 +48,15 @@ S.Button = styled.button`
 	border-radius: 0.3rem;
 	position: relative;
 	user-select: none;
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+`;
+
+S.SpinnerContainer = styled.div`
+	position: relative;
+	left: -0.8rem;
+	top: -0.05rem;
 `;
 
 export default Button;

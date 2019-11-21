@@ -6,6 +6,7 @@ interface IProps {
 	spinnerColor: string;
 	spinnerWidth: number;
 	visible: boolean;
+	className?: string;
 }
 
 const Spinner: React.FC<IProps> = props => <MaterialSpinner {...props} />;
