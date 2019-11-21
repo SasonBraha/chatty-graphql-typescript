@@ -24,8 +24,6 @@ const validateRegistrationInput = async (
 		json: true
 	});
 
-	console.log(captchaValidation);
-
 	if (!captchaValidation.success) {
 		return {
 			isValid: false,

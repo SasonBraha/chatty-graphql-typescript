@@ -23,7 +23,9 @@ const logger = winston.createLogger({
 			level: 'info',
 			format: winston.format.combine(
 				winston.format.timestamp(),
-				winston.format.json()
+				winston.format.json({
+					space: 2
+				})
 			)
 		}),
 		new (require('winston-daily-rotate-file'))({
@@ -31,7 +33,9 @@ const logger = winston.createLogger({
 			level: 'error',
 			format: winston.format.combine(
 				winston.format.timestamp(),
-				winston.format.json()
+				winston.format.json({
+					space: 2
+				})
 			)
 		})
 	]

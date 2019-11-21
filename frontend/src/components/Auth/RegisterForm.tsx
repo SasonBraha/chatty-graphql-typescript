@@ -18,7 +18,7 @@ const RegisterForm: React.FC<IProps> = props => {
 					password: ''
 				}}
 				onSubmit={async args => {
-					console.log(args);
+					props.execCaptcha(args);
 				}}
 			>
 				<TextInput

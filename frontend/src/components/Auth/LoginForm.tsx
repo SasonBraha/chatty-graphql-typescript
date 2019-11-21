@@ -4,11 +4,13 @@ import { useTranslation } from 'react-i18next';
 import { Form, TextInput } from '../Shared/Form@2.0';
 import styled from 'styled-components';
 import { ICaptchaProps } from './Auth';
+import { useLoginMutation } from '../../__generated__/graphql';
 
 interface IProps extends ICaptchaProps {}
 
 const LoginForm: React.FC<IProps> = props => {
 	const { t } = useTranslation();
+	const [execLogin] = useLoginMutation();
 
 	return (
 		<S.Container>
@@ -18,8 +20,8 @@ const LoginForm: React.FC<IProps> = props => {
 					email: '',
 					password: ''
 				}}
-				onSubmit={args => {
-					console.log(args);
+				onSubmit={async args => {
+					props.execCaptcha(args);
 				}}
 			>
 				<TextInput

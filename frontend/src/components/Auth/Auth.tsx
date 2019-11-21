@@ -5,6 +5,10 @@ import RegisterForm from './RegisterForm';
 import { useTransition, animated } from 'react-spring';
 import { Tabs } from '../Shared';
 import Recaptcha from 'react-google-recaptcha';
+import {
+	useLoginMutation,
+	useRegisterMutation
+} from '../../__generated__/graphql';
 
 enum AuthScreens {
 	LOGIN,
@@ -14,13 +18,16 @@ enum AuthScreens {
 interface IProps {}
 
 export interface ICaptchaProps {
-	execCaptcha: () => Promise<any>;
-	captchaRef: React.RefObject<any>;
+	execCaptcha: (formValues: { [key: string]: string }) => void;
 }
 
 const Auth: React.FC<IProps> = props => {
 	const [showRegister, setShowRegister] = useState(false);
+	const [formValues, setFormValues] = useState({});
+	const [isExecRequest, setExecRequest] = useState(false);
 	const captchaRef: React.RefObject<any> = useRef();
+	const [loginMutation] = useLoginMutation();
+	const [registerMutation] = useRegisterMutation();
 
 	const transitions = useTransition(showRegister, null, {
 		from: { opacity: 0, width: '100%' },
@@ -28,7 +35,9 @@ const Auth: React.FC<IProps> = props => {
 		leave: { opacity: 0, width: '100%', position: 'absolute' }
 	});
 
-	const execCaptcha = async () => {
+	const execCaptcha = formValues => {
+		setFormValues(formValues);
+		setExecRequest(true);
 		captchaRef.current.execute();
 	};
 
@@ -48,14 +57,11 @@ const Auth: React.FC<IProps> = props => {
 					{transitions.map(({ item: showRegister, key, props }) =>
 						showRegister ? (
 							<animated.div key={key} style={props}>
-								<RegisterForm
-									execCaptcha={execCaptcha}
-									captchaRef={captchaRef}
-								/>
+								<RegisterForm execCaptcha={execCaptcha} />
 							</animated.div>
 						) : (
 							<animated.div key={key} style={props}>
-								<LoginForm execCaptcha={execCaptcha} captchaRef={captchaRef} />
+								<LoginForm execCaptcha={execCaptcha} />
 							</animated.div>
 						)
 					)}
@@ -63,14 +69,31 @@ const Auth: React.FC<IProps> = props => {
 			</S.RightColumn>
 			<S.LeftColumn>Chatty</S.LeftColumn>
 
-			{/*<Recaptcha*/}
-			{/*	ref={captchaRef}*/}
-			{/*	sitekey={process.env.REACT_APP_GOOGLE_RECAPTCHA_SITE_KEY}*/}
-			{/*	size='invisible'*/}
-			{/*	onChange={() => {*/}
-			{/*		console.log(captchaRef.current!.getValue());*/}
-			{/*	}}*/}
-			{/*/>*/}
+			<Recaptcha
+				ref={captchaRef}
+				sitekey={process.env.REACT_APP_GOOGLE_RECAPTCHA_SITE_KEY}
+				size='invisible'
+				onChange={async () => {
+					const captcha = captchaRef.current!.getValue();
+					if (showRegister) {
+						await registerMutation({
+							// @ts-ignore
+							variables: {
+								...formValues,
+								captcha
+							}
+						});
+						setShowRegister(false);
+					} else {
+						loginMutation({
+							// @ts-ignore
+							variables: {
+								...formValues
+							}
+						});
+					}
+				}}
+			/>
 		</S.Container>
 	);
 };
