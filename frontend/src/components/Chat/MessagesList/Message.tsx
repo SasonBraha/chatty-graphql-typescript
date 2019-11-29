@@ -11,12 +11,11 @@ import { Link } from 'react-router-dom';
 import { withTranslation } from '../../Shared/Hoc';
 import {
 	UpdateMessageMutationFn,
-	UpdateMessageProps,
 	withUpdateMessage,
 	Message as MessageType
 } from '../../../__generated__/graphql';
 
-interface IProps extends UpdateMessageProps {
+interface IProps {
 	message: MessageType;
 	isMine: boolean;
 	setMessageCtxMenu: (ctx: IMessageCtxMenu) => void;
