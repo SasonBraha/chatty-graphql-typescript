@@ -1,5 +1,5 @@
 mutation PostMessage($chatSlug: String!, $text: String!) {
     postMessage(text: $text, chatSlug: $chatSlug) {
-        _id
+        ...messageAttributes
     }
 }

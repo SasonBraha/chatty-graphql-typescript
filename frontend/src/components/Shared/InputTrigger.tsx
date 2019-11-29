@@ -1,4 +1,4 @@
-import React, { ReactNode, useState } from 'react';
+import React, { ReactNode, useCallback, useState } from 'react';
 import { KeyCodeEnum } from '../../types/enums';
 
 interface ITriggerData {

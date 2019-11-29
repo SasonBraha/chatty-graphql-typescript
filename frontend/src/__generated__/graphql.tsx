@@ -3,7 +3,7 @@ import * as ApolloReactCommon from '@apollo/react-common';
 import * as ApolloReactHoc from '@apollo/react-hoc';
 import * as ApolloReactHooks from '@apollo/react-hooks';
 export type Maybe<T> = T | null;
-// Generated in 2019-11-29T20:23:16+02:00
+// Generated in 2019-11-29T21:06:21+02:00
 
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
@@ -630,7 +630,7 @@ export type PostMessageMutationVariables = {
 };
 
 export type PostMessageMutation = { __typename?: 'Mutation' } & {
-	postMessage: Maybe<{ __typename?: 'Message' } & Pick<Message, '_id'>>;
+	postMessage: Maybe<{ __typename?: 'Message' } & MessageAttributesFragment>;
 };
 
 export type RegisterMutationVariables = {
@@ -653,6 +653,27 @@ export type UpdateActiveUsersMutationVariables = {
 export type UpdateActiveUsersMutation = { __typename?: 'Mutation' } & Pick<
 	Mutation,
 	'updateActiveUsers'
+>;
+
+export type UpdateTypingUsersMutationVariables = {
+	chatSlug: Scalars['String'];
+	crudType: Scalars['String'];
+};
+
+export type UpdateTypingUsersMutation = { __typename?: 'Mutation' } & Pick<
+	Mutation,
+	'updateTypingUsers'
+>;
+
+export type UploadMessageFileMutationVariables = {
+	file: Scalars['Upload'];
+	chatSlug: Scalars['String'];
+	messageId: Scalars['String'];
+};
+
+export type UploadMessageFileMutation = { __typename?: 'Mutation' } & Pick<
+	Mutation,
+	'uploadMessageFile'
 >;
 
 export type GetMessagesQueryVariables = {
@@ -2211,9 +2232,10 @@ export type LoginWithGoogleMutationOptions = ApolloReactCommon.BaseMutationOptio
 export const PostMessageDocument = gql`
 	mutation PostMessage($chatSlug: String!, $text: String!) {
 		postMessage(text: $text, chatSlug: $chatSlug) {
-			_id
+			...messageAttributes
 		}
 	}
+	${MessageAttributesFragmentDoc}
 `;
 export type PostMessageMutationFn = ApolloReactCommon.MutationFunction<
 	PostMessageMutation,
@@ -2437,6 +2459,157 @@ export type UpdateActiveUsersMutationResult = ApolloReactCommon.MutationResult<
 export type UpdateActiveUsersMutationOptions = ApolloReactCommon.BaseMutationOptions<
 	UpdateActiveUsersMutation,
 	UpdateActiveUsersMutationVariables
+>;
+export const UpdateTypingUsersDocument = gql`
+	mutation UpdateTypingUsers($chatSlug: String!, $crudType: String!) {
+		updateTypingUsers(chatSlug: $chatSlug, crudType: $crudType)
+	}
+`;
+export type UpdateTypingUsersMutationFn = ApolloReactCommon.MutationFunction<
+	UpdateTypingUsersMutation,
+	UpdateTypingUsersMutationVariables
+>;
+export type UpdateTypingUsersProps<TChildProps = {}> =
+	| ApolloReactHoc.MutateProps<
+			UpdateTypingUsersMutation,
+			UpdateTypingUsersMutationVariables
+	  >
+	| TChildProps;
+export function withUpdateTypingUsers<TProps, TChildProps = {}>(
+	operationOptions?: ApolloReactHoc.OperationOption<
+		TProps,
+		UpdateTypingUsersMutation,
+		UpdateTypingUsersMutationVariables,
+		UpdateTypingUsersProps<TChildProps>
+	>
+) {
+	return ApolloReactHoc.withMutation<
+		TProps,
+		UpdateTypingUsersMutation,
+		UpdateTypingUsersMutationVariables,
+		UpdateTypingUsersProps<TChildProps>
+	>(UpdateTypingUsersDocument, {
+		alias: 'updateTypingUsers',
+		...operationOptions
+	});
+}
+
+/**
+ * __useUpdateTypingUsersMutation__
+ *
+ * To run a mutation, you first call `useUpdateTypingUsersMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateTypingUsersMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateTypingUsersMutation, { data, loading, error }] = useUpdateTypingUsersMutation({
+ *   variables: {
+ *      chatSlug: // value for 'chatSlug'
+ *      crudType: // value for 'crudType'
+ *   },
+ * });
+ */
+export function useUpdateTypingUsersMutation(
+	baseOptions?: ApolloReactHooks.MutationHookOptions<
+		UpdateTypingUsersMutation,
+		UpdateTypingUsersMutationVariables
+	>
+) {
+	return ApolloReactHooks.useMutation<
+		UpdateTypingUsersMutation,
+		UpdateTypingUsersMutationVariables
+	>(UpdateTypingUsersDocument, baseOptions);
+}
+export type UpdateTypingUsersMutationHookResult = ReturnType<
+	typeof useUpdateTypingUsersMutation
+>;
+export type UpdateTypingUsersMutationResult = ApolloReactCommon.MutationResult<
+	UpdateTypingUsersMutation
+>;
+export type UpdateTypingUsersMutationOptions = ApolloReactCommon.BaseMutationOptions<
+	UpdateTypingUsersMutation,
+	UpdateTypingUsersMutationVariables
+>;
+export const UploadMessageFileDocument = gql`
+	mutation UploadMessageFile(
+		$file: Upload!
+		$chatSlug: String!
+		$messageId: String!
+	) {
+		uploadMessageFile(file: $file, chatSlug: $chatSlug, messageId: $messageId)
+	}
+`;
+export type UploadMessageFileMutationFn = ApolloReactCommon.MutationFunction<
+	UploadMessageFileMutation,
+	UploadMessageFileMutationVariables
+>;
+export type UploadMessageFileProps<TChildProps = {}> =
+	| ApolloReactHoc.MutateProps<
+			UploadMessageFileMutation,
+			UploadMessageFileMutationVariables
+	  >
+	| TChildProps;
+export function withUploadMessageFile<TProps, TChildProps = {}>(
+	operationOptions?: ApolloReactHoc.OperationOption<
+		TProps,
+		UploadMessageFileMutation,
+		UploadMessageFileMutationVariables,
+		UploadMessageFileProps<TChildProps>
+	>
+) {
+	return ApolloReactHoc.withMutation<
+		TProps,
+		UploadMessageFileMutation,
+		UploadMessageFileMutationVariables,
+		UploadMessageFileProps<TChildProps>
+	>(UploadMessageFileDocument, {
+		alias: 'uploadMessageFile',
+		...operationOptions
+	});
+}
+
+/**
+ * __useUploadMessageFileMutation__
+ *
+ * To run a mutation, you first call `useUploadMessageFileMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUploadMessageFileMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [uploadMessageFileMutation, { data, loading, error }] = useUploadMessageFileMutation({
+ *   variables: {
+ *      file: // value for 'file'
+ *      chatSlug: // value for 'chatSlug'
+ *      messageId: // value for 'messageId'
+ *   },
+ * });
+ */
+export function useUploadMessageFileMutation(
+	baseOptions?: ApolloReactHooks.MutationHookOptions<
+		UploadMessageFileMutation,
+		UploadMessageFileMutationVariables
+	>
+) {
+	return ApolloReactHooks.useMutation<
+		UploadMessageFileMutation,
+		UploadMessageFileMutationVariables
+	>(UploadMessageFileDocument, baseOptions);
+}
+export type UploadMessageFileMutationHookResult = ReturnType<
+	typeof useUploadMessageFileMutation
+>;
+export type UploadMessageFileMutationResult = ApolloReactCommon.MutationResult<
+	UploadMessageFileMutation
+>;
+export type UploadMessageFileMutationOptions = ApolloReactCommon.BaseMutationOptions<
+	UploadMessageFileMutation,
+	UploadMessageFileMutationVariables
 >;
 export const GetMessagesDocument = gql`
 	query GetMessages(

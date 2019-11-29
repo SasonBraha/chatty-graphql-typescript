@@ -7,38 +7,56 @@ interface IProps {
 	name: string;
 	type?: string;
 	placeholder?: string;
-	label: string;
+	label?: string;
 	required?: boolean;
-	icon: string;
+	icon?: string;
 	className?: string;
+	children?: ({ inputProps, meta }) => React.ReactNode;
 }
 
 const TextInput: React.FC<IProps> = props => {
-	const { name, type, placeholder, className, label, required, icon } = props;
+	const {
+		name,
+		type,
+		placeholder,
+		className,
+		label,
+		required,
+		icon,
+		children
+	} = props;
+
+	if (children && typeof children != 'function') {
+		throw new Error('TextInput children must be a function');
+	}
+
 	return (
 		<Field name={name}>
-			{({ field, meta }) => (
-				<S.Container>
-					<S.LabelAndRequiredContainer>
-						<S.Label htmlFor={name}>{label}</S.Label>
-						{required && <S.Required>*</S.Required>}
-					</S.LabelAndRequiredContainer>
+			{({ field, meta }) => {
+				const inputProps = { className, id: name, placeholder, type, ...field };
+				return children ? (
+					children({ inputProps, meta })
+				) : (
+					<S.Container>
+						<S.LabelAndRequiredContainer>
+							<S.Label htmlFor={name}>{label}</S.Label>
+							{required && <S.Required>*</S.Required>}
+						</S.LabelAndRequiredContainer>
 
-					<S.InputContainer>
-						<S.Input
-							type={type ? type : 'text'}
-							placeholder={placeholder}
-							className={className}
-							id={name}
-							{...field}
-						/>
-						{icon && <S.Icon icon={icon} width={20} height={20} />}
-					</S.InputContainer>
-					{meta.touched && meta.error && <S.Error>{meta.error}</S.Error>}
-				</S.Container>
-			)}
+						<S.InputContainer>
+							<S.Input {...inputProps} />
+							{icon && <S.Icon icon={icon} width={20} height={20} />}
+						</S.InputContainer>
+						{meta.touched && meta.error && <S.Error>{meta.error}</S.Error>}
+					</S.Container>
+				);
+			}}
 		</Field>
 	);
+};
+
+TextInput.defaultProps = {
+	type: 'text'
 };
 
 const S: any = {};

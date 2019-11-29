@@ -1,0 +1,3 @@
+mutation UpdateTypingUsers($chatSlug: String!, $crudType: String!) {
+    updateTypingUsers(chatSlug: $chatSlug, crudType: $crudType)
+}

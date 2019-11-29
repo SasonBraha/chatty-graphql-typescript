@@ -1,0 +1,7 @@
+mutation UploadMessageFile(
+    $file: Upload!
+    $chatSlug: String!
+    $messageId: String!
+) {
+    uploadMessageFile(file: $file, chatSlug: $chatSlug, messageId: $messageId)
+}

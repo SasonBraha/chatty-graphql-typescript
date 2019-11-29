@@ -15,8 +15,12 @@ import { useTranslation } from 'react-i18next';
 import {
 	use_SetMentionSuggesterMutation,
 	useGetUsersLazyQuery,
-	UserInput
+	usePostMessageMutation,
+	UserInput,
+	useUpdateTypingUsersMutation,
+	useUploadMessageFileMutation
 } from '../../__generated__/graphql';
+import { Form, TextInput } from '../Shared/Form@2.0';
 
 const SEND_MESSAGE_MUTATION = gql`
 	mutation PostMessage($chatSlug: String!, $text: String!) {
@@ -88,6 +92,52 @@ const handleChange = (
 		});
 		handleChange(true, setIsTyping, props, value, client);
 	}
+};
+
+const SendMessage2: React.FC<IProps> = props => {
+	const [isTyping, setIsTyping] = useState(false);
+	const [postMessage] = usePostMessageMutation();
+	const [updateTypingUsers] = useUpdateTypingUsersMutation();
+	const [uploadFile] = useUploadMessageFileMutation();
+	const [
+		executeUserSearch,
+		{ data: userData, loading }
+	] = useGetUsersLazyQuery();
+	const [setMentionSuggester] = use_SetMentionSuggesterMutation();
+	const { t } = useTranslation();
+	const mentionSuggesterRef: Ref<any> = useRef(null);
+
+	useEffect(() => {
+		if (!loading && userData) {
+			const { userList } = userData.users;
+			setMentionSuggester({
+				variables: {
+					data: {
+						show: userList.length > 0,
+						userList: userList as UserInput[]
+					}
+				}
+			});
+		}
+	}, [userData, loading]);
+
+	return (
+		<Form
+			initialValues={{ file: null, text: '' }}
+			onSubmit={e => {
+				console.log(e);
+			}}
+		>
+			<TextInput
+				name='text'
+				placeholder={t('chat.sendMessageInputPlaceholder')}
+			>
+				{({ inputProps, meta }) => (
+					<S.MessageInput {...inputProps} autoComplete='off' />
+				)}
+			</TextInput>
+		</Form>
+	);
 };
 
 const SendMessage: React.FC<IProps> = props => {
@@ -198,7 +248,6 @@ const SendMessage: React.FC<IProps> = props => {
 
 			<MentionSuggester
 				onSelect={(text: string) => {
-					console.log(text);
 					setFieldValue('text', `${values.text}${text}`);
 					setMentionSuggester({
 						variables: {
@@ -255,33 +304,34 @@ S.InputTrigger = styled(InputTrigger)`
 	flex: 1;
 `;
 
-export default withFormik({
-	mapPropsToValues: () => ({ text: '', file: '' }),
-	handleSubmit: async (
-		values: IFormValues,
-		//@ts-ignore
-		{ props: { sendMessage, uploadFile, match, setFilePreview }, resetForm }
-	) => {
-		const newMessage = await client.mutate({
-			mutation: SEND_MESSAGE_MUTATION,
-			variables: {
-				...values,
-				chatSlug: match.params.chatSlug
-			}
-		});
-
-		resetForm();
-		setFilePreview(null);
-
-		if (values.file) {
-			client.mutate({
-				mutation: UPLOAD_FILE_MUTATION,
-				variables: {
-					file: values.file,
-					chatSlug: match.params.chatSlug,
-					messageId: newMessage.data.postMessage._id
-				}
-			});
-		}
-	}
-})(SendMessage);
+export default SendMessage2;
+// export default withFormik({
+// 	mapPropsToValues: () => ({ text: '', file: '' }),
+// 	handleSubmit: async (
+// 		values: IFormValues,
+// 		//@ts-ignore
+// 		{ props: { sendMessage, uploadFile, match, setFilePreview }, resetForm }
+// 	) => {
+// 		const newMessage = await client.mutate({
+// 			mutation: SEND_MESSAGE_MUTATION,
+// 			variables: {
+// 				...values,
+// 				chatSlug: match.params.chatSlug
+// 			}
+// 		});
+//
+// 		resetForm();
+// 		setFilePreview(null);
+//
+// 		if (values.file) {
+// 			client.mutate({
+// 				mutation: UPLOAD_FILE_MUTATION,
+// 				variables: {
+// 					file: values.file,
+// 					chatSlug: match.params.chatSlug,
+// 					messageId: newMessage.data.postMessage._id
+// 				}
+// 			});
+// 		}
+// 	}
+// })(SendMessage);
