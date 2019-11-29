@@ -3,7 +3,7 @@ import * as ApolloReactCommon from '@apollo/react-common';
 import * as ApolloReactHoc from '@apollo/react-hoc';
 import * as ApolloReactHooks from '@apollo/react-hooks';
 export type Maybe<T> = T | null;
-// Generated in 2019-11-21T20:43:49+02:00
+// Generated in 2019-11-29T20:23:16+02:00
 
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
@@ -859,11 +859,12 @@ export type _SetAuthModalMutationFn = ApolloReactCommon.MutationFunction<
 	_SetAuthModalMutation,
 	_SetAuthModalMutationVariables
 >;
-export type _SetAuthModalProps<TChildProps = {}> = ApolloReactHoc.MutateProps<
-	_SetAuthModalMutation,
-	_SetAuthModalMutationVariables
-> &
-	TChildProps;
+export type _SetAuthModalProps<TChildProps = {}> =
+	| ApolloReactHoc.MutateProps<
+			_SetAuthModalMutation,
+			_SetAuthModalMutationVariables
+	  >
+	| TChildProps;
 export function with_SetAuthModal<TProps, TChildProps = {}>(
 	operationOptions?: ApolloReactHoc.OperationOption<
 		TProps,
@@ -930,13 +931,12 @@ export type _SetNotificationsDataMutationFn = ApolloReactCommon.MutationFunction
 	_SetNotificationsDataMutation,
 	_SetNotificationsDataMutationVariables
 >;
-export type _SetNotificationsDataProps<
-	TChildProps = {}
-> = ApolloReactHoc.MutateProps<
-	_SetNotificationsDataMutation,
-	_SetNotificationsDataMutationVariables
-> &
-	TChildProps;
+export type _SetNotificationsDataProps<TChildProps = {}> =
+	| ApolloReactHoc.MutateProps<
+			_SetNotificationsDataMutation,
+			_SetNotificationsDataMutationVariables
+	  >
+	| TChildProps;
 export function with_SetNotificationsData<TProps, TChildProps = {}>(
 	operationOptions?: ApolloReactHoc.OperationOption<
 		TProps,
@@ -1003,11 +1003,12 @@ export type _ToggleNavStateMutationFn = ApolloReactCommon.MutationFunction<
 	_ToggleNavStateMutation,
 	_ToggleNavStateMutationVariables
 >;
-export type _ToggleNavStateProps<TChildProps = {}> = ApolloReactHoc.MutateProps<
-	_ToggleNavStateMutation,
-	_ToggleNavStateMutationVariables
-> &
-	TChildProps;
+export type _ToggleNavStateProps<TChildProps = {}> =
+	| ApolloReactHoc.MutateProps<
+			_ToggleNavStateMutation,
+			_ToggleNavStateMutationVariables
+	  >
+	| TChildProps;
 export function with_ToggleNavState<TProps, TChildProps = {}>(
 	operationOptions?: ApolloReactHoc.OperationOption<
 		TProps,
@@ -1074,13 +1075,12 @@ export type _UpdateCurrentUserMutationFn = ApolloReactCommon.MutationFunction<
 	_UpdateCurrentUserMutation,
 	_UpdateCurrentUserMutationVariables
 >;
-export type _UpdateCurrentUserProps<
-	TChildProps = {}
-> = ApolloReactHoc.MutateProps<
-	_UpdateCurrentUserMutation,
-	_UpdateCurrentUserMutationVariables
-> &
-	TChildProps;
+export type _UpdateCurrentUserProps<TChildProps = {}> =
+	| ApolloReactHoc.MutateProps<
+			_UpdateCurrentUserMutation,
+			_UpdateCurrentUserMutationVariables
+	  >
+	| TChildProps;
 export function with_UpdateCurrentUser<TProps, TChildProps = {}>(
 	operationOptions?: ApolloReactHoc.OperationOption<
 		TProps,
@@ -1147,13 +1147,12 @@ export type _SetGenericModalMutationFn = ApolloReactCommon.MutationFunction<
 	_SetGenericModalMutation,
 	_SetGenericModalMutationVariables
 >;
-export type _SetGenericModalProps<
-	TChildProps = {}
-> = ApolloReactHoc.MutateProps<
-	_SetGenericModalMutation,
-	_SetGenericModalMutationVariables
-> &
-	TChildProps;
+export type _SetGenericModalProps<TChildProps = {}> =
+	| ApolloReactHoc.MutateProps<
+			_SetGenericModalMutation,
+			_SetGenericModalMutationVariables
+	  >
+	| TChildProps;
 export function with_SetGenericModal<TProps, TChildProps = {}>(
 	operationOptions?: ApolloReactHoc.OperationOption<
 		TProps,
@@ -1220,13 +1219,12 @@ export type _SetMentionSuggesterMutationFn = ApolloReactCommon.MutationFunction<
 	_SetMentionSuggesterMutation,
 	_SetMentionSuggesterMutationVariables
 >;
-export type _SetMentionSuggesterProps<
-	TChildProps = {}
-> = ApolloReactHoc.MutateProps<
-	_SetMentionSuggesterMutation,
-	_SetMentionSuggesterMutationVariables
-> &
-	TChildProps;
+export type _SetMentionSuggesterProps<TChildProps = {}> =
+	| ApolloReactHoc.MutateProps<
+			_SetMentionSuggesterMutation,
+			_SetMentionSuggesterMutationVariables
+	  >
+	| TChildProps;
 export function with_SetMentionSuggester<TProps, TChildProps = {}>(
 	operationOptions?: ApolloReactHoc.OperationOption<
 		TProps,
@@ -1293,13 +1291,12 @@ export type _SetCurrentChatSlugMutationFn = ApolloReactCommon.MutationFunction<
 	_SetCurrentChatSlugMutation,
 	_SetCurrentChatSlugMutationVariables
 >;
-export type _SetCurrentChatSlugProps<
-	TChildProps = {}
-> = ApolloReactHoc.MutateProps<
-	_SetCurrentChatSlugMutation,
-	_SetCurrentChatSlugMutationVariables
-> &
-	TChildProps;
+export type _SetCurrentChatSlugProps<TChildProps = {}> =
+	| ApolloReactHoc.MutateProps<
+			_SetCurrentChatSlugMutation,
+			_SetCurrentChatSlugMutationVariables
+	  >
+	| TChildProps;
 export function with_SetCurrentChatSlug<TProps, TChildProps = {}>(
 	operationOptions?: ApolloReactHoc.OperationOption<
 		TProps,
@@ -1374,11 +1371,12 @@ export type _SetTypingUsersMutationFn = ApolloReactCommon.MutationFunction<
 	_SetTypingUsersMutation,
 	_SetTypingUsersMutationVariables
 >;
-export type _SetTypingUsersProps<TChildProps = {}> = ApolloReactHoc.MutateProps<
-	_SetTypingUsersMutation,
-	_SetTypingUsersMutationVariables
-> &
-	TChildProps;
+export type _SetTypingUsersProps<TChildProps = {}> =
+	| ApolloReactHoc.MutateProps<
+			_SetTypingUsersMutation,
+			_SetTypingUsersMutationVariables
+	  >
+	| TChildProps;
 export function with_SetTypingUsers<TProps, TChildProps = {}>(
 	operationOptions?: ApolloReactHoc.OperationOption<
 		TProps,
@@ -1443,13 +1441,12 @@ export const _GetAuthModalStateDocument = gql`
 		isAuthModalOpen @client
 	}
 `;
-export type _GetAuthModalStateProps<
-	TChildProps = {}
-> = ApolloReactHoc.DataProps<
-	_GetAuthModalStateQuery,
-	_GetAuthModalStateQueryVariables
-> &
-	TChildProps;
+export type _GetAuthModalStateProps<TChildProps = {}> =
+	| ApolloReactHoc.DataProps<
+			_GetAuthModalStateQuery,
+			_GetAuthModalStateQueryVariables
+	  >
+	| TChildProps;
 export function with_GetAuthModalState<TProps, TChildProps = {}>(
 	operationOptions?: ApolloReactHoc.OperationOption<
 		TProps,
@@ -1524,11 +1521,12 @@ export const _GetCurrentUserDocument = gql`
 	}
 	${UserAttributesFragmentDoc}
 `;
-export type _GetCurrentUserProps<TChildProps = {}> = ApolloReactHoc.DataProps<
-	_GetCurrentUserQuery,
-	_GetCurrentUserQueryVariables
-> &
-	TChildProps;
+export type _GetCurrentUserProps<TChildProps = {}> =
+	| ApolloReactHoc.DataProps<
+			_GetCurrentUserQuery,
+			_GetCurrentUserQueryVariables
+	  >
+	| TChildProps;
 export function with_GetCurrentUser<TProps, TChildProps = {}>(
 	operationOptions?: ApolloReactHoc.OperationOption<
 		TProps,
@@ -1600,11 +1598,9 @@ export const _GetNavStateDocument = gql`
 		isNavOpen @client
 	}
 `;
-export type _GetNavStateProps<TChildProps = {}> = ApolloReactHoc.DataProps<
-	_GetNavStateQuery,
-	_GetNavStateQueryVariables
-> &
-	TChildProps;
+export type _GetNavStateProps<TChildProps = {}> =
+	| ApolloReactHoc.DataProps<_GetNavStateQuery, _GetNavStateQueryVariables>
+	| TChildProps;
 export function with_GetNavState<TProps, TChildProps = {}>(
 	operationOptions?: ApolloReactHoc.OperationOption<
 		TProps,
@@ -1678,13 +1674,12 @@ export const _GetNotificationsDataDocument = gql`
 		}
 	}
 `;
-export type _GetNotificationsDataProps<
-	TChildProps = {}
-> = ApolloReactHoc.DataProps<
-	_GetNotificationsDataQuery,
-	_GetNotificationsDataQueryVariables
-> &
-	TChildProps;
+export type _GetNotificationsDataProps<TChildProps = {}> =
+	| ApolloReactHoc.DataProps<
+			_GetNotificationsDataQuery,
+			_GetNotificationsDataQueryVariables
+	  >
+	| TChildProps;
 export function with_GetNotificationsData<TProps, TChildProps = {}>(
 	operationOptions?: ApolloReactHoc.OperationOption<
 		TProps,
@@ -1760,11 +1755,12 @@ export const _GetGenericModalDocument = gql`
 		}
 	}
 `;
-export type _GetGenericModalProps<TChildProps = {}> = ApolloReactHoc.DataProps<
-	_GetGenericModalQuery,
-	_GetGenericModalQueryVariables
-> &
-	TChildProps;
+export type _GetGenericModalProps<TChildProps = {}> =
+	| ApolloReactHoc.DataProps<
+			_GetGenericModalQuery,
+			_GetGenericModalQueryVariables
+	  >
+	| TChildProps;
 export function with_GetGenericModal<TProps, TChildProps = {}>(
 	operationOptions?: ApolloReactHoc.OperationOption<
 		TProps,
@@ -1836,13 +1832,12 @@ export const _GetCurrentChatSlugDocument = gql`
 		currentChatSlug @client
 	}
 `;
-export type _GetCurrentChatSlugProps<
-	TChildProps = {}
-> = ApolloReactHoc.DataProps<
-	_GetCurrentChatSlugQuery,
-	_GetCurrentChatSlugQueryVariables
-> &
-	TChildProps;
+export type _GetCurrentChatSlugProps<TChildProps = {}> =
+	| ApolloReactHoc.DataProps<
+			_GetCurrentChatSlugQuery,
+			_GetCurrentChatSlugQueryVariables
+	  >
+	| TChildProps;
 export function with_GetCurrentChatSlug<TProps, TChildProps = {}>(
 	operationOptions?: ApolloReactHoc.OperationOption<
 		TProps,
@@ -1921,13 +1916,12 @@ export const _GetMentionSuggesterDocument = gql`
 		}
 	}
 `;
-export type _GetMentionSuggesterProps<
-	TChildProps = {}
-> = ApolloReactHoc.DataProps<
-	_GetMentionSuggesterQuery,
-	_GetMentionSuggesterQueryVariables
-> &
-	TChildProps;
+export type _GetMentionSuggesterProps<TChildProps = {}> =
+	| ApolloReactHoc.DataProps<
+			_GetMentionSuggesterQuery,
+			_GetMentionSuggesterQueryVariables
+	  >
+	| TChildProps;
 export function with_GetMentionSuggester<TProps, TChildProps = {}>(
 	operationOptions?: ApolloReactHoc.OperationOption<
 		TProps,
@@ -2001,11 +1995,12 @@ export const _GetTypingUsersDocument = gql`
 		}
 	}
 `;
-export type _GetTypingUsersProps<TChildProps = {}> = ApolloReactHoc.DataProps<
-	_GetTypingUsersQuery,
-	_GetTypingUsersQueryVariables
-> &
-	TChildProps;
+export type _GetTypingUsersProps<TChildProps = {}> =
+	| ApolloReactHoc.DataProps<
+			_GetTypingUsersQuery,
+			_GetTypingUsersQueryVariables
+	  >
+	| TChildProps;
 export function with_GetTypingUsers<TProps, TChildProps = {}>(
 	operationOptions?: ApolloReactHoc.OperationOption<
 		TProps,
@@ -2082,11 +2077,9 @@ export type LoginMutationFn = ApolloReactCommon.MutationFunction<
 	LoginMutation,
 	LoginMutationVariables
 >;
-export type LoginProps<TChildProps = {}> = ApolloReactHoc.MutateProps<
-	LoginMutation,
-	LoginMutationVariables
-> &
-	TChildProps;
+export type LoginProps<TChildProps = {}> =
+	| ApolloReactHoc.MutateProps<LoginMutation, LoginMutationVariables>
+	| TChildProps;
 export function withLogin<TProps, TChildProps = {}>(
 	operationOptions?: ApolloReactHoc.OperationOption<
 		TProps,
@@ -2152,11 +2145,12 @@ export type LoginWithGoogleMutationFn = ApolloReactCommon.MutationFunction<
 	LoginWithGoogleMutation,
 	LoginWithGoogleMutationVariables
 >;
-export type LoginWithGoogleProps<TChildProps = {}> = ApolloReactHoc.MutateProps<
-	LoginWithGoogleMutation,
-	LoginWithGoogleMutationVariables
-> &
-	TChildProps;
+export type LoginWithGoogleProps<TChildProps = {}> =
+	| ApolloReactHoc.MutateProps<
+			LoginWithGoogleMutation,
+			LoginWithGoogleMutationVariables
+	  >
+	| TChildProps;
 export function withLoginWithGoogle<TProps, TChildProps = {}>(
 	operationOptions?: ApolloReactHoc.OperationOption<
 		TProps,
@@ -2225,11 +2219,12 @@ export type PostMessageMutationFn = ApolloReactCommon.MutationFunction<
 	PostMessageMutation,
 	PostMessageMutationVariables
 >;
-export type PostMessageProps<TChildProps = {}> = ApolloReactHoc.MutateProps<
-	PostMessageMutation,
-	PostMessageMutationVariables
-> &
-	TChildProps;
+export type PostMessageProps<TChildProps = {}> =
+	| ApolloReactHoc.MutateProps<
+			PostMessageMutation,
+			PostMessageMutationVariables
+	  >
+	| TChildProps;
 export function withPostMessage<TProps, TChildProps = {}>(
 	operationOptions?: ApolloReactHoc.OperationOption<
 		TProps,
@@ -2309,11 +2304,9 @@ export type RegisterMutationFn = ApolloReactCommon.MutationFunction<
 	RegisterMutation,
 	RegisterMutationVariables
 >;
-export type RegisterProps<TChildProps = {}> = ApolloReactHoc.MutateProps<
-	RegisterMutation,
-	RegisterMutationVariables
-> &
-	TChildProps;
+export type RegisterProps<TChildProps = {}> =
+	| ApolloReactHoc.MutateProps<RegisterMutation, RegisterMutationVariables>
+	| TChildProps;
 export function withRegister<TProps, TChildProps = {}>(
 	operationOptions?: ApolloReactHoc.OperationOption<
 		TProps,
@@ -2381,13 +2374,12 @@ export type UpdateActiveUsersMutationFn = ApolloReactCommon.MutationFunction<
 	UpdateActiveUsersMutation,
 	UpdateActiveUsersMutationVariables
 >;
-export type UpdateActiveUsersProps<
-	TChildProps = {}
-> = ApolloReactHoc.MutateProps<
-	UpdateActiveUsersMutation,
-	UpdateActiveUsersMutationVariables
-> &
-	TChildProps;
+export type UpdateActiveUsersProps<TChildProps = {}> =
+	| ApolloReactHoc.MutateProps<
+			UpdateActiveUsersMutation,
+			UpdateActiveUsersMutationVariables
+	  >
+	| TChildProps;
 export function withUpdateActiveUsers<TProps, TChildProps = {}>(
 	operationOptions?: ApolloReactHoc.OperationOption<
 		TProps,
@@ -2472,11 +2464,9 @@ export const GetMessagesDocument = gql`
 	}
 	${MessageAttributesFragmentDoc}
 `;
-export type GetMessagesProps<TChildProps = {}> = ApolloReactHoc.DataProps<
-	GetMessagesQuery,
-	GetMessagesQueryVariables
-> &
-	TChildProps;
+export type GetMessagesProps<TChildProps = {}> =
+	| ApolloReactHoc.DataProps<GetMessagesQuery, GetMessagesQueryVariables>
+	| TChildProps;
 export function withGetMessages<TProps, TChildProps = {}>(
 	operationOptions?: ApolloReactHoc.OperationOption<
 		TProps,
@@ -2559,11 +2549,12 @@ export const GetNotificationsDocument = gql`
 		}
 	}
 `;
-export type GetNotificationsProps<TChildProps = {}> = ApolloReactHoc.DataProps<
-	GetNotificationsQuery,
-	GetNotificationsQueryVariables
-> &
-	TChildProps;
+export type GetNotificationsProps<TChildProps = {}> =
+	| ApolloReactHoc.DataProps<
+			GetNotificationsQuery,
+			GetNotificationsQueryVariables
+	  >
+	| TChildProps;
 export function withGetNotifications<TProps, TChildProps = {}>(
 	operationOptions?: ApolloReactHoc.OperationOption<
 		TProps,
@@ -2643,11 +2634,9 @@ export const GetRoomsListDocument = gql`
 		}
 	}
 `;
-export type GetRoomsListProps<TChildProps = {}> = ApolloReactHoc.DataProps<
-	GetRoomsListQuery,
-	GetRoomsListQueryVariables
-> &
-	TChildProps;
+export type GetRoomsListProps<TChildProps = {}> =
+	| ApolloReactHoc.DataProps<GetRoomsListQuery, GetRoomsListQueryVariables>
+	| TChildProps;
 export function withGetRoomsList<TProps, TChildProps = {}>(
 	operationOptions?: ApolloReactHoc.OperationOption<
 		TProps,
@@ -2724,11 +2713,9 @@ export const GetUserDocument = gql`
 		}
 	}
 `;
-export type GetUserProps<TChildProps = {}> = ApolloReactHoc.DataProps<
-	GetUserQuery,
-	GetUserQueryVariables
-> &
-	TChildProps;
+export type GetUserProps<TChildProps = {}> =
+	| ApolloReactHoc.DataProps<GetUserQuery, GetUserQueryVariables>
+	| TChildProps;
 export function withGetUser<TProps, TChildProps = {}>(
 	operationOptions?: ApolloReactHoc.OperationOption<
 		TProps,
@@ -2803,11 +2790,9 @@ export const GetUsersDocument = gql`
 		}
 	}
 `;
-export type GetUsersProps<TChildProps = {}> = ApolloReactHoc.DataProps<
-	GetUsersQuery,
-	GetUsersQueryVariables
-> &
-	TChildProps;
+export type GetUsersProps<TChildProps = {}> =
+	| ApolloReactHoc.DataProps<GetUsersQuery, GetUsersQueryVariables>
+	| TChildProps;
 export function withGetUsers<TProps, TChildProps = {}>(
 	operationOptions?: ApolloReactHoc.OperationOption<
 		TProps,
@@ -2881,11 +2866,9 @@ export const MeDocument = gql`
 		}
 	}
 `;
-export type MeProps<TChildProps = {}> = ApolloReactHoc.DataProps<
-	MeQuery,
-	MeQueryVariables
-> &
-	TChildProps;
+export type MeProps<TChildProps = {}> =
+	| ApolloReactHoc.DataProps<MeQuery, MeQueryVariables>
+	| TChildProps;
 export function withMe<TProps, TChildProps = {}>(
 	operationOptions?: ApolloReactHoc.OperationOption<
 		TProps,
@@ -2965,11 +2948,12 @@ export type UpdateMessageMutationFn = ApolloReactCommon.MutationFunction<
 	UpdateMessageMutation,
 	UpdateMessageMutationVariables
 >;
-export type UpdateMessageProps<TChildProps = {}> = ApolloReactHoc.MutateProps<
-	UpdateMessageMutation,
-	UpdateMessageMutationVariables
-> &
-	TChildProps;
+export type UpdateMessageProps<TChildProps = {}> =
+	| ApolloReactHoc.MutateProps<
+			UpdateMessageMutation,
+			UpdateMessageMutationVariables
+	  >
+	| TChildProps;
 export function withUpdateMessage<TProps, TChildProps = {}>(
 	operationOptions?: ApolloReactHoc.OperationOption<
 		TProps,
@@ -3040,13 +3024,12 @@ export const ActiveUsersUpdatesDocument = gql`
 		}
 	}
 `;
-export type ActiveUsersUpdatesProps<
-	TChildProps = {}
-> = ApolloReactHoc.DataProps<
-	ActiveUsersUpdatesSubscription,
-	ActiveUsersUpdatesSubscriptionVariables
-> &
-	TChildProps;
+export type ActiveUsersUpdatesProps<TChildProps = {}> =
+	| ApolloReactHoc.DataProps<
+			ActiveUsersUpdatesSubscription,
+			ActiveUsersUpdatesSubscriptionVariables
+	  >
+	| TChildProps;
 export function withActiveUsersUpdates<TProps, TChildProps = {}>(
 	operationOptions?: ApolloReactHoc.OperationOption<
 		TProps,
@@ -3135,11 +3118,12 @@ export const ChatRoomUpdatesDocument = gql`
 	}
 	${MessageAttributesFragmentDoc}
 `;
-export type ChatRoomUpdatesProps<TChildProps = {}> = ApolloReactHoc.DataProps<
-	ChatRoomUpdatesSubscription,
-	ChatRoomUpdatesSubscriptionVariables
-> &
-	TChildProps;
+export type ChatRoomUpdatesProps<TChildProps = {}> =
+	| ApolloReactHoc.DataProps<
+			ChatRoomUpdatesSubscription,
+			ChatRoomUpdatesSubscriptionVariables
+	  >
+	| TChildProps;
 export function withChatRoomUpdates<TProps, TChildProps = {}>(
 	operationOptions?: ApolloReactHoc.OperationOption<
 		TProps,
@@ -3204,13 +3188,12 @@ export const TypingUsersUpdatesDocument = gql`
 		}
 	}
 `;
-export type TypingUsersUpdatesProps<
-	TChildProps = {}
-> = ApolloReactHoc.DataProps<
-	TypingUsersUpdatesSubscription,
-	TypingUsersUpdatesSubscriptionVariables
-> &
-	TChildProps;
+export type TypingUsersUpdatesProps<TChildProps = {}> =
+	| ApolloReactHoc.DataProps<
+			TypingUsersUpdatesSubscription,
+			TypingUsersUpdatesSubscriptionVariables
+	  >
+	| TChildProps;
 export function withTypingUsersUpdates<TProps, TChildProps = {}>(
 	operationOptions?: ApolloReactHoc.OperationOption<
 		TProps,
@@ -3267,11 +3250,12 @@ export const UserUpdatesDocument = gql`
 		userUpdates
 	}
 `;
-export type UserUpdatesProps<TChildProps = {}> = ApolloReactHoc.DataProps<
-	UserUpdatesSubscription,
-	UserUpdatesSubscriptionVariables
-> &
-	TChildProps;
+export type UserUpdatesProps<TChildProps = {}> =
+	| ApolloReactHoc.DataProps<
+			UserUpdatesSubscription,
+			UserUpdatesSubscriptionVariables
+	  >
+	| TChildProps;
 export function withUserUpdates<TProps, TChildProps = {}>(
 	operationOptions?: ApolloReactHoc.OperationOption<
 		TProps,

@@ -4,10 +4,12 @@ import styled from 'styled-components/macro';
 interface IProps {
 	categories: Array<string>;
 	onIndexChange?: (index: number) => any;
+	initialIndex?: number;
 }
 
 const Tabs: React.FC<IProps> = props => {
-	const [index, setIndex] = useState(0);
+	const { initialIndex = 0 } = props;
+	const [index, setIndex] = useState(initialIndex);
 
 	return (
 		<S.Container>
