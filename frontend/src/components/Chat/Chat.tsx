@@ -24,6 +24,7 @@ S.Chat = styled.div`
 	display: grid;
 	grid-template-columns: 25rem 5rem 1fr;
 	height: 100%;
+	overflow: hidden;
 `;
 
 S.MessagesArea = styled.div``;

@@ -1,9 +1,10 @@
-import React from 'react';
+import React, { AllHTMLAttributes, HTMLAttributes } from 'react';
 import styled from 'styled-components/macro';
-import { Field } from 'formik';
+import { Field, FieldInputProps } from 'formik';
 import Icon from '../Icon';
+import callAll from '../../../utils/callAll';
 
-interface IProps {
+interface IProps extends AllHTMLAttributes<HTMLInputElement> {
 	name: string;
 	type?: string;
 	placeholder?: string;
@@ -23,7 +24,9 @@ const TextInput: React.FC<IProps> = props => {
 		label,
 		required,
 		icon,
-		children
+		children,
+		onChange,
+		...rest
 	} = props;
 
 	if (children && typeof children != 'function') {
@@ -33,7 +36,15 @@ const TextInput: React.FC<IProps> = props => {
 	return (
 		<Field name={name}>
 			{({ field, meta }) => {
-				const inputProps = { className, id: name, placeholder, type, ...field };
+				const inputProps = {
+					className,
+					id: name,
+					placeholder,
+					type,
+					...field,
+					onChange: callAll(field.onChange, onChange),
+					...rest
+				};
 				return children ? (
 					children({ inputProps, meta })
 				) : (

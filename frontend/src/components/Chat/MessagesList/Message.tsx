@@ -121,7 +121,7 @@ class Message extends PureComponent<IProps, IState> {
 					const userData = userMentions[userDataIndex];
 					return (
 						<S.Mention key={i} to={`/user/${userData.slug}`}>
-							{displayName}
+							@{displayName}
 						</S.Mention>
 					);
 				}

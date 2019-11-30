@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Ref } from 'react';
 import {
 	Form as FormikForm,
 	Formik,
@@ -9,16 +9,19 @@ import {
 
 interface IProps extends FormikConfig<any> {
 	children: React.ReactNode;
+	ref?: Ref<any>;
 }
 
-const Form: React.FC<IProps> = props => {
+const Form: React.FC<IProps> = React.forwardRef((props, ref: Ref<any>) => {
 	return (
 		<Formik {...props}>
-			{(formikProps: FormikProps<FormikValues>) => (
-				<FormikForm noValidate>{props.children}</FormikForm>
-			)}
+			{(formikProps: FormikProps<FormikValues>) => {
+				// @ts-ignore
+				ref.current = formikProps;
+				return <FormikForm noValidate>{props.children}</FormikForm>;
+			}}
 		</Formik>
 	);
-};
+});
 
 export default Form;
