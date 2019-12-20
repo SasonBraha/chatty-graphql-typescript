@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import styled from 'styled-components/macro';
 import LoginForm from './LoginForm';
 import RegisterForm from './RegisterForm';
@@ -36,11 +36,14 @@ const Auth: React.FC<IProps> = props => {
 		leave: { opacity: 0, width: '100%', position: 'absolute' }
 	});
 
-	const execCaptcha = formValues => {
-		setFormValues(formValues);
-		setExecutingMutation(true);
-		captchaRef.current.execute();
-	};
+	const execCaptcha = useCallback(
+		() => formValues => {
+			setFormValues(formValues);
+			setExecutingMutation(true);
+			captchaRef.current.execute();
+		},
+		[]
+	);
 
 	useEffect(() => {
 		captchaRef.current.reset();
@@ -106,7 +109,6 @@ const Auth: React.FC<IProps> = props => {
 						}
 					} catch (ex) {
 					} finally {
-						console.log('asdasd');
 						setExecutingMutation(false);
 					}
 				}}

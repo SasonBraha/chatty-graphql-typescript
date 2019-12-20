@@ -36,47 +36,50 @@ const InputTrigger: React.FC<IProps> = props => {
 		...rest
 	} = props;
 
-	return (
-		<div
-			onKeyUp={async e => {
-				const TRIGGER_SYMBOL_KEY_CODE =
-					supportedTriggerSymbols[props.triggerSymbol];
-				const eventTarget = e.target as HTMLInputElement;
-				const { selectionStart, value } = eventTarget;
-				const { which, shiftKey, key } = e;
-				clearTimeout(onTypeTimeout);
-				if (!isTriggered) {
-					if (which === TRIGGER_SYMBOL_KEY_CODE && shiftKey) {
-						setTriggerStartIndex(selectionStart as number);
-						setIsTriggered(true);
-						typeof props.onStart === 'function' &&
-							props.onStart({ start: selectionStart!, value: null });
-					}
-				} else {
-					if (
-						(key === KeyCodeEnum.BACKSPACE &&
-							selectionStart! < triggerStartIndex) ||
-						key === KeyCodeEnum.SPACE ||
-						key === KeyCodeEnum.ENTER
-					) {
-						setIsTriggered(false);
-						typeof props.onCancel === 'function' && props.onCancel();
-						return;
-					}
+	const handleKeyUp = useCallback(
+		async (e: React.KeyboardEvent) => {
+			const TRIGGER_SYMBOL_KEY_CODE =
+				supportedTriggerSymbols[props.triggerSymbol];
+			const eventTarget = e.target as HTMLInputElement;
+			const { selectionStart, value } = eventTarget;
+			const { which, shiftKey, key } = e;
 
-					onTypeTimeout = setTimeout(() => {
-						typeof props.onType === 'function' &&
-							isTriggered &&
-							props.onType({
-								value: value.slice(triggerStartIndex),
-								start: triggerStartIndex
-							});
-					}, props.typeCallbackDebounce || 0);
+			clearTimeout(onTypeTimeout);
+
+			if (!isTriggered) {
+				if (which === TRIGGER_SYMBOL_KEY_CODE && shiftKey) {
+					setTriggerStartIndex(selectionStart as number);
+					setIsTriggered(true);
+					typeof props.onStart === 'function' &&
+						props.onStart({ start: selectionStart!, value: null });
 				}
-			}}
-			{...rest}
-			tabIndex={-1}
-		>
+			} else {
+				if (
+					(key === KeyCodeEnum.BACKSPACE &&
+						selectionStart! < triggerStartIndex) ||
+					key === KeyCodeEnum.SPACE ||
+					key === KeyCodeEnum.ENTER
+				) {
+					setIsTriggered(false);
+					typeof props.onCancel === 'function' && props.onCancel();
+					return;
+				}
+
+				onTypeTimeout = setTimeout(() => {
+					typeof props.onType === 'function' &&
+						isTriggered &&
+						props.onType({
+							value: value.slice(triggerStartIndex),
+							start: triggerStartIndex
+						});
+				}, props.typeCallbackDebounce || 0);
+			}
+		},
+		[isTriggered, triggerStartIndex]
+	);
+
+	return (
+		<div onKeyUp={handleKeyUp} {...rest} tabIndex={-1}>
 			{children}
 		</div>
 	);

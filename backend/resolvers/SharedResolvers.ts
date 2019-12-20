@@ -1,21 +1,4 @@
-import {
-	Arg,
-	Ctx,
-	Field,
-	FieldResolver,
-	Info,
-	Int,
-	Mutation,
-	ObjectType,
-	PubSub,
-	PubSubEngine,
-	Query,
-	Resolver,
-	Root,
-	Subscription,
-	UseMiddleware
-} from 'type-graphql';
-import { Chat } from '../entities/Chat';
+import { Field, FieldResolver, ObjectType, Resolver, Root } from 'type-graphql';
 
 @ObjectType()
 export class PageInfo {

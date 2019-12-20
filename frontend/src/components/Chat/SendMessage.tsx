@@ -34,7 +34,8 @@ interface IProps
 }
 
 let emitTypingTimeout: ReturnType<typeof setTimeout>;
-const SendMessage2: React.FC<IProps> = props => {
+
+const SendMessage: React.FC<IProps> = props => {
 	const [postMessage] = usePostMessageMutation();
 	const [updateTypingUsers] = useUpdateTypingUsersMutation();
 	const [uploadFile] = useUploadMessageFileMutation();
@@ -72,28 +73,31 @@ const SendMessage2: React.FC<IProps> = props => {
 		}
 	}, []);
 
-	const handleSubmit = useCallback(async formValues => {
-		const newMessage = await postMessage({
-			variables: {
-				...formValues,
-				chatSlug: props.match.params.chatSlug
-			}
-		});
+	const handleSubmit = useCallback(
+		async formValues => {
+			const newMessage = await postMessage({
+				variables: {
+					...formValues,
+					chatSlug: props.match.params.chatSlug
+				}
+			});
 
-		formRef.current.resetForm();
-		// setFilePreview(null);
-		//
-		// if (values.file) {
-		// 	client.mutate({
-		// 		mutation: UPLOAD_FILE_MUTATION,
-		// 		variables: {
-		// 			file: values.file,
-		// 			chatSlug: match.params.chatSlug,
-		// 			messageId: newMessage.data.postMessage._id
-		// 		}
-		// 	});
-		// }
-	}, []);
+			formRef.current.resetForm();
+			// setFilePreview(null);
+			//
+			// if (values.file) {
+			// 	client.mutate({
+			// 		mutation: UPLOAD_FILE_MUTATION,
+			// 		variables: {
+			// 			file: values.file,
+			// 			chatSlug: match.params.chatSlug,
+			// 			messageId: newMessage.data.postMessage._id
+			// 		}
+			// 	});
+			// }
+		},
+		[props.match.params.chatSlug]
+	);
 
 	useEffect(() => {
 		if (!loading && userData) {
@@ -128,7 +132,6 @@ const SendMessage2: React.FC<IProps> = props => {
 					triggerSymbol='@'
 					typeCallbackDebounce={200}
 					onType={data => {
-						console.log(data);
 						executeUserSearch({
 							variables: {
 								displayName: data.value,
@@ -235,4 +238,4 @@ S.InputTrigger = styled(InputTrigger)`
 	flex: 1;
 `;
 
-export default React.memo(SendMessage2);
+export default React.memo(SendMessage);

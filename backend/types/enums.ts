@@ -16,11 +16,3 @@ export enum SubscriptionTypesEnum {
 export enum UserUpdatesEnum {
 	NEW_NOTIFICATION = 'NEW_NOTIFICATION'
 }
-
-export enum ApolloTypesEnum {
-	MESSAGE = 'Message',
-	MESSAGE_EDGE = 'MessageEdge',
-	MESSAGE_CREATED_BY = 'CreatedBy',
-	PAGE_INFO = 'PageInfo',
-	MESSAGE_CONNECTION = 'MessageConnection'
-}

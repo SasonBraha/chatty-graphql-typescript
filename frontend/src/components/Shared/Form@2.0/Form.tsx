@@ -16,8 +16,10 @@ const Form: React.FC<IProps> = React.forwardRef((props, ref: Ref<any>) => {
 	return (
 		<Formik {...props}>
 			{(formikProps: FormikProps<FormikValues>) => {
-				// @ts-ignore
-				ref.current = formikProps;
+				if (ref) {
+					// @ts-ignore
+					ref.current = formikProps;
+				}
 				return <FormikForm noValidate>{props.children}</FormikForm>;
 			}}
 		</Formik>

@@ -5,22 +5,6 @@ import { createUnionType, Field, ID, ObjectType } from 'type-graphql';
 import { SubscriptionTypesEnum } from '../../types/enums';
 import { PageInfo } from '../SharedResolvers';
 
-export interface IMessageCreatedOutput {
-	message: Message;
-	updateType: string;
-}
-
-export interface IMessageDeletedOutput {
-	messageId: string;
-	updateType: string;
-}
-
-export interface IMessageFileUploadedOutput {
-	messageId: string;
-	file: File;
-	updateType: string;
-}
-
 @ObjectType()
 export class FileAddedOutput {
 	@Field()
