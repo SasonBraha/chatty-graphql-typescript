@@ -51,5 +51,4 @@ S.Content = styled.div`
 	height: calc(100vh - ${props => props.theme.headerHeight});
 `;
 
-// @ts-ignore
 export default withRouter(hot(App));
