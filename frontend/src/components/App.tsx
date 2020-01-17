@@ -16,7 +16,6 @@ import {
 } from '../hooks/setup';
 
 interface IProps extends RouterProps {}
-
 const App: React.FC<IProps> = props => {
 	useCheckAuth();
 	useGetInitialUserData();

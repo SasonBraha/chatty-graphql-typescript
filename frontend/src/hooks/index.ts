@@ -1,1 +1,1 @@
-export default 3;
+export { default as useTheme } from './shared/useTheme';

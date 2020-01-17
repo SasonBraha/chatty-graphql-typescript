@@ -6,6 +6,8 @@ export type StateUpdaterFunction<T> = React.Dispatch<React.SetStateAction<T>>;
 
 export type DynamicObject<T> = { [key: string]: T };
 
+export type DelegatedRef<T> = React.RefObject<T>;
+
 export interface ITheme {
 	theme: DefaultTheme;
 }

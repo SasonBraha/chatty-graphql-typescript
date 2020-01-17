@@ -1,19 +1,10 @@
 import * as jwt from 'jsonwebtoken';
-import { IUser } from '../entities/User';
+import { User } from '../entities/User';
 import { ErrorTypesEnum } from '../utils/errors';
 
-const generateJWT = async (user: IUser) => {
+const generateJWT = async (user: User) => {
 	try {
-		const {
-			_id,
-			displayName,
-			email,
-			avatar,
-			jwtId: jwtHandshake,
-			role,
-			slug,
-			password
-		} = user;
+		const { _id, displayName, email, avatar, jwtHandshake, role, slug } = user;
 
 		const authToken = await jwt.sign(
 			{ displayName, email, avatar, jwtHandshake, role, slug, _id },
