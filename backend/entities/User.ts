@@ -21,7 +21,8 @@ import * as uuid from 'uuid';
 @ObjectType()
 @Pre<User>('save', async function(next) {
 	const user = this;
-	if (user.isModified('password')) {
+	const isUserModifiedPassword = user.isModified('password');
+	if (isUserModifiedPassword) {
 		user.password = await bcrypt.hash(user.password, 10);
 	}
 	next();
