@@ -19,8 +19,8 @@ const validateFile = (
 	file: File,
 	setGenericModal: _SetGenericModalMutationFn
 ) => {
+	const fileInput = event.target as HTMLInputElement;
 	const resetFile = () => {
-		const fileInput = event.target as HTMLInputElement;
 		fileInput.value = '';
 		props.onChange(null);
 	};
@@ -52,6 +52,7 @@ const validateFile = (
 		}
 
 		props.onChange(file);
+		fileInput.value = '';
 	}
 };
 

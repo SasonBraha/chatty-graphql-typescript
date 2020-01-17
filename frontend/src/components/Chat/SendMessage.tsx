@@ -17,6 +17,7 @@ import {
 	useUploadMessageFileMutation
 } from '../../__generated__/graphql';
 import { Form, TextInput } from '../Shared/Form@2.0';
+import { PlainFunction } from '../../types/interfaces';
 
 interface IFormValues {
 	text: string;
@@ -30,12 +31,13 @@ interface IMatchParams {
 interface IProps
 	extends FormikProps<IFormValues>,
 		RouteComponentProps<IMatchParams> {
-	setFilePreview: (file: File | null) => void;
+	setFilePreview: PlainFunction<File>;
 }
 
 let emitTypingTimeout: ReturnType<typeof setTimeout>;
 
 const SendMessage: React.FC<IProps> = props => {
+	const { setFilePreview, match } = props;
 	const [postMessage] = usePostMessageMutation();
 	const [updateTypingUsers] = useUpdateTypingUsersMutation();
 	const [uploadFile] = useUploadMessageFileMutation();
@@ -55,7 +57,7 @@ const SendMessage: React.FC<IProps> = props => {
 			emitTypingTimeout = setTimeout(() => {
 				updateTypingUsers({
 					variables: {
-						chatSlug: props.match.params.chatSlug,
+						chatSlug: match.params.chatSlug,
 						crudType: CrudEnum.DELETE
 					}
 				});
@@ -65,7 +67,7 @@ const SendMessage: React.FC<IProps> = props => {
 			isTyping = true;
 			updateTypingUsers({
 				variables: {
-					chatSlug: props.match.params.chatSlug,
+					chatSlug: match.params.chatSlug,
 					crudType: CrudEnum.UPDATE
 				}
 			});
@@ -82,19 +84,18 @@ const SendMessage: React.FC<IProps> = props => {
 				}
 			});
 
+			if (formValues.file) {
+				uploadFile({
+					variables: {
+						messageId: newMessage.data.postMessage._id,
+						file: formValues.file,
+						chatSlug: match.params.chatSlug
+					}
+				});
+			}
+
 			formRef.current.resetForm();
-			// setFilePreview(null);
-			//
-			// if (values.file) {
-			// 	client.mutate({
-			// 		mutation: UPLOAD_FILE_MUTATION,
-			// 		variables: {
-			// 			file: values.file,
-			// 			chatSlug: match.params.chatSlug,
-			// 			messageId: newMessage.data.postMessage._id
-			// 		}
-			// 	});
-			// }
+			setFilePreview(null);
 		},
 		[props.match.params.chatSlug]
 	);
@@ -123,7 +124,10 @@ const SendMessage: React.FC<IProps> = props => {
 				<S.AttachLabel>
 					<FileInput
 						maxFileSizeInKB={5000}
-						onChange={(file: File | null) => {}}
+						onChange={(file: File | null) => {
+							formRef.current.setFieldValue('file', file);
+							setFilePreview(file);
+						}}
 					/>
 					<S.AttachIcon icon='icon-paperclip' />
 				</S.AttachLabel>
