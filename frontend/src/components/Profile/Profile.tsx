@@ -49,7 +49,7 @@ const Profile: React.FC<IProps> = props => {
 					)}
 				</S.Container>
 			</S.RightColumn>
-			<S.LeftColumn></S.LeftColumn>
+			<S.LeftColumn />
 		</S.Profile>
 	);
 };
