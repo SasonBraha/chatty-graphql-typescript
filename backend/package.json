@@ -36,7 +36,7 @@
 		"passport-jwt": "^4.0.0",
 		"reflect-metadata": "^0.1.13",
 		"request-promise": "^4.2.5",
-		"sanitize-html": "^1.22.0",
+		"sanitize-html": "^2.3.2",
 		"shortid": "^2.2.15",
 		"type-graphql": "^0.17.6",
 		"typegoose": "^5.9.1",
