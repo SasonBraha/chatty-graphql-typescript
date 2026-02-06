@@ -9,15 +9,16 @@ import {
 	Subscription,
 	UseMiddleware
 } from 'type-graphql';
-import { User, UserModel } from '../../entities/User';
+import { User } from '../../entities/User';
 import { Authenticated, WithPermission } from '../../middlewares';
 import {
 	IUserMentionedOutput,
 	SearchUsersOutput
 } from './user.resolver.outputs';
 import { UserPermissionTypesEnum } from '../../permissions';
-import { Notification, NotificationModel } from '../../entities/Notification';
+import { Notification } from '../../entities/Notification';
 import { SubscriptionTypesEnum } from '../../types/enums';
+import UserService from '../../services/UserService';
 
 @Resolver(User)
 export default class UserResolver {
@@ -29,8 +30,7 @@ export default class UserResolver {
 
 	@Query(returns => User, { nullable: true })
 	async user(@Arg('slug') slug: string) {
-		const user = await UserModel.findOne({ slug }).lean();
-		return user;
+		return UserService.getUserBySlug(slug);
 	}
 
 	@UseMiddleware(Authenticated)
@@ -40,12 +40,7 @@ export default class UserResolver {
 		@Arg('displayName') displayName: string,
 		@Arg('limit', () => Int, { nullable: true }) limit: number
 	): Promise<SearchUsersOutput> {
-		const userList: User[] = await UserModel.find({
-			displayName: new RegExp(
-				displayName.replace(/[-[\]{}()*+?.,\\^$|#\s]/, '\\$&'),
-				'gi'
-			)
-		}).limit(limit ? limit : 20);
+		const userList: User[] = await UserService.searchUsers(displayName, limit);
 
 		return {
 			userList
@@ -55,13 +50,7 @@ export default class UserResolver {
 	@UseMiddleware(Authenticated)
 	@Query(returns => [Notification])
 	async notifications(@Ctx('user') user: User): Promise<Notification[]> {
-		const notifications = await NotificationModel.find({
-			receiver: user._id
-		})
-			.populate('sender', 'displayName slug')
-			.sort({ createdAt: -1 })
-			.limit(10);
-		return notifications;
+		return UserService.listNotifications(user._id.toString());
 	}
 
 	@UseMiddleware(Authenticated)
@@ -80,11 +69,7 @@ export default class UserResolver {
 	@UseMiddleware(Authenticated)
 	@FieldResolver(returns => Int)
 	async unreadNotificationsCount(@Root() user: User): Promise<number> {
-		const unreadCount = await NotificationModel.countDocuments({
-			receiver: user._id,
-			isRead: false
-		});
-		return unreadCount;
+		return UserService.countUnreadNotifications(user._id.toString());
 	}
 
 	@FieldResolver(returns => String, { nullable: true })
