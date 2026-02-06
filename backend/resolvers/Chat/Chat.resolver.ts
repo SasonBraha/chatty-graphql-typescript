@@ -12,21 +12,15 @@ import {
 	Subscription,
 	UseMiddleware
 } from 'type-graphql';
-import { Chat, ChatController, ChatModel } from '../../entities/Chat';
-import { User, UserModel } from '../../entities/User';
-import { NotificationModel } from '../../entities/Notification';
-import { Message, MessageModel } from '../../entities/Message';
-import { Mention } from '../../entities/Mention';
-import { ObjectID } from 'bson';
+import { Chat } from '../../entities/Chat';
+import { User } from '../../entities/User';
+import { Message } from '../../entities/Message';
 import {
 	CreateChatInput,
 	IFileInput,
 	UpdateMessageInput
 } from './chat.resolver.inputs';
-import activeUsersService from '../../redis/services/ActiveUsers.service';
 import { GraphQLUpload } from 'apollo-server-express';
-import { uploadFile } from '../../utils/files';
-import { ErrorTypesEnum } from '../../utils/errors';
 import { Authenticated, WithPermission } from '../../middlewares';
 import { ChatPermissionTypesEnum } from '../../permissions';
 import withPermission from '../../middlewares/WithPermission';
@@ -35,17 +29,11 @@ import {
 	MessageConnection,
 	UserTypingOutput
 } from './chat.resolver.output';
-import {
-	CrudEnum,
-	SubscriptionTypesEnum,
-	UserUpdatesEnum
-} from '../../types/enums';
-import { generateUserMentionedNotification } from '../../utils/notifications';
+import { SubscriptionTypesEnum } from '../../types/enums';
 import { Document } from 'mongoose';
-import sanitizer from '../../services/Sanitizer';
-import { Ref } from '@hasezoey/typegoose';
-import { JWT } from '../../services';
-import shortid = require('shortid');
+import ChatService from '../../services/ChatService';
+import MessageService from '../../services/MessageService';
+import UserService from '../../services/UserService';
 
 @Resolver(Chat)
 export default class ChatResolver {
@@ -56,36 +44,13 @@ export default class ChatResolver {
 		@Arg('chatSlug') chatSlug: string,
 		@Ctx('user') user: User
 	): Promise<Chat> {
-		const chat = await ChatModel.findOne({
-			$or: [
-				{ slug: chatSlug, isPrivate: false },
-				{
-					slug: chatSlug,
-					isPrivate: true,
-					allowedUsers: user._id
-				}
-			]
-		}).lean();
-
-		if (!chat) {
-			throw new Error(ErrorTypesEnum.NOT_FOUND);
-		}
-
-		return chat;
+		return ChatService.getChatForUser(chatSlug, user);
 	}
 
 	@UseMiddleware(Authenticated)
 	@Query(returns => [Chat])
 	async roomsList(@Ctx('user') user: User): Promise<Chat[]> {
-		return await ChatModel.find({
-			$or: [
-				{ isPrivate: false },
-				{
-					isPrivate: true,
-					allowedUsers: user._id
-				}
-			]
-		}).sort({ updatedAt: -1 });
+		return ChatService.listRoomsForUser(user);
 	}
 
 	@UseMiddleware(Authenticated)
@@ -95,19 +60,7 @@ export default class ChatResolver {
 		@Arg('data') { name, isPrivate, storeMessages }: CreateChatInput,
 		@Ctx('user') user: User
 	): Promise<Chat> {
-		return await ChatController.createRoom({
-			name,
-			image: {
-				path: '/images/default_chat.svg',
-				isStoredRemotely: false,
-				mimeType: 'svg',
-				dimensions: {}
-			},
-			isPrivate,
-			storeMessages,
-			createdBy: (user._id as unknown) as Ref<User>,
-			slug: `${name}@${shortid.generate()}`
-		});
+		return ChatService.createChatRoom({ name, isPrivate, storeMessages }, user);
 	}
 
 	@UseMiddleware(Authenticated)
@@ -119,111 +72,7 @@ export default class ChatResolver {
 		@Ctx('user') user: User,
 		@PubSub() pubSub: PubSubEngine
 	): Promise<Message | { _id: string }> {
-		const mentionUserRegex = new RegExp('(@[\\wא-ת-_]+)', 'g');
-		const mentions = text.match(mentionUserRegex);
-		let userMentions: Mention[] = [];
-		let usersData: User[] = [];
-
-		if (mentions) {
-			const usernames = mentions.map(mention => mention.slice(1));
-			usersData = await UserModel.find({
-				displayName: { $in: usernames }
-			}).select('displayName _id slug');
-
-			if (usersData.length) {
-				userMentions = usersData.reduce((acc: Mention[], currentUser: User) => {
-					const { displayName, slug, _id } = currentUser;
-					const startIndex = text.indexOf(displayName) - 1;
-					const endIndex = startIndex + displayName.length + 1;
-
-					acc.push({
-						indices: [startIndex, endIndex],
-						displayName,
-						slug,
-						_id
-					});
-
-					return acc;
-				}, []);
-			}
-		}
-
-		const preSaveId = new MessageModel();
-		const { _id, displayName, slug, avatar } = user;
-		const messageData = {
-			_id: preSaveId._id,
-			text,
-			chatSlug,
-			file: null,
-			createdBy: {
-				_id,
-				displayName,
-				slug,
-				avatar
-			},
-			userMentions
-		};
-
-		await pubSub.publish(SubscriptionTypesEnum.NEW_MESSAGE, {
-			payload: {
-				message: {
-					cursor: messageData._id,
-					node: {
-						...messageData,
-						createdAt: new Date().toISOString(),
-						creationToken: await JWT.generateToken(
-							{ userId: user._id.toString(), messageId: preSaveId._id },
-							false,
-							'20h'
-						),
-						file: null
-					}
-				},
-				updateType: SubscriptionTypesEnum.NEW_MESSAGE
-			},
-			chatSlug
-		});
-
-		const targetChatRoom = await ChatModel.findOne({
-			$or: [
-				{ slug: chatSlug, isPrivate: false, storeMessages: true },
-				{
-					slug: chatSlug,
-					isPrivate: true,
-					storeMessages: true,
-					allowedUsers: user._id
-				}
-			]
-		});
-
-		let newMessage: Message = null;
-		if (targetChatRoom && targetChatRoom.storeMessages) {
-			newMessage = await MessageModel.create(messageData);
-			targetChatRoom.lastMessage = newMessage.text;
-			await targetChatRoom.save();
-
-			usersData.forEach(async ({ _id }) => {
-				if (user._id.toString() !== _id.toString()) {
-					const notification = await NotificationModel.create(
-						generateUserMentionedNotification(
-							(user._id as unknown) as string,
-							(_id as unknown) as string,
-							`${chatSlug}/${newMessage._id}`
-						)
-					);
-
-					pubSub.publish(SubscriptionTypesEnum.USER_MENTIONED, {
-						notification,
-						userId: _id,
-						type: UserUpdatesEnum.NEW_NOTIFICATION
-					});
-				}
-			});
-		}
-
-		return newMessage
-			? newMessage
-			: { _id: (preSaveId._id as unknown) as string };
+		return ChatService.postMessage(text, chatSlug, user, pubSub);
 	}
 
 	@UseMiddleware(Authenticated)
@@ -241,71 +90,7 @@ export default class ChatResolver {
 		@Ctx('user') user: User & Document,
 		@PubSub() pubSub: PubSubEngine
 	): Promise<boolean> {
-		const { messageId, creationToken, crudType, chatSlug } = updatePayload;
-		const targetMessage = await MessageModel.findOne({ _id: messageId });
-		let isUserCreatedTargetMessage: boolean = false;
-		let shouldUpdateDB: boolean = false;
-
-		if (!targetMessage && creationToken) {
-			const creationTokenData: {
-				userId;
-				messageId;
-			} = await JWT.validateTokenAndGetPayload(creationToken, false);
-
-			if (creationTokenData) {
-				isUserCreatedTargetMessage =
-					creationTokenData.userId === user._id.toString() &&
-					messageId === creationTokenData.messageId;
-				shouldUpdateDB = false;
-			}
-		} else if (targetMessage) {
-			isUserCreatedTargetMessage =
-				targetMessage.createdBy._id.toString() === user._id.toString();
-			shouldUpdateDB = true;
-		}
-
-		switch (crudType) {
-			case CrudEnum.DELETE:
-				if (
-					user.hasPermission([ChatPermissionTypesEnum.DELETE_MESSAGE]) ||
-					isUserCreatedTargetMessage
-				) {
-					await pubSub.publish(SubscriptionTypesEnum.MESSAGE_DELETED, {
-						payload: {
-							updateType: SubscriptionTypesEnum.MESSAGE_DELETED,
-							messageId
-						},
-						chatSlug: chatSlug
-					});
-
-					if (shouldUpdateDB) {
-						await targetMessage.remove();
-					}
-				}
-				return true;
-
-			case CrudEnum.UPDATE:
-				if (
-					user.hasPermission([ChatPermissionTypesEnum.EDIT_MESSAGE]) ||
-					isUserCreatedTargetMessage
-				) {
-					const sanitizedText = sanitizer.html(updatePayload.messageText);
-					await pubSub.publish(SubscriptionTypesEnum.MESSAGE_EDITED, {
-						payload: {
-							updatedText: sanitizedText,
-							updateType: SubscriptionTypesEnum.MESSAGE_EDITED,
-							messageId
-						},
-						chatSlug: chatSlug
-					});
-
-					if (shouldUpdateDB) {
-						targetMessage.text = sanitizedText;
-						await targetMessage.save();
-					}
-				}
-				return true;
-		}
+		return ChatService.updateMessage(updatePayload, user, pubSub);
 	}
 
 	@UseMiddleware(Authenticated)
@@ -317,28 +102,7 @@ export default class ChatResolver {
 		@Ctx('user') user: User,
 		@PubSub() pubSub: PubSubEngine
 	): Promise<boolean> {
-		const fileData = await uploadFile(file, chatSlug);
-
-		pubSub.publish(SubscriptionTypesEnum.FILE_UPLOADED, {
-			payload: {
-				messageId,
-				file: fileData,
-				updateType: SubscriptionTypesEnum.FILE_UPLOADED
-			},
-			chatSlug
-		});
-
-		await MessageModel.updateOne(
-			{
-				_id: messageId,
-				'createdBy._id': user._id
-			},
-			{
-				$set: { file: fileData }
-			}
-		);
-
-		return true;
+		return ChatService.uploadMessageFile(file, chatSlug, messageId, user, pubSub);
 	}
 
 	@UseMiddleware(Authenticated)
@@ -349,23 +113,7 @@ export default class ChatResolver {
 		@Ctx('user') user: User,
 		@PubSub() pubSub: PubSubEngine
 	): Promise<void> {
-		let userList: User[] = null;
-
-		switch (crudType) {
-			case CrudEnum.UPDATE:
-				userList = await activeUsersService.addUser(chatSlug, user);
-				break;
-
-			case CrudEnum.DELETE:
-				userList = await activeUsersService.removeUser(chatSlug, user);
-				break;
-		}
-
-		pubSub.publish(SubscriptionTypesEnum.UPDATE_ACTIVE_USERS, {
-			userList,
-			chatSlug,
-			crudType
-		});
+		return ChatService.updateActiveUsers(chatSlug, crudType, user, pubSub);
 	}
 
 	@UseMiddleware(Authenticated)
@@ -377,15 +125,7 @@ export default class ChatResolver {
 		@Ctx('user') user: User,
 		@PubSub() pubSub: PubSubEngine
 	) {
-		pubSub.publish(SubscriptionTypesEnum.UPDATE_TYPING_USERS, {
-			chatSlug,
-			crudType,
-			user: {
-				displayName: user.displayName,
-				slug: user.slug
-			}
-		});
-		return true;
+		return ChatService.updateTypingUsers(chatSlug, crudType, user, pubSub);
 	}
 
 	@UseMiddleware(Authenticated)
@@ -446,7 +186,7 @@ export default class ChatResolver {
 
 	@FieldResolver()
 	async createdBy(@Root() chat: Chat): Promise<User> {
-		return await UserModel.findById(chat.createdBy);
+		return UserService.getUserById(chat.createdBy.toString());
 	}
 
 	@FieldResolver()
@@ -457,53 +197,6 @@ export default class ChatResolver {
 		@Arg('after', { nullable: true }) after: string,
 		@Arg('before', { nullable: true }) before: string
 	): Promise<MessageConnection> {
-		const limit = first || last || 20;
-		const cursor = before || after ? new ObjectID(before || after) : null;
-		const messages = await MessageModel.aggregate([
-			{
-				$match: cursor
-					? {
-							_id: { [before ? '$gt' : '$lt']: cursor },
-							chatSlug: chat.slug
-					  }
-					: { chatSlug: chat.slug }
-			},
-			{ $sort: { createdAt: -1 } },
-			{ $limit: limit }
-		]);
-
-		const edges = messages.map(message => ({
-			cursor: message._id,
-			node: message
-		}));
-
-		return {
-			edges: edges.reverse(),
-			pageInfo: {
-				// @ts-ignore
-				async hasNextPage() {
-					if (messages.length < limit) return false;
-					return Boolean(
-						await MessageModel.findOne({
-							_id: {
-								[before ? '$lt' : '$gt']: messages[messages.length - 1]._id
-							},
-							chatSlug: chat.slug
-						})
-					);
-				},
-
-				// @ts-ignore
-				async hasPreviousPage() {
-					if (messages.length < limit) return false;
-					return Boolean(
-						await MessageModel.findOne({
-							_id: { [before ? '$lt' : '$gt']: cursor },
-							chatSlug: chat.slug
-						})
-					);
-				}
-			}
-		};
+		return MessageService.getMessagesForChat(chat, first, last, after, before);
 	}
 }
